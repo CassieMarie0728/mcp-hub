@@ -413,3 +413,37 @@
 - [ ] Documentation completion
 - [ ] GitHub repository setup
 - [ ] Release notes preparation
+
+
+## Phase 10 Final: JSON Config UI + Dashboard + Testing 🚀
+
+### JSON Config UI Enhancements
+- [ ] Add "Import Config" button to Add Server screen
+- [ ] Add "Export Config" button to Edit Server screen
+- [ ] Add optional JSON paste input field (collapsible/expandable)
+- [ ] Validate pasted JSON in real-time
+- [ ] Show preview of imported config before confirming
+- [ ] Handle edge cases (invalid JSON, missing fields, malformed data)
+- [ ] Add copy-to-clipboard for exported configs
+
+### Dashboard Screens
+- [ ] Create AuditLogScreen.tsx (view all tool executions)
+- [ ] Create GovernanceScreen.tsx (manage allowlist/blacklist)
+- [ ] Create ServiceControlScreen.tsx (start/stop server, toggle notification)
+- [ ] Create DashboardHomeScreen.tsx (main dashboard with quick stats)
+- [ ] Add navigation between dashboard screens
+- [ ] Add filtering and search to audit logs
+- [ ] Add export audit logs as CSV/JSON
+
+### End-to-End Testing
+- [ ] Test JSON import with valid config
+- [ ] Test JSON import with invalid config (missing fields)
+- [ ] Test JSON import with malformed JSON
+- [ ] Test JSON export and re-import cycle
+- [ ] Test direct JSON paste input
+- [ ] Test on actual Android device
+- [ ] Test on iOS device (if available)
+- [ ] Test with large configs (many headers, many servers)
+- [ ] Test permission flows end-to-end
+- [ ] Test macro execution end-to-end
+- [ ] Test governance consent flows

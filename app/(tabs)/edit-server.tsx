@@ -73,6 +73,34 @@ export default function EditServerScreen() {
   const [url, setUrl] = useState('');
   const [headers, setHeaders] = useState<HeaderPair[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [jsonPaste, setJsonPaste] = useState('');
+  const [showJsonPaste, setShowJsonPaste] = useState(false);
+
+  const handleJsonPaste = () => {
+    try {
+      const config = JSON.parse(jsonPaste);
+      if (!config.name || !config.connectionType) {
+        Alert.alert('Invalid Config', 'Config must have name and connectionType');
+        return;
+      }
+      setServerName(config.name || '');
+      setDescription(config.description || '');
+      setConnectionType(config.connectionType || 'stdio');
+      setCommand(config.command || '');
+      setUrl(config.url || '');
+      const headerPairs = Object.entries(config.headers || {}).map(([key, value]: any, idx) => ({
+        id: `${Date.now()}-${idx}`,
+        key,
+        value,
+      }));
+      setHeaders(headerPairs);
+      setJsonPaste('');
+      setShowJsonPaste(false);
+      Alert.alert('Success', 'Config loaded from JSON');
+    } catch (error: any) {
+      Alert.alert('Invalid JSON', error.message);
+    }
+  };
 
   const handleExportJSON = async () => {
     if (!server) return;
@@ -430,6 +458,45 @@ export default function EditServerScreen() {
           </Text>
         </View>
 
+        {/* JSON Paste Section */}
+        <TouchableOpacity
+          onPress={() => setShowJsonPaste(!showJsonPaste)}
+          className="bg-surface border border-border rounded-lg p-4 mb-6 flex-row items-center justify-between"
+        >
+          <View className="flex-row items-center gap-2 flex-1">
+            <MaterialIcons name="code" size={20} color={colors.primary} />
+            <Text className="text-foreground font-semibold">Paste JSON Config</Text>
+          </View>
+          <MaterialIcons
+            name={showJsonPaste ? 'expand-less' : 'expand-more'}
+            size={20}
+            color={colors.muted}
+          />
+        </TouchableOpacity>
+
+        {showJsonPaste && (
+          <View className="mb-6">
+            <Text className="text-xs text-muted mb-2">Paste your server config as JSON:</Text>
+            <TextInput
+              className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
+              placeholder='{"name": "My Server", "connectionType": "sse", "url": "..."}'
+              placeholderTextColor={colors.muted}
+              value={jsonPaste}
+              onChangeText={setJsonPaste}
+              multiline
+              numberOfLines={6}
+              editable={!isLoading}
+            />
+            <TouchableOpacity
+              onPress={handleJsonPaste}
+              className="bg-primary rounded-lg py-2 items-center justify-center mt-2"
+              disabled={isLoading || !jsonPaste.trim()}
+            >
+              <Text className="text-background font-semibold text-sm">Load from JSON</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Info Box */}
         <View className="bg-primary/10 rounded-lg p-4 border border-primary/20 mb-6">
           <View className="flex-row gap-2">
@@ -441,28 +508,38 @@ export default function EditServerScreen() {
         </View>
 
         {/* Action Buttons */}
-        <View className="flex-row gap-3 mb-12">
-          <TouchableOpacity
-            onPress={() => router.push('/(tabs)/servers' as any)}
-            className="flex-1 bg-surface border border-border rounded-lg py-3 items-center justify-center"
-            disabled={isLoading}
-          >
-            <Text className="text-foreground font-semibold">Cancel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleSaveServer}
-            className="flex-1 bg-primary rounded-lg py-3 items-center justify-center flex-row gap-2"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color={colors.background} />
-            ) : (
-              <>
-                <MaterialIcons name="save" size={20} color={colors.background} />
-                <Text className="text-background font-semibold">Save Changes</Text>
-              </>
-            )}
-          </TouchableOpacity>
+        <View className="gap-3 mb-12">
+          <View className="flex-row gap-3">
+            <TouchableOpacity
+              onPress={() => router.push('/(tabs)/servers' as any)}
+              className="flex-1 bg-surface border border-border rounded-lg py-3 items-center justify-center"
+              disabled={isLoading}
+            >
+              <Text className="text-foreground font-semibold text-sm">Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleExportJSON}
+              className="flex-1 bg-surface border border-border rounded-lg py-3 items-center justify-center flex-row gap-2"
+              disabled={isLoading}
+            >
+              <MaterialIcons name="download" size={18} color={colors.primary} />
+              <Text className="text-foreground font-semibold text-sm">Export</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSaveServer}
+              className="flex-1 bg-primary rounded-lg py-3 items-center justify-center flex-row gap-2"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color={colors.background} />
+              ) : (
+                <>
+                  <MaterialIcons name="save" size={18} color={colors.background} />
+                  <Text className="text-background font-semibold text-sm">Save</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </ScreenContainer>

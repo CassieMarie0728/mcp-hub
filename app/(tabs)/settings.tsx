@@ -1,12 +1,21 @@
-import { ScrollView, Text, View, TouchableOpacity, Switch, Alert } from 'react-native';
+import {
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  Switch,
+  Alert,
+} from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useColors } from '@/hooks/use-colors';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const { settings, updateSettings, clearExecutionHistory } = useApp();
   const colorScheme = useColorScheme();
   const colors = useColors();
@@ -94,6 +103,78 @@ export default function SettingsScreen() {
               </View>
             </View>
           )}
+        </View>
+
+        {/* Dashboard Section */}
+        <View className="mb-8">
+          <Text className="text-lg font-semibold text-foreground mb-4">Dashboard</Text>
+          <View className="gap-3">
+            <TouchableOpacity
+              onPress={() => router.push('/audit-log' as any)}
+              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
+            >
+              <View className="flex-row items-center gap-3">
+                <MaterialIcons name="history" size={20} color={colors.primary} />
+                <View>
+                  <Text className="text-foreground font-medium">Audit Log</Text>
+                  <Text className="text-xs text-muted mt-1">View tool execution history</Text>
+                </View>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push('/governance' as any)}
+              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
+            >
+              <View className="flex-row items-center gap-3">
+                <MaterialIcons name="security" size={20} color={colors.primary} />
+                <View>
+                  <Text className="text-foreground font-medium">Governance</Text>
+                  <Text className="text-xs text-muted mt-1">Manage app allowlist/blacklist</Text>
+                </View>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push('/service-control' as any)}
+              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
+            >
+              <View className="flex-row items-center gap-3">
+                <MaterialIcons name="cloud-done" size={20} color={colors.primary} />
+                <View>
+                  <Text className="text-foreground font-medium">Service Control</Text>
+                  <Text className="text-xs text-muted mt-1">Start/stop MCP server</Text>
+                </View>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push('/perception-test' as any)}
+              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
+            >
+              <View className="flex-row items-center gap-3">
+                <MaterialIcons name="visibility" size={20} color={colors.primary} />
+                <View>
+                  <Text className="text-foreground font-medium">Perception Test</Text>
+                  <Text className="text-xs text-muted mt-1">Test AI perception engine</Text>
+                </View>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push('/macro-management' as any)}
+              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
+            >
+              <View className="flex-row items-center gap-3">
+                <MaterialIcons name="automation" size={20} color={colors.primary} />
+                <View>
+                  <Text className="text-foreground font-medium">Macro Management</Text>
+                  <Text className="text-xs text-muted mt-1">Create and manage macros</Text>
+                </View>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Data Management */}
