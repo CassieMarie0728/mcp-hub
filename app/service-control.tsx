@@ -13,22 +13,18 @@ import { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
-import { useForegroundService } from '@/hooks/use-foreground-service';
-
-interface ServiceStatus {
-  isRunning: boolean;
-  notificationEnabled: boolean;
-  uptime: number;
-  connectionsActive: number;
-  toolsExposed: number;
-}
+import { useMCPBridgeExtended, type ServiceStatus } from '@/hooks/use-mcp-bridge-extended';
 
 export default function ServiceControlScreen() {
   const navigation = useNavigation();
   const router = useRouter();
   const colors = useColors();
-  const { startService, stopService, toggleNotification, getServiceStatus } =
-    useForegroundService();
+  const {
+    getServiceStatus,
+    startMCPService,
+    stopMCPService,
+    toggleServiceNotification,
+  } = useMCPBridgeExtended();
   const [status, setStatus] = useState<ServiceStatus>({
     isRunning: false,
     notificationEnabled: true,
@@ -37,6 +33,7 @@ export default function ServiceControlScreen() {
     toolsExposed: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isActionInProgress, setIsActionInProgress] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -73,7 +70,7 @@ export default function ServiceControlScreen() {
     loadServiceStatus();
     const interval = setInterval(loadServiceStatus, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [getServiceStatus]);
 
   const loadServiceStatus = async () => {
     try {
@@ -87,15 +84,15 @@ export default function ServiceControlScreen() {
   };
 
   const handleStartService = async () => {
-    setIsLoading(true);
+    setIsActionInProgress(true);
     try {
-      await startService();
+      await startMCPService();
       await loadServiceStatus();
       Alert.alert('Success', 'MCP Server service started');
     } catch (error: any) {
       Alert.alert('Error', `Failed to start service: ${error.message}`);
     } finally {
-      setIsLoading(false);
+      setIsActionInProgress(false);
     }
   };
 
@@ -105,15 +102,15 @@ export default function ServiceControlScreen() {
       {
         text: 'Stop',
         onPress: async () => {
-          setIsLoading(true);
+          setIsActionInProgress(true);
           try {
-            await stopService();
+            await stopMCPService();
             await loadServiceStatus();
             Alert.alert('Success', 'MCP Server service stopped');
           } catch (error: any) {
             Alert.alert('Error', `Failed to stop service: ${error.message}`);
           } finally {
-            setIsLoading(false);
+            setIsActionInProgress(false);
           }
         },
       },
@@ -122,7 +119,7 @@ export default function ServiceControlScreen() {
 
   const handleToggleNotification = async () => {
     try {
-      await toggleNotification(!status.notificationEnabled);
+      await toggleServiceNotification(!status.notificationEnabled);
       setStatus({ ...status, notificationEnabled: !status.notificationEnabled });
     } catch (error: any) {
       Alert.alert('Error', `Failed to toggle notification: ${error.message}`);
@@ -206,7 +203,7 @@ export default function ServiceControlScreen() {
           <Switch
             value={status.notificationEnabled}
             onValueChange={handleToggleNotification}
-            disabled={isLoading}
+            disabled={isActionInProgress}
             trackColor={{ false: colors.border, true: colors.primary + '40' }}
             thumbColor={status.notificationEnabled ? colors.primary : colors.muted}
           />
@@ -217,10 +214,10 @@ export default function ServiceControlScreen() {
           {status.isRunning ? (
             <TouchableOpacity
               onPress={handleStopService}
-              disabled={isLoading}
+              disabled={isActionInProgress}
               className="bg-error rounded-lg py-4 items-center justify-center flex-row gap-2"
             >
-              {isLoading ? (
+              {isActionInProgress ? (
                 <ActivityIndicator color={colors.background} />
               ) : (
                 <>
@@ -232,10 +229,10 @@ export default function ServiceControlScreen() {
           ) : (
             <TouchableOpacity
               onPress={handleStartService}
-              disabled={isLoading}
+              disabled={isActionInProgress}
               className="bg-success rounded-lg py-4 items-center justify-center flex-row gap-2"
             >
-              {isLoading ? (
+              {isActionInProgress ? (
                 <ActivityIndicator color={colors.background} />
               ) : (
                 <>

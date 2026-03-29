@@ -5,8 +5,8 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
-  TextInput,
   Alert,
+  TextInput,
 } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
@@ -14,9 +14,9 @@ import { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
+import { useMCPBridgeExtended, type GovernanceSettings } from '@/hooks/use-mcp-bridge-extended';
 
-interface AppEntry {
-  id: string;
+interface AppItem {
   packageName: string;
   appName: string;
   status: 'allowed' | 'blocked';
@@ -26,10 +26,11 @@ export default function GovernanceScreen() {
   const navigation = useNavigation();
   const router = useRouter();
   const colors = useColors();
-  const [apps, setApps] = useState<AppEntry[]>([]);
+  const { getGovernanceSettings, updateAppStatus } = useMCPBridgeExtended();
+  const [apps, setApps] = useState<AppItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'allowed' | 'blocked'>('all');
-  const [searchText, setSearchText] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState<'allowed' | 'blocked'>('allowed');
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -59,89 +60,83 @@ export default function GovernanceScreen() {
   }, [navigation, colors]);
 
   useEffect(() => {
-    loadApps();
-  }, []);
+    loadGovernanceSettings();
+  }, [getGovernanceSettings]);
 
-  const loadApps = async () => {
+  const loadGovernanceSettings = async () => {
     setIsLoading(true);
     try {
-      // Mock data - in production, fetch from native bridge
-      const mockApps: AppEntry[] = [
-        {
-          id: '1',
-          packageName: 'com.google.android.apps.messaging',
-          appName: 'Google Messages',
-          status: 'allowed',
-        },
-        {
-          id: '2',
-          packageName: 'com.google.android.calendar',
-          appName: 'Google Calendar',
-          status: 'allowed',
-        },
-        {
-          id: '3',
-          packageName: 'com.facebook.katana',
-          appName: 'Facebook',
-          status: 'blocked',
-        },
-        {
-          id: '4',
-          packageName: 'com.twitter.android',
-          appName: 'Twitter',
-          status: 'blocked',
-        },
+      const settings = await getGovernanceSettings();
+      const allApps: AppItem[] = [
+        ...settings.allowlist.map((app) => ({
+          ...app,
+          status: 'allowed' as const,
+        })),
+        ...settings.blocklist.map((app) => ({
+          ...app,
+          status: 'blocked' as const,
+        })),
       ];
-      setApps(mockApps);
+      setApps(allApps);
     } catch (error) {
-      console.error('Failed to load apps:', error);
+      console.error('Failed to load governance settings:', error);
+      Alert.alert('Error', 'Failed to load governance settings');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const toggleAppStatus = (id: string) => {
-    setApps(
-      apps.map((app) =>
-        app.id === id
-          ? { ...app, status: app.status === 'allowed' ? 'blocked' : 'allowed' }
-          : app
-      )
-    );
+  const handleToggleApp = async (packageName: string, currentStatus: 'allowed' | 'blocked') => {
+    const newStatus = currentStatus === 'allowed' ? 'blocked' : 'allowed';
+
+    try {
+      await updateAppStatus(packageName, newStatus);
+
+      setApps((prevApps) =>
+        prevApps.map((app) =>
+          app.packageName === packageName ? { ...app, status: newStatus } : app
+        )
+      );
+
+      Alert.alert(
+        'Success',
+        `App ${newStatus === 'allowed' ? 'allowed' : 'blocked'}`
+      );
+    } catch (error) {
+      console.error('Failed to update app status:', error);
+      Alert.alert('Error', 'Failed to update app status');
+    }
   };
 
   const filteredApps = apps.filter((app) => {
-    if (filter !== 'all' && app.status !== filter) return false;
-    if (searchText && !app.appName.toLowerCase().includes(searchText.toLowerCase())) {
-      return false;
-    }
-    return true;
+    const matchesSearch = app.appName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesTab = app.status === activeTab;
+    return matchesSearch && matchesTab;
   });
 
-  const renderAppEntry = ({ item }: { item: AppEntry }) => (
+  const renderAppItem = ({ item }: { item: AppItem }) => (
     <TouchableOpacity
-      onPress={() => toggleAppStatus(item.id)}
-      className="bg-surface border border-border rounded-lg p-4 mb-3 flex-row items-center justify-between"
+      onPress={() => handleToggleApp(item.packageName, item.status)}
+      className="bg-surface border border-border rounded-lg p-4 mb-3 flex-row items-center justify-between active:opacity-70"
     >
       <View className="flex-1">
         <Text className="text-foreground font-semibold">{item.appName}</Text>
         <Text className="text-xs text-muted mt-1">{item.packageName}</Text>
       </View>
       <View
-        className={`px-3 py-1 rounded-full flex-row items-center gap-1 ${
+        className={`px-3 py-1 rounded-full ${
           item.status === 'allowed'
             ? 'bg-success/20'
             : 'bg-error/20'
         }`}
       >
-        <MaterialIcons
-          name={item.status === 'allowed' ? 'check-circle' : 'block'}
-          size={16}
-          color={item.status === 'allowed' ? colors.success : colors.error}
-        />
         <Text
           className={`text-xs font-semibold capitalize ${
-            item.status === 'allowed' ? 'text-success' : 'text-error'
+            item.status === 'allowed'
+              ? 'text-success'
+              : 'text-error'
           }`}
         >
           {item.status}
@@ -154,36 +149,36 @@ export default function GovernanceScreen() {
     <ScreenContainer className="p-0">
       {/* Search Bar */}
       <View className="bg-surface border-b border-border px-4 py-3">
-        <View className="flex-row items-center bg-background border border-border rounded-lg px-3 py-2">
+        <View className="flex-row items-center gap-2 bg-background rounded-lg px-3 py-2 border border-border">
           <MaterialIcons name="search" size={20} color={colors.muted} />
           <TextInput
-            className="flex-1 text-foreground ml-2"
+            className="flex-1 text-foreground"
             placeholder="Search apps..."
             placeholderTextColor={colors.muted}
-            value={searchText}
-            onChangeText={setSearchText}
+            value={searchTerm}
+            onChangeText={setSearchTerm}
           />
         </View>
       </View>
 
-      {/* Filter Tabs */}
+      {/* Tab Bar */}
       <View className="bg-surface border-b border-border px-4 py-3 flex-row gap-2">
-        {(['all', 'allowed', 'blocked'] as const).map((f) => (
+        {(['allowed', 'blocked'] as const).map((tab) => (
           <TouchableOpacity
-            key={f}
-            onPress={() => setFilter(f)}
-            className={`px-4 py-2 rounded-full ${
-              filter === f
+            key={tab}
+            onPress={() => setActiveTab(tab)}
+            className={`flex-1 py-2 rounded-lg items-center ${
+              activeTab === tab
                 ? 'bg-primary'
                 : 'bg-background border border-border'
             }`}
           >
             <Text
-              className={`text-xs font-semibold capitalize ${
-                filter === f ? 'text-background' : 'text-foreground'
+              className={`text-sm font-semibold capitalize ${
+                activeTab === tab ? 'text-background' : 'text-foreground'
               }`}
             >
-              {f}
+              {tab}
             </Text>
           </TouchableOpacity>
         ))}
@@ -196,22 +191,35 @@ export default function GovernanceScreen() {
       ) : filteredApps.length === 0 ? (
         <View className="flex-1 items-center justify-center px-6">
           <MaterialIcons name="security" size={48} color={colors.muted} />
-          <Text className="text-foreground font-semibold mt-4">No Apps Found</Text>
+          <Text className="text-foreground font-semibold mt-4">No Apps</Text>
           <Text className="text-muted text-sm text-center mt-2">
-            Tap an app to toggle between allowed and blocked
+            {searchTerm
+              ? 'No apps match your search'
+              : `No ${activeTab} apps`}
           </Text>
         </View>
       ) : (
         <ScrollView className="flex-1 px-4 pt-4">
           <FlatList
             data={filteredApps}
-            renderItem={renderAppEntry}
-            keyExtractor={(item) => item.id}
+            renderItem={renderAppItem}
+            keyExtractor={(item) => item.packageName}
             scrollEnabled={false}
           />
           <View className="h-6" />
         </ScrollView>
       )}
+
+      {/* Info Box */}
+      <View className="bg-primary/10 rounded-lg p-4 border border-primary/20 mx-4 mb-6">
+        <View className="flex-row gap-2">
+          <MaterialIcons name="info" size={16} color={colors.primary} />
+          <Text className="text-xs text-muted flex-1">
+            Tap an app to toggle between allowed and blocked. Blocked apps cannot access MCP
+            tools.
+          </Text>
+        </View>
+      </View>
     </ScreenContainer>
   );
 }

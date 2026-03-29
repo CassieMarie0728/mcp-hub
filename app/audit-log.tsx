@@ -12,24 +12,14 @@ import { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
-import { useMCPBridge } from '@/hooks/use-mcp-bridge';
-
-interface AuditEntry {
-  id: string;
-  timestamp: number;
-  toolName: string;
-  serverName: string;
-  status: 'success' | 'error' | 'pending';
-  duration?: number;
-  message?: string;
-}
+import { useMCPBridgeExtended, type AuditLogEntry } from '@/hooks/use-mcp-bridge-extended';
 
 export default function AuditLogScreen() {
   const navigation = useNavigation();
   const router = useRouter();
   const colors = useColors();
-  const { bridge } = useMCPBridge();
-  const [auditLog, setAuditLog] = useState<AuditEntry[]>([]);
+  const { getAuditLog } = useMCPBridgeExtended();
+  const [auditLog, setAuditLog] = useState<AuditLogEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'success' | 'error'>('all');
 
@@ -62,40 +52,13 @@ export default function AuditLogScreen() {
 
   useEffect(() => {
     loadAuditLog();
-  }, []);
+  }, [filter, getAuditLog]);
 
   const loadAuditLog = async () => {
     setIsLoading(true);
     try {
-      // Simulate fetching audit log from native bridge
-      // In production, this would call bridge.getAuditLog()
-      const mockLog: AuditEntry[] = [
-        {
-          id: '1',
-          timestamp: Date.now() - 60000,
-          toolName: 'list_files',
-          serverName: 'Local Files',
-          status: 'success',
-          duration: 245,
-        },
-        {
-          id: '2',
-          timestamp: Date.now() - 120000,
-          toolName: 'get_events',
-          serverName: 'Calendar API',
-          status: 'success',
-          duration: 512,
-        },
-        {
-          id: '3',
-          timestamp: Date.now() - 180000,
-          toolName: 'send_sms',
-          serverName: 'Communication',
-          status: 'error',
-          message: 'Permission denied',
-        },
-      ];
-      setAuditLog(mockLog);
+      const log = await getAuditLog(filter, 100);
+      setAuditLog(log);
     } catch (error) {
       console.error('Failed to load audit log:', error);
     } finally {
@@ -103,10 +66,9 @@ export default function AuditLogScreen() {
     }
   };
 
-  const filteredLog = auditLog.filter((entry) => {
-    if (filter === 'all') return true;
-    return entry.status === filter;
-  });
+  const handleRefresh = () => {
+    loadAuditLog();
+  };
 
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -126,7 +88,7 @@ export default function AuditLogScreen() {
     }
   };
 
-  const renderAuditEntry = ({ item }: { item: AuditEntry }) => (
+  const renderAuditEntry = ({ item }: { item: AuditLogEntry }) => (
     <View className="bg-surface border border-border rounded-lg p-4 mb-3 flex-row items-start gap-3">
       <View
         className="w-10 h-10 rounded-full items-center justify-center"
@@ -160,34 +122,39 @@ export default function AuditLogScreen() {
 
   return (
     <ScreenContainer className="p-0">
-      {/* Filter Tabs */}
-      <View className="bg-surface border-b border-border px-4 py-3 flex-row gap-2">
-        {(['all', 'success', 'error'] as const).map((f) => (
-          <TouchableOpacity
-            key={f}
-            onPress={() => setFilter(f)}
-            className={`px-4 py-2 rounded-full ${
-              filter === f
-                ? 'bg-primary'
-                : 'bg-background border border-border'
-            }`}
-          >
-            <Text
-              className={`text-xs font-semibold capitalize ${
-                filter === f ? 'text-background' : 'text-foreground'
+      {/* Filter Tabs and Refresh */}
+      <View className="bg-surface border-b border-border px-4 py-3 flex-row items-center justify-between">
+        <View className="flex-row gap-2 flex-1">
+          {(['all', 'success', 'error'] as const).map((f) => (
+            <TouchableOpacity
+              key={f}
+              onPress={() => setFilter(f)}
+              className={`px-3 py-1 rounded-full ${
+                filter === f
+                  ? 'bg-primary'
+                  : 'bg-background border border-border'
               }`}
             >
-              {f}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                className={`text-xs font-semibold capitalize ${
+                  filter === f ? 'text-background' : 'text-foreground'
+                }`}
+              >
+                {f}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <TouchableOpacity onPress={handleRefresh} className="p-2">
+          <MaterialIcons name="refresh" size={20} color={colors.primary} />
+        </TouchableOpacity>
       </View>
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
-      ) : filteredLog.length === 0 ? (
+      ) : auditLog.length === 0 ? (
         <View className="flex-1 items-center justify-center px-6">
           <MaterialIcons name="history" size={48} color={colors.muted} />
           <Text className="text-foreground font-semibold mt-4">No Audit Entries</Text>
@@ -198,7 +165,7 @@ export default function AuditLogScreen() {
       ) : (
         <ScrollView className="flex-1 px-4 pt-4">
           <FlatList
-            data={filteredLog}
+            data={auditLog}
             renderItem={renderAuditEntry}
             keyExtractor={(item) => item.id}
             scrollEnabled={false}

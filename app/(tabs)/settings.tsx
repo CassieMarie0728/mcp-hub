@@ -177,6 +177,24 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Notifications Section */}
+        <View className="mb-8">
+          <Text className="text-lg font-semibold text-foreground mb-4">Notifications</Text>
+          <TouchableOpacity
+            onPress={() => router.push('/notification-settings' as any)}
+            className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
+          >
+            <View className="flex-row items-center gap-3">
+              <MaterialIcons name="notifications" size={20} color={colors.primary} />
+              <View>
+                <Text className="text-foreground font-medium">Notification Settings</Text>
+                <Text className="text-xs text-muted mt-1">Manage alert preferences</Text>
+              </View>
+            </View>
+            <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
+          </TouchableOpacity>
+        </View>
+
         {/* Data Management */}
         <View className="mb-8">
           <Text className="text-lg font-semibold text-foreground mb-4">Data Management</Text>

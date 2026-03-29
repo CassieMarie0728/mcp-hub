@@ -13,20 +13,13 @@ import { useState, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
-import { usePerceptionEngine } from '@/hooks/use-perception-engine';
-
-interface PerceptionData {
-  elementCount: number;
-  accessibilityElements: any[];
-  visualChips: string[];
-  timestamp: number;
-}
+import { useMCPBridgeExtended, type PerceptionData } from '@/hooks/use-mcp-bridge-extended';
 
 export default function PerceptionTestScreen() {
   const navigation = useNavigation();
   const router = useRouter();
   const colors = useColors();
-  const { capturePerception } = usePerceptionEngine();
+  const { capturePerception } = useMCPBridgeExtended();
   const [perception, setPerception] = useState<PerceptionData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChip, setSelectedChip] = useState<number | null>(null);
@@ -62,12 +55,7 @@ export default function PerceptionTestScreen() {
     setIsLoading(true);
     try {
       const data = await capturePerception();
-      setPerception({
-        elementCount: data.elements?.length || 0,
-        accessibilityElements: data.elements || [],
-        visualChips: data.visualChips || [],
-        timestamp: Date.now(),
-      });
+      setPerception(data);
       setSelectedChip(null);
     } catch (error: any) {
       Alert.alert('Error', `Failed to capture perception: ${error.message}`);
@@ -118,13 +106,13 @@ export default function PerceptionTestScreen() {
             </View>
 
             {/* Accessibility Elements */}
-            {perception.accessibilityElements.length > 0 && (
+            {perception.elements.length > 0 && (
               <View className="mb-6">
                 <Text className="text-foreground font-semibold mb-3">Accessibility Tree</Text>
                 <View className="bg-surface border border-border rounded-lg p-4">
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <View className="gap-2">
-                      {perception.accessibilityElements.slice(0, 5).map((elem, idx) => (
+                      {perception.elements.slice(0, 5).map((elem, idx) => (
                         <View
                           key={idx}
                           className="bg-background border border-border rounded px-3 py-2"
@@ -135,12 +123,17 @@ export default function PerceptionTestScreen() {
                           <Text className="text-xs text-muted mt-1">
                             {elem.label?.substring(0, 30) || '(no label)'}
                           </Text>
+                          {elem.description && (
+                            <Text className="text-xs text-muted mt-1">
+                              {elem.description.substring(0, 30)}
+                            </Text>
+                          )}
                         </View>
                       ))}
-                      {perception.accessibilityElements.length > 5 && (
+                      {perception.elements.length > 5 && (
                         <View className="bg-background border border-border rounded px-3 py-2 items-center justify-center">
                           <Text className="text-xs text-muted font-semibold">
-                            +{perception.accessibilityElements.length - 5} more
+                            +{perception.elements.length - 5} more
                           </Text>
                         </View>
                       )}
@@ -193,13 +186,13 @@ export default function PerceptionTestScreen() {
 
             {/* Raw JSON */}
             <View className="mb-6">
-              <Text className="text-foreground font-semibold mb-3">Raw Perception Data</Text>
+              <Text className="text-foreground font-semibold mb-3">Perception Summary</Text>
               <View className="bg-background border border-border rounded-lg p-4">
                 <Text className="text-xs font-mono text-muted">
                   {JSON.stringify(
                     {
                       elementCount: perception.elementCount,
-                      accessibilityElements: perception.accessibilityElements.length,
+                      accessibilityElements: perception.elements.length,
                       visualChips: perception.visualChips.length,
                       timestamp: perception.timestamp,
                     },
