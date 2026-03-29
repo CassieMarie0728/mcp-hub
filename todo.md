@@ -1,133 +1,262 @@
-# MCP Hub - Project TODO
+# Android MCP Server Hub - Project TODO
 
-## Core Features
+## Phase 1: Eject from Expo to Bare React Native ✅ COMPLETE
 
-### Navigation & Layout
-- [x] Tab bar navigation (Home, Servers, Settings)
-- [x] Screen container and safe area handling
-- [x] Header styling and branding
+- [x] Backup current Expo project
+- [x] Run `expo prebuild` to generate native Android/iOS folders
+- [x] Set up Android Studio project structure
+- [x] Configure Gradle for native module development
+- [x] Create native module bridge structure (Java/Kotlin)
+- [x] Test React Native bridge communication
+- [x] Verify existing React Native UI still works
 
-### Home Dashboard
-- [x] Display connected servers overview
-- [x] Show quick stats (server count, tool count)
-- [x] Recent activity feed
-- [x] Pull-to-refresh to sync server status
-- [x] Quick-access buttons (Add Server, Browse Tools)
+## Phase 2: Kotlin MCP Server Backend
 
-### Server Management
-- [x] Add new server form (name, connection type, details)
-- [ ] Edit existing server connection
-- [x] Delete server with confirmation
-- [x] Server list view with status indicators
-- [x] Search and filter servers
-- [ ] Test connection before saving
-- [ ] Store server credentials securely
+### Core MCP Server
+- [ ] Create Kotlin MCP server library
+- [ ] Implement JSON-RPC 2.0 protocol handler
+- [ ] Build HTTP transport (OkHttp)
+- [ ] Build SSE (Server-Sent Events) transport
+- [ ] Build WebSocket transport (OkHttp WebSocket)
+- [ ] Build stdio transport (process pipes)
+- [ ] Implement tool discovery mechanism
+- [ ] Implement tool execution handler
+- [ ] Add request/response validation
 
-### Tool Discovery & Execution
-- [ ] Fetch available tools from connected server
-- [x] Display tools list with descriptions
-- [x] Tool detail view with full schema
-- [x] Dynamic parameter input form generation
-- [ ] Execute tool with parameters
-- [x] Display execution results
-- [ ] Copy/share results
-- [ ] Tool execution history
+### Server Lifecycle
+- [ ] Create Android Service class
+- [ ] Implement foreground service (notification)
+- [ ] Add service start/stop controls
+- [ ] Implement wake lock management
+- [ ] Add battery optimization
+- [ ] Handle app lifecycle (pause/resume)
 
-### Settings & Preferences
-- [x] Dark/light theme toggle
-- [x] Execution timeout settings
-- [x] Log retention settings
-- [x] Clear cache functionality
-- [x] Clear logs functionality
-- [x] About & version info
-- [x] Privacy & security settings
+## Phase 3: OAuth 2.0 & Secure Storage
 
-### Data & Storage
-- [ ] Local storage for server connections (AsyncStorage)
-- [ ] Secure credential storage (SecureStore)
-- [ ] Execution history persistence
-- [ ] Settings persistence
-- [ ] Cache management
+### Authentication
+- [ ] Implement OAuth 2.0 flow (authorization code)
+- [ ] Create token refresh mechanism
+- [ ] Add session management
+- [ ] Implement logout functionality
+- [ ] Add user profile management
 
-### UI/UX Polish
-- [ ] Dark theme implementation
-- [ ] Loading states and spinners
-- [ ] Error handling and messages
-- [ ] Success feedback and haptics
-- [ ] Smooth animations and transitions
-- [ ] Responsive layout for different screen sizes
+### Credential Storage
+- [ ] Use EncryptedSharedPreferences for tokens
+- [ ] Implement secure credential storage
+- [ ] Add encryption key management
+- [ ] Create credential rotation mechanism
+- [ ] Add secure deletion on logout
 
-### Branding & Assets
-- [x] Generate custom app logo
-- [x] Update app.config.ts with branding
-- [x] Create splash screen
-- [x] Set app name and slug
+## Phase 4: Modular Tool System
 
-### MCP Integration
+### Tool Architecture
+- [ ] Create abstract Tool base class
+- [ ] Implement tool metadata system
+- [ ] Build tool registry/discovery
+- [ ] Create tool execution pipeline
+- [ ] Add error handling and logging
 
-### Protocol Implementation
-- [x] MCP client library integration
-- [x] Connection handling (stdio, SSE, WebSocket)
-- [x] Tool discovery from server
-- [x] Tool execution with parameter passing
-- [x] Result parsing and display
-- [x] Error handling and recovery
+### Android API Modules
+- [ ] **File System Module** (read/write files, list directories)
+- [ ] **Contacts Module** (query contacts, add/edit contacts)
+- [ ] **Calendar Module** (read/create events)
+- [ ] **Sensors Module** (GPS, accelerometer, gyroscope)
+- [ ] **Device Info Module** (battery, connectivity, device specs)
+- [ ] **Notifications Module** (send notifications)
+- [ ] **Messaging Module** (SMS, read messages)
+- [ ] **Media Module** (photos, videos, audio)
+- [ ] **Network Module** (WiFi, cellular info)
+- [ ] **System Module** (settings, app info)
 
-### Server Communication
-- [x] Initialize MCP connection
-- [x] Handle connection lifecycle
-- [x] Send tool execution requests
-- [x] Receive and parse results
-- [ ] Handle streaming responses
-- [x] Manage connection timeouts
-- [x] Graceful disconnection
-## Testing & Validation
-- [x] Test adding/editing/deleting servers
-- [x] Test tool discovery on multiple server types
-- [x] Test tool execution with various parameters
-- [x] Test error scenarios (connection failures, invalid params)
-- [x] Test data persistence across app restarts
-- [x] Test UI responsiveness on different screen sizes
-- [x] Test dark/light theme switching
+### Each Module Includes
+- [ ] Tool definition (name, description, parameters)
+- [ ] Permission requirements
+- [ ] Input validation
+- [ ] Execution logic
+- [ ] Error handling
+- [ ] Result formatting
 
-## Known Issues & Bugs
-(None yet)
+## Phase 5: IPC Bridge (React Native ↔ Kotlin)
 
-## Future Enhancements
-- [ ] Tool favorites/bookmarks
-- [ ] Tool execution templates/macros
-- [ ] Batch tool execution
-- [ ] Server status notifications
-- [ ] Tool output formatting options
-- [ ] Export/import server configurations
-- [ ] Cloud sync across devices
-- [ ] Collaboration features
+### Communication Layer
+- [ ] Create Kotlin module for React Native
+- [ ] Implement service start/stop commands
+- [ ] Build tool configuration interface
+- [ ] Create status/monitoring interface
+- [ ] Add log streaming
+- [ ] Implement real-time updates (events)
 
-## New Feature Requests (Phase 6)
+### React Native Integration
+- [ ] Create native module bridge
+- [ ] Implement service control hooks
+- [ ] Add event listeners
+- [ ] Create state management for service status
+- [ ] Add error handling
 
-### Edit Server Functionality
-- [x] Create edit server screen (similar to add but with pre-filled data)
-- [x] Add headers support to connection details
-- [x] Dynamic header key-value pair input
-- [x] Persist headers in server storage
-- [x] Update MCP client to use headers in requests
-- [x] Add edit button to server list items
-- [ ] Add edit button to server detail screen
+## Phase 6: Permission Manager & Service Lifecycle
+
+### Permission Management
+- [ ] Create permission request system
+- [ ] Implement runtime permission handling
+- [ ] Build permission UI (request/grant/deny)
+- [ ] Add permission caching
+- [ ] Create permission audit log
+
+### Foreground Service
+- [ ] Implement persistent notification
+- [ ] Add service control (start/stop/restart)
+- [ ] Create battery optimization strategy
+- [ ] Implement wake lock management
+- [ ] Add background execution limits handling
+
+### Lifecycle Hooks
+- [ ] Handle app pause/resume
+- [ ] Manage service on device reboot
+- [ ] Implement graceful shutdown
+- [ ] Add state persistence
+
+## Phase 7: UI Enhancements
+
+### Service Management
+- [ ] Create service status dashboard
+- [ ] Add start/stop/restart buttons
+- [ ] Show service logs in real-time
+- [ ] Display active connections
+- [ ] Show resource usage (CPU, memory, battery)
+
+### Tool Configuration
+- [ ] Create tool enable/disable toggles
+- [ ] Build tool parameter configuration
+- [ ] Add tool testing interface
+- [ ] Show tool execution history
+- [ ] Create tool documentation viewer
+
+### Transport Configuration
+- [ ] Create HTTP/SSE config screen
+- [ ] Add WebSocket config screen
+- [ ] Build stdio config screen
+- [ ] Show active transports
+- [ ] Add connection status indicators
+
+### OAuth & Security
+- [ ] Create login/logout UI
+- [ ] Build token management screen
+- [ ] Add permission request UI
+- [ ] Show security audit log
+- [ ] Create credential management interface
+
+## Phase 8: Security & Performance
+
+### Security Hardening
+- [ ] Implement input validation on all tools
+- [ ] Add rate limiting
+- [ ] Create request signing mechanism
+- [ ] Implement CORS/CSRF protection
+- [ ] Add request logging and audit trail
+- [ ] Implement data encryption at rest
+- [ ] Add secure communication (TLS/SSL)
+
+### Performance Optimization
+- [ ] Profile memory usage
+- [ ] Optimize tool execution
+- [ ] Implement connection pooling
+- [ ] Add caching where appropriate
+- [ ] Optimize battery usage
+- [ ] Implement request queuing
+- [ ] Add performance monitoring
+
+### Testing
+- [ ] Unit tests for MCP protocol
+- [ ] Integration tests for tool modules
+- [ ] Security tests (permission, auth)
+- [ ] Performance tests
+- [ ] Battery drain tests
+- [ ] Connection stability tests
+
+## Completed Features (from Phase 6)
 
 ### Chat Interface
-- [x] Create chat screen as home/first screen
-- [x] Message input with send button
-- [x] Display chat messages (user and assistant)
-- [x] Server selector dropdown in chat
-- [x] Tool selector/auto-complete in chat
-- [x] Parse tool calls from chat (e.g., "@server_name tool_name param1=value1")
-- [x] Execute tools from chat messages
-- [x] Display tool results in chat
-- [ ] Chat history persistence
+- [x] Chat screen as primary interface
+- [x] Tool execution from chat
+- [x] Server selector in chat
+- [x] Quick tool buttons
 
-### Execution Timeout Configuration
-- [x] Add toggle to enable/disable timeout in settings
-- [x] Add timeout value input field (only show when enabled)
-- [x] Update app context to track timeout enabled state
-- [x] Pass timeout setting to MCP client
-- [x] Handle infinite timeout when disabled
+### Edit Server
+- [x] Edit server screen
+- [x] Headers support for authentication
+- [x] Dynamic header key-value pairs
+
+### Execution Timeout
+- [x] Timeout toggle in settings
+- [x] Timeout duration configuration
+- [x] Respect timeout setting in MCP client
+
+---
+
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────┐
+│         Android Device (User's Phone)               │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  ┌──────────────────────────────────────────────┐  │
+│  │  React Native UI (Chat, Config, Logs)        │  │
+│  │  - Service management                        │  │
+│  │  - Tool configuration                        │  │
+│  │  - OAuth 2.0 login                           │  │
+│  └──────────────────────────────────────────────┘  │
+│                        ↕ (IPC)                      │
+│  ┌──────────────────────────────────────────────┐  │
+│  │  Native Android Service (Kotlin)             │  │
+│  │  - MCP Server (HTTP/SSE/WebSocket/stdio)    │  │
+│  │  - Tool Modules (modular system)             │  │
+│  │  - Permission Manager                        │  │
+│  │  - Credential Store (encrypted)              │  │
+│  │  - Foreground Service (battery-optimized)   │  │
+│  └──────────────────────────────────────────────┘  │
+│                        ↕                            │
+│  ┌──────────────────────────────────────────────┐  │
+│  │  Android APIs (via Java/Kotlin)              │  │
+│  │  - FileSystem, MediaStore                    │  │
+│  │  - Contacts, Calendar                        │  │
+│  │  - LocationManager, SensorManager            │  │
+│  │  - NotificationManager, etc.                 │  │
+│  └──────────────────────────────────────────────┘  │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+                        ↕
+        ┌───────────────────────────────┐
+        │  External AI Clients          │
+        │  (LLMs, Agents)               │
+        │  Connect via HTTP/SSE/etc.    │
+        └───────────────────────────────┘
+```
+
+---
+
+## Key Technologies
+
+- **Frontend:** React Native 0.81 + Expo (managing UI only)
+- **Backend:** Kotlin + Android Framework
+- **MCP Protocol:** Custom Kotlin implementation (JSON-RPC 2.0)
+- **Networking:** OkHttp (HTTP/SSE/WebSocket)
+- **Storage:** EncryptedSharedPreferences (credentials)
+- **Authentication:** OAuth 2.0 + JWT tokens
+- **IPC:** Android Messenger / Direct JNI calls
+- **Testing:** JUnit, Espresso, Robolectric
+
+---
+
+## Success Criteria
+
+- [ ] Service runs reliably in background
+- [ ] All transport modes work (HTTP/SSE/WebSocket/stdio)
+- [ ] All Android API modules functional
+- [ ] OAuth 2.0 authentication secure
+- [ ] Permissions properly managed
+- [ ] Battery drain minimal
+- [ ] UI responsive and intuitive
+- [ ] Comprehensive error handling
+- [ ] Full test coverage
+- [ ] Security audit passed
