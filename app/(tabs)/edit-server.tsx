@@ -11,7 +11,8 @@ import {
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
 import { MCPServer } from '@/lib/types';
@@ -26,11 +27,39 @@ interface HeaderPair {
 }
 
 export default function EditServerScreen() {
+  const navigation = useNavigation();
   const { id } = useLocalSearchParams();
   const { servers, updateServer } = useApp();
   const { connectServer } = useMCPService();
   const router = useRouter();
   const colors = useColors();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: 'Edit Server',
+      headerTitleStyle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: colors.foreground,
+      },
+      headerStyle: {
+        backgroundColor: colors.background,
+        borderBottomColor: colors.border,
+        borderBottomWidth: 1,
+      },
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 16 }}>
+          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <View style={{ marginRight: 16 }}>
+          <MaterialIcons name="edit" size={24} color={colors.primary} />
+        </View>
+      ),
+    });
+  }, [navigation, colors]);
 
   const server = servers.find((s) => s.id === id);
 

@@ -9,17 +9,46 @@ import {
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useLayoutEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
 import { MCPTool } from '@/lib/types';
 
 export default function ServerDetailScreen() {
+  const navigation = useNavigation();
   const { id } = useLocalSearchParams();
   const { servers, getServerTools } = useApp();
   const router = useRouter();
   const colors = useColors();
   const [activeTab, setActiveTab] = useState<'tools' | 'info'>('tools');
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: 'Server Details',
+      headerTitleStyle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: colors.foreground,
+      },
+      headerStyle: {
+        backgroundColor: colors.background,
+        borderBottomColor: colors.border,
+        borderBottomWidth: 1,
+      },
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 16 }}>
+          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <View style={{ marginRight: 16 }}>
+          <MaterialIcons name="info" size={24} color={colors.primary} />
+        </View>
+      ),
+    });
+  }, [navigation, colors]);
 
   const server = servers.find((s) => s.id === id);
   const tools = server ? getServerTools(server.id) : [];

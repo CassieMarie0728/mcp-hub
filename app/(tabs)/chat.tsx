@@ -13,7 +13,8 @@ import {
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useMCPService } from '@/hooks/use-mcp-service';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
 import { MCPTool } from '@/lib/types';
@@ -28,9 +29,32 @@ interface ChatMessage {
 }
 
 export default function ChatScreen() {
+  const navigation = useNavigation();
   const { servers, tools: allTools, settings, addExecutionResult } = useApp();
   const { executeTool } = useMCPService();
   const colors = useColors();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: 'MCP Chat',
+      headerTitleStyle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: colors.foreground,
+      },
+      headerStyle: {
+        backgroundColor: colors.background,
+        borderBottomColor: colors.border,
+        borderBottomWidth: 1,
+      },
+      headerLeft: () => (
+        <View style={{ marginLeft: 16 }}>
+          <MaterialIcons name="chat-bubble" size={24} color={colors.primary} />
+        </View>
+      ),
+    });
+  }, [navigation, colors]);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
