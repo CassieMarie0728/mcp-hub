@@ -17,6 +17,9 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
 import { MCPServer } from '@/lib/types';
 import { useMCPService } from '@/hooks/use-mcp-service';
+import * as DocumentPicker from 'expo-document-picker';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 
 type ConnectionType = 'stdio' | 'sse' | 'websocket';
 
@@ -70,6 +73,63 @@ export default function EditServerScreen() {
   const [url, setUrl] = useState('');
   const [headers, setHeaders] = useState<HeaderPair[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleExportJSON = async () => {
+    if (!server) return;
+    try {
+      const config = {
+        name: serverName,
+        description,
+        connectionType,
+        command: connectionType === 'stdio' ? command : undefined,
+        url: connectionType !== 'stdio' ? url : undefined,
+        headers: headers.reduce((acc, h) => ({ ...acc, [h.key]: h.value }), {}),
+      };
+      const json = JSON.stringify(config, null, 2);
+      const fileUri = `${FileSystem.cacheDirectory}${serverName}-config.json`;
+      await FileSystem.writeAsStringAsync(fileUri, json);
+      await Sharing.shareAsync(fileUri);
+    } catch (error: any) {
+      Alert.alert('Error', `Failed to export config: ${error.message}`);
+    }
+  };
+
+  const handleImportJSON = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/json',
+        copyToCacheDirectory: true,
+      });
+
+      if (result.type === 'success') {
+        const fileUri = result.uri;
+        const fileContent = await fetch(fileUri).then(r => r.text());
+        const config = JSON.parse(fileContent);
+
+        if (!config.name || !config.connectionType) {
+          Alert.alert('Invalid Config', 'Config must have name and connectionType');
+          return;
+        }
+
+        setServerName(config.name || '');
+        setDescription(config.description || '');
+        setConnectionType(config.connectionType || 'stdio');
+        setCommand(config.command || '');
+        setUrl(config.url || '');
+        
+        const headerPairs = Object.entries(config.headers || {}).map(([key, value]: any, idx) => ({
+          id: `${Date.now()}-${idx}`,
+          key,
+          value,
+        }));
+        setHeaders(headerPairs);
+
+        Alert.alert('Success', 'Server config imported successfully');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', `Failed to import config: ${error.message}`);
+    }
+  };
 
   useEffect(() => {
     if (server) {

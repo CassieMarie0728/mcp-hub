@@ -16,6 +16,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useColors } from '@/hooks/use-colors';
 import { MCPServer } from '@/lib/types';
 import { useMCPService } from '@/hooks/use-mcp-service';
+import * as DocumentPicker from 'expo-document-picker';
 
 type ConnectionType = 'stdio' | 'sse' | 'websocket';
 
@@ -58,7 +59,39 @@ export default function AddServerScreen() {
   const [connectionType, setConnectionType] = useState<ConnectionType>('stdio');
   const [command, setCommand] = useState('');
   const [url, setUrl] = useState('');
+  const [headers, setHeaders] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleImportJSON = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/json',
+        copyToCacheDirectory: true,
+      });
+
+      if (result.type === 'success') {
+        const fileUri = result.uri;
+        const fileContent = await fetch(fileUri).then(r => r.text());
+        const config = JSON.parse(fileContent);
+
+        if (!config.name || !config.connectionType) {
+          Alert.alert('Invalid Config', 'Config must have name and connectionType');
+          return;
+        }
+
+        setServerName(config.name || '');
+        setDescription(config.description || '');
+        setConnectionType(config.connectionType || 'stdio');
+        setCommand(config.command || '');
+        setUrl(config.url || '');
+        setHeaders(config.headers || {});
+
+        Alert.alert('Success', 'Server config imported successfully');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', `Failed to import config: ${error.message}`);
+    }
+  };
 
   const handleAddServer = async () => {
     if (!serverName.trim()) {
@@ -88,6 +121,7 @@ export default function AddServerScreen() {
           command: connectionType === 'stdio' ? command.trim() : undefined,
           url: connectionType !== 'stdio' ? url.trim() : undefined,
         },
+        headers,
         status: 'connecting',
         toolCount: 0,
         createdAt: Date.now(),

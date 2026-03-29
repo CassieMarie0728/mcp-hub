@@ -283,7 +283,25 @@
 
 ---
 
-## Phase 10: Dashboard & Management UI 🔨 IN PROGRESS
+## Phase 10: Bug Fixes & JSON Config Import/Export 🔨 IN PROGRESS
+
+### Bug Fixes
+- [ ] Fix React Hooks violation in server-detail.tsx (Invalid hook call error)
+- [ ] Verify all hooks are called at component top level
+- [ ] Fix Tools tab rendering issue
+
+### JSON Config Import/Export
+- [ ] Add JSON config export button to server-detail screen
+- [ ] Add JSON config import option to add-server screen
+- [ ] Add JSON config import option to edit-server screen
+- [ ] Create config file picker using document picker
+- [ ] Validate imported config JSON schema
+- [ ] Show import preview before confirming
+- [ ] Support bulk server import from JSON file
+
+---
+
+## Phase 11: Dashboard & Management UI
 
 ### Audit Log Screen
 - [ ] Create AuditLogScreen.tsx component
