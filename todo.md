@@ -209,39 +209,42 @@
 
 ---
 
-## Phase 8: Local Macro System (Intent-to-Action)
+## Phase 8: Local Macro System (Intent-to-Action) 🔨 IN PROGRESS
 
-### Intent Registry
-- [ ] Create intent definition system
-- [ ] Build registry of high-level intents (send_message, fill_form, etc.)
-- [ ] Map intents to low-level actions (tap, type, scroll)
-- [ ] Add intent validation
+### Macro Definition & Registry
+- [ ] Create MacroDefinition data class
+- [ ] Build MacroRegistry.kt for macro management
+- [ ] Implement macro CRUD operations
+- [ ] Add macro persistence to CredentialStore
 
-### Local State Manager
-- [ ] Track keyboard state (open/closed)
-- [ ] Track current screen/activity
-- [ ] Track app state (foreground/background)
-- [ ] Implement state caching
+### Intent Parser
+- [ ] Create IntentParser.kt for high-level intent parsing
+- [ ] Implement pattern matching for macro triggers
+- [ ] Add parameter extraction from intent strings
+- [ ] Support variable substitution (${contact}, ${message})
 
-### Macro Executor
-- [ ] Implement action sequencing
-- [ ] Add error recovery (retry logic)
-- [ ] Implement rollback on failure
-- [ ] Create action logging
+### Action Executor
+- [ ] Create ActionExecutor.kt for sequential action execution
+- [ ] Implement local state tracking (keyboard, app state, screen position)
+- [ ] Add tap/swipe/text input actions
+- [ ] Implement conditional logic (if/then/else)
+- [ ] Add error recovery and rollback
 
-### High-Level Tools
-- [ ] `send_whatsapp_message(contact, text)` macro
-- [ ] `fill_form(fields)` macro
-- [ ] `navigate_to_app(app_name)` macro
-- [ ] `take_screenshot_and_analyze()` macro
-- [ ] `wait_for_element(selector, timeout)` macro
-- [ ] `scroll_to_element(selector)` macro
+### Macro Examples
+- [ ] send_whatsapp_message(contact, message)
+- [ ] send_email(recipient, subject, body)
+- [ ] create_calendar_event(title, date, time)
+- [ ] open_app_and_search(app, query)
+- [ ] fill_form(fields)
 
-### Macro Optimization
-- [ ] Implement action batching
-- [ ] Add local state prediction
-- [ ] Create action deduplication
-- [ ] Implement timeout optimization
+### MacroBridge
+- [ ] Create MacroBridge.kt for React Native exposure
+- [ ] Implement macro execution from React Native
+- [ ] Add macro listing and management methods
+
+### use-macros Hook
+- [ ] Create use-macros.ts TypeScript hook
+- [ ] Implement macro execution, listing, and management
 
 ---
 
@@ -280,37 +283,79 @@
 
 ---
 
-## Phase 10: Enhanced UI for Management & Monitoring
+## Phase 10: Dashboard & Management UI 🔨 IN PROGRESS
 
-### Service Control Dashboard
-- [ ] Add server status display
-- [ ] Implement start/stop controls
-- [ ] Add transport status indicators
-- [ ] Create connection statistics
+### Audit Log Screen
+- [ ] Create AuditLogScreen.tsx component
+- [ ] Display tool executions with timestamp, tool name, parameters, result
+- [ ] Add filtering by date range, tool name, status
+- [ ] Add search functionality
+- [ ] Show execution duration and resource usage
+- [ ] Export audit logs as CSV/JSON
 
-### Tool Configuration UI
-- [ ] Create tool enable/disable toggles
-- [ ] Add per-tool permission management
-- [ ] Implement tool testing interface
-- [ ] Add tool documentation viewer
+### Governance Management Screen
+- [ ] Create GovernanceScreen.tsx component
+- [ ] Allowlist/Blacklist management UI
+- [ ] Add/remove apps from lists
+- [ ] View current restrictions
+- [ ] Test permissions for specific apps
 
-### Governance UI
-- [ ] Create app sandboxing configuration
-- [ ] Add consent rule management
-- [ ] Implement audit log viewer
-- [ ] Add governance profile selector
+### Consent History Screen
+- [ ] Create ConsentHistoryScreen.tsx component
+- [ ] Display all user consent approvals/denials
+- [ ] Show timestamp, operation, result
+- [ ] Add filtering by date, operation type
+- [ ] Allow users to revoke previous consents
 
-### Monitoring & Logs
-- [ ] Create real-time server logs viewer
-- [ ] Add performance metrics dashboard
-- [ ] Implement error tracking
-- [ ] Create connection monitoring
+### Service Control Screen
+- [ ] Create ServiceControlScreen.tsx component
+- [ ] Start/Stop MCP server buttons
+- [ ] Toggle persistent notification
+- [ ] View service status (running, stopped, error)
+- [ ] Display service uptime and resource usage
+- [ ] View service logs
 
-### Advanced Settings
-- [ ] Transport configuration UI
-- [ ] OAuth token management
-- [ ] Backup/restore settings
-- [ ] Developer mode toggle
+### Perception Testing Screen
+- [ ] Create PerceptionTestScreen.tsx component
+- [ ] Display current accessibility tree snapshot (JSON)
+- [ ] Show visual chips for unrecognized elements
+- [ ] Allow manual perception refresh
+- [ ] Compare perception snapshots over time
+- [ ] Test perception accuracy on different apps
+
+### Macro Management Screen
+- [ ] Create MacroManagementScreen.tsx component
+- [ ] List all defined macros
+- [ ] Create/edit/delete macros
+- [ ] Test macro execution
+- [ ] View macro execution history
+- [ ] Import/export macro definitions
+
+### Dashboard Home Screen
+- [ ] Create DashboardScreen.tsx (main entry point)
+- [ ] Show quick stats (tool executions today, permissions granted, macros created)
+- [ ] Display recent activity feed
+- [ ] Quick access buttons to all dashboard screens
+- [ ] System health indicators (service status, battery usage, memory)
+
+### Settings Integration
+- [ ] Add Dashboard tab to settings
+- [ ] Link to all dashboard screens
+- [ ] Add dashboard preferences (auto-refresh, log retention)
+
+### Navigation & Routing
+- [ ] Update app router to include dashboard screens
+- [ ] Add navigation between dashboard sections
+- [ ] Implement breadcrumb navigation
+- [ ] Add back buttons to all screens
+
+### UI Polish
+- [ ] Add loading states to all screens
+- [ ] Add error handling and user feedback
+- [ ] Add empty states for no data
+- [ ] Implement pagination for large lists
+- [ ] Add dark/light mode support
+- [ ] Add animations and transitions
 
 ---
 
