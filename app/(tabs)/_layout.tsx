@@ -33,28 +33,28 @@ export default function TabLayout() {
         name="chat"
         options={{
           title: "Chat",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="chat-bubble" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="servers"
         options={{
           title: "Servers",
-          tabBarIcon: ({ color }) => <MaterialIcons name="storage" size={28} color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="dns" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => <MaterialIcons name="settings" size={28} color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="tune" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="mcp-control"
         options={{
           title: "MCP Control",
-          tabBarIcon: ({ color }) => <MaterialIcons name="settings-remote" size={28} color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="power-settings-new" size={28} color={color} />,
         }}
       />
     </Tabs>

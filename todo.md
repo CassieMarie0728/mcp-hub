@@ -159,11 +159,11 @@
 - [x] Create permission UI prompts (PermissionBridge.kt)
 - [x] Implement permission caching (PermissionManager.kt)
 
-### Foreground Service
-- [ ] Create MCP server foreground service
-- [ ] Implement notification for service status
-- [ ] Add service lifecycle management
-- [ ] Implement wake lock management
+### Foreground Service ✅ COMPLETE
+- [x] Create MCP server foreground service (MCPServerService.kt)
+- [x] Implement notification for service status (with toggle)
+- [x] Add service lifecycle management (START_STICKY)
+- [x] Implement wake lock management (via foreground service)
 
 ### Background Service Management
 - [ ] Handle app backgrounding/foregrounding
