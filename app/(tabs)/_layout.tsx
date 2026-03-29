@@ -47,7 +47,14 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gear" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialIcons name="settings" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="mcp-control"
+        options={{
+          title: "MCP Control",
+          tabBarIcon: ({ color }) => <MaterialIcons name="settings-remote" size={28} color={color} />,
         }}
       />
     </Tabs>
