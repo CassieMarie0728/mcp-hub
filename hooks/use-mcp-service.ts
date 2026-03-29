@@ -15,20 +15,23 @@ export function useMCPService() {
    * Connect to an MCP server
    */
   const connectServer = useCallback(
-    async (server: MCPServer) => {
+    async (server: MCPServer, timeoutOverride?: number) => {
       try {
         // Update status to connecting
         await updateServer({ ...server, status: 'connecting', error: undefined });
 
         // Create MCP client
-        const client = mcpClientManager.createClient({
-          serverId: server.id,
-          connectionType: server.connectionType,
-          command: server.connectionDetails.command,
-          url: server.connectionDetails.url,
-          headers: server.connectionDetails.headers,
-          timeout: 30000,
-        });
+      const { settings } = useApp();
+      const timeout = timeoutOverride ?? (settings.executionTimeoutEnabled ? settings.executionTimeout : undefined);
+      
+      const client = mcpClientManager.createClient({
+        serverId: server.id,
+        connectionType: server.connectionType,
+        command: server.connectionDetails.command,
+        url: server.connectionDetails.url,
+        headers: server.connectionDetails.headers,
+        timeout,
+      });
 
         // Initialize connection
         await client.initialize();

@@ -63,22 +63,37 @@ export default function SettingsScreen() {
         {/* Execution Settings */}
         <View className="mb-8">
           <Text className="text-lg font-semibold text-foreground mb-4">Execution</Text>
-          <View className="bg-surface rounded-xl p-4 border border-border">
-            <View className="flex-row items-center justify-between mb-4">
+          <View className="bg-surface rounded-xl p-4 border border-border mb-3">
+            <View className="flex-row items-center justify-between">
               <View className="flex-1">
-                <Text className="text-foreground font-medium">Timeout</Text>
-                <Text className="text-xs text-muted mt-1">
+                <Text className="text-foreground font-medium">Enable Timeout</Text>
+                <Text className="text-xs text-muted mt-1">Limit tool execution time</Text>
+              </View>
+              <Switch
+                value={settings.executionTimeoutEnabled}
+                onValueChange={(value) =>
+                  updateSettings({ executionTimeoutEnabled: value })
+                }
+                trackColor={{ false: colors.border, true: colors.primary }}
+                thumbColor={colors.background}
+              />
+            </View>
+          </View>
+          {settings.executionTimeoutEnabled && (
+            <View className="bg-surface rounded-xl p-4 border border-border">
+              <View className="flex-row items-center justify-between">
+                <View className="flex-1">
+                  <Text className="text-foreground font-medium">Timeout Duration</Text>
+                  <Text className="text-xs text-muted mt-1">
+                    {settings.executionTimeout / 1000}s
+                  </Text>
+                </View>
+                <Text className="text-sm text-primary font-medium">
                   {settings.executionTimeout / 1000}s
                 </Text>
               </View>
-              <Text className="text-sm text-primary font-medium">
-                {settings.executionTimeout / 1000}s
-              </Text>
             </View>
-            <Text className="text-xs text-muted">
-              Maximum time to wait for tool execution before timing out
-            </Text>
-          </View>
+          )}
         </View>
 
         {/* Data Management */}

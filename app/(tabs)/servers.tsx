@@ -45,12 +45,20 @@ export default function ServersScreen() {
             <Text className="text-xs text-muted mb-2">{server.description}</Text>
           )}
         </View>
-        <TouchableOpacity
-          onPress={() => handleDeleteServer(server.id, server.name)}
-          className="p-2"
-        >
-          <MaterialIcons name="delete" size={18} color={colors.error} />
-        </TouchableOpacity>
+        <View className="flex-row gap-1">
+          <TouchableOpacity
+            onPress={() => router.push(`/(tabs)/edit-server?id=${server.id}` as any)}
+            className="p-2"
+          >
+            <MaterialIcons name="edit" size={18} color={colors.primary} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleDeleteServer(server.id, server.name)}
+            className="p-2"
+          >
+            <MaterialIcons name="delete" size={18} color={colors.error} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View className="flex-row items-center justify-between">

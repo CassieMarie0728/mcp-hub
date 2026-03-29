@@ -102,3 +102,32 @@
 - [ ] Export/import server configurations
 - [ ] Cloud sync across devices
 - [ ] Collaboration features
+
+## New Feature Requests (Phase 6)
+
+### Edit Server Functionality
+- [x] Create edit server screen (similar to add but with pre-filled data)
+- [x] Add headers support to connection details
+- [x] Dynamic header key-value pair input
+- [x] Persist headers in server storage
+- [x] Update MCP client to use headers in requests
+- [x] Add edit button to server list items
+- [ ] Add edit button to server detail screen
+
+### Chat Interface
+- [x] Create chat screen as home/first screen
+- [x] Message input with send button
+- [x] Display chat messages (user and assistant)
+- [x] Server selector dropdown in chat
+- [x] Tool selector/auto-complete in chat
+- [x] Parse tool calls from chat (e.g., "@server_name tool_name param1=value1")
+- [x] Execute tools from chat messages
+- [x] Display tool results in chat
+- [ ] Chat history persistence
+
+### Execution Timeout Configuration
+- [x] Add toggle to enable/disable timeout in settings
+- [x] Add timeout value input field (only show when enabled)
+- [x] Update app context to track timeout enabled state
+- [x] Pass timeout setting to MCP client
+- [x] Handle infinite timeout when disabled

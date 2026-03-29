@@ -114,6 +114,7 @@ export function getDefaultSettings(): AppSettings {
   return {
     theme: 'auto',
     executionTimeout: 30000, // 30 seconds
+    executionTimeoutEnabled: true,
     logRetentionDays: 7,
     autoRefreshInterval: 0, // disabled
   };

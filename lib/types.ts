@@ -177,6 +177,7 @@ export interface AppState {
 export interface AppSettings {
   theme: 'light' | 'dark' | 'auto';
   executionTimeout: number; // milliseconds
+  executionTimeoutEnabled: boolean; // toggle for timeout
   logRetentionDays: number;
   autoRefreshInterval: number; // milliseconds, 0 = disabled
 }
