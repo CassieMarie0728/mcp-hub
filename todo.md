@@ -1,4 +1,4 @@
-# Android MCP Server Hub - Project TODO
+# Android MCP Server Hub - Full Vision TODO
 
 ## Phase 1: Eject from Expo to Bare React Native ✅ COMPLETE
 
@@ -10,253 +10,343 @@
 - [x] Test React Native bridge communication
 - [x] Verify existing React Native UI still works
 
-## Phase 2: Kotlin MCP Server Backend
+---
 
-### Core MCP Server
-- [ ] Create Kotlin MCP server library
-- [ ] Implement JSON-RPC 2.0 protocol handler
-- [ ] Build HTTP transport (OkHttp)
-- [ ] Build SSE (Server-Sent Events) transport
-- [ ] Build WebSocket transport (OkHttp WebSocket)
-- [ ] Build stdio transport (process pipes)
-- [ ] Implement tool discovery mechanism
-- [ ] Implement tool execution handler
-- [ ] Add request/response validation
+## Phase 2: Kotlin MCP Server Backend with Transport Support ✅ COMPLETE
 
-### Server Lifecycle
-- [ ] Create Android Service class
-- [ ] Implement foreground service (notification)
-- [ ] Add service start/stop controls
-- [ ] Implement wake lock management
-- [ ] Add battery optimization
-- [ ] Handle app lifecycle (pause/resume)
+### JSON-RPC 2.0 Protocol Handler
+- [x] Create JSONRPCHandler.kt for request/response parsing
+- [x] Implement method routing and parameter validation
+- [x] Add error handling (invalid method, parse error, internal error)
+- [x] Create response formatter with proper JSON-RPC structure
 
-## Phase 3: OAuth 2.0 & Secure Storage
+### HTTP Transport Implementation
+- [x] Set up HTTP server with routing
+- [x] Implement `/mcp/tools/list` endpoint (tool discovery)
+- [x] Implement `/mcp/tools/call` endpoint (tool execution)
+- [x] Add request logging and error responses
+- [x] Implement CORS headers for cross-origin requests
 
-### Authentication
-- [ ] Implement OAuth 2.0 flow (authorization code)
-- [ ] Create token refresh mechanism
-- [ ] Add session management
-- [ ] Implement logout functionality
-- [ ] Add user profile management
+### SSE (Server-Sent Events) Transport
+- [x] Implement SSE connection handler
+- [x] Add persistent connection management
+- [x] Handle client disconnections gracefully
+- [x] Implement message streaming for long-running operations
 
-### Credential Storage
-- [ ] Use EncryptedSharedPreferences for tokens
-- [ ] Implement secure credential storage
-- [ ] Add encryption key management
-- [ ] Create credential rotation mechanism
-- [ ] Add secure deletion on logout
+### WebSocket Transport
+- [x] Set up WebSocket server
+- [x] Implement bidirectional message handling
+- [x] Add connection lifecycle management
+- [x] Handle reconnection logic
 
-## Phase 4: Modular Tool System
+### Stdio Transport
+- [x] Implement stdin/stdout message reading
+- [x] Add buffering for multi-line messages
+- [x] Handle process lifecycle
 
-### Tool Architecture
-- [ ] Create abstract Tool base class
-- [ ] Implement tool metadata system
-- [ ] Build tool registry/discovery
-- [ ] Create tool execution pipeline
-- [ ] Add error handling and logging
+### Transport Factory & Integration
+- [x] Create TransportFactory.kt for unified transport management
+- [x] Integrate all transports into MCPServer
+- [x] Add transport lifecycle management
+- [x] Create transport status reporting
 
-### Android API Modules
-- [ ] **File System Module** (read/write files, list directories)
-- [ ] **Contacts Module** (query contacts, add/edit contacts)
-- [ ] **Calendar Module** (read/create events)
-- [ ] **Sensors Module** (GPS, accelerometer, gyroscope)
-- [ ] **Device Info Module** (battery, connectivity, device specs)
-- [ ] **Notifications Module** (send notifications)
-- [ ] **Messaging Module** (SMS, read messages)
-- [ ] **Media Module** (photos, videos, audio)
-- [ ] **Network Module** (WiFi, cellular info)
-- [ ] **System Module** (settings, app info)
+### Error Handling & Logging
+- [x] Create ErrorHandler.kt with standardized error responses
+- [x] Implement custom exception types
+- [x] Add comprehensive logging throughout
+- [x] Create error recovery mechanisms
 
-### Each Module Includes
-- [ ] Tool definition (name, description, parameters)
-- [ ] Permission requirements
-- [ ] Input validation
-- [ ] Execution logic
-- [ ] Error handling
-- [ ] Result formatting
+### Testing
+- [x] Create Phase2Tests.kt with comprehensive test suite
+- [x] Test JSON-RPC protocol handler
+- [x] Test tool discovery
+- [x] Test transport factory
+- [x] Test error handling
+- [x] Test tool module initialization
+
+---
+
+## Phase 3: OAuth 2.0 Authentication & Secure Storage
+
+### OAuth 2.0 Flow
+- [ ] Implement OAuth 2.0 authorization code flow
+- [ ] Create token exchange mechanism
+- [ ] Add token refresh logic
+- [ ] Implement scope-based permissions
+
+### Secure Credential Storage
+- [ ] Use Android EncryptedSharedPreferences for tokens
+- [ ] Implement KeyStore for key management
+- [ ] Add credential rotation
+- [ ] Create secure logout mechanism
+
+### Session Management
+- [ ] Implement session tracking
+- [ ] Add timeout handling
+- [ ] Create session revocation
+- [ ] Add multi-device session management
+
+---
+
+## Phase 4: Modular Tool System for Android APIs
+
+### Files Tool Module (Full Implementation)
+- [ ] Implement `list_files` with directory traversal
+- [ ] Implement `read_file` with encoding detection
+- [ ] Implement `write_file` with overwrite protection
+- [ ] Add `delete_file` with confirmation
+- [ ] Add `create_directory` functionality
+- [ ] Implement file search and filtering
+
+### Calendar Tool Module (Full Implementation)
+- [ ] Implement `list_events` with date range filtering
+- [ ] Implement `create_event` with reminders
+- [ ] Add `update_event` functionality
+- [ ] Add `delete_event` with confirmation
+- [ ] Implement recurring event support
+- [ ] Add calendar selection
+
+### Storage Tool Module (Full Implementation)
+- [ ] Implement `get_storage_info` with partition details
+- [ ] Implement `get_free_space` calculation
+- [ ] Add `clear_cache` functionality
+- [ ] Implement storage usage breakdown by app
+- [ ] Add low storage warnings
+
+### Communication Tool Module (Full Implementation)
+- [ ] Implement `list_sms` with filtering and pagination
+- [ ] Implement `send_sms` with delivery confirmation
+- [ ] Add `get_call_logs` with filtering
+- [ ] Implement `list_contacts` functionality
+- [ ] Add `send_email` capability
+- [ ] Implement `get_messages` from messaging apps
+
+### Additional Modules (Extensible)
+- [ ] Sensors module (GPS, accelerometer, camera)
+- [ ] Device Info module (battery, network, system info)
+- [ ] Notifications module (send/receive)
+- [ ] Media module (photos, videos, audio)
+
+---
 
 ## Phase 5: IPC Bridge (React Native ↔ Kotlin)
 
-### Communication Layer
-- [ ] Create Kotlin module for React Native
-- [ ] Implement service start/stop commands
-- [ ] Build tool configuration interface
-- [ ] Create status/monitoring interface
-- [ ] Add log streaming
-- [ ] Implement real-time updates (events)
+### React Native Native Module
+- [ ] Create MCPServerBridge.ts for React Native side
+- [ ] Implement method calls to native module
+- [ ] Add event listeners for server events
+- [ ] Create error handling wrapper
 
-### React Native Integration
-- [ ] Create native module bridge
-- [ ] Implement service control hooks
-- [ ] Add event listeners
-- [ ] Create state management for service status
-- [ ] Add error handling
+### Kotlin Native Module Enhancement
+- [ ] Implement bidirectional communication
+- [ ] Add event emission to React Native
+- [ ] Create callback handlers
+- [ ] Implement state synchronization
+
+### Communication Protocol
+- [ ] Define message format for IPC
+- [ ] Implement request/response matching
+- [ ] Add timeout handling
+- [ ] Create logging for debugging
+
+---
 
 ## Phase 6: Permission Manager & Service Lifecycle
 
-### Permission Management
-- [ ] Create permission request system
-- [ ] Implement runtime permission handling
-- [ ] Build permission UI (request/grant/deny)
-- [ ] Add permission caching
-- [ ] Create permission audit log
+### Runtime Permissions
+- [ ] Implement permission request system
+- [ ] Add permission checking before tool execution
+- [ ] Create permission UI prompts
+- [ ] Implement permission caching
 
 ### Foreground Service
-- [ ] Implement persistent notification
-- [ ] Add service control (start/stop/restart)
-- [ ] Create battery optimization strategy
+- [ ] Create MCP server foreground service
+- [ ] Implement notification for service status
+- [ ] Add service lifecycle management
 - [ ] Implement wake lock management
-- [ ] Add background execution limits handling
 
-### Lifecycle Hooks
-- [ ] Handle app pause/resume
-- [ ] Manage service on device reboot
-- [ ] Implement graceful shutdown
-- [ ] Add state persistence
+### Background Service Management
+- [ ] Handle app backgrounding/foregrounding
+- [ ] Implement service restart on crash
+- [ ] Add battery optimization
+- [ ] Create low-memory handling
 
-## Phase 7: UI Enhancements
+---
 
-### Service Management
-- [ ] Create service status dashboard
-- [ ] Add start/stop/restart buttons
-- [ ] Show service logs in real-time
-- [ ] Display active connections
-- [ ] Show resource usage (CPU, memory, battery)
+## Phase 7: Hybrid Perception Engine (AI-Optimized UI Analysis)
 
-### Tool Configuration
+### Accessibility Service Integration
+- [ ] Implement AccessibilityService for UI tree access
+- [ ] Create AccessibilityEvent listener
+- [ ] Parse AccessibilityNodeInfo tree
+- [ ] Extract interactive elements (buttons, inputs, etc.)
+
+### Structured Accessibility Snapshots
+- [ ] Create JSON formatter for accessibility tree
+- [ ] Extract element properties (text, contentDescription, bounds)
+- [ ] Add coordinate mapping
+- [ ] Implement element filtering (only interactive elements)
+- [ ] Create condensed JSON output format
+
+### Visual Chip Generator
+- [ ] Implement screenshot capture
+- [ ] Create cropping logic for individual elements
+- [ ] Add image compression for efficiency
+- [ ] Implement Base64 encoding for transmission
+- [ ] Add fallback for unrecognized elements
+
+### Hybrid Perception Formatter
+- [ ] Create unified output format (accessibility + visual)
+- [ ] Implement smart switching (accessibility first, visual fallback)
+- [ ] Add element confidence scoring
+- [ ] Create token-efficient output
+
+### Perception Engine API
+- [ ] Implement `get_screen_structure` endpoint
+- [ ] Implement `get_visual_chip` endpoint for specific elements
+- [ ] Add `get_hybrid_perception` endpoint (combined)
+- [ ] Create caching for performance
+
+---
+
+## Phase 8: Local Macro System (Intent-to-Action)
+
+### Intent Registry
+- [ ] Create intent definition system
+- [ ] Build registry of high-level intents (send_message, fill_form, etc.)
+- [ ] Map intents to low-level actions (tap, type, scroll)
+- [ ] Add intent validation
+
+### Local State Manager
+- [ ] Track keyboard state (open/closed)
+- [ ] Track current screen/activity
+- [ ] Track app state (foreground/background)
+- [ ] Implement state caching
+
+### Macro Executor
+- [ ] Implement action sequencing
+- [ ] Add error recovery (retry logic)
+- [ ] Implement rollback on failure
+- [ ] Create action logging
+
+### High-Level Tools
+- [ ] `send_whatsapp_message(contact, text)` macro
+- [ ] `fill_form(fields)` macro
+- [ ] `navigate_to_app(app_name)` macro
+- [ ] `take_screenshot_and_analyze()` macro
+- [ ] `wait_for_element(selector, timeout)` macro
+- [ ] `scroll_to_element(selector)` macro
+
+### Macro Optimization
+- [ ] Implement action batching
+- [ ] Add local state prediction
+- [ ] Create action deduplication
+- [ ] Implement timeout optimization
+
+---
+
+## Phase 9: Contextual Governance Layer (Security & Control)
+
+### App Sandboxing
+- [ ] Create app allowlist/blacklist system
+- [ ] Implement per-app permission control
+- [ ] Add app-level tool filtering
+- [ ] Create app metadata storage
+
+### Interactive Consent System
+- [ ] Create consent overlay UI (native Android)
+- [ ] Implement approval/denial logic
+- [ ] Add timeout for consent requests
+- [ ] Create consent history
+
+### Sensitive Operation Gating
+- [ ] Identify sensitive operations (delete, payment, etc.)
+- [ ] Implement consent requirement for sensitive tools
+- [ ] Add confirmation dialogs
+- [ ] Create override mechanisms for trusted operations
+
+### Audit Logging
+- [ ] Log all AI actions with timestamp
+- [ ] Record tool calls and results
+- [ ] Track permission grants/denials
+- [ ] Implement audit log export
+- [ ] Create audit log viewer UI
+
+### Governance Configuration
+- [ ] Create governance settings UI
+- [ ] Implement rule creation interface
+- [ ] Add rule testing/simulation
+- [ ] Create governance profiles (strict, balanced, permissive)
+
+---
+
+## Phase 10: Enhanced UI for Management & Monitoring
+
+### Service Control Dashboard
+- [ ] Add server status display
+- [ ] Implement start/stop controls
+- [ ] Add transport status indicators
+- [ ] Create connection statistics
+
+### Tool Configuration UI
 - [ ] Create tool enable/disable toggles
-- [ ] Build tool parameter configuration
-- [ ] Add tool testing interface
-- [ ] Show tool execution history
-- [ ] Create tool documentation viewer
+- [ ] Add per-tool permission management
+- [ ] Implement tool testing interface
+- [ ] Add tool documentation viewer
 
-### Transport Configuration
-- [ ] Create HTTP/SSE config screen
-- [ ] Add WebSocket config screen
-- [ ] Build stdio config screen
-- [ ] Show active transports
-- [ ] Add connection status indicators
+### Governance UI
+- [ ] Create app sandboxing configuration
+- [ ] Add consent rule management
+- [ ] Implement audit log viewer
+- [ ] Add governance profile selector
 
-### OAuth & Security
-- [ ] Create login/logout UI
-- [ ] Build token management screen
-- [ ] Add permission request UI
-- [ ] Show security audit log
-- [ ] Create credential management interface
+### Monitoring & Logs
+- [ ] Create real-time server logs viewer
+- [ ] Add performance metrics dashboard
+- [ ] Implement error tracking
+- [ ] Create connection monitoring
 
-## Phase 8: Security & Performance
+### Advanced Settings
+- [ ] Transport configuration UI
+- [ ] OAuth token management
+- [ ] Backup/restore settings
+- [ ] Developer mode toggle
 
-### Security Hardening
-- [ ] Implement input validation on all tools
-- [ ] Add rate limiting
-- [ ] Create request signing mechanism
-- [ ] Implement CORS/CSRF protection
-- [ ] Add request logging and audit trail
-- [ ] Implement data encryption at rest
-- [ ] Add secure communication (TLS/SSL)
+---
+
+## Phase 11: Security Hardening & Testing
+
+### Security Audit
+- [ ] Review all permission usage
+- [ ] Audit credential storage
+- [ ] Check transport encryption (HTTPS/WSS)
+- [ ] Validate input sanitization
+
+### Testing Suite
+- [ ] Unit tests for MCP protocol
+- [ ] Integration tests for tool modules
+- [ ] E2E tests for common flows
+- [ ] Performance benchmarks
 
 ### Performance Optimization
 - [ ] Profile memory usage
-- [ ] Optimize tool execution
-- [ ] Implement connection pooling
-- [ ] Add caching where appropriate
-- [ ] Optimize battery usage
-- [ ] Implement request queuing
-- [ ] Add performance monitoring
+- [ ] Optimize perception engine
+- [ ] Reduce battery drain
+- [ ] Minimize network overhead
 
-### Testing
-- [ ] Unit tests for MCP protocol
-- [ ] Integration tests for tool modules
-- [ ] Security tests (permission, auth)
-- [ ] Performance tests
-- [ ] Battery drain tests
-- [ ] Connection stability tests
-
-## Completed Features (from Phase 6)
-
-### Chat Interface
-- [x] Chat screen as primary interface
-- [x] Tool execution from chat
-- [x] Server selector in chat
-- [x] Quick tool buttons
-
-### Edit Server
-- [x] Edit server screen
-- [x] Headers support for authentication
-- [x] Dynamic header key-value pairs
-
-### Execution Timeout
-- [x] Timeout toggle in settings
-- [x] Timeout duration configuration
-- [x] Respect timeout setting in MCP client
+### Documentation
+- [ ] API documentation
+- [ ] Tool module development guide
+- [ ] Deployment instructions
+- [ ] Security best practices guide
 
 ---
 
-## Architecture Overview
+## Phase 12: Final Delivery
 
-```
-┌─────────────────────────────────────────────────────┐
-│         Android Device (User's Phone)               │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌──────────────────────────────────────────────┐  │
-│  │  React Native UI (Chat, Config, Logs)        │  │
-│  │  - Service management                        │  │
-│  │  - Tool configuration                        │  │
-│  │  - OAuth 2.0 login                           │  │
-│  └──────────────────────────────────────────────┘  │
-│                        ↕ (IPC)                      │
-│  ┌──────────────────────────────────────────────┐  │
-│  │  Native Android Service (Kotlin)             │  │
-│  │  - MCP Server (HTTP/SSE/WebSocket/stdio)    │  │
-│  │  - Tool Modules (modular system)             │  │
-│  │  - Permission Manager                        │  │
-│  │  - Credential Store (encrypted)              │  │
-│  │  - Foreground Service (battery-optimized)   │  │
-│  └──────────────────────────────────────────────┘  │
-│                        ↕                            │
-│  ┌──────────────────────────────────────────────┐  │
-│  │  Android APIs (via Java/Kotlin)              │  │
-│  │  - FileSystem, MediaStore                    │  │
-│  │  - Contacts, Calendar                        │  │
-│  │  - LocationManager, SensorManager            │  │
-│  │  - NotificationManager, etc.                 │  │
-│  └──────────────────────────────────────────────┘  │
-│                                                     │
-└─────────────────────────────────────────────────────┘
-                        ↕
-        ┌───────────────────────────────┐
-        │  External AI Clients          │
-        │  (LLMs, Agents)               │
-        │  Connect via HTTP/SSE/etc.    │
-        └───────────────────────────────┘
-```
-
----
-
-## Key Technologies
-
-- **Frontend:** React Native 0.81 + Expo (managing UI only)
-- **Backend:** Kotlin + Android Framework
-- **MCP Protocol:** Custom Kotlin implementation (JSON-RPC 2.0)
-- **Networking:** OkHttp (HTTP/SSE/WebSocket)
-- **Storage:** EncryptedSharedPreferences (credentials)
-- **Authentication:** OAuth 2.0 + JWT tokens
-- **IPC:** Android Messenger / Direct JNI calls
-- **Testing:** JUnit, Espresso, Robolectric
-
----
-
-## Success Criteria
-
-- [ ] Service runs reliably in background
-- [ ] All transport modes work (HTTP/SSE/WebSocket/stdio)
-- [ ] All Android API modules functional
-- [ ] OAuth 2.0 authentication secure
-- [ ] Permissions properly managed
-- [ ] Battery drain minimal
-- [ ] UI responsive and intuitive
-- [ ] Comprehensive error handling
-- [ ] Full test coverage
-- [ ] Security audit passed
+- [ ] Final testing and QA
+- [ ] Performance verification
+- [ ] Security review
+- [ ] Documentation completion
+- [ ] GitHub repository setup
+- [ ] Release notes preparation
