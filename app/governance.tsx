@@ -3,18 +3,20 @@ import {
   Text,
   View,
   TouchableOpacity,
-  FlatList,
-  ActivityIndicator,
   Alert,
-  TextInput,
+  RefreshControl,
 } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
 import { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/use-colors';
 import { useMCPBridgeExtended, type GovernanceSettings } from '@/hooks/use-mcp-bridge-extended';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/list';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface AppItem {
   packageName: string;
@@ -29,35 +31,15 @@ export default function GovernanceScreen() {
   const { getGovernanceSettings, updateAppStatus } = useMCPBridgeExtended();
   const [apps, setApps] = useState<AppItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<'allowed' | 'blocked'>('allowed');
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: true,
-      headerTitle: 'Governance',
-      headerTitleStyle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: colors.foreground,
-      },
-      headerStyle: {
-        backgroundColor: colors.background,
-        borderBottomColor: colors.border,
-        borderBottomWidth: 1,
-      },
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 16 }}>
-          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <View style={{ marginRight: 16 }}>
-          <MaterialIcons name="security" size={24} color={colors.primary} />
-        </View>
-      ),
+      headerShown: false,
     });
-  }, [navigation, colors]);
+  }, [navigation]);
 
   useEffect(() => {
     loadGovernanceSettings();
@@ -86,6 +68,12 @@ export default function GovernanceScreen() {
     }
   };
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadGovernanceSettings();
+    setRefreshing(false);
+  };
+
   const handleToggleApp = async (packageName: string, currentStatus: 'allowed' | 'blocked') => {
     const newStatus = currentStatus === 'allowed' ? 'blocked' : 'allowed';
 
@@ -100,7 +88,7 @@ export default function GovernanceScreen() {
 
       Alert.alert(
         'Success',
-        `App ${newStatus === 'allowed' ? 'allowed' : 'blocked'}`
+        `App ${newStatus === 'allowed' ? 'allowed' : 'blocked'} successfully`
       );
     } catch (error) {
       console.error('Failed to update app status:', error);
@@ -108,118 +96,136 @@ export default function GovernanceScreen() {
     }
   };
 
-  const filteredApps = apps.filter((app) => {
-    const matchesSearch = app.appName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesTab = app.status === activeTab;
-    return matchesSearch && matchesTab;
-  });
-
-  const renderAppItem = ({ item }: { item: AppItem }) => (
-    <TouchableOpacity
-      onPress={() => handleToggleApp(item.packageName, item.status)}
-      className="bg-surface border border-border rounded-lg p-4 mb-3 flex-row items-center justify-between active:opacity-70"
-    >
-      <View className="flex-1">
-        <Text className="text-foreground font-semibold">{item.appName}</Text>
-        <Text className="text-xs text-muted mt-1">{item.packageName}</Text>
-      </View>
-      <View
-        className={`px-3 py-1 rounded-full ${
-          item.status === 'allowed'
-            ? 'bg-success/20'
-            : 'bg-error/20'
-        }`}
-      >
-        <Text
-          className={`text-xs font-semibold capitalize ${
-            item.status === 'allowed'
-              ? 'text-success'
-              : 'text-error'
-          }`}
-        >
-          {item.status}
-        </Text>
-      </View>
-    </TouchableOpacity>
+  const filteredApps = apps.filter(
+    (app) =>
+      app.status === activeTab &&
+      app.appName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const allowedCount = apps.filter((a) => a.status === 'allowed').length;
+  const blockedCount = apps.filter((a) => a.status === 'blocked').length;
 
   return (
     <ScreenContainer className="p-0">
-      {/* Search Bar */}
-      <View className="bg-surface border-b border-border px-4 py-3">
-        <View className="flex-row items-center gap-2 bg-background rounded-lg px-3 py-2 border border-border">
-          <MaterialIcons name="search" size={20} color={colors.muted} />
-          <TextInput
-            className="flex-1 text-foreground"
-            placeholder="Search apps..."
-            placeholderTextColor={colors.muted}
-            value={searchTerm}
-            onChangeText={setSearchTerm}
-          />
+      {/* Header */}
+      <View className="bg-gradient-to-b from-primary to-primary/80 px-6 pt-6 pb-8">
+        <View className="flex-row items-center justify-between mb-4">
+          <View className="flex-1">
+            <Text className="text-4xl font-bold text-background">Governance</Text>
+            <Text className="text-sm text-background/80 mt-2">Control app access & permissions</Text>
+          </View>
+          <TouchableOpacity onPress={() => router.back()} className="p-2">
+            <Ionicons name="close" size={28} color={colors.background} />
+          </TouchableOpacity>
         </View>
       </View>
 
-      {/* Tab Bar */}
-      <View className="bg-surface border-b border-border px-4 py-3 flex-row gap-2">
-        {(['allowed', 'blocked'] as const).map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            onPress={() => setActiveTab(tab)}
-            className={`flex-1 py-2 rounded-lg items-center ${
-              activeTab === tab
-                ? 'bg-primary'
-                : 'bg-background border border-border'
-            }`}
-          >
-            <Text
-              className={`text-sm font-semibold capitalize ${
-                activeTab === tab ? 'text-background' : 'text-foreground'
+      <ScrollView
+        className="flex-1 px-6 pt-6"
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+      >
+        {/* Stats Cards */}
+        <View className="flex-row gap-3 mb-6">
+          <Card variant="elevated" className="flex-1">
+            <View className="items-center gap-2">
+              <View className="w-10 h-10 rounded-lg bg-success/10 items-center justify-center">
+                <Ionicons name="checkmark-circle" size={20} color={colors.success} />
+              </View>
+              <Text className="text-2xl font-bold text-foreground">{allowedCount}</Text>
+              <Text className="text-xs text-muted">Allowed</Text>
+            </View>
+          </Card>
+
+          <Card variant="elevated" className="flex-1">
+            <View className="items-center gap-2">
+              <View className="w-10 h-10 rounded-lg bg-error/10 items-center justify-center">
+                <Ionicons name="close-circle" size={20} color={colors.error} />
+              </View>
+              <Text className="text-2xl font-bold text-foreground">{blockedCount}</Text>
+              <Text className="text-xs text-muted">Blocked</Text>
+            </View>
+          </Card>
+        </View>
+
+        {/* Search */}
+        <Card variant="outlined" className="mb-6">
+          <CardContent>
+            <Input
+              variant="search"
+              placeholder="Search apps..."
+              value={searchTerm}
+              onChangeText={setSearchTerm}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Tabs */}
+        <View className="flex-row gap-2 mb-6">
+          {(['allowed', 'blocked'] as const).map((tab) => (
+            <TouchableOpacity
+              key={tab}
+              onPress={() => setActiveTab(tab)}
+              className={`flex-1 py-3 px-4 rounded-lg border ${
+                activeTab === tab
+                  ? 'bg-primary border-primary'
+                  : 'bg-surface border-border'
               }`}
             >
-              {tab}
+              <Text
+                className={`text-sm font-semibold text-center ${
+                  activeTab === tab ? 'text-background' : 'text-foreground'
+                }`}
+              >
+                {tab === 'allowed' ? '✓ Allowed' : '✗ Blocked'}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Apps List */}
+        {isLoading ? (
+          <View className="items-center justify-center py-12">
+            <Ionicons name="hourglass" size={40} color={colors.muted} />
+            <Text className="text-muted mt-3">Loading apps...</Text>
+          </View>
+        ) : filteredApps.length === 0 ? (
+          <Card variant="outlined" className="items-center py-12">
+            <Ionicons name="apps-outline" size={40} color={colors.muted} />
+            <Text className="text-foreground font-semibold mt-3 mb-1">No Apps</Text>
+            <Text className="text-sm text-muted text-center">
+              No {activeTab} apps match your search
             </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+          </Card>
+        ) : (
+          <View className="gap-3 pb-8">
+            {filteredApps.map((app) => (
+              <Card key={app.packageName} variant="elevated">
+                <View className="flex-row items-center justify-between gap-3">
+                  <View className="flex-1 gap-1">
+                    <Text className="text-lg font-bold text-foreground">{app.appName}</Text>
+                    <Text className="text-xs text-muted">{app.packageName}</Text>
+                  </View>
 
-      {isLoading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      ) : filteredApps.length === 0 ? (
-        <View className="flex-1 items-center justify-center px-6">
-          <MaterialIcons name="security" size={48} color={colors.muted} />
-          <Text className="text-foreground font-semibold mt-4">No Apps</Text>
-          <Text className="text-muted text-sm text-center mt-2">
-            {searchTerm
-              ? 'No apps match your search'
-              : `No ${activeTab} apps`}
-          </Text>
-        </View>
-      ) : (
-        <ScrollView className="flex-1 px-4 pt-4">
-          <FlatList
-            data={filteredApps}
-            renderItem={renderAppItem}
-            keyExtractor={(item) => item.packageName}
-            scrollEnabled={false}
-          />
-          <View className="h-6" />
-        </ScrollView>
-      )}
-
-      {/* Info Box */}
-      <View className="bg-primary/10 rounded-lg p-4 border border-primary/20 mx-4 mb-6">
-        <View className="flex-row gap-2">
-          <MaterialIcons name="info" size={16} color={colors.primary} />
-          <Text className="text-xs text-muted flex-1">
-            Tap an app to toggle between allowed and blocked. Blocked apps cannot access MCP
-            tools.
-          </Text>
-        </View>
-      </View>
+                  <TouchableOpacity
+                    onPress={() => handleToggleApp(app.packageName, app.status)}
+                    className={`w-12 h-12 rounded-lg items-center justify-center ${
+                      app.status === 'allowed'
+                        ? 'bg-success/20'
+                        : 'bg-error/20'
+                    }`}
+                  >
+                    <Ionicons
+                      name={app.status === 'allowed' ? 'checkmark' : 'close'}
+                      size={24}
+                      color={app.status === 'allowed' ? colors.success : colors.error}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </Card>
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </ScreenContainer>
   );
 }
