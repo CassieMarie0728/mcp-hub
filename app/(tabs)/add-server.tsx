@@ -3,20 +3,22 @@ import {
   Text,
   View,
   TouchableOpacity,
-  TextInput,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useRouter } from 'expo-router';
 import { useState, useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/use-colors';
 import { MCPServer } from '@/lib/types';
 import { useMCPService } from '@/hooks/use-mcp-service';
 import * as DocumentPicker from 'expo-document-picker';
+import { Button, ButtonGroup } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Input, Select, Toggle } from '@/components/ui/input';
+import { ListItem } from '@/components/ui/list';
 
 type ConnectionType = 'stdio' | 'sse' | 'websocket';
 
@@ -29,30 +31,9 @@ export default function AddServerScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: true,
-      headerTitle: 'Add Server',
-      headerTitleStyle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: colors.foreground,
-      },
-      headerStyle: {
-        backgroundColor: colors.background,
-        borderBottomColor: colors.border,
-        borderBottomWidth: 1,
-      },
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 16 }}>
-          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <View style={{ marginRight: 16 }}>
-          <MaterialIcons name="add-circle" size={24} color={colors.primary} />
-        </View>
-      ),
+      headerShown: false,
     });
-  }, [navigation, colors]);
+  }, [navigation]);
 
   const [serverName, setServerName] = useState('');
   const [description, setDescription] = useState('');
@@ -63,12 +44,13 @@ export default function AddServerScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [jsonPaste, setJsonPaste] = useState('');
   const [showJsonPaste, setShowJsonPaste] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleJsonPaste = () => {
     try {
       const config = JSON.parse(jsonPaste);
       if (!config.name || !config.connectionType) {
-        Alert.alert('Invalid Config', 'Config must have name and connectionType');
+        setErrors({ json: 'Config must have name and connectionType' });
         return;
       }
       setServerName(config.name || '');
@@ -79,9 +61,10 @@ export default function AddServerScreen() {
       setHeaders(config.headers || {});
       setJsonPaste('');
       setShowJsonPaste(false);
+      setErrors({});
       Alert.alert('Success', 'Config loaded from JSON');
     } catch (error: any) {
-      Alert.alert('Invalid JSON', error.message);
+      setErrors({ json: error.message });
     }
   };
 
@@ -108,6 +91,7 @@ export default function AddServerScreen() {
         setCommand(config.command || '');
         setUrl(config.url || '');
         setHeaders(config.headers || {});
+        setErrors({});
 
         Alert.alert('Success', 'Server config imported successfully');
       }
@@ -116,21 +100,27 @@ export default function AddServerScreen() {
     }
   };
 
-  const handleAddServer = async () => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
     if (!serverName.trim()) {
-      Alert.alert('Error', 'Please enter a server name');
-      return;
+      newErrors.serverName = 'Server name is required';
     }
 
     if (connectionType === 'stdio' && !command.trim()) {
-      Alert.alert('Error', 'Please enter a command for stdio connection');
-      return;
+      newErrors.command = 'Command is required for stdio connection';
     }
 
     if ((connectionType === 'sse' || connectionType === 'websocket') && !url.trim()) {
-      Alert.alert('Error', 'Please enter a URL for HTTP connection');
-      return;
+      newErrors.url = 'URL is required for HTTP connection';
     }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleAddServer = async () => {
+    if (!validateForm()) return;
 
     setIsLoading(true);
 
@@ -183,72 +173,80 @@ export default function AddServerScreen() {
   return (
     <ScreenContainer className="p-0">
       {/* Header */}
-      <View className="bg-primary px-6 pt-6 pb-6 flex-row items-center justify-between">
-        <View>
-          <Text className="text-3xl font-bold text-background">Add Server</Text>
+      <View className="bg-gradient-to-b from-primary to-primary/80 px-6 pt-6 pb-8 flex-row items-center justify-between">
+        <View className="flex-1">
+          <Text className="text-4xl font-bold text-background">Add Server</Text>
+          <Text className="text-sm text-background/80 mt-2">Configure a new MCP server connection</Text>
         </View>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/servers' as any)}>
-          <MaterialIcons name="close" size={24} color={colors.background} />
+        <TouchableOpacity onPress={() => router.back()} className="p-2">
+          <Ionicons name="close" size={28} color={colors.background} />
         </TouchableOpacity>
       </View>
 
-      <ScrollView className="flex-1 px-6 pt-6">
-        {/* Server Name */}
-        <View className="mb-6">
-          <Text className="text-sm font-semibold text-foreground mb-2">Server Name *</Text>
-          <TextInput
-            className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
-            placeholder="e.g., My Weather API"
-            placeholderTextColor={colors.muted}
-            value={serverName}
-            onChangeText={setServerName}
-            editable={!isLoading}
-          />
+      <ScrollView className="flex-1 px-6 pt-6 pb-8">
+        {/* Step Indicator */}
+        <View className="flex-row items-center gap-2 mb-8">
+          <View className="flex-1 h-1 bg-primary rounded-full" />
+          <Text className="text-xs font-semibold text-primary">Step 1 of 3</Text>
+          <View className="flex-1 h-1 bg-border rounded-full" />
         </View>
 
-        {/* Description */}
-        <View className="mb-6">
-          <Text className="text-sm font-semibold text-foreground mb-2">Description</Text>
-          <TextInput
-            className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
-            placeholder="Optional description"
-            placeholderTextColor={colors.muted}
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={3}
-            editable={!isLoading}
-          />
-        </View>
+        {/* Server Details Card */}
+        <Card variant="elevated" className="mb-6">
+          <CardHeader title="Server Details" subtitle="Basic information about your server" />
+          <CardContent className="gap-4">
+            <Input
+              label="Server Name"
+              placeholder="e.g., My Weather API"
+              value={serverName}
+              onChangeText={setServerName}
+              error={errors.serverName}
+              disabled={isLoading}
+            />
 
-        {/* Connection Type */}
-        <View className="mb-6">
-          <Text className="text-sm font-semibold text-foreground mb-3">Connection Type *</Text>
-          <View className="gap-2">
+            <Input
+              label="Description (Optional)"
+              placeholder="What does this server do?"
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={3}
+              disabled={isLoading}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Connection Type Card */}
+        <Card variant="elevated" className="mb-6">
+          <CardHeader title="Connection Type" subtitle="How to connect to your server" />
+          <CardContent className="gap-3">
             {(['stdio', 'sse', 'websocket'] as const).map((type) => (
               <TouchableOpacity
                 key={type}
-                onPress={() => setConnectionType(type)}
-                className={`border rounded-lg px-4 py-3 flex-row items-center gap-3 ${
+                onPress={() => {
+                  setConnectionType(type);
+                  setErrors({ ...errors, command: '', url: '' });
+                }}
+                disabled={isLoading}
+                className={`border rounded-lg p-4 flex-row items-center gap-3 ${
                   connectionType === type
-                    ? 'bg-primary/10 border-primary'
+                    ? 'bg-primary/10 border-primary border-2'
                     : 'bg-surface border-border'
                 }`}
-                disabled={isLoading}
               >
                 <View
-                  className={`w-5 h-5 rounded-full border-2 items-center justify-center ${
+                  className={`w-6 h-6 rounded-full border-2 items-center justify-center ${
                     connectionType === type
                       ? 'bg-primary border-primary'
                       : 'border-border'
                   }`}
                 >
                   {connectionType === type && (
-                    <View className="w-2 h-2 bg-background rounded-full" />
+                    <View className="w-3 h-3 bg-background rounded-full" />
                   )}
                 </View>
                 <View className="flex-1">
-                  <Text className="text-foreground font-medium capitalize">{type}</Text>
+                  <Text className="text-foreground font-semibold capitalize">{type}</Text>
                   <Text className="text-xs text-muted mt-1">
                     {type === 'stdio'
                       ? 'Local process via stdin/stdout'
@@ -259,127 +257,115 @@ export default function AddServerScreen() {
                 </View>
               </TouchableOpacity>
             ))}
-          </View>
-        </View>
+          </CardContent>
+        </Card>
 
-        {/* Connection Details */}
-        {connectionType === 'stdio' ? (
-          <View className="mb-6">
-            <Text className="text-sm font-semibold text-foreground mb-2">Command *</Text>
-            <TextInput
-              className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
-              placeholder="e.g., node /path/to/server.js"
-              placeholderTextColor={colors.muted}
-              value={command}
-              onChangeText={setCommand}
-              editable={!isLoading}
-            />
-            <Text className="text-xs text-muted mt-2">
-              The command to start your MCP server process
-            </Text>
-          </View>
-        ) : (
-          <View className="mb-6">
-            <Text className="text-sm font-semibold text-foreground mb-2">Server URL *</Text>
-            <TextInput
-              className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
-              placeholder="e.g., https://api.example.com/mcp"
-              placeholderTextColor={colors.muted}
-              value={url}
-              onChangeText={setUrl}
-              autoCapitalize="none"
-              editable={!isLoading}
-            />
-            <Text className="text-xs text-muted mt-2">
-              The URL of your remote MCP server
-            </Text>
-          </View>
-        )}
-
-        {/* JSON Paste Section */}
-        <TouchableOpacity
-          onPress={() => setShowJsonPaste(!showJsonPaste)}
-          className="bg-surface border border-border rounded-lg p-4 mb-6 flex-row items-center justify-between"
-        >
-          <View className="flex-row items-center gap-2 flex-1">
-            <MaterialIcons name="code" size={20} color={colors.primary} />
-            <Text className="text-foreground font-semibold">Paste JSON Config</Text>
-          </View>
-          <MaterialIcons
-            name={showJsonPaste ? 'expand-less' : 'expand-more'}
-            size={20}
-            color={colors.muted}
+        {/* Connection Details Card */}
+        <Card variant="elevated" className="mb-6">
+          <CardHeader
+            title={connectionType === 'stdio' ? 'Command' : 'Server URL'}
+            subtitle={connectionType === 'stdio' ? 'The command to start your server' : 'The URL of your remote server'}
           />
-        </TouchableOpacity>
+          <CardContent>
+            {connectionType === 'stdio' ? (
+              <Input
+                variant="text"
+                placeholder="e.g., node /path/to/server.js"
+                value={command}
+                onChangeText={setCommand}
+                error={errors.command}
+                disabled={isLoading}
+              />
+            ) : (
+              <Input
+                variant="text"
+                placeholder="e.g., https://api.example.com/mcp"
+                value={url}
+                onChangeText={setUrl}
+                error={errors.url}
+                disabled={isLoading}
+              />
+            )}
+          </CardContent>
+        </Card>
 
-        {showJsonPaste && (
-          <View className="mb-6">
-            <Text className="text-xs text-muted mb-2">Paste your server config as JSON:</Text>
-            <TextInput
-              className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
-              placeholder='{"name": "My Server", "connectionType": "sse", "url": "..."}'
-              placeholderTextColor={colors.muted}
-              value={jsonPaste}
-              onChangeText={setJsonPaste}
-              multiline
-              numberOfLines={6}
-              editable={!isLoading}
+        {/* JSON Import Card */}
+        <Card
+          variant="outlined"
+          interactive
+          onPress={() => setShowJsonPaste(!showJsonPaste)}
+          className="mb-6"
+        >
+          <View className="flex-row items-center justify-between gap-3">
+            <View className="flex-row items-center gap-3 flex-1">
+              <View className="w-10 h-10 rounded-lg bg-primary/10 items-center justify-center">
+                <Ionicons name="code" size={20} color={colors.primary} />
+              </View>
+              <View className="flex-1">
+                <Text className="text-foreground font-semibold">Import from JSON</Text>
+                <Text className="text-xs text-muted mt-1">Paste or upload a config file</Text>
+              </View>
+            </View>
+            <Ionicons
+              name={showJsonPaste ? 'chevron-up' : 'chevron-down'}
+              size={20}
+              color={colors.muted}
             />
-            <TouchableOpacity
-              onPress={handleJsonPaste}
-              className="bg-primary rounded-lg py-2 items-center justify-center mt-2"
-              disabled={isLoading || !jsonPaste.trim()}
-            >
-              <Text className="text-background font-semibold text-sm">Load from JSON</Text>
-            </TouchableOpacity>
           </View>
-        )}
 
-        {/* Info Box */}
-        <View className="bg-primary/10 rounded-lg p-4 border border-primary/20 mb-6">
-          <View className="flex-row gap-2">
-            <MaterialIcons name="info" size={16} color={colors.primary} />
-            <Text className="text-xs text-muted flex-1">
-              MCP servers expose tools that can be discovered and executed. Ensure your server is
-              properly configured and accessible before adding.
-            </Text>
-          </View>
-        </View>
+          {showJsonPaste && (
+            <View className="mt-4 pt-4 border-t border-border gap-3">
+              <Input
+                variant="text"
+                placeholder="Paste JSON config here..."
+                value={jsonPaste}
+                onChangeText={setJsonPaste}
+                multiline
+                numberOfLines={4}
+                error={errors.json}
+              />
+              <ButtonGroup direction="row" gap={2}>
+                <Button
+                  variant="secondary"
+                  className="flex-1"
+                  onPress={handleImportJSON}
+                  disabled={isLoading}
+                >
+                  Upload File
+                </Button>
+                <Button
+                  variant="primary"
+                  className="flex-1"
+                  onPress={handleJsonPaste}
+                  disabled={!jsonPaste.trim() || isLoading}
+                >
+                  Load Config
+                </Button>
+              </ButtonGroup>
+            </View>
+          )}
+        </Card>
 
         {/* Action Buttons */}
-        <View className="gap-3 mb-12">
-          <View className="flex-row gap-3">
-            <TouchableOpacity
-              onPress={() => router.push('/(tabs)/servers' as any)}
-              className="flex-1 bg-surface border border-border rounded-lg py-3 items-center justify-center"
-              disabled={isLoading}
-            >
-              <Text className="text-foreground font-semibold text-sm">Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleImportJSON}
-              className="flex-1 bg-surface border border-border rounded-lg py-3 items-center justify-center flex-row gap-2"
-              disabled={isLoading}
-            >
-              <MaterialIcons name="upload" size={18} color={colors.primary} />
-              <Text className="text-foreground font-semibold text-sm">Import</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleAddServer}
-              className="flex-1 bg-primary rounded-lg py-3 items-center justify-center flex-row gap-2"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color={colors.background} />
-              ) : (
-                <>
-                  <MaterialIcons name="add" size={18} color={colors.background} />
-                  <Text className="text-background font-semibold text-sm">Add</Text>
-                </>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
+        <ButtonGroup direction="column" gap={3}>
+          <Button
+            variant="primary"
+            size="large"
+            onPress={handleAddServer}
+            loading={isLoading}
+            disabled={isLoading}
+          >
+            Add Server
+          </Button>
+          <Button
+            variant="secondary"
+            size="large"
+            onPress={() => router.back()}
+            disabled={isLoading}
+          >
+            Cancel
+          </Button>
+        </ButtonGroup>
       </ScrollView>
     </ScreenContainer>
   );
