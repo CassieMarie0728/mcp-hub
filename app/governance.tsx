@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/list';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface AppItem {
   packageName: string;
@@ -184,9 +185,18 @@ export default function GovernanceScreen() {
 
         {/* Apps List */}
         {isLoading ? (
-          <View className="items-center justify-center py-12">
-            <Ionicons name="hourglass" size={40} color={colors.muted} />
-            <Text className="text-muted mt-3">Loading apps...</Text>
+          <View className="gap-3 pb-8">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Card key={i} variant="elevated">
+                <View className="flex-row items-center justify-between gap-3">
+                  <View className="flex-1 gap-2">
+                    <Skeleton width="70%" height={20} />
+                    <Skeleton width="50%" height={12} />
+                  </View>
+                  <Skeleton width={48} height={48} borderRadius={8} />
+                </View>
+              </Card>
+            ))}
           </View>
         ) : filteredApps.length === 0 ? (
           <Card variant="outlined" className="items-center py-12">

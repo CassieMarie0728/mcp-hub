@@ -3,17 +3,19 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ActivityIndicator,
   Alert,
   Switch,
+  RefreshControl,
 } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
 import { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/use-colors';
 import { useMCPBridgeExtended, type ServiceStatus } from '@/hooks/use-mcp-bridge-extended';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export default function ServiceControlScreen() {
   const navigation = useNavigation();
@@ -33,38 +35,14 @@ export default function ServiceControlScreen() {
     toolsExposed: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [isActionInProgress, setIsActionInProgress] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: true,
-      headerTitle: 'Service Control',
-      headerTitleStyle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: colors.foreground,
-      },
-      headerStyle: {
-        backgroundColor: colors.background,
-        borderBottomColor: colors.border,
-        borderBottomWidth: 1,
-      },
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 16 }}>
-          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <View style={{ marginRight: 16 }}>
-          <MaterialIcons
-            name={status.isRunning ? 'cloud-done' : 'cloud-off'}
-            size={24}
-            color={status.isRunning ? colors.success : colors.error}
-          />
-        </View>
-      ),
+      headerShown: false,
     });
-  }, [navigation, colors, status.isRunning]);
+  }, [navigation]);
 
   useEffect(() => {
     loadServiceStatus();
@@ -78,26 +56,34 @@ export default function ServiceControlScreen() {
       setStatus(currentStatus);
     } catch (error) {
       console.error('Failed to load service status:', error);
+      Alert.alert('Error', 'Failed to load service status');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadServiceStatus();
+    setRefreshing(false);
   };
 
   const handleStartService = async () => {
     setIsActionInProgress(true);
     try {
       await startMCPService();
-      await loadServiceStatus();
-      Alert.alert('Success', 'MCP Server service started');
-    } catch (error: any) {
-      Alert.alert('Error', `Failed to start service: ${error.message}`);
+      setStatus((prev) => ({ ...prev, isRunning: true }));
+      Alert.alert('Success', 'MCP Service started');
+    } catch (error) {
+      console.error('Failed to start service:', error);
+      Alert.alert('Error', 'Failed to start service');
     } finally {
       setIsActionInProgress(false);
     }
   };
 
   const handleStopService = async () => {
-    Alert.alert('Stop Service?', 'This will stop the MCP server and disconnect all clients.', [
+    Alert.alert('Stop Service', 'Are you sure you want to stop the MCP Service?', [
       { text: 'Cancel', onPress: () => {} },
       {
         text: 'Stop',
@@ -105,10 +91,11 @@ export default function ServiceControlScreen() {
           setIsActionInProgress(true);
           try {
             await stopMCPService();
-            await loadServiceStatus();
-            Alert.alert('Success', 'MCP Server service stopped');
-          } catch (error: any) {
-            Alert.alert('Error', `Failed to stop service: ${error.message}`);
+            setStatus((prev) => ({ ...prev, isRunning: false }));
+            Alert.alert('Success', 'MCP Service stopped');
+          } catch (error) {
+            console.error('Failed to stop service:', error);
+            Alert.alert('Error', 'Failed to stop service');
           } finally {
             setIsActionInProgress(false);
           }
@@ -120,141 +107,138 @@ export default function ServiceControlScreen() {
   const handleToggleNotification = async () => {
     try {
       await toggleServiceNotification(!status.notificationEnabled);
-      setStatus({ ...status, notificationEnabled: !status.notificationEnabled });
-    } catch (error: any) {
-      Alert.alert('Error', `Failed to toggle notification: ${error.message}`);
+      setStatus((prev) => ({
+        ...prev,
+        notificationEnabled: !prev.notificationEnabled,
+      }));
+    } catch (error) {
+      console.error('Failed to toggle notification:', error);
+      Alert.alert('Error', 'Failed to toggle notification');
     }
   };
 
-  const formatUptime = (ms: number) => {
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `${days}d ${hours % 24}h`;
-    if (hours > 0) return `${hours}h ${minutes % 60}m`;
-    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
-    return `${seconds}s`;
+  const formatUptime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
   };
 
   return (
     <ScreenContainer className="p-0">
-      <ScrollView className="flex-1 px-6 pt-6">
-        {/* Service Status Card */}
-        <View
-          className={`rounded-lg p-6 mb-6 border ${
-            status.isRunning
-              ? 'bg-success/10 border-success'
-              : 'bg-error/10 border-error'
-          }`}
-        >
-          <View className="flex-row items-center gap-3 mb-4">
+      {/* Header */}
+      <View className={`${status.isRunning ? 'bg-gradient-to-b from-success to-success/80' : 'bg-gradient-to-b from-error to-error/80'} px-6 pt-6 pb-8`}>
+        <View className="flex-row items-center justify-between mb-4">
+          <View className="flex-1">
+            <Text className="text-4xl font-bold text-background">Service Control</Text>
+            <Text className="text-sm text-background/80 mt-2">
+              {status.isRunning ? 'Service is running' : 'Service is offline'}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => router.back()} className="p-2">
+            <Ionicons name="close" size={28} color={colors.background} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <ScrollView
+        className="flex-1 px-6 pt-6"
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+      >
+        {/* Status Card */}
+        <Card variant="elevated" className="mb-6">
+          <View className="items-center gap-4">
             <View
-              className={`w-12 h-12 rounded-full items-center justify-center ${
+              className={`w-16 h-16 rounded-full items-center justify-center ${
                 status.isRunning ? 'bg-success/20' : 'bg-error/20'
               }`}
             >
-              <MaterialIcons
-                name={status.isRunning ? 'cloud-done' : 'cloud-off'}
-                size={24}
+              <Ionicons
+                name={status.isRunning ? 'checkmark-circle' : 'close-circle'}
+                size={40}
                 color={status.isRunning ? colors.success : colors.error}
               />
             </View>
-            <View>
-              <Text className="text-lg font-bold text-foreground">
-                {status.isRunning ? 'Service Running' : 'Service Stopped'}
+            <View className="items-center gap-1">
+              <Text className="text-2xl font-bold text-foreground">
+                {status.isRunning ? 'Running' : 'Stopped'}
               </Text>
               <Text className="text-sm text-muted">
-                {status.isRunning ? 'MCP server is active' : 'MCP server is offline'}
+                {status.isRunning ? `Uptime: ${formatUptime(status.uptime)}` : 'Not available'}
               </Text>
             </View>
           </View>
+        </Card>
+
+        {/* Stats Grid */}
+        <View className="flex-row gap-3 mb-6">
+          <Card variant="outlined" className="flex-1">
+            <View className="items-center gap-2">
+              <Ionicons name="git-network" size={24} color={colors.primary} />
+              <Text className="text-2xl font-bold text-foreground">{status.connectionsActive}</Text>
+              <Text className="text-xs text-muted text-center">Active Connections</Text>
+            </View>
+          </Card>
+
+          <Card variant="outlined" className="flex-1">
+            <View className="items-center gap-2">
+              <Ionicons name="hammer" size={24} color={colors.primary} />
+              <Text className="text-2xl font-bold text-foreground">{status.toolsExposed}</Text>
+              <Text className="text-xs text-muted text-center">Tools Exposed</Text>
+            </View>
+          </Card>
         </View>
 
-        {/* Status Details */}
-        <View className="bg-surface border border-border rounded-lg p-4 mb-6">
-          <View className="flex-row items-center justify-between mb-4 pb-4 border-b border-border">
-            <Text className="text-sm text-muted">Uptime</Text>
-            <Text className="text-sm font-semibold text-foreground">
-              {formatUptime(status.uptime)}
-            </Text>
-          </View>
-          <View className="flex-row items-center justify-between mb-4 pb-4 border-b border-border">
-            <Text className="text-sm text-muted">Active Connections</Text>
-            <Text className="text-sm font-semibold text-foreground">{status.connectionsActive}</Text>
-          </View>
-          <View className="flex-row items-center justify-between">
-            <Text className="text-sm text-muted">Tools Exposed</Text>
-            <Text className="text-sm font-semibold text-foreground">{status.toolsExposed}</Text>
-          </View>
-        </View>
+        {/* Controls */}
+        <Card variant="elevated" className="mb-6">
+          <CardHeader>
+            <Text className="text-lg font-bold text-foreground">Service Controls</Text>
+          </CardHeader>
+          <CardContent className="gap-4">
+            {status.isRunning ? (
+              <Button
+                variant="destructive"
+                size="large"
+                onPress={handleStopService}
+                disabled={isActionInProgress}
+                loading={isActionInProgress}
+              >
+                Stop Service
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                size="large"
+                onPress={handleStartService}
+                disabled={isActionInProgress}
+                loading={isActionInProgress}
+              >
+                Start Service
+              </Button>
+            )}
+          </CardContent>
+        </Card>
 
-        {/* Notification Toggle */}
-        <View className="bg-surface border border-border rounded-lg p-4 mb-6 flex-row items-center justify-between">
-          <View className="flex-1">
-            <Text className="text-foreground font-semibold">Persistent Notification</Text>
-            <Text className="text-xs text-muted mt-1">
-              {status.notificationEnabled
-                ? 'Notification is visible in status bar'
-                : 'Notification is hidden'}
-            </Text>
-          </View>
-          <Switch
-            value={status.notificationEnabled}
-            onValueChange={handleToggleNotification}
-            disabled={isActionInProgress}
-            trackColor={{ false: colors.border, true: colors.primary + '40' }}
-            thumbColor={status.notificationEnabled ? colors.primary : colors.muted}
-          />
-        </View>
-
-        {/* Control Buttons */}
-        <View className="gap-3 mb-12">
-          {status.isRunning ? (
-            <TouchableOpacity
-              onPress={handleStopService}
-              disabled={isActionInProgress}
-              className="bg-error rounded-lg py-4 items-center justify-center flex-row gap-2"
-            >
-              {isActionInProgress ? (
-                <ActivityIndicator color={colors.background} />
-              ) : (
-                <>
-                  <MaterialIcons name="stop-circle" size={20} color={colors.background} />
-                  <Text className="text-background font-semibold">Stop Service</Text>
-                </>
-              )}
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={handleStartService}
-              disabled={isActionInProgress}
-              className="bg-success rounded-lg py-4 items-center justify-center flex-row gap-2"
-            >
-              {isActionInProgress ? (
-                <ActivityIndicator color={colors.background} />
-              ) : (
-                <>
-                  <MaterialIcons name="play-circle" size={20} color={colors.background} />
-                  <Text className="text-background font-semibold">Start Service</Text>
-                </>
-              )}
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* Info Box */}
-        <View className="bg-primary/10 rounded-lg p-4 border border-primary/20 mb-6">
-          <View className="flex-row gap-2">
-            <MaterialIcons name="info" size={16} color={colors.primary} />
-            <Text className="text-xs text-muted flex-1">
-              The MCP server runs as a foreground service to maintain connectivity with external
-              AI clients. You can toggle the notification visibility without affecting service
-              operation.
-            </Text>
-          </View>
-        </View>
+        {/* Notifications */}
+        <Card variant="elevated" className="mb-8">
+          <CardHeader>
+            <Text className="text-lg font-bold text-foreground">Notifications</Text>
+          </CardHeader>
+          <CardContent>
+            <View className="flex-row items-center justify-between">
+              <View className="flex-1 gap-1">
+                <Text className="text-base font-semibold text-foreground">Service Alerts</Text>
+                <Text className="text-sm text-muted">Receive notifications for service events</Text>
+              </View>
+              <Switch
+                value={status.notificationEnabled}
+                onValueChange={handleToggleNotification}
+                trackColor={{ false: colors.border, true: colors.success }}
+                thumbColor={status.notificationEnabled ? colors.background : colors.muted}
+              />
+            </View>
+          </CardContent>
+        </Card>
       </ScrollView>
     </ScreenContainer>
   );

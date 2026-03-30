@@ -4,18 +4,22 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  ActivityIndicator,
   Alert,
   TextInput,
   Modal,
+  RefreshControl,
 } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
 import { useState, useLayoutEffect, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/use-colors';
 import { useMacros } from '@/hooks/use-macros';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/list';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface MacroItem {
   id: string;
@@ -31,36 +35,22 @@ export default function MacroManagementScreen() {
   const colors = useColors();
   const { macros, createMacro, deleteMacro } = useMacros();
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [newMacroName, setNewMacroName] = useState('');
   const [newMacroDescription, setNewMacroDescription] = useState('');
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerShown: true,
-      headerTitle: 'Macro Management',
-      headerTitleStyle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: colors.foreground,
-      },
-      headerStyle: {
-        backgroundColor: colors.background,
-        borderBottomColor: colors.border,
-        borderBottomWidth: 1,
-      },
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 16 }}>
-          <MaterialIcons name="arrow-back" size={24} color={colors.primary} />
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <View style={{ marginRight: 16 }}>
-          <MaterialIcons name="automation" size={24} color={colors.primary} />
-        </View>
-      ),
+      headerShown: false,
     });
-  }, [navigation, colors]);
+  }, [navigation]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // Simulate refresh
+    setTimeout(() => setRefreshing(false), 1000);
+  };
 
   const handleCreateMacro = async () => {
     if (!newMacroName.trim()) {
@@ -108,138 +98,192 @@ export default function MacroManagementScreen() {
   };
 
   const renderMacroItem = ({ item }: { item: MacroItem }) => (
-    <TouchableOpacity
-      onPress={() => {
-        // Navigate to macro editor
-        router.push({
-          pathname: '/macro-editor',
-          params: { id: item.id },
-        } as any);
-      }}
-      className="bg-surface border border-border rounded-lg p-4 mb-3 flex-row items-start justify-between"
-    >
-      <View className="flex-1">
-        <Text className="text-foreground font-semibold">{item.name}</Text>
-        {item.description && (
-          <Text className="text-xs text-muted mt-1">{item.description}</Text>
-        )}
-        <View className="flex-row items-center gap-3 mt-2">
-          <View className="flex-row items-center gap-1 bg-primary/10 px-2 py-1 rounded">
-            <MaterialIcons name="layers" size={14} color={colors.primary} />
-            <Text className="text-xs text-primary font-semibold">{item.actions.length} actions</Text>
-          </View>
-          <Text className="text-xs text-muted">{formatDate(item.createdAt)}</Text>
-        </View>
-      </View>
+    <Card variant="elevated" className="mb-3">
       <TouchableOpacity
-        onPress={() => handleDeleteMacro(item.id, item.name)}
-        className="p-2"
+        onPress={() => {
+          router.push({
+            pathname: '/macro-editor',
+            params: { id: item.id },
+          } as any);
+        }}
+        className="flex-row items-start justify-between gap-3"
       >
-        <MaterialIcons name="delete" size={20} color={colors.error} />
+        {/* Macro Icon */}
+        <View className="w-12 h-12 rounded-lg bg-primary/20 items-center justify-center">
+          <Ionicons name="layers" size={24} color={colors.primary} />
+        </View>
+
+        {/* Macro Info */}
+        <View className="flex-1 gap-2">
+          <Text className="text-lg font-bold text-foreground">{item.name}</Text>
+          {item.description && (
+            <Text className="text-sm text-muted">{item.description}</Text>
+          )}
+          <View className="flex-row items-center gap-2">
+            <Badge variant="secondary">{item.actions.length} actions</Badge>
+            <Text className="text-xs text-muted">{formatDate(item.createdAt)}</Text>
+          </View>
+        </View>
+
+        {/* Delete Button */}
+        <TouchableOpacity
+          onPress={() => handleDeleteMacro(item.id, item.name)}
+          className="w-10 h-10 rounded-lg bg-error/10 items-center justify-center"
+        >
+          <Ionicons name="trash" size={20} color={colors.error} />
+        </TouchableOpacity>
       </TouchableOpacity>
-    </TouchableOpacity>
+    </Card>
   );
 
   return (
     <ScreenContainer className="p-0">
-      {/* Create Button */}
-      <View className="bg-surface border-b border-border px-6 py-4">
-        <TouchableOpacity
-          onPress={() => setShowModal(true)}
-          className="bg-primary rounded-lg py-3 items-center justify-center flex-row gap-2"
-        >
-          <MaterialIcons name="add" size={20} color={colors.background} />
-          <Text className="text-background font-semibold">Create New Macro</Text>
-        </TouchableOpacity>
+      {/* Header */}
+      <View className="bg-gradient-to-b from-primary to-primary/80 px-6 pt-6 pb-8">
+        <View className="flex-row items-center justify-between mb-4">
+          <View className="flex-1">
+            <Text className="text-4xl font-bold text-background">Macro Management</Text>
+            <Text className="text-sm text-background/80 mt-2">Create and manage automation sequences</Text>
+          </View>
+          <TouchableOpacity onPress={() => router.back()} className="p-2">
+            <Ionicons name="close" size={28} color={colors.background} />
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Macros List */}
-      {macros.length === 0 ? (
-        <View className="flex-1 items-center justify-center px-6">
-          <MaterialIcons name="automation" size={48} color={colors.muted} />
-          <Text className="text-foreground font-semibold mt-4">No Macros Yet</Text>
-          <Text className="text-muted text-sm text-center mt-2">
-            Create your first macro to automate tool execution sequences
-          </Text>
-        </View>
-      ) : (
-        <ScrollView className="flex-1 px-6 pt-4">
-          <FlatList
-            data={macros}
-            renderItem={renderMacroItem}
-            keyExtractor={(item) => item.id}
-            scrollEnabled={false}
-          />
-          <View className="h-6" />
-        </ScrollView>
-      )}
+      <ScrollView
+        className="flex-1 px-6 pt-6"
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+      >
+        {/* Stats Card */}
+        <Card variant="elevated" className="mb-6">
+          <View className="flex-row items-center justify-between">
+            <View className="gap-1">
+              <Text className="text-sm text-muted">Total Macros</Text>
+              <Text className="text-3xl font-bold text-foreground">{macros.length}</Text>
+            </View>
+            <View className="w-16 h-16 rounded-lg bg-primary/20 items-center justify-center">
+              <Ionicons name="layers" size={32} color={colors.primary} />
+            </View>
+          </View>
+        </Card>
+
+        {/* Create Button */}
+        <Button
+          variant="primary"
+          size="large"
+          onPress={() => setShowModal(true)}
+          className="mb-6"
+        >
+          <Ionicons name="add" size={20} color={colors.background} />
+          <Text className="text-background font-semibold ml-2">Create New Macro</Text>
+        </Button>
+
+        {/* Macros List */}
+        {isLoading ? (
+          <View className="gap-3 pb-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} variant="elevated">
+                <View className="flex-row items-start justify-between gap-3">
+                  <Skeleton width={48} height={48} borderRadius={8} />
+                  <View className="flex-1 gap-2">
+                    <Skeleton width="70%" height={20} />
+                    <Skeleton width="50%" height={14} />
+                    <Skeleton width="40%" height={12} />
+                  </View>
+                  <Skeleton width={40} height={40} borderRadius={8} />
+                </View>
+              </Card>
+            ))}
+          </View>
+        ) : macros.length === 0 ? (
+          <Card variant="outlined" className="items-center py-12">
+            <Ionicons name="layers-outline" size={48} color={colors.muted} />
+            <Text className="text-foreground font-semibold mt-4">No Macros Yet</Text>
+            <Text className="text-muted text-sm text-center mt-2">
+              Create your first macro to automate tool execution sequences
+            </Text>
+          </Card>
+        ) : (
+          <View className="gap-3 pb-8">
+            <FlatList
+              data={macros}
+              renderItem={renderMacroItem}
+              keyExtractor={(item) => item.id}
+              scrollEnabled={false}
+            />
+          </View>
+        )}
+      </ScrollView>
 
       {/* Create Macro Modal */}
       <Modal visible={showModal} transparent animationType="fade">
         <View className="flex-1 bg-black/50 items-center justify-center px-6">
-          <View className="bg-background rounded-lg p-6 w-full max-w-sm">
-            <Text className="text-lg font-bold text-foreground mb-4">Create New Macro</Text>
+          <Card variant="elevated" className="w-full max-w-sm">
+            <CardHeader>
+              <View className="flex-row items-center justify-between">
+                <Text className="text-2xl font-bold text-foreground">Create Macro</Text>
+                <TouchableOpacity onPress={() => setShowModal(false)}>
+                  <Ionicons name="close" size={24} color={colors.foreground} />
+                </TouchableOpacity>
+              </View>
+            </CardHeader>
 
-            <Text className="text-sm font-semibold text-foreground mb-2">Macro Name *</Text>
-            <TextInput
-              className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground mb-4"
-              placeholder="e.g., Daily Report"
-              placeholderTextColor={colors.muted}
-              value={newMacroName}
-              onChangeText={setNewMacroName}
-              editable={!isLoading}
-            />
+            <CardContent className="gap-4">
+              {/* Name Input */}
+              <View className="gap-2">
+                <Text className="text-sm font-semibold text-foreground">Macro Name *</Text>
+                <TextInput
+                  className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
+                  placeholder="e.g., Daily Report"
+                  placeholderTextColor={colors.muted}
+                  value={newMacroName}
+                  onChangeText={setNewMacroName}
+                  editable={!isLoading}
+                />
+              </View>
 
-            <Text className="text-sm font-semibold text-foreground mb-2">Description</Text>
-            <TextInput
-              className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground mb-6"
-              placeholder="Optional description"
-              placeholderTextColor={colors.muted}
-              value={newMacroDescription}
-              onChangeText={setNewMacroDescription}
-              multiline
-              numberOfLines={3}
-              editable={!isLoading}
-            />
+              {/* Description Input */}
+              <View className="gap-2">
+                <Text className="text-sm font-semibold text-foreground">Description</Text>
+                <TextInput
+                  className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
+                  placeholder="Optional description"
+                  placeholderTextColor={colors.muted}
+                  value={newMacroDescription}
+                  onChangeText={setNewMacroDescription}
+                  multiline
+                  numberOfLines={3}
+                  editable={!isLoading}
+                />
+              </View>
 
-            <View className="flex-row gap-3">
-              <TouchableOpacity
-                onPress={() => {
-                  setShowModal(false);
-                  setNewMacroName('');
-                  setNewMacroDescription('');
-                }}
-                disabled={isLoading}
-                className="flex-1 bg-surface border border-border rounded-lg py-3 items-center justify-center"
-              >
-                <Text className="text-foreground font-semibold">Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleCreateMacro}
-                disabled={isLoading || !newMacroName.trim()}
-                className="flex-1 bg-primary rounded-lg py-3 items-center justify-center"
-              >
-                {isLoading ? (
-                  <ActivityIndicator color={colors.background} />
-                ) : (
-                  <Text className="text-background font-semibold">Create</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
+              {/* Buttons */}
+              <View className="flex-row gap-3 pt-2">
+                <Button
+                  variant="secondary"
+                  size="medium"
+                  onPress={() => setShowModal(false)}
+                  className="flex-1"
+                  disabled={isLoading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  size="medium"
+                  onPress={handleCreateMacro}
+                  className="flex-1"
+                  loading={isLoading}
+                  disabled={isLoading}
+                >
+                  Create
+                </Button>
+              </View>
+            </CardContent>
+          </Card>
         </View>
       </Modal>
-
-      {/* Info Box */}
-      <View className="bg-primary/10 rounded-lg p-4 border border-primary/20 mx-6 mb-6">
-        <View className="flex-row gap-2">
-          <MaterialIcons name="info" size={16} color={colors.primary} />
-          <Text className="text-xs text-muted flex-1">
-            Macros allow you to define sequences of tool actions that can be executed automatically
-            with a single command.
-          </Text>
-        </View>
-      </View>
     </ScreenContainer>
   );
 }

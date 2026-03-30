@@ -4,6 +4,7 @@ import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
+import { Skeleton, SkeletonCard } from '@/components/ui/skeleton';
 
 /**
  * Macro Marketplace Screen
@@ -19,7 +20,7 @@ export default function MacroMarketplaceScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState('downloads');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedMacro, setSelectedMacro] = useState<any | null>(null);
 
   const categories = [
@@ -368,8 +369,23 @@ export default function MacroMarketplaceScreen() {
 
           {/* Macros List */}
           {isLoading ? (
-            <View className="py-8 items-center">
-              <Text className="text-muted">Loading macros...</Text>
+            <View className="gap-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <View key={i} className="bg-surface rounded-xl p-4 border border-border gap-2">
+                  <View className="flex-row items-start justify-between">
+                    <View className="flex-1 gap-2">
+                      <Skeleton width="70%" height={18} />
+                      <Skeleton width="40%" height={12} />
+                    </View>
+                    <Skeleton width={70} height={24} borderRadius={12} />
+                  </View>
+                  <Skeleton width="100%" height={14} />
+                  <View className="flex-row items-center justify-between mt-2">
+                    <Skeleton width="40%" height={12} />
+                    <Skeleton width={50} height={24} borderRadius={6} />
+                  </View>
+                </View>
+              ))}
             </View>
           ) : filteredMacros.length > 0 ? (
             <FlatList

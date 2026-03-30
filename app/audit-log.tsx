@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/list';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Skeleton, SkeletonCard, SkeletonList } from '@/components/ui/skeleton';
 
 export default function AuditLogScreen() {
   const navigation = useNavigation();
@@ -153,9 +154,24 @@ export default function AuditLogScreen() {
 
         {/* Audit Log List */}
         {isLoading ? (
-          <View className="items-center justify-center py-12">
-            <Ionicons name="hourglass" size={40} color={colors.muted} />
-            <Text className="text-muted mt-3">Loading audit log...</Text>
+          <View className="gap-3 pb-8">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Card key={i} variant="elevated">
+                <View className="gap-3">
+                  <View className="flex-row items-start justify-between gap-2">
+                    <View className="flex-1 gap-2">
+                      <Skeleton width="60%" height={20} />
+                      <Skeleton width="40%" height={12} />
+                    </View>
+                    <Skeleton width={60} height={24} borderRadius={12} />
+                  </View>
+                  <View className="gap-2 pt-2 border-t border-border">
+                    <Skeleton width="80%" height={14} />
+                    <Skeleton width="70%" height={14} />
+                  </View>
+                </View>
+              </Card>
+            ))}
           </View>
         ) : filteredLog.length === 0 ? (
           <Card variant="outlined" className="items-center py-12">
