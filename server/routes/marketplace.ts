@@ -198,7 +198,7 @@ router.post('/macros/:id/review', async (req: Request, res: Response) => {
 
     // Update macro rating
     const reviews = await db.select().from(macroReviews).where(eq(macroReviews.macroId, id));
-    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    const avgRating = reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length;
 
     await db.update(macros).set({
       averageRating: avgRating,

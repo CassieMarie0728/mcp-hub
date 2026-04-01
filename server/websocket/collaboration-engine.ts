@@ -21,7 +21,7 @@ export class CollaborationEngine extends EventEmitter {
    * Setup WebSocket server
    */
   private setupWebSocketServer() {
-    this.wss.on('connection', (ws: WebSocket, req) => {
+    this.wss.on('connection', (ws: WebSocket, req: any) => {
       const userId = this.extractUserId(req);
       const sessionId = this.extractSessionId(req);
 
@@ -33,7 +33,7 @@ export class CollaborationEngine extends EventEmitter {
       this.handleNewConnection(ws, userId, sessionId);
     });
 
-    this.wss.on('error', (error) => {
+    this.wss.on('error', (error: any) => {
       console.error('WebSocket server error:', error);
       this.emit('error', error);
     });
@@ -77,7 +77,7 @@ export class CollaborationEngine extends EventEmitter {
     });
 
     // Handle incoming messages
-    ws.on('message', (data) => {
+    ws.on('message', (data: any) => {
       this.handleMessage(ws, userId, sessionId, data);
     });
 
@@ -87,7 +87,7 @@ export class CollaborationEngine extends EventEmitter {
     });
 
     // Handle errors
-    ws.on('error', (error) => {
+    ws.on('error', (error: any) => {
       console.error(`WebSocket error for user ${userId}:`, error);
     });
   }
