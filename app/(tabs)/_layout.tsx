@@ -99,6 +99,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="bookmark" size={28} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="macro-gallery"
+        options={{
+          title: "Macros",
+          tabBarIcon: ({ color }) => <MaterialIcons name="library-books" size={28} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

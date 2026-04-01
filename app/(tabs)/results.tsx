@@ -6,6 +6,8 @@ import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
 import { useToolExecution, ResultType, ToolExecutionResult } from '@/lib/hooks/useToolExecution';
 import { ResultDisplayFormatter, FormattedResult } from '@/lib/utils/ResultDisplayFormatter';
+import { SaveAsMacroModal } from '@/components/SaveAsMacroModal';
+import { useMacroExecution } from '@/lib/hooks/useMacroExecution';
 
 /**
  * Results Screen
@@ -14,6 +16,7 @@ import { ResultDisplayFormatter, FormattedResult } from '@/lib/utils/ResultDispl
 export default function ResultsScreen() {
   const colors = useColors();
   const { getExecutionHistory } = useToolExecution();
+  const { createFromExecutionHistory } = useMacroExecution();
 
   // State
   const [selectedResult, setSelectedResult] = useState<ToolExecutionResult | null>(null);
@@ -21,6 +24,7 @@ export default function ResultsScreen() {
   const [formattedResult, setFormattedResult] = useState<FormattedResult | null>(null);
   const [showRawJson, setShowRawJson] = useState(false);
   const [executionHistory, setExecutionHistory] = useState<ToolExecutionResult[]>([]);
+  const [showSaveAsMacroModal, setShowSaveAsMacroModal] = useState(false);
 
   /**
    * Format result when selected result or format changes
@@ -79,6 +83,24 @@ export default function ResultsScreen() {
       Alert.alert('Error', 'Failed to prepare download');
     }
   }, [formattedResult, selectedResult, selectedFormat]);
+
+  /**
+   * Handle save as macro
+   */
+  const handleSaveAsMacro = useCallback(async (name: string, description?: string) => {
+    if (!selectedResult) return;
+
+    try {
+      await createFromExecutionHistory([selectedResult.id], {
+        name,
+        description,
+      });
+      setShowSaveAsMacroModal(false);
+      Alert.alert('Success', 'Macro saved successfully');
+    } catch (err) {
+      throw err;
+    }
+  }, [selectedResult, createFromExecutionHistory]);
 
   /**
    * Render format selector
@@ -195,6 +217,14 @@ export default function ResultsScreen() {
             <Text className="text-foreground font-semibold ml-2">Download</Text>
           </Pressable>
         )}
+
+        <Pressable
+          onPress={() => setShowSaveAsMacroModal(true)}
+          className="py-3 px-4 bg-primary rounded-lg flex-row items-center justify-center"
+        >
+          <MaterialIcons name="save" size={18} color="white" />
+          <Text className="text-white font-semibold ml-2">Save as Macro</Text>
+        </Pressable>
       </View>
     );
   };
@@ -348,6 +378,14 @@ export default function ResultsScreen() {
         {/* Action Buttons */}
         {renderActionButtons()}
       </ScrollView>
+
+      {/* Save as Macro Modal */}
+      <SaveAsMacroModal
+        visible={showSaveAsMacroModal}
+        executionIds={selectedResult ? [selectedResult.id] : []}
+        onSave={handleSaveAsMacro}
+        onCancel={() => setShowSaveAsMacroModal(false)}
+      />
     </ScreenContainer>
   );
 }
