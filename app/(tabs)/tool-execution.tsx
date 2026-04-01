@@ -9,6 +9,9 @@ import {
   Switch,
 } from 'react-native';
 import { useState, useCallback, useMemo } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
@@ -21,7 +24,8 @@ import { useToolDiscovery, JsonSchema, ToolSchema } from '@/lib/hooks/useToolDis
  */
 export default function ToolExecutionScreen() {
   const colors = useColors();
-  const { executeTool, validateParameters, isAnyExecuting } = useToolExecution();
+  const router = useRouter();
+  const { executeTool, validateParameters, isAnyExecuting, getLastResult } = useToolExecution();
   const { getTool } = useToolDiscovery();
 
   // State
@@ -60,6 +64,41 @@ export default function ToolExecutionScreen() {
   );
 
   /**
+   * Handle file picker for file parameters
+   */
+  const handlePickFile = useCallback(
+    async (paramName: string, accept?: string) => {
+      try {
+        // Check if it's an image
+        if (accept?.includes('image')) {
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: false,
+            aspect: [4, 3],
+            quality: 1,
+          });
+
+          if (!result.canceled && result.assets[0]) {
+            handleParameterChange(paramName, result.assets[0].uri);
+          }
+        } else {
+          // Use document picker for other files
+          const result = await DocumentPicker.getDocumentAsync({
+            type: accept || '*/*',
+          });
+
+          if (result.type === 'success') {
+            handleParameterChange(paramName, result.uri);
+          }
+        }
+      } catch (err) {
+        Alert.alert('Error', 'Failed to pick file');
+      }
+    },
+    [handleParameterChange]
+  );
+
+  /**
    * Handle execute button press
    */
   const handleExecute = useCallback(async () => {
@@ -88,8 +127,9 @@ export default function ToolExecutionScreen() {
       const result = await executeTool(serverId, toolName, parameters, timeoutMs);
 
       if (result.success) {
-        Alert.alert('Success', 'Tool executed successfully');
-        // Navigate to results screen or show results here
+        Alert.alert('Success', 'Tool executed successfully. View results in the Results tab.');
+        // Navigate to results screen
+        router.push('/(tabs)/results');
       } else {
         Alert.alert('Execution Failed', result.error?.message || 'Unknown error');
       }
@@ -98,7 +138,7 @@ export default function ToolExecutionScreen() {
     } finally {
       setIsExecuting(false);
     }
-  }, [serverId, toolName, parameters, timeoutMs, validateParameters, executeTool]);
+  }, [serverId, toolName, parameters, timeoutMs, validateParameters, executeTool, router]);
 
   /**
    * Render parameter input based on schema type
@@ -165,7 +205,10 @@ export default function ToolExecutionScreen() {
               placeholderTextColor={colors.muted}
               value={String(value || '')}
               onChangeText={(text) =>
-                handleParameterChange(paramName, schema.type === 'integer' ? parseInt(text) : parseFloat(text))
+                handleParameterChange(
+                  paramName,
+                  schema.type === 'integer' ? parseInt(text) : parseFloat(text)
+                )
               }
               keyboardType="decimal-pad"
               editable={!isExecuting}
@@ -208,6 +251,55 @@ export default function ToolExecutionScreen() {
               onChangeText={(text) =>
                 handleParameterChange(paramName, text.split(',').map((s) => s.trim()))
               }
+              editable={!isExecuting}
+            />
+            {error && <Text className="text-xs text-error mt-1">{error}</Text>}
+          </View>
+        );
+
+      case 'object':
+        // Check if it's a file type
+        if (schema.format === 'binary' || schema.description?.toLowerCase().includes('file')) {
+          return (
+            <View key={paramName} className="mb-4">
+              <View className="flex-row items-center justify-between mb-2">
+                <Text className="text-sm font-semibold text-foreground">
+                  {paramName}
+                  {isRequired && <Text className="text-error">*</Text>}
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => handlePickFile(paramName, schema.description)}
+                className={cn(
+                  'px-4 py-3 rounded-lg border-2 items-center justify-center',
+                  error ? 'border-error bg-error/10' : 'border-dashed border-primary bg-primary/5'
+                )}
+              >
+                <Text className="text-primary font-semibold">📁 Pick File</Text>
+                {value && (
+                  <Text className="text-xs text-muted mt-1">{String(value).split('/').pop()}</Text>
+                )}
+              </Pressable>
+              {error && <Text className="text-xs text-error mt-1">{error}</Text>}
+            </View>
+          );
+        }
+        // Fall through to default for other objects
+        return (
+          <View key={paramName} className="mb-4">
+            <Text className="text-sm font-semibold text-foreground mb-2">
+              {paramName}
+              {isRequired && <Text className="text-error">*</Text>}
+            </Text>
+            <TextInput
+              className={cn(
+                'px-4 py-3 rounded-lg border text-foreground',
+                error ? 'border-error bg-error/10' : 'border-border bg-surface'
+              )}
+              placeholder={`Enter ${paramName}`}
+              placeholderTextColor={colors.muted}
+              value={String(value || '')}
+              onChangeText={(text) => handleParameterChange(paramName, text)}
               editable={!isExecuting}
             />
             {error && <Text className="text-xs text-error mt-1">{error}</Text>}

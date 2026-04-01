@@ -605,3 +605,34 @@
 - [ ] Document supported parameter types
 - [ ] Document supported result display formats
 - [ ] Create troubleshooting guide for common errors
+
+
+---
+
+## Phase 14: Results Display & File Picker ✅ COMPLETE
+
+### Results Display Screen
+- [x] Create ResultsScreen for displaying execution results
+- [x] Implement result format selection (11 formats: Text, JSON, Markdown, HTML, Table, Tree, Code Block, Image, Binary, Stream, Mixed)
+- [x] Add copy/share/download buttons
+- [x] Show execution metadata and error details
+- [x] Add raw JSON viewer toggle
+- [x] Integrate results screen into tab navigation
+
+### File Picker Integration
+- [x] Implement file picker for file parameters
+- [x] Add image picker support (ImagePicker)
+- [x] Add document picker support (DocumentPicker)
+- [x] Wire execution screen to navigate to results after success
+
+### Testing
+- [x] Create comprehensive result formatter tests (36 tests)
+- [x] All tests passing (100% pass rate)
+- [x] Test coverage: text, JSON, table, tree, code block, image, binary, size calculations, special characters, truncation, format conversion, error handling
+
+### Next Steps for MVP Validation
+- [ ] Test with real MCP servers (Claude's filesystem, web, etc.)
+- [ ] Test connection → discovery → execution → results full flow
+- [ ] Test with various parameter types (simple, complex, files)
+- [ ] Manual testing on real Android device
+- [ ] Performance testing with large tool lists and results

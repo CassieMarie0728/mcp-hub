@@ -1,14 +1,6 @@
-import {
-  ScrollView,
-  Text,
-  View,
-  Pressable,
-  ActivityIndicator,
-  Share,
-  Alert,
-  FlatList,
-} from 'react-native';
-import { useState, useCallback, useMemo } from 'react';
+import { ScrollView, Text, View, Pressable, Share, Alert, FlatList } from 'react-native';
+import { useState, useCallback, useEffect } from 'react';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
@@ -21,22 +13,21 @@ import { ResultDisplayFormatter, FormattedResult } from '@/lib/utils/ResultDispl
  */
 export default function ResultsScreen() {
   const colors = useColors();
+  const { getExecutionHistory } = useToolExecution();
 
   // State
   const [selectedResult, setSelectedResult] = useState<ToolExecutionResult | null>(null);
   const [selectedFormat, setSelectedFormat] = useState<ResultType>(ResultType.TEXT);
   const [formattedResult, setFormattedResult] = useState<FormattedResult | null>(null);
   const [showRawJson, setShowRawJson] = useState(false);
+  const [executionHistory, setExecutionHistory] = useState<ToolExecutionResult[]>([]);
 
   /**
    * Format result when selected result or format changes
    */
-  useMemo(() => {
+  useEffect(() => {
     if (selectedResult) {
-      const formatted = ResultDisplayFormatter.formatResult(
-        selectedResult.result,
-        selectedFormat
-      );
+      const formatted = ResultDisplayFormatter.formatResult(selectedResult.result, selectedFormat);
       setFormattedResult(formatted);
     }
   }, [selectedResult, selectedFormat]);
@@ -109,9 +100,7 @@ export default function ResultsScreen() {
               onPress={() => setSelectedFormat(item)}
               className={cn(
                 'py-2 px-4 rounded-full border-2 mr-2',
-                selectedFormat === item
-                  ? 'border-primary bg-primary/10'
-                  : 'border-border bg-surface'
+                selectedFormat === item ? 'border-primary bg-primary/10' : 'border-border bg-surface'
               )}
             >
               <Text
@@ -184,7 +173,8 @@ export default function ResultsScreen() {
             onPress={handleCopy}
             className="py-3 px-4 bg-surface rounded-lg border border-border flex-row items-center justify-center"
           >
-            <Text className="text-foreground font-semibold">Copy to Clipboard</Text>
+            <MaterialIcons name="content-copy" size={18} color={colors.foreground} />
+            <Text className="text-foreground font-semibold ml-2">Copy to Clipboard</Text>
           </Pressable>
         )}
 
@@ -192,7 +182,8 @@ export default function ResultsScreen() {
           onPress={handleShare}
           className="py-3 px-4 bg-surface rounded-lg border border-border flex-row items-center justify-center"
         >
-          <Text className="text-foreground font-semibold">Share</Text>
+          <MaterialIcons name="share" size={18} color={colors.foreground} />
+          <Text className="text-foreground font-semibold ml-2">Share</Text>
         </Pressable>
 
         {formattedResult?.metadata.canDownload && (
@@ -200,7 +191,8 @@ export default function ResultsScreen() {
             onPress={handleDownload}
             className="py-3 px-4 bg-surface rounded-lg border border-border flex-row items-center justify-center"
           >
-            <Text className="text-foreground font-semibold">Download</Text>
+            <MaterialIcons name="download" size={18} color={colors.foreground} />
+            <Text className="text-foreground font-semibold ml-2">Download</Text>
           </Pressable>
         )}
       </View>
@@ -311,12 +303,20 @@ export default function ResultsScreen() {
   if (!selectedResult) {
     return (
       <ScreenContainer className="p-6 items-center justify-center">
-        <Text className="text-foreground text-center text-lg font-semibold mb-2">
-          No Results Yet
-        </Text>
-        <Text className="text-muted text-center">
-          Execute a tool to see its results displayed here
-        </Text>
+        <View className="items-center gap-4">
+          <Text className="text-5xl">📊</Text>
+          <Text className="text-foreground text-center text-lg font-semibold mb-2">
+            No Results Yet
+          </Text>
+          <Text className="text-muted text-center">
+            Execute a tool from the Execute tab to see its results displayed here
+          </Text>
+          <View className="mt-4 p-4 bg-surface rounded-lg border border-border max-w-xs">
+            <Text className="text-xs text-muted text-center">
+              Results will automatically appear after tool execution completes
+            </Text>
+          </View>
+        </View>
       </ScreenContainer>
     );
   }

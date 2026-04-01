@@ -78,6 +78,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="play-circle" size={28} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="results"
+        options={{
+          title: "Results",
+          tabBarIcon: ({ color }) => <MaterialIcons name="assessment" size={28} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
