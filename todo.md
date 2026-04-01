@@ -477,3 +477,131 @@
 - [ ] Test permission flows end-to-end
 - [ ] Test macro execution end-to-end
 - [ ] Test governance consent flows
+
+
+---
+
+## Phase 13: MVP Server Connection → Tool Discovery → Execution → Results 🚀 IN PROGRESS
+
+### Architecture & Design ✅
+- [x] Create comprehensive ARCHITECTURE_MVP.md
+- [x] Define data models (MCPServerConnection, ToolSchema, ToolExecutionResult)
+- [x] Design all core flows (connection, discovery, execution, results)
+- [x] Plan error handling strategy with recovery actions
+- [x] Plan result display formats (RAW_TEXT, PRETTY_JSON, MARKDOWN, HTML, TABLE, TREE, CODE_BLOCK, IMAGE, DOWNLOAD)
+
+### Kotlin Implementation: Server Connection & Tool Discovery
+- [ ] Create MCPClientManager.kt for connection pooling
+- [ ] Implement connectToServer(host, port, transport, auth) with timeout
+- [ ] Implement discoverTools(serverId) with schema caching
+- [ ] Create ToolDiscoveryEngine.kt for schema parsing & validation
+- [ ] Implement connection status events to React Native
+- [ ] Add connection lifecycle management (create, reuse, close)
+- [ ] Implement reconnection logic with exponential backoff
+
+### Kotlin Implementation: Tool Execution & Error Recovery ✅
+- [x] Create ToolExecutionEngine.kt for parameter validation
+- [x] Implement executeToolWithValidation(request) with timeout protection
+- [x] Create ErrorRecoveryManager.kt with retry logic (exponential backoff)
+- [x] Implement error categorization (UNREACHABLE, TIMEOUT, INVALID_PARAMS, AUTH_FAILED, etc.)
+- [x] Add recovery action suggestions
+- [x] Implement streaming response handling
+- [x] Add result type inference (TEXT, JSON, MARKDOWN, HTML, IMAGE, BINARY, STREAM, MIXED)
+
+### React Native: Server Connection UI & Hooks ✅
+- [x] Create useMCPServerConnection.ts hook
+- [x] Build server connection form component
+- [x] Implement connection status indicator
+- [x] Add connection validation (host format, port range)
+- [x] Create error display with recovery suggestions
+- [x] Implement manual reconnect button
+- [x] Add connection history/recent servers
+
+### React Native: Tool Discovery UI & Hooks ✅
+- [x] Create useToolDiscovery.ts hook
+- [x] Build tool list screen
+- [x] Implement search/filter functionality
+- [x] Add tool detail view (schema, parameters, description)
+- [x] Create loading skeleton for tool discovery
+- [x] Add refresh/retry button
+- [x] Implement tool caching
+
+### React Native: Tool Execution Form Builder ✅
+- [x] Create dynamic form builder based on JSON schema
+- [x] Implement parameter input components:
+  - [x] Text input (string, number, email, uri)
+  - [x] Checkbox (boolean)
+  - [x] Select/dropdown (enum)
+  - [x] Number input (with min/max)
+  - [x] File picker (for file parameters)
+  - [x] Array input (for array types)
+  - [x] Object input (for nested objects)
+- [x] Add inline parameter validation
+- [x] Create confirmation dialog before execution
+- [x] Show parameter summary
+
+### React Native: Tool Execution & Results Display ✅
+- [x] Create useToolExecution.ts hook
+- [x] Implement executeTool(serverId, toolName, parameters)
+- [x] Build execution progress indicator
+- [x] Create result display screen with format selection
+- [x] Implement ResultDisplayFormatter.ts with all formats:
+  - [x] RAW_TEXT: Plain text rendering
+  - [x] PRETTY_JSON: Formatted JSON with syntax highlighting
+  - [x] MARKDOWN: Rendered markdown
+  - [x] HTML: Safe HTML rendering
+  - [x] TABLE: Tabular format for arrays of objects
+  - [x] TREE: Tree view for nested objects
+  - [x] CODE_BLOCK: Code syntax highlighting
+  - [x] IMAGE: Image rendering
+  - [x] DOWNLOAD: Download as file
+- [x] Add copy to clipboard button
+- [x] Add share button
+- [x] Add download button
+- [x] Add raw JSON viewer toggle
+- [x] Add retry execution button
+- [x] Show execution time & metadata
+
+### Error Handling & Recovery UI ✅
+- [x] Create error dialog component
+- [x] Implement error categorization display
+- [x] Add recovery action suggestions
+- [x] Create connection recovery UI
+- [x] Add timeout handling with user-friendly messages
+- [x] Implement parameter validation error display
+- [x] Add server unreachable recovery flow
+- [x] Create partial result display (for timeouts)
+
+### Integration & Wiring ✅
+- [x] Wire up React Native hooks to Kotlin bridge
+- [x] Implement MCPServerBridgeExtended methods:
+  - [x] connectToServer(config)
+  - [x] discoverTools(serverId)
+  - [x] executeTool(serverId, toolName, params)
+  - [x] getConnectionStatus(serverId)
+  - [x] disconnectServer(serverId)
+- [x] Add event listeners for connection status changes
+- [x] Implement state synchronization between Kotlin & React Native
+- [x] Add proper error propagation
+
+### Testing & Validation
+- [ ] Unit tests for parameter validation
+- [ ] Unit tests for result type detection
+- [ ] Unit tests for format conversion functions
+- [ ] Integration tests with mock MCP servers
+- [ ] Integration tests with real MCP servers (Claude's filesystem, web, etc.)
+- [ ] E2E tests: connect → discover → execute → display
+- [ ] Test all error scenarios (timeout, network, auth, invalid params)
+- [ ] Test connection recovery
+- [ ] Test with various parameter types (simple, complex, files)
+- [ ] Test all result display formats
+- [ ] Performance testing (large tool lists, large results)
+- [ ] Manual testing on real Android device
+
+### Documentation
+- [ ] Document API endpoints for tool discovery & execution
+- [ ] Create user guide for connecting servers
+- [ ] Create user guide for executing tools
+- [ ] Document supported parameter types
+- [ ] Document supported result display formats
+- [ ] Create troubleshooting guide for common errors

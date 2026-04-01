@@ -57,6 +57,27 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="power-settings-new" size={28} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="server-connection"
+        options={{
+          title: "Connect",
+          tabBarIcon: ({ color }) => <MaterialIcons name="cloud-queue" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="tool-discovery"
+        options={{
+          title: "Tools",
+          tabBarIcon: ({ color }) => <MaterialIcons name="extension" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="tool-execution"
+        options={{
+          title: "Execute",
+          tabBarIcon: ({ color }) => <MaterialIcons name="play-circle" size={28} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
