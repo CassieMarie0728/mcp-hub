@@ -85,6 +85,20 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="assessment" size={28} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="execution-history"
+        options={{
+          title: "History",
+          tabBarIcon: ({ color }) => <MaterialIcons name="history" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="server-presets"
+        options={{
+          title: "Presets",
+          tabBarIcon: ({ color }) => <MaterialIcons name="bookmark" size={28} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
