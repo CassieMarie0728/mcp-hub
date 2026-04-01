@@ -1,3 +1,4 @@
+import React, { useState, useCallback } from 'react';
 import {
   ScrollView,
   Text,
@@ -8,430 +9,221 @@ import {
   Alert,
   Switch,
 } from 'react-native';
-import { useState, useCallback, useMemo } from 'react';
-import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
-import { useToolExecution, ResultType } from '@/lib/hooks/useToolExecution';
-import { useToolDiscovery, JsonSchema, ToolSchema } from '@/lib/hooks/useToolDiscovery';
+import { useMCPBridge } from '@/lib/hooks/useMCPBridge';
 
 /**
- * Tool Execution Screen
- * Execute tools with dynamic form builder based on JSON schema
+ * Updated Tool Execution Screen
+ * Executes tools on connected MCP servers using the Kotlin bridge
  */
-export default function ToolExecutionScreen() {
+export default function ToolExecutionUpdatedScreen() {
   const colors = useColors();
-  const router = useRouter();
-  const { executeTool, validateParameters, isAnyExecuting, getLastResult } = useToolExecution();
-  const { getTool } = useToolDiscovery();
+  const { isReady, error, setError, executeTool } = useMCPBridge();
 
-  // State
-  const [serverId, setServerId] = useState<string>('');
-  const [toolName, setToolName] = useState<string>('');
-  const [parameters, setParameters] = useState<Record<string, any>>({});
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const [timeoutMs, setTimeoutMs] = useState(60000);
+  // Form state
+  const [formData, setFormData] = useState({
+    serverId: '',
+    toolName: '',
+    parameters: {} as Record<string, any>,
+  });
+
+  const [parameterInputs, setParameterInputs] = useState<Record<string, string>>({});
   const [isExecuting, setIsExecuting] = useState(false);
+  const [executionResult, setExecutionResult] = useState<any>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  /**
-   * Get current tool schema
-   */
-  const currentTool = useMemo(() => {
-    if (!serverId || !toolName) return null;
-    return getTool(serverId, toolName);
-  }, [serverId, toolName, getTool]);
+  // Handle parameter input change
+  const handleParameterChange = useCallback((key: string, value: string) => {
+    setParameterInputs((prev) => ({ ...prev, [key]: value }));
+  }, []);
 
-  /**
-   * Handle parameter change
-   */
-  const handleParameterChange = useCallback(
-    (paramName: string, value: any) => {
-      setParameters((prev) => ({
-        ...prev,
-        [paramName]: value,
-      }));
-      // Clear validation error for this parameter
-      setValidationErrors((prev) => {
-        const updated = { ...prev };
-        delete updated[paramName];
-        return updated;
-      });
-    },
-    []
-  );
-
-  /**
-   * Handle file picker for file parameters
-   */
-  const handlePickFile = useCallback(
-    async (paramName: string, accept?: string) => {
+  // Parse parameters
+  const parseParameters = useCallback((): Record<string, any> => {
+    const parsed: Record<string, any> = {};
+    Object.entries(parameterInputs).forEach(([key, value]) => {
       try {
-        // Check if it's an image
-        if (accept?.includes('image')) {
-          const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: false,
-            aspect: [4, 3],
-            quality: 1,
-          });
-
-          if (!result.canceled && result.assets[0]) {
-            handleParameterChange(paramName, result.assets[0].uri);
-          }
-        } else {
-          // Use document picker for other files
-          const result = await DocumentPicker.getDocumentAsync({
-            type: accept || '*/*',
-          });
-
-          if (result.type === 'success') {
-            handleParameterChange(paramName, result.uri);
-          }
-        }
-      } catch (err) {
-        Alert.alert('Error', 'Failed to pick file');
+        // Try to parse as JSON first
+        parsed[key] = JSON.parse(value);
+      } catch {
+        // Fall back to string
+        parsed[key] = value;
       }
-    },
-    [handleParameterChange]
-  );
+    });
+    return parsed;
+  }, [parameterInputs]);
 
-  /**
-   * Handle execute button press
-   */
-  const handleExecute = useCallback(async () => {
-    if (!serverId || !toolName) {
-      Alert.alert('Error', 'Please select a server and tool');
-      return;
-    }
-
-    // Validate parameters
-    const validation = await validateParameters(serverId, toolName, parameters);
-    if (!validation.isValid) {
-      const errors: Record<string, string> = {};
-      validation.errors.forEach((error) => {
-        const match = error.match(/Parameter (\w+)/);
-        if (match) {
-          errors[match[1]] = error;
-        }
-      });
-      setValidationErrors(errors);
-      Alert.alert('Validation Error', validation.errors.join('\n'));
+  // Handle execute tool
+  const handleExecuteTool = useCallback(async () => {
+    if (!formData.serverId || !formData.toolName || !isReady) {
+      Alert.alert('Error', 'Please fill in all required fields and ensure bridge is ready');
       return;
     }
 
     setIsExecuting(true);
-    try {
-      const result = await executeTool(serverId, toolName, parameters, timeoutMs);
+    setError(null);
+    setExecutionResult(null);
 
-      if (result.success) {
-        Alert.alert('Success', 'Tool executed successfully. View results in the Results tab.');
-        // Navigate to results screen
-        router.push('/(tabs)/results');
+    try {
+      const parameters = parseParameters();
+      const result = await executeTool(formData.serverId, formData.toolName, parameters);
+
+      if (result) {
+        setExecutionResult(result);
+        Alert.alert('Success', 'Tool executed successfully');
       } else {
-        Alert.alert('Execution Failed', result.error?.message || 'Unknown error');
+        Alert.alert('Error', 'Tool execution returned no result');
       }
     } catch (err) {
-      Alert.alert('Error', err instanceof Error ? err.message : 'Execution failed');
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      Alert.alert('Execution Error', errorMsg);
     } finally {
       setIsExecuting(false);
     }
-  }, [serverId, toolName, parameters, timeoutMs, validateParameters, executeTool, router]);
-
-  /**
-   * Render parameter input based on schema type
-   */
-  const renderParameterInput = (
-    paramName: string,
-    schema: JsonSchema,
-    isRequired: boolean
-  ): React.ReactNode => {
-    const value = parameters[paramName];
-    const error = validationErrors[paramName];
-
-    switch (schema.type) {
-      case 'string':
-        return (
-          <View key={paramName} className="mb-4">
-            <View className="flex-row items-center justify-between mb-2">
-              <Text className="text-sm font-semibold text-foreground">
-                {paramName}
-                {isRequired && <Text className="text-error">*</Text>}
-              </Text>
-              {schema.description && (
-                <Text className="text-xs text-muted">{schema.description}</Text>
-              )}
-            </View>
-            <TextInput
-              className={cn(
-                'px-4 py-3 rounded-lg border text-foreground',
-                error ? 'border-error bg-error/10' : 'border-border bg-surface'
-              )}
-              placeholder={schema.description || `Enter ${paramName}`}
-              placeholderTextColor={colors.muted}
-              value={String(value || '')}
-              onChangeText={(text) => handleParameterChange(paramName, text)}
-              editable={!isExecuting}
-              multiline={schema.format === 'textarea'}
-              numberOfLines={schema.format === 'textarea' ? 4 : 1}
-            />
-            {error && <Text className="text-xs text-error mt-1">{error}</Text>}
-          </View>
-        );
-
-      case 'number':
-      case 'integer':
-        return (
-          <View key={paramName} className="mb-4">
-            <View className="flex-row items-center justify-between mb-2">
-              <Text className="text-sm font-semibold text-foreground">
-                {paramName}
-                {isRequired && <Text className="text-error">*</Text>}
-              </Text>
-              {schema.minimum !== undefined && schema.maximum !== undefined && (
-                <Text className="text-xs text-muted">
-                  {schema.minimum}-{schema.maximum}
-                </Text>
-              )}
-            </View>
-            <TextInput
-              className={cn(
-                'px-4 py-3 rounded-lg border text-foreground',
-                error ? 'border-error bg-error/10' : 'border-border bg-surface'
-              )}
-              placeholder={`Enter ${paramName}`}
-              placeholderTextColor={colors.muted}
-              value={String(value || '')}
-              onChangeText={(text) =>
-                handleParameterChange(
-                  paramName,
-                  schema.type === 'integer' ? parseInt(text) : parseFloat(text)
-                )
-              }
-              keyboardType="decimal-pad"
-              editable={!isExecuting}
-            />
-            {error && <Text className="text-xs text-error mt-1">{error}</Text>}
-          </View>
-        );
-
-      case 'boolean':
-        return (
-          <View key={paramName} className="mb-4 flex-row items-center justify-between py-3">
-            <Text className="text-sm font-semibold text-foreground">
-              {paramName}
-              {isRequired && <Text className="text-error">*</Text>}
-            </Text>
-            <Switch
-              value={value || false}
-              onValueChange={(newValue) => handleParameterChange(paramName, newValue)}
-              disabled={isExecuting}
-              trackColor={{ false: colors.border, true: colors.primary }}
-            />
-          </View>
-        );
-
-      case 'array':
-        return (
-          <View key={paramName} className="mb-4">
-            <Text className="text-sm font-semibold text-foreground mb-2">
-              {paramName}
-              {isRequired && <Text className="text-error">*</Text>}
-            </Text>
-            <TextInput
-              className={cn(
-                'px-4 py-3 rounded-lg border text-foreground',
-                error ? 'border-error bg-error/10' : 'border-border bg-surface'
-              )}
-              placeholder="Enter comma-separated values"
-              placeholderTextColor={colors.muted}
-              value={Array.isArray(value) ? value.join(', ') : ''}
-              onChangeText={(text) =>
-                handleParameterChange(paramName, text.split(',').map((s) => s.trim()))
-              }
-              editable={!isExecuting}
-            />
-            {error && <Text className="text-xs text-error mt-1">{error}</Text>}
-          </View>
-        );
-
-      case 'object':
-        // Check if it's a file type
-        if (schema.format === 'binary' || schema.description?.toLowerCase().includes('file')) {
-          return (
-            <View key={paramName} className="mb-4">
-              <View className="flex-row items-center justify-between mb-2">
-                <Text className="text-sm font-semibold text-foreground">
-                  {paramName}
-                  {isRequired && <Text className="text-error">*</Text>}
-                </Text>
-              </View>
-              <Pressable
-                onPress={() => handlePickFile(paramName, schema.description)}
-                className={cn(
-                  'px-4 py-3 rounded-lg border-2 items-center justify-center',
-                  error ? 'border-error bg-error/10' : 'border-dashed border-primary bg-primary/5'
-                )}
-              >
-                <Text className="text-primary font-semibold">📁 Pick File</Text>
-                {value && (
-                  <Text className="text-xs text-muted mt-1">{String(value).split('/').pop()}</Text>
-                )}
-              </Pressable>
-              {error && <Text className="text-xs text-error mt-1">{error}</Text>}
-            </View>
-          );
-        }
-        // Fall through to default for other objects
-        return (
-          <View key={paramName} className="mb-4">
-            <Text className="text-sm font-semibold text-foreground mb-2">
-              {paramName}
-              {isRequired && <Text className="text-error">*</Text>}
-            </Text>
-            <TextInput
-              className={cn(
-                'px-4 py-3 rounded-lg border text-foreground',
-                error ? 'border-error bg-error/10' : 'border-border bg-surface'
-              )}
-              placeholder={`Enter ${paramName}`}
-              placeholderTextColor={colors.muted}
-              value={String(value || '')}
-              onChangeText={(text) => handleParameterChange(paramName, text)}
-              editable={!isExecuting}
-            />
-            {error && <Text className="text-xs text-error mt-1">{error}</Text>}
-          </View>
-        );
-
-      default:
-        return (
-          <View key={paramName} className="mb-4">
-            <Text className="text-sm font-semibold text-foreground mb-2">
-              {paramName}
-              {isRequired && <Text className="text-error">*</Text>}
-            </Text>
-            <TextInput
-              className={cn(
-                'px-4 py-3 rounded-lg border text-foreground',
-                error ? 'border-error bg-error/10' : 'border-border bg-surface'
-              )}
-              placeholder={`Enter ${paramName}`}
-              placeholderTextColor={colors.muted}
-              value={String(value || '')}
-              onChangeText={(text) => handleParameterChange(paramName, text)}
-              editable={!isExecuting}
-            />
-            {error && <Text className="text-xs text-error mt-1">{error}</Text>}
-          </View>
-        );
-    }
-  };
-
-  /**
-   * Render parameter form
-   */
-  const renderParameterForm = () => {
-    if (!currentTool) {
-      return (
-        <View className="py-8 items-center">
-          <Text className="text-muted text-center">Select a tool to see its parameters</Text>
-        </View>
-      );
-    }
-
-    const schema = currentTool.inputSchema;
-    const requiredParams = schema.required || [];
-    const properties = schema.properties || {};
-
-    if (Object.keys(properties).length === 0) {
-      return (
-        <View className="py-4">
-          <Text className="text-muted text-center">This tool has no parameters</Text>
-        </View>
-      );
-    }
-
-    return (
-      <View>
-        {Object.entries(properties).map(([paramName, paramSchema]) =>
-          renderParameterInput(paramName, paramSchema, requiredParams.includes(paramName))
-        )}
-      </View>
-    );
-  };
+  }, [formData, isReady, parseParameters, executeTool, setError]);
 
   return (
-    <ScreenContainer className="p-6">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScreenContainer className="flex-1 bg-background">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-4">
         {/* Header */}
         <View className="mb-6">
           <Text className="text-3xl font-bold text-foreground mb-2">Execute Tool</Text>
-          <Text className="text-muted">Run tools with custom parameters</Text>
+          <Text className="text-sm text-muted">
+            {isReady ? 'Bridge Ready' : 'Bridge Loading...'}
+          </Text>
         </View>
 
-        {/* Tool Selection */}
-        <View className="bg-surface rounded-lg p-6 border border-border mb-6">
-          <Text className="text-sm font-semibold text-foreground mb-2">Server ID</Text>
-          <TextInput
-            className="px-4 py-3 rounded-lg border border-border bg-background text-foreground mb-4"
-            placeholder="Enter server ID"
-            placeholderTextColor={colors.muted}
-            value={serverId}
-            onChangeText={setServerId}
-            editable={!isExecuting}
-          />
+        {/* Error Display */}
+        {error && (
+          <View className="mb-4 p-3 bg-error rounded-lg">
+            <Text className="text-sm text-background font-semibold">{error}</Text>
+            <Pressable onPress={() => setError(null)} className="mt-2">
+              <Text className="text-xs text-background underline">Dismiss</Text>
+            </Pressable>
+          </View>
+        )}
 
-          <Text className="text-sm font-semibold text-foreground mb-2">Tool Name</Text>
-          <TextInput
-            className="px-4 py-3 rounded-lg border border-border bg-background text-foreground mb-4"
-            placeholder="Enter tool name"
-            placeholderTextColor={colors.muted}
-            value={toolName}
-            onChangeText={setToolName}
-            editable={!isExecuting}
-          />
+        {/* Tool Selection Form */}
+        <View className="mb-6 bg-surface rounded-lg p-4">
+          <Text className="text-lg font-semibold text-foreground mb-4">Tool Details</Text>
 
-          <Text className="text-sm font-semibold text-foreground mb-2">Timeout (ms)</Text>
-          <TextInput
-            className="px-4 py-3 rounded-lg border border-border bg-background text-foreground"
-            placeholder="60000"
-            placeholderTextColor={colors.muted}
-            value={String(timeoutMs)}
-            onChangeText={(text) => setTimeoutMs(parseInt(text) || 60000)}
-            keyboardType="numeric"
-            editable={!isExecuting}
-          />
+          {/* Server ID */}
+          <View className="mb-4">
+            <Text className="text-sm font-medium text-foreground mb-2">Server ID</Text>
+            <TextInput
+              placeholder="e.g., filesystem-server"
+              placeholderTextColor={colors.muted}
+              value={formData.serverId}
+              onChangeText={(text) => setFormData((prev) => ({ ...prev, serverId: text }))}
+              className="bg-background text-foreground p-3 rounded-lg border border-border"
+              editable={!isExecuting}
+            />
+          </View>
+
+          {/* Tool Name */}
+          <View className="mb-4">
+            <Text className="text-sm font-medium text-foreground mb-2">Tool Name</Text>
+            <TextInput
+              placeholder="e.g., read_file"
+              placeholderTextColor={colors.muted}
+              value={formData.toolName}
+              onChangeText={(text) => setFormData((prev) => ({ ...prev, toolName: text }))}
+              className="bg-background text-foreground p-3 rounded-lg border border-border"
+              editable={!isExecuting}
+            />
+          </View>
         </View>
 
         {/* Parameters Form */}
-        {currentTool && (
-          <View className="bg-surface rounded-lg p-6 border border-border mb-6">
-            <Text className="text-lg font-bold text-foreground mb-4">Parameters</Text>
-            {renderParameterForm()}
+        {formData.toolName && (
+          <View className="mb-6 bg-surface rounded-lg p-4">
+            <Text className="text-lg font-semibold text-foreground mb-4">Parameters</Text>
+
+            {/* Example: path parameter */}
+            <View className="mb-4">
+              <Text className="text-sm font-medium text-foreground mb-2">path</Text>
+              <TextInput
+                placeholder="/path/to/file"
+                placeholderTextColor={colors.muted}
+                value={parameterInputs.path || ''}
+                onChangeText={(text) => handleParameterChange('path', text)}
+                className="bg-background text-foreground p-3 rounded-lg border border-border"
+                editable={!isExecuting}
+              />
+              <Text className="text-xs text-muted mt-1">File path to read</Text>
+            </View>
+
+            {/* Advanced Options */}
+            <Pressable
+              onPress={() => setShowAdvanced(!showAdvanced)}
+              className="mb-4"
+            >
+              <Text className="text-sm font-medium text-primary">
+                {showAdvanced ? '▼ Hide Advanced' : '▶ Show Advanced'}
+              </Text>
+            </Pressable>
+
+            {showAdvanced && (
+              <>
+                <View className="mb-4">
+                  <Text className="text-sm font-medium text-foreground mb-2">Custom JSON</Text>
+                  <TextInput
+                    placeholder='{"key": "value"}'
+                    placeholderTextColor={colors.muted}
+                    value={parameterInputs.custom || ''}
+                    onChangeText={(text) => handleParameterChange('custom', text)}
+                    className="bg-background text-foreground p-3 rounded-lg border border-border"
+                    multiline
+                    numberOfLines={4}
+                    editable={!isExecuting}
+                  />
+                  <Text className="text-xs text-muted mt-1">Raw JSON parameters</Text>
+                </View>
+              </>
+            )}
           </View>
         )}
 
         {/* Execute Button */}
         <Pressable
-          onPress={handleExecute}
-          disabled={isExecuting || !serverId || !toolName}
+          onPress={handleExecuteTool}
+          disabled={isExecuting || !isReady || !formData.serverId || !formData.toolName}
           className={cn(
-            'py-4 px-6 rounded-lg flex-row items-center justify-center',
-            isExecuting || !serverId || !toolName ? 'bg-primary/50' : 'bg-primary'
+            'p-4 rounded-lg items-center justify-center mb-6',
+            isExecuting || !isReady || !formData.serverId || !formData.toolName
+              ? 'bg-muted'
+              : 'bg-primary'
           )}
         >
           {isExecuting ? (
-            <>
-              <ActivityIndicator color={colors.background} size="small" />
-              <Text className="text-background font-semibold ml-2">Executing...</Text>
-            </>
+            <ActivityIndicator color={colors.background} />
           ) : (
-            <Text className="text-background font-semibold">Execute Tool</Text>
+            <Text className="text-base font-semibold text-background">Execute Tool</Text>
           )}
         </Pressable>
+
+        {/* Execution Result */}
+        {executionResult && (
+          <View className="p-4 bg-surface rounded-lg border border-success">
+            <Text className="text-lg font-semibold text-foreground mb-4">Result</Text>
+            <Text className="text-sm text-foreground font-mono">
+              {typeof executionResult === 'string'
+                ? executionResult
+                : JSON.stringify(executionResult, null, 2)}
+            </Text>
+            <Pressable
+              onPress={() => {
+                setExecutionResult(null);
+                setFormData({ serverId: '', toolName: '', parameters: {} });
+                setParameterInputs({});
+              }}
+              className="mt-4 p-2 bg-primary rounded"
+            >
+              <Text className="text-sm font-medium text-background text-center">Clear</Text>
+            </Pressable>
+          </View>
+        )}
       </ScrollView>
     </ScreenContainer>
   );

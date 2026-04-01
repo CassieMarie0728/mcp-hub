@@ -1,3 +1,4 @@
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   ScrollView,
   Text,
@@ -8,358 +9,190 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import { useState, useCallback, useEffect } from 'react';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
-import { useToolDiscovery, ToolSchema } from '@/lib/hooks/useToolDiscovery';
-import { useMCPServerConnection } from '@/lib/hooks/useMCPServerConnection';
+import { useMCPBridge } from '@/lib/hooks/useMCPBridge';
+
+interface Tool {
+  name: string;
+  description: string;
+  inputSchema?: {
+    type: string;
+    properties?: Record<string, any>;
+    required?: string[];
+  };
+}
 
 /**
- * Tool Discovery Screen
- * Browse, search, and filter available tools from connected MCP servers
+ * Updated Tool Discovery Screen
+ * Discovers tools from connected MCP servers using the Kotlin bridge
  */
-export default function ToolDiscoveryScreen() {
+export default function ToolDiscoveryUpdatedScreen() {
   const colors = useColors();
-  const { discoveryStates, globalError, discoverTools, searchTools, getCategories } =
-    useToolDiscovery();
-  const { connections } = useMCPServerConnection();
+  const { isReady, error, setError, discoveredTools, discoverTools } = useMCPBridge();
 
   // UI State
-  const [selectedServerId, setSelectedServerId] = useState<string | null>(null);
+  const [selectedServerId, setSelectedServerId] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedTool, setSelectedTool] = useState<ToolSchema | null>(null);
   const [isDiscovering, setIsDiscovering] = useState(false);
+  const [tools, setTools] = useState<Tool[]>([]);
+  const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
 
-  // Auto-select first connected server
-  useEffect(() => {
-    if (!selectedServerId && connections.length > 0) {
-      const connectedServer = connections.find((c) => c.isConnected);
-      if (connectedServer) {
-        setSelectedServerId(connectedServer.id);
-      }
-    }
-  }, [connections, selectedServerId]);
-
-  // Auto-discover tools when server is selected
-  useEffect(() => {
-    if (selectedServerId) {
-      handleDiscoverTools();
-    }
-  }, [selectedServerId]);
-
-  /**
-   * Handle discover tools button press
-   */
+  // Handle discover tools
   const handleDiscoverTools = useCallback(async () => {
-    if (!selectedServerId) {
-      Alert.alert('Error', 'Please select a server first');
+    if (!selectedServerId || !isReady) {
+      Alert.alert('Error', 'Please select a server and ensure bridge is ready');
       return;
     }
 
     setIsDiscovering(true);
+    setError(null);
+
     try {
-      await discoverTools(selectedServerId, false);
+      const result = await discoverTools(selectedServerId);
+      if (result && Array.isArray(result)) {
+        setTools(result);
+        Alert.alert('Success', `Discovered ${result.length} tools`);
+      } else {
+        Alert.alert('Error', 'Failed to discover tools');
+      }
     } catch (err) {
-      Alert.alert('Discovery Failed', err instanceof Error ? err.message : 'Failed to discover tools');
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      Alert.alert('Discovery Error', errorMsg);
     } finally {
       setIsDiscovering(false);
     }
-  }, [selectedServerId, discoverTools]);
+  }, [selectedServerId, isReady, discoverTools, setError]);
 
-  /**
-   * Get current discovery state
-   */
-  const currentDiscoveryState = selectedServerId
-    ? discoveryStates.find((state) => state.serverId === selectedServerId)
-    : null;
-
-  /**
-   * Get filtered tools
-   */
-  const getFilteredTools = useCallback((): ToolSchema[] => {
-    if (!currentDiscoveryState) return [];
-
-    let tools = currentDiscoveryState.tools;
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      tools = tools.filter(
-        (tool) =>
-          tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Filter by category
-    if (selectedCategory) {
-      tools = tools.filter((tool) => tool.category === selectedCategory);
-    }
-
-    return tools;
-  }, [currentDiscoveryState, searchQuery, selectedCategory]);
-
-  const filteredTools = getFilteredTools();
-  const categories = selectedServerId
-    ? currentDiscoveryState?.tools.reduce((acc, tool) => {
-        if (tool.category && !acc.includes(tool.category)) {
-          acc.push(tool.category);
-        }
-        return acc;
-      }, [] as string[])
-    : [];
-
-  /**
-   * Render server selector
-   */
-  const renderServerSelector = () => (
-    <View className="mb-6">
-      <Text className="text-sm font-semibold text-foreground mb-2">Select Server</Text>
-      <FlatList
-        horizontal
-        data={connections.filter((c) => c.isConnected)}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Pressable
-            onPress={() => {
-              setSelectedServerId(item.id);
-              setSelectedCategory(null);
-              setSearchQuery('');
-            }}
-            className={cn(
-              'py-2 px-4 rounded-full border-2 mr-2',
-              selectedServerId === item.id
-                ? 'border-primary bg-primary/10'
-                : 'border-border bg-surface'
-            )}
-          >
-            <Text
-              className={cn(
-                'text-sm font-semibold',
-                selectedServerId === item.id ? 'text-primary' : 'text-foreground'
-              )}
-            >
-              {item.name}
-            </Text>
-          </Pressable>
-        )}
-        scrollEnabled={true}
-        showsHorizontalScrollIndicator={false}
-      />
-    </View>
+  // Filter tools by search query
+  const filteredTools = tools.filter((tool) =>
+    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tool.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  /**
-   * Render search bar
-   */
-  const renderSearchBar = () => (
-    <View className="mb-4">
-      <TextInput
-        className="px-4 py-3 rounded-lg border border-border bg-surface text-foreground"
-        placeholder="Search tools..."
-        placeholderTextColor={colors.muted}
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        editable={!isDiscovering}
-      />
-    </View>
-  );
-
-  /**
-   * Render category filter
-   */
-  const renderCategoryFilter = () => {
-    if (categories.length === 0) return null;
-
-    return (
-      <View className="mb-4">
-        <Text className="text-xs font-semibold text-muted uppercase mb-2">Categories</Text>
-        <FlatList
-          horizontal
-          data={categories}
-          keyExtractor={(item) => item}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => setSelectedCategory(selectedCategory === item ? null : item)}
-              className={cn(
-                'py-1 px-3 rounded-full border mr-2',
-                selectedCategory === item
-                  ? 'border-primary bg-primary/20'
-                  : 'border-border bg-surface'
-              )}
-            >
-              <Text
-                className={cn(
-                  'text-xs font-semibold',
-                  selectedCategory === item ? 'text-primary' : 'text-foreground'
-                )}
-              >
-                {item}
-              </Text>
-            </Pressable>
-          )}
-          scrollEnabled={true}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-    );
-  };
-
-  /**
-   * Render tool item
-   */
-  const renderToolItem = (tool: ToolSchema) => (
+  // Render tool card
+  const renderToolCard = ({ item: tool }: { item: Tool }) => (
     <Pressable
-      key={tool.name}
       onPress={() => setSelectedTool(tool)}
-      className={cn(
-        'p-4 rounded-lg border mb-3',
-        selectedTool?.name === tool.name ? 'border-primary bg-primary/5' : 'border-border bg-surface'
-      )}
+      className="mb-3 p-4 bg-surface rounded-lg border border-border"
     >
-      <View className="flex-row items-start justify-between mb-2">
-        <View className="flex-1">
-          <Text className="font-semibold text-foreground text-base">{tool.name}</Text>
-          {tool.category && (
-            <Text className="text-xs text-muted mt-1">{tool.category}</Text>
-          )}
-        </View>
-      </View>
-      <Text className="text-sm text-foreground/80 leading-relaxed">{tool.description}</Text>
-      {tool.tags && tool.tags.length > 0 && (
-        <View className="flex-row flex-wrap gap-1 mt-3">
-          {tool.tags.slice(0, 3).map((tag) => (
-            <View key={tag} className="bg-primary/10 px-2 py-1 rounded">
-              <Text className="text-xs text-primary">{tag}</Text>
-            </View>
-          ))}
-          {tool.tags.length > 3 && (
-            <Text className="text-xs text-muted self-center">+{tool.tags.length - 3}</Text>
-          )}
-        </View>
+      <Text className="text-base font-semibold text-foreground mb-1">{tool.name}</Text>
+      <Text className="text-sm text-muted mb-2">{tool.description || 'No description'}</Text>
+      {tool.inputSchema?.properties && (
+        <Text className="text-xs text-muted">
+          Parameters: {Object.keys(tool.inputSchema.properties).join(', ')}
+        </Text>
       )}
     </Pressable>
   );
 
-  /**
-   * Render tool details panel
-   */
-  const renderToolDetails = () => {
-    if (!selectedTool) return null;
-
-    return (
-      <View className="mt-6 p-4 bg-surface rounded-lg border border-primary">
-        <Text className="text-lg font-bold text-foreground mb-2">{selectedTool.name}</Text>
-        <Text className="text-sm text-foreground/80 mb-4">{selectedTool.description}</Text>
-
-        {selectedTool.inputSchema && (
-          <View className="mb-4">
-            <Text className="text-sm font-semibold text-foreground mb-2">Parameters</Text>
-            <View className="bg-background/50 p-3 rounded">
-              <Text className="text-xs font-mono text-muted">
-                {JSON.stringify(selectedTool.inputSchema, null, 2).substring(0, 200)}...
-              </Text>
-            </View>
-          </View>
-        )}
-
-        <Pressable className="py-3 px-4 bg-primary rounded-lg">
-          <Text className="text-background font-semibold text-center">Execute Tool</Text>
-        </Pressable>
-      </View>
-    );
-  };
-
-  /**
-   * Render loading state
-   */
-  if (currentDiscoveryState?.isLoading) {
-    return (
-      <ScreenContainer className="p-6 items-center justify-center">
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text className="text-foreground mt-4">Discovering tools...</Text>
-      </ScreenContainer>
-    );
-  }
-
-  /**
-   * Render empty state
-   */
-  if (!selectedServerId) {
-    return (
-      <ScreenContainer className="p-6 items-center justify-center">
-        <Text className="text-foreground text-center text-lg font-semibold mb-2">
-          No Connected Servers
-        </Text>
-        <Text className="text-muted text-center">
-          Please connect to an MCP server first to discover tools
-        </Text>
-      </ScreenContainer>
-    );
-  }
-
   return (
-    <ScreenContainer className="p-6">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScreenContainer className="flex-1 bg-background">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-4">
         {/* Header */}
         <View className="mb-6">
           <Text className="text-3xl font-bold text-foreground mb-2">Discover Tools</Text>
-          <Text className="text-muted">Browse available tools from your MCP servers</Text>
+          <Text className="text-sm text-muted">
+            {isReady ? 'Bridge Ready' : 'Bridge Loading...'}
+          </Text>
         </View>
 
-        {/* Error Alert */}
-        {globalError && (
-          <View className="mb-4 p-4 bg-error/10 border border-error rounded-lg">
-            <Text className="text-error text-sm">{globalError}</Text>
+        {/* Error Display */}
+        {error && (
+          <View className="mb-4 p-3 bg-error rounded-lg">
+            <Text className="text-sm text-background font-semibold">{error}</Text>
+            <Pressable onPress={() => setError(null)} className="mt-2">
+              <Text className="text-xs text-background underline">Dismiss</Text>
+            </Pressable>
           </View>
         )}
 
-        {/* Server Selector */}
-        {renderServerSelector()}
+        {/* Server Selection */}
+        <View className="mb-6 bg-surface rounded-lg p-4">
+          <Text className="text-lg font-semibold text-foreground mb-4">Select Server</Text>
 
-        {/* Refresh Button */}
-        <Pressable
-          onPress={handleDiscoverTools}
-          disabled={isDiscovering}
-          className={cn(
-            'py-3 px-4 rounded-lg mb-4',
-            isDiscovering ? 'bg-primary/50' : 'bg-primary'
-          )}
-        >
-          <Text className="text-background font-semibold text-center">
-            {isDiscovering ? 'Discovering...' : 'Refresh Tools'}
-          </Text>
-        </Pressable>
+          <TextInput
+            placeholder="Enter server ID (e.g., filesystem-server)"
+            placeholderTextColor={colors.muted}
+            value={selectedServerId}
+            onChangeText={setSelectedServerId}
+            className="bg-background text-foreground p-3 rounded-lg border border-border mb-4"
+            editable={!isDiscovering}
+          />
 
-        {/* Search Bar */}
-        {renderSearchBar()}
-
-        {/* Category Filter */}
-        {renderCategoryFilter()}
-
-        {/* Tools List */}
-        <View className="flex-1">
-          {filteredTools.length === 0 ? (
-            <View className="py-8 items-center">
-              <Text className="text-muted text-center">
-                {searchQuery || selectedCategory
-                  ? 'No tools match your search'
-                  : 'No tools available'}
-              </Text>
-            </View>
-          ) : (
-            <View>
-              <Text className="text-sm font-semibold text-muted mb-3">
-                {filteredTools.length} tool{filteredTools.length !== 1 ? 's' : ''}
-              </Text>
-              {filteredTools.map(renderToolItem)}
-            </View>
-          )}
+          <Pressable
+            onPress={handleDiscoverTools}
+            disabled={isDiscovering || !isReady || !selectedServerId}
+            className={cn(
+              'p-4 rounded-lg items-center justify-center',
+              isDiscovering || !isReady || !selectedServerId ? 'bg-muted' : 'bg-primary'
+            )}
+          >
+            {isDiscovering ? (
+              <ActivityIndicator color={colors.background} />
+            ) : (
+              <Text className="text-base font-semibold text-background">Discover Tools</Text>
+            )}
+          </Pressable>
         </View>
 
+        {/* Search */}
+        {tools.length > 0 && (
+          <View className="mb-4">
+            <TextInput
+              placeholder="Search tools..."
+              placeholderTextColor={colors.muted}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              className="bg-surface text-foreground p-3 rounded-lg border border-border"
+            />
+          </View>
+        )}
+
+        {/* Tools List */}
+        {tools.length > 0 ? (
+          <View className="mb-4">
+            <Text className="text-lg font-semibold text-foreground mb-4">
+              Tools ({filteredTools.length})
+            </Text>
+            <FlatList
+              scrollEnabled={false}
+              data={filteredTools}
+              keyExtractor={(item) => item.name}
+              renderItem={renderToolCard}
+            />
+          </View>
+        ) : isDiscovering ? (
+          <View className="items-center justify-center py-8">
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text className="text-sm text-muted mt-4">Discovering tools...</Text>
+          </View>
+        ) : (
+          <View className="items-center justify-center py-8">
+            <Text className="text-sm text-muted">No tools discovered yet</Text>
+            <Text className="text-xs text-muted mt-2">Select a server and tap Discover Tools</Text>
+          </View>
+        )}
+
         {/* Tool Details */}
-        {renderToolDetails()}
+        {selectedTool && (
+          <View className="mt-6 p-4 bg-surface rounded-lg border border-primary">
+            <Pressable onPress={() => setSelectedTool(null)} className="mb-4">
+              <Text className="text-sm font-medium text-primary">✕ Close</Text>
+            </Pressable>
+            <Text className="text-lg font-semibold text-foreground mb-2">{selectedTool.name}</Text>
+            <Text className="text-sm text-muted mb-4">{selectedTool.description}</Text>
+            {selectedTool.inputSchema && (
+              <>
+                <Text className="text-sm font-medium text-foreground mb-2">Parameters:</Text>
+                <Text className="text-xs text-muted font-mono">
+                  {JSON.stringify(selectedTool.inputSchema, null, 2)}
+                </Text>
+              </>
+            )}
+          </View>
+        )}
       </ScrollView>
     </ScreenContainer>
   );
