@@ -106,6 +106,27 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="library-books" size={28} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="macro-sharing"
+        options={{
+          title: "Share",
+          tabBarIcon: ({ color }) => <MaterialIcons name="share" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="macro-scheduling"
+        options={{
+          title: "Schedule",
+          tabBarIcon: ({ color }) => <MaterialIcons name="schedule" size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="macro-chaining"
+        options={{
+          title: "Chains",
+          tabBarIcon: ({ color }) => <MaterialIcons name="link" size={28} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
