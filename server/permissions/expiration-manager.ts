@@ -30,7 +30,7 @@ export class ExpirationManager {
       executed: false,
       timeout: setTimeout(() => {
         this.executeExpiration(taskId);
-      }, Math.max(0, timeUntilExpiry)),
+      }, Math.max(0, timeUntilExpiry)) as unknown as NodeJS.Timeout,
     };
 
     this.expirationTasks.set(taskId, task);

@@ -52,12 +52,12 @@ export function Skeleton({
     <Animated.View
       style={[
         {
-          width,
-          height,
+          width: typeof width === 'string' ? width : (width as number),
+          height: typeof height === 'string' ? height : (height as number),
           borderRadius,
           backgroundColor: colors.surface,
           opacity: animated ? opacity : 0.6,
-        },
+        } as any,
       ]}
       className={className}
     />

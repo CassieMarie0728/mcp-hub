@@ -465,7 +465,7 @@ export function usePerceptionMonitor(interval: number = 1000) {
       if (result) {
         setPerceptions((prev) => [...prev.slice(-9), result]);
       }
-    }, interval);
+    }, interval) as unknown as NodeJS.Timeout;
   }, [isMonitoring, captureHybridPerception, interval]);
 
   const stopMonitoring = useCallback(() => {

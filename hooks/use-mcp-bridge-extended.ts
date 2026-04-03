@@ -11,6 +11,9 @@ export interface AuditLogEntry {
   status: 'success' | 'error' | 'pending';
   duration?: number;
   message?: string;
+  userId?: string;
+  error?: string | null;
+  result?: unknown;
 }
 
 export interface AuditLogStats {

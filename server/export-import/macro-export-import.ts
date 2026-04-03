@@ -78,8 +78,8 @@ export class MacroExportImportEngine {
 
       // Create macro object
       const macro = {
-        id: `macro_${Date.now()}`,
         ...exported.macro,
+        id: `macro_${Date.now()}`,
         imported: true,
         importedAt: new Date(),
         originalId: exported.macro.id,

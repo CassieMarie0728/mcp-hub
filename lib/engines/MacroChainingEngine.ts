@@ -112,9 +112,16 @@ export class MacroChainingEngine {
           const parameters = this.mapParameters(step, macro, context);
 
           // Execute macro step
-          const result = await MacroExecutionEngine.executeMacro(macro, parameters, step.timeout);
+          const engine = new MacroExecutionEngine();
+          const execution = await engine.executeMacro(macro, {
+            variables: parameters,
+            timeout: step.timeout,
+          });
+          const result = execution;
 
-          execution.stepResults.push(result);
+          // Store step result
+          // Store the macro execution result
+          (execution as unknown as ChainExecution).stepResults.push(result);
 
           // Update context with result for next step
           context[`step_${i}_result`] = result;
@@ -193,8 +200,13 @@ export class MacroChainingEngine {
           }
 
           const parameters = this.mapParameters(step, macro, context);
-          const result = await MacroExecutionEngine.executeMacro(macro, parameters, step.timeout);
+          const engine = new MacroExecutionEngine();
+          const result = await engine.executeMacro(macro, {
+            variables: parameters,
+            timeout: step.timeout,
+          });
 
+          // Store the macro execution result
           execution.stepResults.push(result);
           context[`step_${i}_result`] = result;
         } catch (error) {
