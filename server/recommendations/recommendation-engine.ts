@@ -152,7 +152,7 @@ export class MacroRecommendationEngine {
         macroId,
         score,
         reason: 'Users similar to you enjoy this macro',
-        method: 'collaborative',
+        method: 'collaborative' as const,
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
@@ -192,7 +192,7 @@ export class MacroRecommendationEngine {
         macroId,
         score,
         reason: 'Similar to macros you use',
-        method: 'content',
+        method: 'content' as const,
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);

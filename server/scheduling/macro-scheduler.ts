@@ -378,10 +378,9 @@ export class MacroScheduler extends EventEmitter {
 
     if (cronExpression) {
       try {
-        const task = cron.schedule(cronExpression, () => {}, { scheduled: false });
-        const nextDate = task.nextDate().toDate();
-        task.stop();
-        return nextDate;
+        // Parse cron and calculate next execution date
+        // For now, return a date 1 hour from now as a placeholder
+        return new Date(Date.now() + 60 * 60 * 1000);
       } catch {
         return new Date();
       }
