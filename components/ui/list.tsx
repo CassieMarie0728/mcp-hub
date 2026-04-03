@@ -124,7 +124,7 @@ export function ListSection({ title, children, footer }: ListSectionProps) {
  */
 interface ListDataProps<T> {
   data: T[];
-  renderItem: (item: T, index: number) => React.ReactNode;
+  renderItem: (item: T, index: number) => React.ReactElement | null;
   keyExtractor?: (item: T, index: number) => string;
   variant?: 'plain' | 'grouped';
   emptyMessage?: string;

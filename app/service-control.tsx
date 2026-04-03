@@ -191,9 +191,7 @@ export default function ServiceControlScreen() {
 
         {/* Controls */}
         <Card variant="elevated" className="mb-6">
-          <CardHeader>
-            <Text className="text-lg font-bold text-foreground">Service Controls</Text>
-          </CardHeader>
+          <CardHeader title="Service Controls" />
           <CardContent className="gap-4">
             {status.isRunning ? (
               <Button
@@ -217,13 +215,9 @@ export default function ServiceControlScreen() {
               </Button>
             )}
           </CardContent>
-        </Card>
-
-        {/* Notifications */}
-        <Card variant="elevated" className="mb-8">
-          <CardHeader>
-            <Text className="text-lg font-bold text-foreground">Notifications</Text>
-          </CardHeader>
+        </Card>        {/* Service Status */}
+        <Card variant="outlined" className="mb-6">
+          <CardHeader title="Service Status" />
           <CardContent>
             <View className="flex-row items-center justify-between">
               <View className="flex-1 gap-1">

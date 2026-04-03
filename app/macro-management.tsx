@@ -220,14 +220,14 @@ export default function MacroManagementScreen() {
       <Modal visible={showModal} transparent animationType="fade">
         <View className="flex-1 bg-black/50 items-center justify-center px-6">
           <Card variant="elevated" className="w-full max-w-sm">
-            <CardHeader>
-              <View className="flex-row items-center justify-between">
-                <Text className="text-2xl font-bold text-foreground">Create Macro</Text>
+            <CardHeader
+              title="Create Macro"
+              action={
                 <TouchableOpacity onPress={() => setShowModal(false)}>
                   <Ionicons name="close" size={24} color={colors.foreground} />
                 </TouchableOpacity>
-              </View>
-            </CardHeader>
+              }
+            />
 
             <CardContent className="gap-4">
               {/* Name Input */}
