@@ -100,6 +100,8 @@ export default function RootLayout() {
               <Stack.Screen name="service-control" />
               <Stack.Screen name="perception-test" />
               <Stack.Screen name="macro-management" />
+              <Stack.Screen name="macro/[id]" />
+              <Stack.Screen name="template/[id]" />
             </Stack>
             <StatusBar style="auto" />
           </AppProvider>
