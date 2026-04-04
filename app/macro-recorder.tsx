@@ -24,13 +24,15 @@ export default function MacroRecorderScreen() {
 
   // Timer for recording duration
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout | undefined;
     if (isRecording && !isPaused) {
       interval = setInterval(() => {
         setRecordingDuration((prev) => prev + 100);
-      }, 100);
+      }, 100) as unknown as NodeJS.Timeout;
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [isRecording, isPaused]);
 
   /**

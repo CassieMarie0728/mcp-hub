@@ -171,7 +171,7 @@ export function ListData<T>({
  * Badge Component
  */
 interface BadgeProps {
-  variant?: 'status' | 'category' | 'count';
+  variant?: 'status' | 'category' | 'count' | 'secondary';
   children: string;
   color?: 'primary' | 'success' | 'warning' | 'error' | 'info';
 }
@@ -195,6 +195,7 @@ export function Badge({ variant = 'status', children, color = 'primary' }: Badge
       'rounded px-2 py-1'
     ),
     count: cn(colorMap[color].bg, colorMap[color].text, 'rounded-full w-6 h-6 items-center justify-center'),
+    secondary: cn('bg-surface border border-border text-foreground rounded px-2 py-1'),
   };
 
   return (

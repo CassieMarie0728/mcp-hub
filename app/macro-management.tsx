@@ -120,7 +120,7 @@ export default function MacroManagementScreen() {
             <Text className="text-sm text-muted">{item.description}</Text>
           )}
           <View className="flex-row items-center gap-2">
-            <Badge variant="secondary">{item.actions.length} actions</Badge>
+            <Badge variant="status" color="info">{item.actions.length} actions</Badge>
             <Text className="text-xs text-muted">{formatDate(item.createdAt)}</Text>
           </View>
         </View>

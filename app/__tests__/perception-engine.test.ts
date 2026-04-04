@@ -323,10 +323,10 @@ describe('Hybrid Perception Engine', () => {
     it('should debounce perception updates', () => {
       let callCount = 0;
       const debounce = (fn: () => void, delay: number) => {
-        let timeout: NodeJS.Timeout;
+        let timeout: NodeJS.Timeout | undefined;
         return () => {
-          clearTimeout(timeout);
-          timeout = setTimeout(fn, delay);
+          if (timeout) clearTimeout(timeout);
+          timeout = setTimeout(fn, delay) as unknown as NodeJS.Timeout;
         };
       };
 
