@@ -25,8 +25,21 @@ interface MacroItem {
   id: string;
   name: string;
   description?: string;
-  actions: any[];
+  actions: any[]; // Mapped from steps
   createdAt: number;
+}
+
+/**
+ * Convert Macro to MacroItem for list rendering
+ */
+function macroToMacroItem(macro: any): MacroItem {
+  return {
+    id: macro.id,
+    name: macro.name,
+    description: macro.description,
+    actions: macro.steps || [],
+    createdAt: macro.createdAt,
+  };
 }
 
 export default function MacroManagementScreen() {
@@ -60,11 +73,13 @@ export default function MacroManagementScreen() {
 
     setIsLoading(true);
     try {
-      await createMacro({
-        name: newMacroName.trim(),
-        description: newMacroDescription.trim() || undefined,
-        actions: [],
-      });
+      await createMacro(
+        newMacroName.trim(),
+        newMacroDescription.trim() || '',
+        'user_defined',
+        [],
+        []
+      );
       setNewMacroName('');
       setNewMacroDescription('');
       setShowModal(false);
@@ -120,7 +135,7 @@ export default function MacroManagementScreen() {
             <Text className="text-sm text-muted">{item.description}</Text>
           )}
           <View className="flex-row items-center gap-2">
-            <Badge variant="status" color="info">{item.actions.length} actions</Badge>
+            <Badge variant="status" color="info">{`${item.actions.length} actions`}</Badge>
             <Text className="text-xs text-muted">{formatDate(item.createdAt)}</Text>
           </View>
         </View>
@@ -207,7 +222,7 @@ export default function MacroManagementScreen() {
         ) : (
           <View className="gap-3 pb-8">
             <FlatList
-              data={macros}
+              data={macros.map(macroToMacroItem)}
               renderItem={renderMacroItem}
               keyExtractor={(item) => item.id}
               scrollEnabled={false}

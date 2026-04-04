@@ -1,20 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ResultDisplayFormatter } from '../../lib/utils/ResultDisplayFormatter';
-
-// Define ResultType enum for tests
-const ResultType = {
-  TEXT: 'TEXT',
-  JSON: 'JSON',
-  MARKDOWN: 'MARKDOWN',
-  HTML: 'HTML',
-  TABLE: 'TABLE',
-  TREE: 'TREE',
-  CODE_BLOCK: 'CODE_BLOCK',
-  IMAGE: 'IMAGE',
-  BINARY: 'BINARY',
-  STREAM: 'STREAM',
-  MIXED: 'MIXED',
-} as const;
+import { ResultType } from '../../lib/hooks/useToolExecution';
 
 describe('ResultDisplayFormatter', () => {
   describe('formatResult', () => {
