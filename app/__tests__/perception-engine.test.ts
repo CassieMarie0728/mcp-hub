@@ -347,7 +347,7 @@ describe('Hybrid Perception Engine', () => {
 
       for (let i = 0; i < 15; i++) {
         if (cache.size >= maxSize) {
-          const firstKey = cache.keys().next().value;
+          const firstKey = cache.keys().next().value as string;
           cache.delete(firstKey);
         }
         cache.set(`key_${i}`, { data: i });

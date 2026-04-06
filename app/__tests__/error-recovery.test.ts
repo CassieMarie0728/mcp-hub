@@ -85,8 +85,8 @@ describe('Error Recovery & Validation', () => {
     it('should track connection state', () => {
       const connectionState = {
         connected: false,
-        lastConnectedAt: null,
-        lastErrorAt: null,
+        lastConnectedAt: 0 as number | null,
+        lastErrorAt: 0 as number | null,
         errorCount: 0,
       };
 

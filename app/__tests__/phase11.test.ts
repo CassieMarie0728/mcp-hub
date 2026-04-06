@@ -36,6 +36,7 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
         name: 'Local Server',
         connectionType: 'stdio',
         command: 'node /path/to/server.js',
+        url: undefined,
       };
 
       expect(stdioConfig.connectionType).toBe('stdio');
@@ -352,7 +353,7 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
     });
 
     it('should handle missing audit log entries', () => {
-      const auditLog = [];
+      const auditLog: any[] = [];
 
       expect(auditLog).toHaveLength(0);
       expect(auditLog.length === 0).toBe(true);

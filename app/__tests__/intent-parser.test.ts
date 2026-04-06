@@ -204,7 +204,7 @@ describe('Intent Parser', () => {
     it('should handle missing variables', () => {
       const variables = { name: 'john' };
       const text = 'Hello ${name}, ${missing}';
-      const result = text.replace('${missing}', variables['missing'] || 'unknown');
+      const result = text.replace('${missing}', (variables as any)['missing'] || 'unknown');
       expect(result).toContain('unknown');
     });
 

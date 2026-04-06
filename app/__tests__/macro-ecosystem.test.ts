@@ -110,7 +110,9 @@ describe('Macro Ecosystem', () => {
     });
 
     it('should evaluate not equals condition', () => {
-      const result = 'hello' !== 'world';
+      const val1 = 'hello';
+      const val2 = 'world';
+      const result = val1 !== val2;
       expect(result).toBe(true);
     });
 
