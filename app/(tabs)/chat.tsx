@@ -123,6 +123,10 @@ export default function ChatScreen() {
 
         // Execute tool
         const result = await executeTool(server.id, toolName, params);
+        // Ensure result has an id
+        if (!result.id) {
+          result.id = `result-${Date.now()}`;
+        }
         await addExecutionResult(result);
 
         const resultText = result.content

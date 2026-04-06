@@ -89,7 +89,7 @@ export default function HomeScreen() {
 
           {servers.length === 0 ? (
             <Card variant="outlined" className="items-center py-8">
-              <Ionicons name="cloud-off-outline" size={48} color={colors.muted} />
+              <Ionicons name="cloud-offline" size={48} color={colors.muted} />
               <Text className="text-lg font-bold text-foreground mt-4 mb-2">No Servers Yet</Text>
               <Text className="text-sm text-muted text-center mb-6 px-4">
                 Add your first MCP server to unlock the power of unified tool management

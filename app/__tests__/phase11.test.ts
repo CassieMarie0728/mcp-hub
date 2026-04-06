@@ -23,6 +23,8 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
     it('should validate required fields in config', () => {
       const invalidConfig = {
         description: 'Missing name and connectionType',
+        name: undefined,
+        connectionType: undefined,
       };
 
       expect(invalidConfig.name).toBeUndefined();
@@ -343,7 +345,7 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
     });
 
     it('should validate required config fields', () => {
-      const config = { description: 'Missing required fields' };
+      const config = { description: 'Missing required fields', name: undefined, connectionType: undefined };
 
       const isValid = config.name && config.connectionType;
       expect(isValid).toBeFalsy();

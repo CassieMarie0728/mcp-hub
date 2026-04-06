@@ -96,6 +96,10 @@ export default function ToolDetailScreen() {
         parameters
       );
 
+      // Ensure executionResult has an id
+      if (!executionResult.id) {
+        executionResult.id = `result-${Date.now()}`;
+      }
       await addExecutionResult(executionResult);
       setResult(executionResult);
     } catch (error) {
