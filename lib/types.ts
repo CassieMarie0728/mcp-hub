@@ -63,6 +63,7 @@ export interface ToolExecutionRequest {
  * Tool execution result
  */
 export interface ToolExecutionResult {
+  id: string; // Unique identifier for the execution result
   serverId: string;
   toolName: string;
   content: ContentBlock[];

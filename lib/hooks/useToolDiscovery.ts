@@ -241,6 +241,7 @@ export function useToolDiscovery() {
   return {
     // State
     discoveryStates: Array.from(discoveryStates.values()),
+    tools: Array.from(discoveryStates.values()).flatMap(state => state.tools || []), // Alias for all tools
     globalError,
 
     // Methods

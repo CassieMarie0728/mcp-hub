@@ -304,6 +304,7 @@ export function useMCPServerConnection() {
   return {
     // State
     connections: Array.from(connections.values()),
+    servers: Array.from(connections.values()), // Alias for connections
     isLoading,
     error,
 

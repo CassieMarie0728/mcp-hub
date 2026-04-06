@@ -216,6 +216,7 @@ export function useMacroExecution() {
     ...state,
     loadMacros,
     createFromHistory,
+    createFromExecutionHistory: createFromHistory, // Alias for createFromHistory
     createFromTemplate,
     executeMacro,
     pauseExecution,

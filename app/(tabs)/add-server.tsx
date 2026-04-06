@@ -73,7 +73,7 @@ export default function AddServerScreen() {
       const result = await DocumentPicker.getDocumentAsync({
         type: 'application/json',
         copyToCacheDirectory: true,
-      });
+      }) as any;
 
       if (result.type === 'success') {
         const fileUri = result.uri;
