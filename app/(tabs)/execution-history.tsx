@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView, TextInput } from 'react-native';
 import { useExecutionHistory } from '@/lib/hooks/useExecutionHistory';
 import { ExecutionStatus } from '@/lib/models/ExecutionHistory';
 import { ScreenContainer } from '@/components/screen-container';
@@ -133,7 +133,7 @@ export default function ExecutionHistoryScreen() {
         <View className="px-6 mb-4">
           <View className="bg-surface rounded-lg border border-border px-4 py-3 flex-row items-center">
             <Text className="text-foreground mr-2">🔍</Text>
-            <Text
+            <TextInput
               className="flex-1 text-foreground"
               placeholder="Search by tool or server..."
               placeholderTextColor={colors.muted}

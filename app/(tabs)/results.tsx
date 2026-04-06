@@ -91,10 +91,7 @@ export default function ResultsScreen() {
     if (!selectedResult) return;
 
     try {
-      await createFromExecutionHistory([selectedResult.id], {
-        name,
-        description,
-      });
+      await createFromExecutionHistory([selectedResult.id], name, description);
       setShowSaveAsMacroModal(false);
       Alert.alert('Success', 'Macro saved successfully');
     } catch (err) {
