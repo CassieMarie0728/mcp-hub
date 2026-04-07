@@ -34,6 +34,7 @@ export interface ExecutionError {
  * Tool execution result
  */
 export interface ToolExecutionResult {
+  id: string;
   success: boolean;
   result?: any;
   resultType: ResultType;
@@ -100,6 +101,7 @@ export function useToolExecution() {
         );
 
         const executionResult: ToolExecutionResult = {
+          id: `${serverId}-${toolName}-${Date.now()}`,
           success: result.success,
           result: result.result,
           resultType: result.resultType as ResultType,

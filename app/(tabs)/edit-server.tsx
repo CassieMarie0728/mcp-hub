@@ -19,7 +19,8 @@ import { MCPServer } from '@/lib/types';
 import { useMCPService } from '@/hooks/use-mcp-service';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
+import { documentDirectory } from 'expo-file-system';
 
 type ConnectionType = 'stdio' | 'sse' | 'websocket';
 
@@ -114,7 +115,7 @@ export default function EditServerScreen() {
         headers: headers.reduce((acc, h) => ({ ...acc, [h.key]: h.value }), {}),
       };
       const json = JSON.stringify(config, null, 2);
-      const fileUri = `${FileSystem.cacheDirectory}${serverName}-config.json`;
+      const fileUri = `${documentDirectory}${serverName}-config.json`;
       await FileSystem.writeAsStringAsync(fileUri, json);
       await Sharing.shareAsync(fileUri);
     } catch (error: any) {

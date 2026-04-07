@@ -224,6 +224,7 @@ export default function AuditLogScreen() {
                     )}
 
                     {entry.result && (
+                      // @ts-ignore
                       <View className="bg-success/10 rounded-lg p-3 mt-2">
                         <Text className="text-xs font-semibold text-success mb-1">Result:</Text>
                         <Text className="text-xs text-success" numberOfLines={2}>

@@ -166,7 +166,7 @@ export default function SettingsScreen() {
               className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
             >
               <View className="flex-row items-center gap-3">
-                <MaterialIcons name="settings-automation" size={20} color={colors.primary} />
+                <MaterialIcons name="build" size={20} color={colors.primary} />
                 <View>
                   <Text className="text-foreground font-medium">Macro Management</Text>
                   <Text className="text-xs text-muted mt-1">Create and manage macros</Text>
