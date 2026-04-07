@@ -20,7 +20,7 @@ import { useMCPService } from '@/hooks/use-mcp-service';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system/legacy';
-import { documentDirectory } from 'expo-file-system';
+const documentDirectory = FileSystem.documentDirectory || FileSystem.cacheDirectory;
 
 type ConnectionType = 'stdio' | 'sse' | 'websocket';
 

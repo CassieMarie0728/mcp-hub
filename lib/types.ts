@@ -16,6 +16,7 @@ export interface MCPServer {
     headers?: Record<string, string>;
     env?: Record<string, string>;
   };
+  headers?: Record<string, string>; // Top-level headers for compatibility
   status: 'connecting' | 'connected' | 'disconnected' | 'error';
   lastConnected?: number; // timestamp
   toolCount: number;

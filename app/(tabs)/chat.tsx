@@ -122,14 +122,14 @@ export default function ChatScreen() {
         }
 
         // Execute tool
-        const result = await executeTool(server.id, toolName, params);
+        const result = await executeTool(server.id, toolName, params) as any;
         // Ensure result has an id
         if (!result.id) {
           result.id = `result-${Date.now()}`;
         }
         await addExecutionResult(result);
 
-        const resultText = result.content
+        const resultText = (result as any).content
           .map((c: any) => (c.type === 'text' ? c.text : `[${c.type}]`))
           .join('\n');
 

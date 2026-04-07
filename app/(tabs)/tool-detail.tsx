@@ -94,14 +94,14 @@ export default function ToolDetailScreen() {
         serverId as string,
         toolName as string,
         parameters
-      );
+      ) as any;
 
       // Ensure executionResult has an id
       if (!executionResult.id) {
         executionResult.id = `result-${Date.now()}`;
       }
-      await addExecutionResult(executionResult);
-      setResult(executionResult);
+      await addExecutionResult(executionResult as any);
+      setResult(executionResult as any);
     } catch (error) {
       Alert.alert('Error', 'Failed to execute tool');
       console.error('Tool execution error:', error);

@@ -223,8 +223,7 @@ export default function AuditLogScreen() {
                       </View>
                     )}
 
-                    {entry.result && (
-                      // @ts-ignore
+                    {entry.result ? (
                       <View className="bg-success/10 rounded-lg p-3 mt-2">
                         <Text className="text-xs font-semibold text-success mb-1">Result:</Text>
                         <Text className="text-xs text-success" numberOfLines={2}>
@@ -233,7 +232,7 @@ export default function AuditLogScreen() {
                             : JSON.stringify(entry.result).substring(0, 100)}
                         </Text>
                       </View>
-                    )}
+                    ) : null}
                   </View>
                 </View>
               </Card>
