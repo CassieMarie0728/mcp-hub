@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ResultDisplayFormatter } from '../../lib/utils/ResultDisplayFormatter';
-import { ResultType } from '../../lib/hooks/useToolExecution';
+import { ResultType } from '../../lib/types/result-type';
 
 describe('ResultDisplayFormatter', () => {
   describe('formatResult', () => {

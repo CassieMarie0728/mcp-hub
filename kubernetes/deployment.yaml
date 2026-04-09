@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-hub
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mcp-hub
+  template:
+    metadata:
+      labels:
+        app: mcp-hub
+    spec:
+      containers:
+        - name: mcp-hub
+          image: ghcr.io/your-org/mcp-hub:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: mcp-hub-env
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-hub
+spec:
+  selector:
+    app: mcp-hub
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: ClusterIP

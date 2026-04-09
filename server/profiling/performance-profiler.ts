@@ -59,7 +59,8 @@ export class MacroPerformanceProfiler {
 
     if (trace) {
       trace.endTime = Date.now();
-      trace.duration = trace.endTime - trace.startTime;
+      const actionDuration = trace.actions.reduce((sum, action) => sum + action.duration, 0);
+      trace.duration = Math.max(trace.endTime - trace.startTime, actionDuration, 1);
       trace.status = status;
       trace.errorMessage = errorMessage || null;
 
@@ -161,15 +162,18 @@ export class MacroPerformanceProfiler {
     const scrollCount = actionTypes.filter((t) => t === 'scroll').length;
 
     // Suggestion: Reduce waits
-    if (waitCount > 3) {
+    if (waitCount > 0) {
       suggestions.push({
-        id: `suggestion_wait_${macroId}`,
+        id: `suggestion_wait_hint_${macroId}`,
         type: 'performance',
-        priority: 'high',
-        title: 'Reduce explicit waits',
-        description: `Found ${waitCount} explicit waits. Consider using element detection instead.`,
-        estimatedImprovement: `${Math.round((waitCount * 500) / trace.duration * 100)}% faster`,
-        implementation: 'Replace wait actions with element detection',
+        priority: waitCount > 3 ? 'high' : 'low',
+        title: 'Review wait usage',
+        description:
+          waitCount > 3
+            ? `Found ${waitCount} explicit waits. Consider using element detection instead.`
+            : 'Found explicit wait actions. Consider replacing static waits with readiness checks.',
+        estimatedImprovement: waitCount > 3 ? `${Math.round((waitCount * 500) / trace.duration * 100)}% faster` : 'Potentially faster',
+        implementation: 'Replace wait actions with element detection where possible',
       });
     }
 
@@ -345,7 +349,7 @@ export class MacroPerformanceProfiler {
       durationDifference: trace2.duration - trace1.duration,
       percentDifference: ((trace2.duration - trace1.duration) / trace1.duration) * 100,
       actionCountDifference: trace2.actions.length - trace1.actions.length,
-      fasterExecution: trace1.duration < trace2.duration ? executionId1 : executionId2,
+      fasterExecution: trace1.duration <= trace2.duration ? executionId1 : executionId2,
     };
   }
 

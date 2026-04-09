@@ -1,0 +1,6 @@
+openapi: 3.1.0
+info:
+  title: MCP Hub API (Stub)
+  version: 1.0.0
+  description: Placeholder OpenAPI document for teams that need contract-first tooling.
+paths: {}

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: MCP Hub
+message: "If you use MCP Hub in your research or tooling, please cite it using this metadata."
+type: software
+authors:
+  - family-names: Contributors
+    given-names: MCP Hub
+repository-code: "https://github.com/your-org/mcp-hub"
+url: "https://github.com/your-org/mcp-hub"
+license: MIT
+version: 1.0.0
+date-released: 2026-04-09
+keywords:
+  - model context protocol
+  - mcp
+  - developer tools
+  - orchestration
+  - react-native

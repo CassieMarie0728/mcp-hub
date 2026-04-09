@@ -356,7 +356,7 @@ export class MacroRecommendationEngine {
 
     const score = actionCount * 1 + conditionCount * 2 + loopCount * 3;
 
-    if (score < 5) return 'beginner';
+    if (score <= 5) return 'beginner';
     if (score < 15) return 'medium';
     return 'advanced';
   }
