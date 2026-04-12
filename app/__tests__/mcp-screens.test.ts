@@ -4,55 +4,76 @@ import { ResultType } from '../../lib/types/result-type';
 
 describe('ResultDisplayFormatter', () => {
   describe('formatResult', () => {
-    it('should format plain text results', () => {
-      const result = ResultDisplayFormatter.formatResult('Hello World', ResultType.TEXT);
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it('should handle text format', () => {
+      const result = ResultDisplayFormatter.formatResult('Hello world', ResultType.TEXT);
       expect(result.format).toBe(ResultType.TEXT);
-      expect(result.content).toBe('Hello World');
+      expect(result.content).toBe('Hello world');
       expect(result.metadata.canCopy).toBe(true);
     });
 
-    it('should format JSON results with pretty printing', () => {
-      const jsonData = { name: 'test', value: 123 };
-      const result = ResultDisplayFormatter.formatResult(jsonData, ResultType.JSON);
+    it('should handle JSON format', () => {
+      const data = { name: 'test', value: 42 };
+      const result = ResultDisplayFormatter.formatResult(data, ResultType.JSON);
       expect(result.format).toBe(ResultType.JSON);
-      expect(result.content).toContain('"name"');
-      expect(result.content).toContain('"test"');
+      expect(result.content).toContain('"name": "test"');
+      expect(result.content).toContain('"value": 42');
+      expect(result.metadata.canCopy).toBe(true);
     });
 
-    it('should format table results from array of objects', () => {
+    it('should handle markdown format', () => {
+      const markdown = '# Test\n\nThis is a test';
+      const result = ResultDisplayFormatter.formatResult(markdown, ResultType.MARKDOWN);
+      expect(result.format).toBe(ResultType.MARKDOWN);
+      expect(result.content).toBe(markdown);
+      expect(result.metadata.canCopy).toBe(true);
+    });
+
+    it('should handle HTML format', () => {
+      const html = '<div><h1>Test</h1></div>';
+      const result = ResultDisplayFormatter.formatResult(html, ResultType.HTML);
+      expect(result.format).toBe(ResultType.HTML);
+      expect(result.content).toBe(html);
+      expect(result.metadata.canCopy).toBe(true);
+    });
+
+    it('should handle table format', () => {
       const tableData = [
-        { id: 1, name: 'Alice' },
-        { id: 2, name: 'Bob' },
+        { id: 1, name: 'Alice', role: 'Admin' },
+        { id: 2, name: 'Bob', role: 'User' },
       ];
       const result = ResultDisplayFormatter.formatResult(tableData, ResultType.TABLE);
       expect(result.format).toBe(ResultType.TABLE);
-      expect(result.content).toContain('|');
-      expect(result.content).toContain('Alice');
-      expect(result.content).toContain('Bob');
+      expect(result.content).toContain('| id | name | role |');
+      expect(result.content).toContain('| 1 | Alice | Admin |');
+      expect(result.content).toContain('| 2 | Bob | User |');
     });
 
-    it('should format tree results for nested objects', () => {
+    it('should handle tree format', () => {
       const treeData = {
-        root: {
-          child1: 'value1',
-          child2: {
-            nested: 'value2',
+        user: {
+          name: 'Alice',
+          details: {
+            age: 30,
           },
         },
       };
       const result = ResultDisplayFormatter.formatResult(treeData, ResultType.TREE);
       expect(result.format).toBe(ResultType.TREE);
-      expect(result.content).toContain('root');
-      expect(result.content).toContain('child1');
-      expect(result.content).toContain('nested');
+      expect(result.content).toContain('user');
+      expect(result.content).toContain('name');
+      expect(result.content).toContain('Alice');
     });
 
-    it('should format code blocks with language detection', () => {
-      const code = 'import { useState } from "react";';
+    it('should handle code block format', () => {
+      const code = 'const x = 42;';
       const result = ResultDisplayFormatter.formatResult(code, ResultType.CODE_BLOCK);
       expect(result.format).toBe(ResultType.CODE_BLOCK);
-      expect(result.content).toContain('```');
-      expect(result.content).toContain('javascript');
+      expect(result.content).toContain('```javascript');
+      expect(result.content).toContain(code);
     });
 
     it('should handle image format', () => {
@@ -72,7 +93,7 @@ describe('ResultDisplayFormatter', () => {
     });
 
     it('should track result size metadata', () => {
-      const largeText = 'x'.repeat(1024 * 1024); // 1MB
+      const largeText = 'x'.repeat(1024 * 1024);
       const result = ResultDisplayFormatter.formatResult(largeText, ResultType.TEXT);
       expect(result.metadata.size).toBeGreaterThan(0);
       expect(result.metadata.isLarge).toBe(true);
@@ -108,7 +129,7 @@ describe('ResultDisplayFormatter', () => {
       const downloadable = ResultDisplayFormatter.toDownloadable(
         markdown,
         ResultType.MARKDOWN,
-        'test.md'
+        'test.md',
       );
       expect(downloadable.filename).toBe('test.md');
       expect(downloadable.mimeType).toBe('text/markdown');
@@ -161,7 +182,7 @@ describe('ResultDisplayFormatter', () => {
     });
 
     it('should truncate very large results', () => {
-      const hugeText = 'x'.repeat(2 * 1024 * 1024); // 2MB
+      const hugeText = 'x'.repeat(2 * 1024 * 1024);
       const result = ResultDisplayFormatter.formatResult(hugeText, ResultType.TEXT);
       expect(result.content.length).toBeLessThan(hugeText.length);
       expect(result.metadata.isLarge).toBe(true);
@@ -223,7 +244,7 @@ describe('Tool Execution Integration', () => {
 
     const formatted = ResultDisplayFormatter.formatResult(
       executionResult.result,
-      executionResult.resultType
+      executionResult.resultType,
     );
     expect(formatted.format).toBe(ResultType.JSON);
     expect(formatted.content).toContain('message');
@@ -244,5 +265,4 @@ describe('Tool Execution Integration', () => {
     expect(executionResult.success).toBe(false);
     expect(executionResult.error?.code).toBe('EXECUTION_TIMEOUT');
   });
-
 });
