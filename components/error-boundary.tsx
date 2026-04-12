@@ -125,7 +125,7 @@ function DefaultErrorFallback({
         <View className="bg-surface rounded-lg p-4 mb-6 border border-border">
           <Text className="text-sm font-semibold text-foreground mb-3">What you can try:</Text>
           <View className="gap-2">
-            <Text className="text-sm text-muted">• Tap "Retry" to try again</Text>
+            <Text className="text-sm text-muted">• Tap &quot;Retry&quot; to try again</Text>
             <Text className="text-sm text-muted">• Close and reopen the app</Text>
             <Text className="text-sm text-muted">• Check your internet connection</Text>
           </View>
