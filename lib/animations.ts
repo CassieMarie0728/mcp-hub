@@ -150,7 +150,7 @@ export function createSpinAnimation() {
         duration: 1000,
         easing: Easing.linear,
         useNativeDriver: true,
-      })
+      }),
     ).start();
   };
 
@@ -194,7 +194,7 @@ export function createPulseAnimation() {
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
   };
 
@@ -244,7 +244,9 @@ export function createSlideAnimation(initialValue = 50) {
 /**
  * Trigger haptic feedback based on interaction type
  */
-export async function triggerHapticFeedback(type: 'light' | 'medium' | 'heavy' | 'success' | 'error' = 'light') {
+export async function triggerHapticFeedback(
+  type: 'light' | 'medium' | 'heavy' | 'success' | 'error' = 'light',
+) {
   try {
     switch (type) {
       case 'light':
@@ -264,6 +266,6 @@ export async function triggerHapticFeedback(type: 'light' | 'medium' | 'heavy' |
         break;
     }
   } catch (error) {
-    console.warn('Haptic feedback not available:', error);
+    if (__DEV__) console.warn('Haptic feedback not available:', error);
   }
 }

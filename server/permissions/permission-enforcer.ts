@@ -14,7 +14,7 @@ export class PermissionEnforcer {
   enforceViewPermission(macroId: string, userId: string, context?: PermissionContext): void {
     if (!this.permissionsEngine.hasPermission(macroId, userId, 'view', context)) {
       throw new PermissionDeniedError(
-        `User ${userId} does not have view permission for macro ${macroId}`
+        `User ${userId} does not have view permission for macro ${macroId}`,
       );
     }
   }
@@ -25,7 +25,7 @@ export class PermissionEnforcer {
   enforceExecutePermission(macroId: string, userId: string, context?: PermissionContext): void {
     if (!this.permissionsEngine.hasPermission(macroId, userId, 'execute', context)) {
       throw new PermissionDeniedError(
-        `User ${userId} does not have execute permission for macro ${macroId}`
+        `User ${userId} does not have execute permission for macro ${macroId}`,
       );
     }
   }
@@ -36,7 +36,7 @@ export class PermissionEnforcer {
   enforceEditPermission(macroId: string, userId: string, context?: PermissionContext): void {
     if (!this.permissionsEngine.hasPermission(macroId, userId, 'edit', context)) {
       throw new PermissionDeniedError(
-        `User ${userId} does not have edit permission for macro ${macroId}`
+        `User ${userId} does not have edit permission for macro ${macroId}`,
       );
     }
   }
@@ -47,7 +47,7 @@ export class PermissionEnforcer {
   enforceAdminPermission(macroId: string, userId: string, context?: PermissionContext): void {
     if (!this.permissionsEngine.hasPermission(macroId, userId, 'admin', context)) {
       throw new PermissionDeniedError(
-        `User ${userId} does not have admin permission for macro ${macroId}`
+        `User ${userId} does not have admin permission for macro ${macroId}`,
       );
     }
   }
@@ -59,11 +59,11 @@ export class PermissionEnforcer {
     macroId: string,
     userId: string,
     requiredLevel: PermissionLevel,
-    context?: PermissionContext
+    context?: PermissionContext,
   ): void {
     if (!this.permissionsEngine.hasPermission(macroId, userId, requiredLevel, context)) {
       throw new PermissionDeniedError(
-        `User ${userId} does not have ${requiredLevel} permission for macro ${macroId}`
+        `User ${userId} does not have ${requiredLevel} permission for macro ${macroId}`,
       );
     }
   }
@@ -72,22 +72,24 @@ export class PermissionEnforcer {
    * Middleware for Express routes
    */
   middleware(requiredLevel: PermissionLevel = 'view') {
-    return (req: any, res: any, next: any) => {
+    return (req: Express.Request, res: Express.Response, next: Function) => {
       try {
-        const userId = req.user?.id;
-        const macroId = req.params.macroId;
+        const reqWithUser = req as any;
+        const userId = reqWithUser.user?.id;
+        const macroId = reqWithUser.params.macroId;
         const context: PermissionContext = {
-          ip: req.ip,
-          deviceId: req.headers['x-device-id'],
-          userAgent: req.headers['user-agent'],
+          ip: reqWithUser.ip,
+          deviceId: reqWithUser.headers['x-device-id'],
+          userAgent: reqWithUser.headers['user-agent'],
           timestamp: new Date(),
         };
 
         this.enforcePermission(macroId, userId, requiredLevel, context);
         next();
       } catch (error) {
+        const resWithStatus = res as any;
         if (error instanceof PermissionDeniedError) {
-          res.status(403).json({ error: error.message });
+          resWithStatus.status(403).json({ error: error.message });
         } else {
           next(error);
         }
@@ -99,11 +101,11 @@ export class PermissionEnforcer {
    * Filter macros by permission
    */
   filterMacrosByPermission(
-    macros: any[],
+    macros: Array<Record<string, unknown>>,
     userId: string,
     requiredLevel: PermissionLevel = 'view',
-    context?: PermissionContext
-  ): any[] {
+    context?: PermissionContext,
+  ): Array<Record<string, unknown>> {
     return macros.filter((macro) => {
       try {
         this.enforcePermission(macro.id, userId, requiredLevel, context);
@@ -159,7 +161,7 @@ export class PermissionEnforcer {
     macroId: string,
     userId: string,
     operation: MacroOperation,
-    context?: PermissionContext
+    context?: PermissionContext,
   ): ValidationResult {
     try {
       const requiredLevel = this.getRequiredLevel(operation);
@@ -239,7 +241,7 @@ export class BulkPermissionChecker {
   checkMultiple(
     macroIds: string[],
     userId: string,
-    requiredLevel: PermissionLevel
+    requiredLevel: PermissionLevel,
   ): Map<string, PermissionCheckResult> {
     const results = new Map<string, PermissionCheckResult>();
 
@@ -263,7 +265,7 @@ export class BulkPermissionChecker {
   checkMultipleUsers(
     macroId: string,
     userIds: string[],
-    requiredLevel: PermissionLevel
+    requiredLevel: PermissionLevel,
   ): Map<string, PermissionCheckResult> {
     const results = new Map<string, PermissionCheckResult>();
 

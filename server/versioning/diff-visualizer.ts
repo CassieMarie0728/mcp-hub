@@ -6,7 +6,10 @@ export class DiffVisualizer {
   /**
    * Generate side-by-side diff
    */
-  static generateSideBySideDiff(fromContent: any, toContent: any): SideBySideDiff {
+  static generateSideBySideDiff(
+    fromContent: Record<string, unknown>,
+    toContent: Record<string, unknown>,
+  ): SideBySideDiff {
     const fromLines = this.contentToLines(fromContent);
     const toLines = this.contentToLines(toContent);
 
@@ -33,7 +36,7 @@ export class DiffVisualizer {
   /**
    * Convert content to lines
    */
-  private static contentToLines(content: any): string[] {
+  private static contentToLines(content: Record<string, unknown>): string[] {
     if (typeof content === 'string') {
       return content.split('\n');
     }
@@ -118,7 +121,7 @@ export class DiffVisualizer {
   private static traceback(
     matrix: number[][],
     from: string[],
-    to: string[]
+    to: string[],
   ): Array<[number, number, string]> {
     const path: Array<[number, number, string]> = [];
     let i = from.length;
@@ -148,7 +151,11 @@ export class DiffVisualizer {
   /**
    * Generate unified diff format
    */
-  static generateUnifiedDiff(fromContent: any, toContent: any, context: number = 3): string {
+  static generateUnifiedDiff(
+    fromContent: Record<string, unknown>,
+    toContent: Record<string, unknown>,
+    context: number = 3,
+  ): string {
     const fromLines = this.contentToLines(fromContent);
     const toLines = this.contentToLines(toContent);
     const diff = this.computeLineDiff(fromLines, toLines);
@@ -177,7 +184,10 @@ export class DiffVisualizer {
   /**
    * Generate HTML diff
    */
-  static generateHtmlDiff(fromContent: any, toContent: any): string {
+  static generateHtmlDiff(
+    fromContent: Record<string, unknown>,
+    toContent: Record<string, unknown>,
+  ): string {
     const fromLines = this.contentToLines(fromContent);
     const toLines = this.contentToLines(toContent);
     const diff = this.computeLineDiff(fromLines, toLines);
@@ -224,7 +234,10 @@ export class DiffVisualizer {
   /**
    * Generate inline diff
    */
-  static generateInlineDiff(fromContent: any, toContent: any): InlineDiff[] {
+  static generateInlineDiff(
+    fromContent: Record<string, unknown>,
+    toContent: Record<string, unknown>,
+  ): InlineDiff[] {
     const fromStr = typeof fromContent === 'string' ? fromContent : JSON.stringify(fromContent);
     const toStr = typeof toContent === 'string' ? toContent : JSON.stringify(toContent);
 
@@ -275,7 +288,10 @@ export class DiffVisualizer {
   /**
    * Calculate diff statistics
    */
-  static calculateDiffStats(fromContent: any, toContent: any): DiffStats {
+  static calculateDiffStats(
+    fromContent: Record<string, unknown>,
+    toContent: Record<string, unknown>,
+  ): DiffStats {
     const fromLines = this.contentToLines(fromContent);
     const toLines = this.contentToLines(toContent);
     const diff = this.computeLineDiff(fromLines, toLines);
@@ -316,7 +332,10 @@ export class DiffVisualizer {
   /**
    * Highlight differences
    */
-  static highlightDifferences(fromContent: any, toContent: any): HighlightedDiff {
+  static highlightDifferences(
+    fromContent: Record<string, unknown>,
+    toContent: Record<string, unknown>,
+  ): HighlightedDiff {
     const fromStr = typeof fromContent === 'string' ? fromContent : JSON.stringify(fromContent);
     const toStr = typeof toContent === 'string' ? toContent : JSON.stringify(toContent);
 

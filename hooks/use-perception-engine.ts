@@ -114,7 +114,7 @@ export function usePerceptionEngine() {
    */
   const generateSnapshot = useCallback(async (includeVisualChips: boolean = false) => {
     if (Platform.OS !== 'android') {
-      console.warn('Perception engine only available on Android');
+      if (__DEV__) console.warn('Perception engine only available on Android');
       return null;
     }
 
@@ -146,7 +146,7 @@ export function usePerceptionEngine() {
    */
   const generateCondensedSnapshot = useCallback(async (includeVisualChips: boolean = false) => {
     if (Platform.OS !== 'android') {
-      console.warn('Perception engine only available on Android');
+      if (__DEV__) console.warn('Perception engine only available on Android');
       return null;
     }
 
@@ -177,7 +177,7 @@ export function usePerceptionEngine() {
    */
   const getElementById = useCallback(async (elementId: string) => {
     if (Platform.OS !== 'android') {
-      console.warn('Perception engine only available on Android');
+      if (__DEV__) console.warn('Perception engine only available on Android');
       return null;
     }
 
@@ -290,7 +290,7 @@ export function usePerceptionEngine() {
   const captureHybridPerception = useCallback(
     async (useCache: boolean = true, onlyInteractiveChips: boolean = true) => {
       if (Platform.OS !== 'android') {
-        console.warn('Perception engine only available on Android');
+        if (__DEV__) console.warn('Perception engine only available on Android');
         return null;
       }
 
@@ -305,7 +305,7 @@ export function usePerceptionEngine() {
       try {
         const result = await PerceptionBridge.captureHybridPerception(
           useCache,
-          onlyInteractiveChips
+          onlyInteractiveChips,
         );
         return result as HybridPerceptionResult;
       } catch (err) {
@@ -317,7 +317,7 @@ export function usePerceptionEngine() {
         setIsLoading(false);
       }
     },
-    []
+    [],
   );
 
   /**
@@ -392,7 +392,9 @@ export function usePerceptionEngine() {
    * Get perception as JSON
    */
   const getPerceptionAsJSON = useCallback(
-    async (format: 'accessibility' | 'condensed' | 'semantic' | 'interactive' | 'hybrid' = 'hybrid') => {
+    async (
+      format: 'accessibility' | 'condensed' | 'semantic' | 'interactive' | 'hybrid' = 'hybrid',
+    ) => {
       if (Platform.OS !== 'android' || !PerceptionBridge) {
         return null;
       }
@@ -405,7 +407,7 @@ export function usePerceptionEngine() {
         return null;
       }
     },
-    []
+    [],
   );
 
   /**
@@ -509,32 +511,32 @@ export function usePerceptionComparison() {
     changed: AccessibilityElement[];
   } | null>(null);
 
-  const updatePerception = useCallback((perception: HybridPerceptionResult) => {
-    setPrevious(current);
-    setCurrent(perception);
+  const updatePerception = useCallback(
+    (perception: HybridPerceptionResult) => {
+      setPrevious(current);
+      setCurrent(perception);
 
-    if (current) {
-      const currentInteractive = perception.elements.filter((e) => e.interactive);
-      const previousInteractive = current.elements.filter((e) => e.interactive);
+      if (current) {
+        const currentInteractive = perception.elements.filter((e) => e.interactive);
+        const previousInteractive = current.elements.filter((e) => e.interactive);
 
-      const added = currentInteractive.filter(
-        (curr) =>
-          !previousInteractive.some((p) => p.text === curr.text && p.type === curr.type)
-      );
+        const added = currentInteractive.filter(
+          (curr) => !previousInteractive.some((p) => p.text === curr.text && p.type === curr.type),
+        );
 
-      const removed = previousInteractive.filter(
-        (prev) =>
-          !currentInteractive.some((c) => c.text === prev.text && c.type === prev.type)
-      );
+        const removed = previousInteractive.filter(
+          (prev) => !currentInteractive.some((c) => c.text === prev.text && c.type === prev.type),
+        );
 
-      const changed = currentInteractive.filter(
-        (curr) =>
-          previousInteractive.some((p) => p.id === curr.id && p.text !== curr.text)
-      );
+        const changed = currentInteractive.filter((curr) =>
+          previousInteractive.some((p) => p.id === curr.id && p.text !== curr.text),
+        );
 
-      setDifferences({ added, removed, changed });
-    }
-  }, [current]);
+        setDifferences({ added, removed, changed });
+      }
+    },
+    [current],
+  );
 
   return {
     previous,

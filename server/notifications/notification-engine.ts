@@ -19,7 +19,7 @@ export class NotificationEngine extends EventEmitter {
     title: string,
     message: string,
     data?: Record<string, any>,
-    priority: 'low' | 'normal' | 'high' = 'normal'
+    priority: 'low' | 'normal' | 'high' = 'normal',
   ): Notification {
     const notification: Notification = {
       id: `notif_${userId}_${Date.now()}`,
@@ -63,7 +63,7 @@ export class NotificationEngine extends EventEmitter {
     }
     this.subscribers.get(userId)!.add(connectionId);
 
-    console.log(`User ${userId} subscribed with connection ${connectionId}`);
+    if (__DEV__) console.log(`User ${userId} subscribed with connection ${connectionId}`);
     this.emit('user_subscribed', { userId, connectionId });
   }
 
@@ -191,7 +191,11 @@ export class NotificationEngine extends EventEmitter {
   /**
    * Get notifications
    */
-  getNotifications(userId: string, limit: number = 50, unreadOnly: boolean = false): Notification[] {
+  getNotifications(
+    userId: string,
+    limit: number = 50,
+    unreadOnly: boolean = false,
+  ): Notification[] {
     let notifications = this.notifications.get(userId) || [];
 
     if (unreadOnly) {
@@ -246,7 +250,7 @@ export class NotificationEngine extends EventEmitter {
     title: string,
     message: string,
     userIds: string[],
-    data?: Record<string, any>
+    data?: Record<string, any>,
   ): Notification[] {
     const notifications: Notification[] = [];
 
@@ -261,7 +265,11 @@ export class NotificationEngine extends EventEmitter {
   /**
    * Log delivery
    */
-  private logDelivery(notificationId: string, status: 'success' | 'retry' | 'failed', userId: string) {
+  private logDelivery(
+    notificationId: string,
+    status: 'success' | 'retry' | 'failed',
+    userId: string,
+  ) {
     this.deliveryLog.push({
       notificationId,
       status,

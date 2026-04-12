@@ -73,7 +73,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       }
 
       // Default error UI
-      return <DefaultErrorFallback error={this.state.error} errorInfo={this.state.errorInfo} onRetry={this.handleReset} />;
+      return (
+        <DefaultErrorFallback
+          error={this.state.error}
+          errorInfo={this.state.errorInfo}
+          onRetry={this.handleReset}
+        />
+      );
     }
 
     return this.props.children;
@@ -102,7 +108,9 @@ function DefaultErrorFallback({
           <View className="w-16 h-16 rounded-full bg-error/20 items-center justify-center mb-4">
             <MaterialIcons name="error-outline" size={32} color={colors.error} />
           </View>
-          <Text className="text-2xl font-bold text-foreground text-center">Oops! Something went wrong</Text>
+          <Text className="text-2xl font-bold text-foreground text-center">
+            Oops! Something went wrong
+          </Text>
         </View>
 
         {/* Error Message */}
@@ -143,7 +151,7 @@ function DefaultErrorFallback({
           <TouchableOpacity
             onPress={() => {
               // Navigate to home or restart app
-              console.log('Navigating to home...');
+              if (__DEV__) console.log('Navigating to home...');
             }}
             className="bg-surface rounded-lg py-3 px-6 items-center border border-border active:opacity-80"
           >
@@ -280,7 +288,7 @@ function MacroExecutionErrorFallback({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                console.log('Pausing macro...');
+                if (__DEV__) console.log('Pausing macro...');
               }}
               className="bg-surface rounded-md py-2 px-3 flex-1 items-center border border-border active:opacity-80"
             >

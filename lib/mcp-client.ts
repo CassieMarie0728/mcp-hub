@@ -3,13 +3,7 @@
  * Handles JSON-RPC 2.0 communication, tool discovery, and execution
  */
 
-import {
-  JSONRPCRequest,
-  JSONRPCResponse,
-  MCPTool,
-  JSONSchema,
-  ServerCapabilities,
-} from './types';
+import { JSONRPCRequest, JSONRPCResponse, MCPTool, JSONSchema, ServerCapabilities } from './types';
 
 export interface MCPClientConfig {
   serverId: string;
@@ -103,7 +97,7 @@ export class MCPClient {
    */
   async executeTool(
     toolName: string,
-    arguments_: Record<string, any>
+    arguments_: Record<string, any>,
   ): Promise<{ content: Array<any>; isError: boolean }> {
     if (!this.isConnected) {
       throw new Error('Not connected to server');
@@ -128,7 +122,12 @@ export class MCPClient {
       };
     } catch (error) {
       return {
-        content: [{ type: 'text' as const, text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}` }] as any[],
+        content: [
+          {
+            type: 'text' as const,
+            text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          },
+        ] as any[],
         isError: true,
       };
     }
@@ -149,7 +148,10 @@ export class MCPClient {
     try {
       if (this.config.connectionType === 'stdio') {
         return await this.sendViaStdio(request);
-      } else if (this.config.connectionType === 'sse' || this.config.connectionType === 'websocket') {
+      } else if (
+        this.config.connectionType === 'sse' ||
+        this.config.connectionType === 'websocket'
+      ) {
         return await this.sendViaHttp(request);
       } else {
         throw new Error(`Unsupported connection type: ${this.config.connectionType}`);
@@ -166,7 +168,7 @@ export class MCPClient {
   private async sendViaStdio(request: JSONRPCRequest): Promise<JSONRPCResponse> {
     // TODO: Implement stdio communication via native module
     // For now, return mock response
-    console.warn('Stdio transport not yet implemented - returning mock response');
+    if (__DEV__) console.warn('Stdio transport not yet implemented - returning mock response');
     return {
       jsonrpc: '2.0',
       id: request.id,

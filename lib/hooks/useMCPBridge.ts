@@ -48,66 +48,45 @@ export function useMCPBridge() {
       const eventEmitter = new NativeEventEmitter(MCPBridge);
 
       // Listen for connection events
-      const connectionSuccessListener = eventEmitter.addListener(
-        'onConnectionSuccess',
-        (data) => {
-          setConnectionStatus((prev) => ({
-            ...prev,
-            [data.serverId]: 'connected',
-          }));
-        }
-      );
+      const connectionSuccessListener = eventEmitter.addListener('onConnectionSuccess', (data) => {
+        setConnectionStatus((prev) => ({
+          ...prev,
+          [data.serverId]: 'connected',
+        }));
+      });
 
-      const connectionErrorListener = eventEmitter.addListener(
-        'onConnectionError',
-        (data) => {
-          setConnectionStatus((prev) => ({
-            ...prev,
-            [data.serverId]: 'error',
-          }));
-          setError(data.error);
-        }
-      );
+      const connectionErrorListener = eventEmitter.addListener('onConnectionError', (data) => {
+        setConnectionStatus((prev) => ({
+          ...prev,
+          [data.serverId]: 'error',
+        }));
+        setError(data.error);
+      });
 
-      const disconnectedListener = eventEmitter.addListener(
-        'onDisconnected',
-        (data) => {
-          setConnectionStatus((prev) => ({
-            ...prev,
-            [data.serverId]: 'disconnected',
-          }));
-        }
-      );
+      const disconnectedListener = eventEmitter.addListener('onDisconnected', (data) => {
+        setConnectionStatus((prev) => ({
+          ...prev,
+          [data.serverId]: 'disconnected',
+        }));
+      });
 
       // Listen for tool discovery events
-      const toolsDiscoveredListener = eventEmitter.addListener(
-        'onToolsDiscovered',
-        (data) => {
-          console.log(`Tools discovered for ${data.serverId}: ${data.count}`);
-        }
-      );
+      const toolsDiscoveredListener = eventEmitter.addListener('onToolsDiscovered', (data) => {
+        if (__DEV__) console.log(`Tools discovered for ${data.serverId}: ${data.count}`);
+      });
 
-      const discoveryErrorListener = eventEmitter.addListener(
-        'onDiscoveryError',
-        (data) => {
-          setError(data.error);
-        }
-      );
+      const discoveryErrorListener = eventEmitter.addListener('onDiscoveryError', (data) => {
+        setError(data.error);
+      });
 
       // Listen for execution events
-      const executionCompleteListener = eventEmitter.addListener(
-        'onExecutionComplete',
-        (data) => {
-          console.log(`Execution complete for ${data.toolName}`);
-        }
-      );
+      const executionCompleteListener = eventEmitter.addListener('onExecutionComplete', (data) => {
+        if (__DEV__) console.log(`Execution complete for ${data.toolName}`);
+      });
 
-      const executionErrorListener = eventEmitter.addListener(
-        'onExecutionError',
-        (data) => {
-          setError(data.error);
-        }
-      );
+      const executionErrorListener = eventEmitter.addListener('onExecutionError', (data) => {
+        setError(data.error);
+      });
 
       setIsReady(true);
 
@@ -126,41 +105,38 @@ export function useMCPBridge() {
   /**
    * Connect to an MCP server
    */
-  const connectToServer = useCallback(
-    async (config: ConnectionConfig): Promise<boolean> => {
-      if (!MCPBridge) {
-        setError('MCPBridge not available');
-        return false;
-      }
+  const connectToServer = useCallback(async (config: ConnectionConfig): Promise<boolean> => {
+    if (!MCPBridge) {
+      setError('MCPBridge not available');
+      return false;
+    }
 
-      try {
-        setConnectionStatus((prev) => ({
-          ...prev,
-          [config.serverId]: 'connecting',
-        }));
+    try {
+      setConnectionStatus((prev) => ({
+        ...prev,
+        [config.serverId]: 'connecting',
+      }));
 
-        const result = await MCPBridge.connectToServer(
-          config.serverId,
-          config.host,
-          config.port,
-          config.transport,
-          config.authToken || null,
-          config.timeout || 30000
-        );
+      const result = await MCPBridge.connectToServer(
+        config.serverId,
+        config.host,
+        config.port,
+        config.transport,
+        config.authToken || null,
+        config.timeout || 30000,
+      );
 
-        return result.success;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        setError(errorMessage);
-        setConnectionStatus((prev) => ({
-          ...prev,
-          [config.serverId]: 'error',
-        }));
-        return false;
-      }
-    },
-    []
-  );
+      return result.success;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
+      setConnectionStatus((prev) => ({
+        ...prev,
+        [config.serverId]: 'error',
+      }));
+      return false;
+    }
+  }, []);
 
   /**
    * Disconnect from a server
@@ -235,7 +211,7 @@ export function useMCPBridge() {
       serverId: string,
       toolName: string,
       parameters: Record<string, any>,
-      timeout?: number
+      timeout?: number,
     ): Promise<ExecutionResult | null> => {
       if (!MCPBridge) {
         setError('MCPBridge not available');
@@ -247,7 +223,7 @@ export function useMCPBridge() {
           serverId,
           toolName,
           parameters,
-          timeout || 30000
+          timeout || 30000,
         );
 
         if (result.success) {
@@ -272,7 +248,7 @@ export function useMCPBridge() {
         };
       }
     },
-    []
+    [],
   );
 
   /**
@@ -282,7 +258,7 @@ export function useMCPBridge() {
     async (
       serverId: string,
       toolName: string,
-      parameters: Record<string, any>
+      parameters: Record<string, any>,
     ): Promise<ValidationResult | null> => {
       if (!MCPBridge) {
         setError('MCPBridge not available');
@@ -301,7 +277,7 @@ export function useMCPBridge() {
         return null;
       }
     },
-    []
+    [],
   );
 
   /**
@@ -326,33 +302,36 @@ export function useMCPBridge() {
         return null;
       }
     },
-    []
+    [],
   );
 
   /**
    * Retry failed execution
    */
-  const retryExecution = useCallback(async (executionId: string): Promise<ExecutionResult | null> => {
-    if (!MCPBridge) {
-      setError('MCPBridge not available');
-      return null;
-    }
-
-    try {
-      const result = await MCPBridge.retryExecution(executionId);
-      if (result.success) {
-        return {
-          success: true,
-          result: result.result,
-        };
+  const retryExecution = useCallback(
+    async (executionId: string): Promise<ExecutionResult | null> => {
+      if (!MCPBridge) {
+        setError('MCPBridge not available');
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(errorMessage);
-      return null;
-    }
-  }, []);
+
+      try {
+        const result = await MCPBridge.retryExecution(executionId);
+        if (result.success) {
+          return {
+            success: true,
+            result: result.result,
+          };
+        }
+        return null;
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        setError(errorMessage);
+        return null;
+      }
+    },
+    [],
+  );
 
   /**
    * Get execution history
@@ -377,7 +356,7 @@ export function useMCPBridge() {
         return null;
       }
     },
-    []
+    [],
   );
 
   /**

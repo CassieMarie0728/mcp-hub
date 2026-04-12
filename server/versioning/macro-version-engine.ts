@@ -12,9 +12,9 @@ export class MacroVersionEngine {
   createVersion(
     macroId: string,
     userId: string,
-    content: any,
+    content: Record<string, unknown>,
     changeDescription: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>,
   ): MacroVersion {
     const currentVersion = this.currentVersions.get(macroId) || 0;
     const nextVersion = currentVersion + 1;
@@ -77,7 +77,7 @@ export class MacroVersionEngine {
     macroId: string,
     versionNumber: number,
     userId: string,
-    reason: string
+    reason: string,
   ): MacroVersion | null {
     const targetVersion = this.getVersion(macroId, versionNumber);
     if (!targetVersion) return null;
@@ -88,7 +88,7 @@ export class MacroVersionEngine {
       userId,
       targetVersion.content,
       `Rollback to v${versionNumber}: ${reason}`,
-      { rolledBackFrom: versionNumber }
+      { rolledBackFrom: versionNumber },
     );
 
     return rollbackVersion;
@@ -153,7 +153,10 @@ export class MacroVersionEngine {
   /**
    * Calculate diff between two versions
    */
-  private calculateDiff(from: any, to: any): VersionChange[] {
+  private calculateDiff(
+    from: Record<string, unknown>,
+    to: Record<string, unknown>,
+  ): VersionChange[] {
     const changes: VersionChange[] = [];
 
     // Deep diff logic
@@ -268,7 +271,7 @@ export class MacroVersionEngine {
     baseVersion: number,
     version1: number,
     version2: number,
-    userId: string
+    userId: string,
   ): MacroVersion | null {
     const base = this.getVersion(macroId, baseVersion);
     const v1 = this.getVersion(macroId, version1);
@@ -284,18 +287,25 @@ export class MacroVersionEngine {
       userId,
       mergedContent,
       `Merge v${version1} and v${version2}`,
-      { mergedFrom: [version1, version2] }
+      { mergedFrom: [version1, version2] },
     );
   }
 
   /**
    * Perform three-way merge
    */
-  private performMerge(base: any, v1: any, v2: any): any {
+  private performMerge(
+    base: Record<string, unknown>,
+    v1: Record<string, unknown>,
+    v2: Record<string, unknown>,
+  ): Record<string, unknown> {
     // Simple merge strategy: if both versions modified the same field, use v2
     const merged = JSON.parse(JSON.stringify(base));
 
-    const applyChanges = (target: any, source: any) => {
+    const applyChanges = (
+      target: Record<string, unknown>,
+      source: Record<string, unknown>,
+    ): Record<string, unknown> => {
       if (typeof source === 'object' && source !== null) {
         for (const key in source) {
           if (typeof source[key] === 'object' && source[key] !== null) {
@@ -336,7 +346,7 @@ export class MacroVersionEngine {
         userId,
         data.content || data,
         `Imported version: ${data.changeDescription || 'Imported'}`,
-        { imported: true }
+        { imported: true },
       );
     } catch (error) {
       return null;

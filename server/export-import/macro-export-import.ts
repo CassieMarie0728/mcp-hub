@@ -245,7 +245,10 @@ export class MacroExportImportEngine {
   /**
    * Validate macro compatibility
    */
-  validateCompatibility(macro: any, targetVersion: string): CompatibilityResult {
+  validateCompatibility(
+    macro: Record<string, unknown>,
+    targetVersion: string,
+  ): CompatibilityResult {
     const issues: CompatibilityIssue[] = [];
 
     // Check for deprecated actions
@@ -319,7 +322,11 @@ export class MacroExportImportEngine {
   /**
    * Merge macros
    */
-  mergeMacros(macro1: any, macro2: any, strategy: 'concat' | 'override' = 'concat'): any {
+  mergeMacros(
+    macro1: Record<string, unknown>,
+    macro2: Record<string, unknown>,
+    strategy: 'concat' | 'override' = 'concat',
+  ): Record<string, unknown> {
     if (strategy === 'concat') {
       return {
         id: `macro_${Date.now()}`,
@@ -342,7 +349,10 @@ export class MacroExportImportEngine {
   /**
    * Merge variables
    */
-  private mergeVariables(vars1: any[], vars2: any[]): any[] {
+  private mergeVariables(
+    vars1: Array<Record<string, unknown>>,
+    vars2: Array<Record<string, unknown>>,
+  ): Array<Record<string, unknown>> {
     const merged = new Map();
 
     vars1.forEach((v) => merged.set(v.name, v));

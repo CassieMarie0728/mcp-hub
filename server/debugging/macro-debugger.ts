@@ -11,11 +11,7 @@ export class MacroDebugger {
   /**
    * Start debug session
    */
-  startDebugSession(
-    sessionId: string,
-    macroId: string,
-    actions: any[]
-  ): DebugSession {
+  startDebugSession(sessionId: string, macroId: string, actions: any[]): DebugSession {
     const session: DebugSession = {
       sessionId,
       macroId,
@@ -209,7 +205,7 @@ export class MacroDebugger {
   /**
    * Set variable value
    */
-  setVariable(sessionId: string, name: string, value: any): boolean {
+  setVariable(sessionId: string, name: string, value: Record<string, unknown>): boolean {
     const session = this.debugSessions.get(sessionId);
     if (!session) return false;
 
@@ -294,12 +290,7 @@ export class MacroDebugger {
   /**
    * Record action execution
    */
-  recordActionExecution(
-    sessionId: string,
-    actionIndex: number,
-    action: any,
-    result: any
-  ): void {
+  recordActionExecution(sessionId: string, actionIndex: number, action: any, result: any): void {
     const session = this.debugSessions.get(sessionId);
     if (!session) return;
 
@@ -392,7 +383,7 @@ export class MacroDebugger {
         duration: session.endTime - session.startTime,
       },
       null,
-      2
+      2,
     );
   }
 }
@@ -420,7 +411,7 @@ export interface DebugSession {
  */
 export interface DebugVariable {
   name: string;
-  value: any;
+  value: Record<string, unknown> | string | number | boolean | null;
   type: string;
   mutable: boolean;
 }
@@ -431,7 +422,7 @@ export interface DebugVariable {
 export interface WatchExpression {
   id: string;
   expression: string;
-  value: any;
+  value: Record<string, unknown> | string | number | boolean | null;
   type: string;
   error: string | null;
 }
@@ -441,8 +432,8 @@ export interface WatchExpression {
  */
 export interface ExecutionHistoryEntry {
   actionIndex: number;
-  action: any;
-  result: any;
+  action: Record<string, unknown>;
+  result: Record<string, unknown>;
   timestamp: number;
   variables: Map<string, DebugVariable>;
 }

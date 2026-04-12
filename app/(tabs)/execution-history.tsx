@@ -42,14 +42,18 @@ export default function ExecutionHistoryScreen() {
 
   // Handle clear all
   const handleClearAll = () => {
-    Alert.alert('Clear All History', 'This will delete all execution history. This cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Clear All',
-        style: 'destructive',
-        onPress: () => clearAll(),
-      },
-    ]);
+    Alert.alert(
+      'Clear All History',
+      'This will delete all execution history. This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear All',
+          style: 'destructive',
+          onPress: () => clearAll(),
+        },
+      ],
+    );
   };
 
   // Get status color
@@ -95,7 +99,9 @@ export default function ExecutionHistoryScreen() {
               <View className="flex-row justify-between mb-4">
                 <View>
                   <Text className="text-sm text-muted mb-1">Total Executions</Text>
-                  <Text className="text-2xl font-bold text-foreground">{stats.totalExecutions}</Text>
+                  <Text className="text-2xl font-bold text-foreground">
+                    {stats.totalExecutions}
+                  </Text>
                 </View>
                 <View>
                   <Text className="text-sm text-muted mb-1">Success Rate</Text>
@@ -116,13 +122,19 @@ export default function ExecutionHistoryScreen() {
 
               <View className="flex-row justify-between pt-4 border-t border-border">
                 <View className="flex-1">
-                  <Text className="text-xs text-success font-semibold">{stats.successCount} Success</Text>
+                  <Text className="text-xs text-success font-semibold">
+                    {stats.successCount} Success
+                  </Text>
                 </View>
                 <View className="flex-1">
-                  <Text className="text-xs text-error font-semibold">{stats.failureCount} Failed</Text>
+                  <Text className="text-xs text-error font-semibold">
+                    {stats.failureCount} Failed
+                  </Text>
                 </View>
                 <View className="flex-1">
-                  <Text className="text-xs text-warning font-semibold">{stats.timeoutCount} Timeout</Text>
+                  <Text className="text-xs text-warning font-semibold">
+                    {stats.timeoutCount} Timeout
+                  </Text>
                 </View>
               </View>
             </View>
@@ -146,27 +158,29 @@ export default function ExecutionHistoryScreen() {
         {/* Status Filter */}
         <View className="px-6 mb-6">
           <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-2">
-            {['ALL', ExecutionStatus.SUCCESS, ExecutionStatus.FAILED, ExecutionStatus.TIMEOUT].map((status) => (
-              <TouchableOpacity
-                key={status}
-                onPress={() => setSelectedFilter(status as any)}
-                className={cn(
-                  'px-4 py-2 rounded-full border',
-                  selectedFilter === status
-                    ? 'bg-primary border-primary'
-                    : 'bg-surface border-border'
-                )}
-              >
-                <Text
+            {['ALL', ExecutionStatus.SUCCESS, ExecutionStatus.FAILED, ExecutionStatus.TIMEOUT].map(
+              (status) => (
+                <TouchableOpacity
+                  key={status}
+                  onPress={() => setSelectedFilter(status as any)}
                   className={cn(
-                    'font-semibold text-sm',
-                    selectedFilter === status ? 'text-background' : 'text-foreground'
+                    'px-4 py-2 rounded-full border',
+                    selectedFilter === status
+                      ? 'bg-primary border-primary'
+                      : 'bg-surface border-border',
                   )}
                 >
-                  {status}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    className={cn(
+                      'font-semibold text-sm',
+                      selectedFilter === status ? 'text-background' : 'text-foreground',
+                    )}
+                  >
+                    {status}
+                  </Text>
+                </TouchableOpacity>
+              ),
+            )}
           </ScrollView>
         </View>
 
@@ -201,7 +215,10 @@ export default function ExecutionHistoryScreen() {
                       className="px-3 py-1 rounded-full"
                       style={{ backgroundColor: getStatusColor(item.status) + '20' }}
                     >
-                      <Text className="text-xs font-semibold" style={{ color: getStatusColor(item.status) }}>
+                      <Text
+                        className="text-xs font-semibold"
+                        style={{ color: getStatusColor(item.status) }}
+                      >
                         {item.status}
                       </Text>
                     </View>
@@ -211,11 +228,15 @@ export default function ExecutionHistoryScreen() {
                   <View className="flex-row justify-between mb-3 pb-3 border-b border-border">
                     <View>
                       <Text className="text-xs text-muted">Time: {formatTime(item.timestamp)}</Text>
-                      <Text className="text-xs text-muted">Duration: {formatDuration(item.executionTimeMs)}</Text>
+                      <Text className="text-xs text-muted">
+                        Duration: {formatDuration(item.executionTimeMs)}
+                      </Text>
                     </View>
                     <View className="items-end">
                       <Text className="text-xs text-muted">Result: {item.resultType}</Text>
-                      <Text className="text-xs text-muted">Size: {(item.resultSize / 1024).toFixed(1)}KB</Text>
+                      <Text className="text-xs text-muted">
+                        Size: {(item.resultSize / 1024).toFixed(1)}KB
+                      </Text>
                     </View>
                   </View>
 
@@ -231,7 +252,10 @@ export default function ExecutionHistoryScreen() {
                   <View className="flex-row gap-2">
                     <TouchableOpacity
                       className="flex-1 bg-primary/20 rounded-lg py-2 items-center"
-                      onPress={() => console.log('Retry:', item.id)}
+                      onPress={() => {
+                        // Retry execution with the same parameters
+                        // TODO: Implement retry functionality
+                      }}
                     >
                       <Text className="text-sm font-semibold text-primary">Retry</Text>
                     </TouchableOpacity>

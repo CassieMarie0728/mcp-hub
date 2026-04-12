@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView, Modal, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+  Modal,
+  TextInput,
+} from 'react-native';
 import { useServerPresets } from '@/lib/hooks/useServerPresets';
 import { ServerPreset, TransportType } from '@/lib/models/ServerPreset';
 import { ScreenContainer } from '@/components/screen-container';
@@ -38,7 +47,7 @@ export default function ServerPresetsScreen() {
     (p) =>
       searchText === '' ||
       p.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      p.host.toLowerCase().includes(searchText.toLowerCase())
+      p.host.toLowerCase().includes(searchText.toLowerCase()),
   );
 
   // Handle create from template
@@ -283,14 +292,14 @@ export default function ServerPresetsScreen() {
                     'flex-1 py-2 rounded-lg border',
                     newPreset.transport === transport
                       ? 'bg-primary border-primary'
-                      : 'bg-surface border-border'
+                      : 'bg-surface border-border',
                   )}
                   onPress={() => setNewPreset({ ...newPreset, transport })}
                 >
                   <Text
                     className={cn(
                       'text-xs font-semibold text-center',
-                      newPreset.transport === transport ? 'text-background' : 'text-foreground'
+                      newPreset.transport === transport ? 'text-background' : 'text-foreground',
                     )}
                   >
                     {transport}
@@ -302,7 +311,7 @@ export default function ServerPresetsScreen() {
             <TouchableOpacity
               className="bg-primary rounded-lg py-3 items-center mb-3"
               onPress={() => {
-                // TODO: Implement create preset
+                // TODO: Implement create preset from form
                 setShowNewPreset(false);
               }}
             >
@@ -343,9 +352,7 @@ function PresetCard({
         </TouchableOpacity>
       </View>
 
-      {preset.description && (
-        <Text className="text-sm text-muted mb-3">{preset.description}</Text>
-      )}
+      {preset.description && <Text className="text-sm text-muted mb-3">{preset.description}</Text>}
 
       <View className="flex-row justify-between items-center pb-3 border-b border-border mb-3">
         <View>
@@ -368,10 +375,18 @@ function PresetCard({
       </View>
 
       <View className="flex-row gap-2">
-        <TouchableOpacity className="flex-1 bg-primary/20 rounded-lg py-2 items-center" onPress={() => console.log('Connect')}>
+        <TouchableOpacity
+          className="flex-1 bg-primary/20 rounded-lg py-2 items-center"
+          onPress={() => {
+            // TODO: Implement connect to preset server
+          }}
+        >
           <Text className="text-sm font-semibold text-primary">Connect</Text>
         </TouchableOpacity>
-        <TouchableOpacity className="flex-1 bg-error/20 rounded-lg py-2 items-center" onPress={onDelete}>
+        <TouchableOpacity
+          className="flex-1 bg-error/20 rounded-lg py-2 items-center"
+          onPress={onDelete}
+        >
           <Text className="text-sm font-semibold text-error">Delete</Text>
         </TouchableOpacity>
       </View>

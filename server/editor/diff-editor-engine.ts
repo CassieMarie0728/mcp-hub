@@ -9,7 +9,11 @@ export class DiffEditorEngine {
   /**
    * Generate edit suggestions
    */
-  generateSuggestions(fromContent: any, toContent: any, context?: string): EditSuggestion[] {
+  generateSuggestions(
+    fromContent: Record<string, unknown>,
+    toContent: Record<string, unknown>,
+    context?: string,
+  ): EditSuggestion[] {
     const suggestions: EditSuggestion[] = [];
 
     // Analyze changes and generate suggestions
@@ -100,7 +104,7 @@ export class DiffEditorEngine {
   /**
    * Analyze performance improvements
    */
-  private analyzePerfImprovements(content: any): EditSuggestion[] {
+  private analyzePerfImprovements(content: Record<string, unknown>): EditSuggestion[] {
     const suggestions: EditSuggestion[] = [];
     const contentStr = JSON.stringify(content);
 
@@ -149,7 +153,7 @@ export class DiffEditorEngine {
   /**
    * Analyze quality improvements
    */
-  private analyzeQualityImprovements(content: any): EditSuggestion[] {
+  private analyzeQualityImprovements(content: Record<string, unknown>): EditSuggestion[] {
     const suggestions: EditSuggestion[] = [];
     const contentStr = JSON.stringify(content);
 
@@ -198,7 +202,7 @@ export class DiffEditorEngine {
   /**
    * Analyze security improvements
    */
-  private analyzeSecurityImprovements(content: any): EditSuggestion[] {
+  private analyzeSecurityImprovements(content: Record<string, unknown>): EditSuggestion[] {
     const suggestions: EditSuggestion[] = [];
     const contentStr = JSON.stringify(content);
 
@@ -312,7 +316,11 @@ export class DiffEditorEngine {
   /**
    * Generate merged content
    */
-  generateMergedContent(fromContent: any, toContent: any, appliedSuggestions: string[]): any {
+  generateMergedContent(
+    fromContent: Record<string, unknown>,
+    toContent: Record<string, unknown>,
+    appliedSuggestions: string[],
+  ): Record<string, unknown> {
     let merged = JSON.parse(JSON.stringify(toContent));
 
     // Apply suggestions to merged content
@@ -340,7 +348,10 @@ export class DiffEditorEngine {
       appliedSuggestions: applied,
       rejectedSuggestions: rejected,
       pendingSuggestions: suggestions.length - applied - rejected,
-      avgConfidence: suggestions.length > 0 ? suggestions.reduce((sum, s) => sum + s.confidence, 0) / suggestions.length : 0,
+      avgConfidence:
+        suggestions.length > 0
+          ? suggestions.reduce((sum, s) => sum + s.confidence, 0) / suggestions.length
+          : 0,
       highImpactCount: suggestions.filter((s) => s.impact === 'high').length,
     };
   }
@@ -401,7 +412,7 @@ export class DiffEditorEngine {
         stats: this.getSuggestionStats(diffId),
       },
       null,
-      2
+      2,
     );
   }
 }

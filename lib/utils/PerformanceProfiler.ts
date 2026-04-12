@@ -49,13 +49,13 @@ class PerformanceProfiler {
   static endMeasure(name: string): number | null {
     const index = this.activeTimers.get(name);
     if (index === undefined) {
-      console.warn(`No active timer for metric: ${name}`);
+      if (__DEV__) console.warn(`No active timer for metric: ${name}`);
       return null;
     }
 
     const metrics = this.metrics.get(name);
     if (!metrics || !metrics[index]) {
-      console.warn(`Metric not found: ${name}`);
+      if (__DEV__) console.warn(`Metric not found: ${name}`);
       return null;
     }
 
@@ -66,7 +66,7 @@ class PerformanceProfiler {
     this.activeTimers.delete(name);
 
     if (__DEV__) {
-      console.log(`[PERF] ${name}: ${metric.duration.toFixed(2)}ms`);
+      if (__DEV__) console.log(`[PERF] ${name}: ${metric.duration.toFixed(2)}ms`);
     }
 
     return metric.duration;
@@ -153,16 +153,16 @@ class PerformanceProfiler {
   static logSummary(): void {
     const stats = this.getAllStats();
 
-    console.log('\n=== Performance Summary ===');
+    if (__DEV__) console.log('\n=== Performance Summary ===');
     stats.forEach((stat) => {
-      console.log(`${stat.metric}:`);
-      console.log(`  Count: ${stat.count}`);
-      console.log(`  Average: ${stat.averageTime.toFixed(2)}ms`);
-      console.log(`  Min: ${stat.minTime.toFixed(2)}ms`);
-      console.log(`  Max: ${stat.maxTime.toFixed(2)}ms`);
-      console.log(`  Last: ${stat.lastMeasurement.toFixed(2)}ms`);
+      if (__DEV__) console.log(`${stat.metric}:`);
+      if (__DEV__) console.log(`  Count: ${stat.count}`);
+      if (__DEV__) console.log(`  Average: ${stat.averageTime.toFixed(2)}ms`);
+      if (__DEV__) console.log(`  Min: ${stat.minTime.toFixed(2)}ms`);
+      if (__DEV__) console.log(`  Max: ${stat.maxTime.toFixed(2)}ms`);
+      if (__DEV__) console.log(`  Last: ${stat.lastMeasurement.toFixed(2)}ms`);
     });
-    console.log('===========================\n');
+    if (__DEV__) console.log('===========================\n');
   }
 }
 

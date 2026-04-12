@@ -62,46 +62,55 @@ export function useExecutionHistory(): UseExecutionHistoryReturn {
   }, []);
 
   // Add execution to history
-  const addExecution = useCallback(async (entry: ExecutionHistoryEntry) => {
-    try {
-      setError(null);
-      await ExecutionHistoryManager.addExecution(entry);
-      // Reload history
-      await loadHistory();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to add execution';
-      setError(message);
-      console.error('Error adding execution:', err);
-    }
-  }, [loadHistory]);
+  const addExecution = useCallback(
+    async (entry: ExecutionHistoryEntry) => {
+      try {
+        setError(null);
+        await ExecutionHistoryManager.addExecution(entry);
+        // Reload history
+        await loadHistory();
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to add execution';
+        setError(message);
+        console.error('Error adding execution:', err);
+      }
+    },
+    [loadHistory],
+  );
 
   // Delete single execution
-  const deleteExecution = useCallback(async (id: string) => {
-    try {
-      setError(null);
-      await ExecutionHistoryManager.deleteExecution(id);
-      // Reload history
-      await loadHistory();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to delete execution';
-      setError(message);
-      console.error('Error deleting execution:', err);
-    }
-  }, [loadHistory]);
+  const deleteExecution = useCallback(
+    async (id: string) => {
+      try {
+        setError(null);
+        await ExecutionHistoryManager.deleteExecution(id);
+        // Reload history
+        await loadHistory();
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to delete execution';
+        setError(message);
+        console.error('Error deleting execution:', err);
+      }
+    },
+    [loadHistory],
+  );
 
   // Delete all executions for a server
-  const deleteByServer = useCallback(async (serverId: string) => {
-    try {
-      setError(null);
-      await ExecutionHistoryManager.deleteByServer(serverId);
-      // Reload history
-      await loadHistory();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to delete server executions';
-      setError(message);
-      console.error('Error deleting server executions:', err);
-    }
-  }, [loadHistory]);
+  const deleteByServer = useCallback(
+    async (serverId: string) => {
+      try {
+        setError(null);
+        await ExecutionHistoryManager.deleteByServer(serverId);
+        // Reload history
+        await loadHistory();
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to delete server executions';
+        setError(message);
+        console.error('Error deleting server executions:', err);
+      }
+    },
+    [loadHistory],
+  );
 
   // Clear all history
   const clearAll = useCallback(async () => {
@@ -145,26 +154,29 @@ export function useExecutionHistory(): UseExecutionHistoryReturn {
   }, []);
 
   // Import from JSON
-  const importFromJson = useCallback(async (jsonData: string): Promise<number> => {
-    try {
-      setError(null);
-      const count = await ExecutionHistoryManager.importFromJson(jsonData);
-      // Reload history
-      await loadHistory();
-      return count;
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to import history';
-      setError(message);
-      console.error('Error importing history:', err);
-      throw err;
-    }
-  }, [loadHistory]);
+  const importFromJson = useCallback(
+    async (jsonData: string): Promise<number> => {
+      try {
+        setError(null);
+        const count = await ExecutionHistoryManager.importFromJson(jsonData);
+        // Reload history
+        await loadHistory();
+        return count;
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to import history';
+        setError(message);
+        console.error('Error importing history:', err);
+        throw err;
+      }
+    },
+    [loadHistory],
+  );
 
   // Retry execution (callback for parent to handle)
   const retry = useCallback((entry: ExecutionHistoryEntry) => {
     // This will be handled by the parent component
     // It needs to trigger tool execution with the same parameters
-    console.log('Retry execution:', entry);
+    if (__DEV__) console.log('Retry execution:', entry);
   }, []);
 
   // Load history on mount
