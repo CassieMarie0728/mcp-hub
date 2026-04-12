@@ -63,52 +63,55 @@ export default function MacroChainingScreen() {
   /**
    * Handle delete chain
    */
-  const handleDeleteChain = useCallback((chainId: string) => {
-    Alert.alert('Delete Chain', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          setChains(chains.filter((c) => c.id !== chainId));
+  const handleDeleteChain = useCallback(
+    (chainId: string) => {
+      Alert.alert('Delete Chain', 'Are you sure?', [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            setChains(chains.filter((c) => c.id !== chainId));
+          },
         },
-      },
-    ]);
-  }, [chains]);
+      ]);
+    },
+    [chains],
+  );
 
   /**
    * Handle execute chain
    */
-  const handleExecuteChain = useCallback(async (chain: MacroChain) => {
-    setIsLoading(true);
-    try {
-      const macroMap = new Map(macros.map((m) => [m.id, m]));
-      const execution = await MacroChainingEngine.executeChain(chain, macroMap);
+  const handleExecuteChain = useCallback(
+    async (chain: MacroChain) => {
+      setIsLoading(true);
+      try {
+        const macroMap = new Map(macros.map((m) => [m.id, m]));
+        const execution = await MacroChainingEngine.executeChain(chain, macroMap);
 
-      if (execution.status === 'success') {
-        Alert.alert(
-          'Chain Executed',
-          `Completed ${execution.stepResults.length} step(s) in ${Math.round((execution.completedAt! - execution.startedAt) / 1000)}s`
-        );
-      } else {
-        Alert.alert(
-          'Chain Failed',
-          `Errors:\n${execution.errors.join('\n')}`
-        );
+        if (execution.status === 'success') {
+          Alert.alert(
+            'Chain Executed',
+            `Completed ${execution.stepResults.length} step(s) in ${Math.round((execution.completedAt! - execution.startedAt) / 1000)}s`,
+          );
+        } else {
+          Alert.alert('Chain Failed', `Errors:\n${execution.errors.join('\n')}`);
+        }
+      } catch (error) {
+        Alert.alert('Error', error instanceof Error ? error.message : 'Failed to execute chain');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to execute chain');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [macros]);
+    },
+    [macros],
+  );
 
   /**
    * Toggle macro selection
    */
   const toggleMacroSelection = useCallback((macroId: string) => {
     setSelectedMacros((prev) =>
-      prev.includes(macroId) ? prev.filter((id) => id !== macroId) : [...prev, macroId]
+      prev.includes(macroId) ? prev.filter((id) => id !== macroId) : [...prev, macroId],
     );
   }, []);
 
@@ -123,13 +126,13 @@ export default function MacroChainingScreen() {
         onPress={() => toggleMacroSelection(item.id)}
         className={cn(
           'flex-row items-center gap-3 p-3 rounded-lg border mb-2',
-          isSelected ? 'bg-primary/10 border-primary' : 'bg-background border-border'
+          isSelected ? 'bg-primary/10 border-primary' : 'bg-background border-border',
         )}
       >
         <View
           className={cn(
             'w-5 h-5 rounded border-2 items-center justify-center',
-            isSelected ? 'bg-primary border-primary' : 'border-border'
+            isSelected ? 'bg-primary border-primary' : 'border-border',
           )}
         >
           {isSelected && <MaterialIcons name="check" size={14} color="white" />}
@@ -237,7 +240,8 @@ export default function MacroChainingScreen() {
         <View className="p-4 bg-surface rounded-lg border border-border mt-6">
           <Text className="text-xs font-semibold text-foreground mb-2">💡 Chain Tips</Text>
           <Text className="text-xs text-muted leading-relaxed">
-            Chains execute macros in sequence. Use parameter mapping to pass results between steps. Set "Continue on Error" to skip failed steps.
+            Chains execute macros in sequence. Use parameter mapping to pass results between steps.
+            Set &quot;Continue on Error&quot; to skip failed steps.
           </Text>
         </View>
       </ScrollView>
@@ -297,7 +301,7 @@ export default function MacroChainingScreen() {
                     'flex-1 py-3 px-4 rounded-lg',
                     isLoading || !chainName.trim() || selectedMacros.length < 2
                       ? 'bg-border opacity-50'
-                      : 'bg-primary'
+                      : 'bg-primary',
                   )}
                 >
                   <Text className="text-white font-semibold text-center">Create</Text>

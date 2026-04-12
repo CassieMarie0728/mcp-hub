@@ -1,0 +1,5 @@
+{
+  "root": true,
+  "extends": ["expo", "eslint:recommended"],
+  "ignorePatterns": ["dist/", "web-build/", "node_modules/"]
+}

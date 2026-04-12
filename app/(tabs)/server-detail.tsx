@@ -72,7 +72,7 @@ export default function ServerDetailScreen() {
     <TouchableOpacity
       onPress={() =>
         router.push(
-          `/(tabs)/tool-detail?serverId=${server.id}&toolName=${encodeURIComponent(tool.name)}` as any
+          `/(tabs)/tool-detail?serverId=${server.id}&toolName=${encodeURIComponent(tool.name)}` as any,
         )
       }
       className="bg-surface rounded-lg p-4 border border-border mb-3 active:opacity-70"
@@ -80,9 +80,7 @@ export default function ServerDetailScreen() {
       <View className="flex-row items-start justify-between mb-2">
         <View className="flex-1">
           <Text className="text-foreground font-semibold">{tool.name}</Text>
-          {tool.title && (
-            <Text className="text-xs text-muted mt-1">{tool.title}</Text>
-          )}
+          {tool.title && <Text className="text-xs text-muted mt-1">{tool.title}</Text>}
         </View>
         <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
       </View>
@@ -119,9 +117,11 @@ export default function ServerDetailScreen() {
                 server.status === 'connected' ? 'bg-success' : 'bg-error'
               }`}
             />
-            <Text className={`font-semibold capitalize ${
-              server.status === 'connected' ? 'text-success' : 'text-error'
-            }`}>
+            <Text
+              className={`font-semibold capitalize ${
+                server.status === 'connected' ? 'text-success' : 'text-error'
+              }`}
+            >
               {server.status}
             </Text>
           </View>
@@ -163,7 +163,7 @@ export default function ServerDetailScreen() {
                 <MaterialIcons name="build" size={48} color={colors.muted} />
                 <Text className="text-foreground font-semibold mt-4 mb-2">No Tools</Text>
                 <Text className="text-sm text-muted text-center">
-                  This server hasn't exposed any tools yet
+                  This server hasn&apos;t exposed any tools yet
                 </Text>
               </View>
             ) : (

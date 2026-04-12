@@ -1,4 +1,4 @@
-import { ResultType } from '@/lib/hooks/useToolExecution';
+import { ResultType } from '../types/result-type';
 
 /**
  * Formatted result for display
@@ -168,8 +168,11 @@ export class ResultDisplayFormatter {
    * Format as table
    */
   private static formatTable(result: any): string {
-    if (!Array.isArray(result) || result.length === 0) {
+    if (!Array.isArray(result)) {
       return String(result);
+    }
+    if (result.length === 0) {
+      return '[]';
     }
 
     // Get all keys from first object
@@ -322,6 +325,15 @@ export class ResultDisplayFormatter {
     }
     if (trimmed.startsWith('#!/') || trimmed.includes('#!/bin/bash')) {
       return 'bash';
+    }
+    if (
+      trimmed.startsWith('import {') ||
+      trimmed.startsWith("import '") ||
+      trimmed.startsWith('import "') ||
+      trimmed.includes(" from '") ||
+      trimmed.includes(' from "')
+    ) {
+      return 'javascript';
     }
     if (trimmed.startsWith('import ') || trimmed.startsWith('from ')) {
       return 'python';

@@ -56,6 +56,10 @@ export class DiffEditorEngine {
     const securitySuggestions = this.analyzeSecurityImprovements(toContent);
     suggestions.push(...securitySuggestions);
 
+    if (context) {
+      this.suggestions.set(context, suggestions);
+    }
+
     return suggestions;
   }
 
@@ -228,10 +232,17 @@ export class DiffEditorEngine {
   }
 
   /**
+   * Resolve suggestions for a diff id.
+   */
+  private resolveSuggestions(diffId: string): EditSuggestion[] {
+    return this.suggestions.get(diffId) || [];
+  }
+
+  /**
    * Apply suggestion
    */
   applySuggestion(diffId: string, suggestionId: string): boolean {
-    const suggestions = this.suggestions.get(diffId) || [];
+    const suggestions = this.resolveSuggestions(diffId);
     const suggestion = suggestions.find((s) => s.id === suggestionId);
 
     if (!suggestion) return false;
@@ -256,7 +267,7 @@ export class DiffEditorEngine {
    * Reject suggestion
    */
   rejectSuggestion(diffId: string, suggestionId: string): boolean {
-    const suggestions = this.suggestions.get(diffId) || [];
+    const suggestions = this.resolveSuggestions(diffId);
     const suggestion = suggestions.find((s) => s.id === suggestionId);
 
     if (!suggestion) return false;
@@ -317,7 +328,7 @@ export class DiffEditorEngine {
    * Get suggestion statistics
    */
   getSuggestionStats(diffId: string): SuggestionStats {
-    const suggestions = this.suggestions.get(diffId) || [];
+    const suggestions = this.resolveSuggestions(diffId);
     const edits = this.edits.get(diffId) || [];
 
     const applied = edits.filter((e) => e.status === 'applied').length;
@@ -338,7 +349,7 @@ export class DiffEditorEngine {
    * Get suggestions by type
    */
   getSuggestionsByType(diffId: string, type: string): EditSuggestion[] {
-    const suggestions = this.suggestions.get(diffId) || [];
+    const suggestions = this.resolveSuggestions(diffId);
     return suggestions.filter((s) => s.type === type);
   }
 
@@ -346,7 +357,7 @@ export class DiffEditorEngine {
    * Get high-confidence suggestions
    */
   getHighConfidenceSuggestions(diffId: string, minConfidence: number = 0.8): EditSuggestion[] {
-    const suggestions = this.suggestions.get(diffId) || [];
+    const suggestions = this.resolveSuggestions(diffId);
     return suggestions.filter((s) => s.confidence >= minConfidence);
   }
 
@@ -354,7 +365,7 @@ export class DiffEditorEngine {
    * Get high-impact suggestions
    */
   getHighImpactSuggestions(diffId: string): EditSuggestion[] {
-    const suggestions = this.suggestions.get(diffId) || [];
+    const suggestions = this.resolveSuggestions(diffId);
     return suggestions.filter((s) => s.impact === 'high');
   }
 
@@ -362,7 +373,7 @@ export class DiffEditorEngine {
    * Auto-apply safe suggestions
    */
   autoApplySafeSuggestions(diffId: string): number {
-    const suggestions = this.suggestions.get(diffId) || [];
+    const suggestions = this.resolveSuggestions(diffId);
     let applied = 0;
 
     for (const suggestion of suggestions) {
@@ -379,7 +390,7 @@ export class DiffEditorEngine {
    * Export suggestions as JSON
    */
   exportSuggestions(diffId: string): string {
-    const suggestions = this.suggestions.get(diffId) || [];
+    const suggestions = this.resolveSuggestions(diffId);
     const edits = this.edits.get(diffId) || [];
 
     return JSON.stringify(

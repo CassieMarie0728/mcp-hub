@@ -188,8 +188,9 @@ export class MacroForkEngine {
     });
 
     // Add ancestors
-    for (const ancestorId of lineage.ancestors) {
+    for (const ancestorId of [...lineage.ancestors].reverse()) {
       const ancestorLineage = this.lineages.get(ancestorId);
+
       if (ancestorLineage) {
         chain.unshift({
           macroId: ancestorId,
@@ -197,7 +198,15 @@ export class MacroForkEngine {
           date: ancestorLineage.createdAt,
           type: ancestorLineage.ancestors.length === 0 ? 'original' : 'fork',
         });
+        continue;
       }
+
+      chain.unshift({
+        macroId: ancestorId,
+        author: 'unknown',
+        date: new Date(0),
+        type: 'original',
+      });
     }
 
     return chain;

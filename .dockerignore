@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+node_modules
+.pnpm-store
+dist
+build
+coverage
+.git
+.github
+.DS_Store
+*.log
+*.local
