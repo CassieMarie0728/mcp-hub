@@ -7,7 +7,7 @@ export default defineConfig([
   {
     ignores: ['dist/*'],
     rules: {
-      'react/no-unescaped-entities': 'off',
+      'react/no-unescaped-entities': 'error',
     },
   },
 ]);
