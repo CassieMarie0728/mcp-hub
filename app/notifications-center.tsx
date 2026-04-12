@@ -282,7 +282,7 @@ export default function NotificationsCenterScreen() {
             <View className="bg-surface rounded-xl p-8 border border-border items-center gap-2">
               <Text className="text-2xl">📭</Text>
               <Text className="text-lg font-semibold text-foreground">No notifications</Text>
-              <Text className="text-sm text-muted text-center">You're all caught up!</Text>
+              <Text className="text-sm text-muted text-center">You&apos;re all caught up!</Text>
             </View>
           )}
 

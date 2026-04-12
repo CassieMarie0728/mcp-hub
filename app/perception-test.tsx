@@ -208,7 +208,7 @@ export default function PerceptionTestScreen() {
             <MaterialIcons name="visibility-off" size={48} color={colors.muted} />
             <Text className="text-foreground font-semibold mt-4">No Perception Data</Text>
             <Text className="text-muted text-sm text-center mt-2">
-              Tap "Capture Screen Perception" to see what the AI sees on this screen
+              Tap &quot;Capture Screen Perception&quot; to see what the AI sees on this screen
             </Text>
           </View>
         )}

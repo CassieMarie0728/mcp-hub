@@ -158,7 +158,7 @@ export default function TrendingDashboardScreen() {
           {/* Header */}
           <View className="gap-2">
             <Text className="text-3xl font-bold text-foreground">Trending</Text>
-            <Text className="text-base text-muted">Discover what's popular in the community</Text>
+            <Text className="text-base text-muted">Discover what&apos;s popular in the community</Text>
           </View>
 
           {/* Tab Navigation */}
