@@ -26,7 +26,8 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
     it('should apply suggestion', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
-        { action: 'tap', retry: 3 }
+        { action: 'tap', retry: 3 },
+        'diff1'
       );
 
       const result = diffEditor.applySuggestion('diff1', suggestions[0].id);
@@ -36,7 +37,8 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
     it('should reject suggestion', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
-        { action: 'tap', retry: 3 }
+        { action: 'tap', retry: 3 },
+        'diff1'
       );
 
       const result = diffEditor.rejectSuggestion('diff1', suggestions[0].id);
@@ -46,7 +48,8 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
     it('should get applied edits', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
-        { action: 'tap', retry: 3 }
+        { action: 'tap', retry: 3 },
+        'diff1'
       );
 
       diffEditor.applySuggestion('diff1', suggestions[0].id);
@@ -59,7 +62,8 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
     it('should get suggestion statistics', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
-        { action: 'tap', retry: 3 }
+        { action: 'tap', retry: 3 },
+        'diff1'
       );
 
       const stats = diffEditor.getSuggestionStats('diff1');
@@ -69,7 +73,8 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
     it('should auto-apply safe suggestions', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
-        { action: 'tap', retry: 3 }
+        { action: 'tap', retry: 3 },
+        'diff1'
       );
 
       const applied = diffEditor.autoApplySafeSuggestions('diff1');
@@ -323,7 +328,8 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
     it('should handle complete diff editor workflow', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap', delay: 100 },
-        { action: 'tap', delay: 200, retry: 3 }
+        { action: 'tap', delay: 200, retry: 3 },
+        'diff1'
       );
 
       expect(suggestions.length).toBeGreaterThan(0);

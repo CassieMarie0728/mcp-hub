@@ -77,6 +77,14 @@ describe('ResultDisplayFormatter', () => {
       expect(result.metadata.size).toBeGreaterThan(0);
       expect(result.metadata.isLarge).toBe(true);
     });
+
+    it('should format streaming results', () => {
+      const streamData = ['chunk1', 'chunk2', 'chunk3'];
+      const result = ResultDisplayFormatter.formatResult(streamData, ResultType.STREAM);
+      expect(result.format).toBe(ResultType.STREAM);
+      expect(result.content).toBe('chunk1\nchunk2\nchunk3');
+      expect(result.metadata.canCopy).toBe(true);
+    });
   });
 
   describe('toDownloadable', () => {
@@ -165,7 +173,8 @@ describe('ResultDisplayFormatter', () => {
         { id: 2, description: 'Test\nwith\nnewlines' },
       ];
       const result = ResultDisplayFormatter.formatResult(tableData, ResultType.TABLE);
-      expect(result.content).toMatch(/\\\||\\n/);
+      expect(result.content).toContain('\\|');
+      expect(result.content).toContain('\\n');
     });
   });
 

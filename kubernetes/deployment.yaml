@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mcp-hub
-          image: ghcr.io/your-org/mcp-hub:latest
+          image: ghcr.io/your-org/mcp-hub:v1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000

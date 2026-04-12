@@ -5,7 +5,6 @@
 export class DiffEditorEngine {
   private suggestions: Map<string, EditSuggestion[]> = new Map();
   private edits: Map<string, EditOperation[]> = new Map();
-  private lastGeneratedSuggestions: EditSuggestion[] = [];
 
   /**
    * Generate edit suggestions
@@ -57,7 +56,9 @@ export class DiffEditorEngine {
     const securitySuggestions = this.analyzeSecurityImprovements(toContent);
     suggestions.push(...securitySuggestions);
 
-    this.lastGeneratedSuggestions = suggestions;
+    if (context) {
+      this.suggestions.set(context, suggestions);
+    }
 
     return suggestions;
   }
@@ -232,20 +233,9 @@ export class DiffEditorEngine {
 
   /**
    * Resolve suggestions for a diff id.
-   * Falls back to the last generated suggestion set for backward compatibility.
    */
   private resolveSuggestions(diffId: string): EditSuggestion[] {
-    const existing = this.suggestions.get(diffId);
-    if (existing) {
-      return existing;
-    }
-
-    if (this.lastGeneratedSuggestions.length > 0) {
-      this.suggestions.set(diffId, [...this.lastGeneratedSuggestions]);
-      return this.suggestions.get(diffId)!;
-    }
-
-    return [];
+    return this.suggestions.get(diffId) || [];
   }
 
   /**
