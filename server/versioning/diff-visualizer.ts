@@ -36,7 +36,7 @@ export class DiffVisualizer {
   /**
    * Convert content to lines
    */
-  private static contentToLines(content: Record<string, unknown>): string[] {
+  private static contentToLines(content: Record<string, unknown> | string): string[] {
     if (typeof content === 'string') {
       return content.split('\n');
     }
@@ -152,8 +152,8 @@ export class DiffVisualizer {
    * Generate unified diff format
    */
   static generateUnifiedDiff(
-    fromContent: Record<string, unknown>,
-    toContent: Record<string, unknown>,
+    fromContent: Record<string, unknown> | string,
+    toContent: Record<string, unknown> | string,
     context: number = 3,
   ): string {
     const fromLines = this.contentToLines(fromContent);

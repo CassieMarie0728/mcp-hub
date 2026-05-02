@@ -253,7 +253,8 @@ export class MacroExportImportEngine {
 
     // Check for deprecated actions
     const deprecatedActions = ['old_tap', 'legacy_scroll'];
-    macro.actions.forEach((action: any, index: number) => {
+    const actions = Array.isArray(macro.actions) ? macro.actions : [];
+    actions.forEach((action: any, index: number) => {
       if (deprecatedActions.includes(action.type)) {
         issues.push({
           severity: 'warning',
@@ -265,8 +266,9 @@ export class MacroExportImportEngine {
     });
 
     // Check for missing variables
-    const usedVars = this.extractUsedVariables(macro.actions);
-    const definedVars = new Set(macro.variables.map((v: any) => v.name));
+    const usedVars = this.extractUsedVariables(actions);
+    const variables = Array.isArray(macro.variables) ? macro.variables : [];
+    const definedVars = new Set(variables.map((v: any) => v.name));
 
     usedVars.forEach((varName) => {
       if (!definedVars.has(varName)) {
@@ -328,19 +330,27 @@ export class MacroExportImportEngine {
     strategy: 'concat' | 'override' = 'concat',
   ): Record<string, unknown> {
     if (strategy === 'concat') {
+      const actions1 = Array.isArray(macro1.actions) ? macro1.actions : [];
+      const actions2 = Array.isArray(macro2.actions) ? macro2.actions : [];
+      const vars1 = Array.isArray(macro1.variables) ? macro1.variables : [];
+      const vars2 = Array.isArray(macro2.variables) ? macro2.variables : [];
+      const tags1 = Array.isArray(macro1.tags) ? macro1.tags : [];
+      const tags2 = Array.isArray(macro2.tags) ? macro2.tags : [];
+      
       return {
         id: `macro_${Date.now()}`,
         name: `${macro1.name} + ${macro2.name}`,
         description: `Merged macro combining ${macro1.name} and ${macro2.name}`,
-        actions: [...macro1.actions, ...macro2.actions],
-        variables: this.mergeVariables(macro1.variables, macro2.variables),
-        tags: [...new Set([...(macro1.tags || []), ...(macro2.tags || [])])],
+        actions: [...actions1, ...actions2],
+        variables: this.mergeVariables(vars1, vars2),
+        tags: [...new Set([...tags1, ...tags2])],
       };
     } else {
       // Override strategy
+      const actions2 = Array.isArray(macro2.actions) ? macro2.actions : [];
       return {
         ...macro1,
-        actions: macro2.actions,
+        actions: actions2,
         variables: macro2.variables,
       };
     }

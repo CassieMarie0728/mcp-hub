@@ -108,7 +108,7 @@ export class PermissionEnforcer {
   ): Array<Record<string, unknown>> {
     return macros.filter((macro) => {
       try {
-        this.enforcePermission(macro.id, userId, requiredLevel, context);
+        this.enforcePermission(macro.id as string, userId, requiredLevel, context);
         return true;
       } catch {
         return false;

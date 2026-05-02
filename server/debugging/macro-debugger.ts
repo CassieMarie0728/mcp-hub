@@ -67,7 +67,7 @@ export class MacroDebugger {
     const watch: WatchExpression = {
       id: `watch_${Date.now()}`,
       expression,
-      value: undefined,
+      value: null,
       type: 'unknown',
       error: null,
     };
