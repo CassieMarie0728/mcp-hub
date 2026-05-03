@@ -30,10 +30,24 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="chat"
+        name="index"
         options={{
-          title: "Chat",
-          tabBarIcon: ({ color }) => <MaterialIcons name="chat-bubble" size={28} color={color} />,
+          title: "Home",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="mcp-servers"
+        options={{
+          title: "MCP Servers",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="tool-browser"
+        options={{
+          title: "Tools",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.right" color={color} />,
         }}
       />
       <Tabs.Screen
