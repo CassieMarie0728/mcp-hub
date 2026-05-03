@@ -3,7 +3,7 @@
  * Drag-and-drop workflow editor with conditional blocks and loops
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   View,
@@ -20,6 +20,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
+import {
+  useWorkflows,
+  useCreateWorkflow,
+  useSaveWorkflow,
+  useExecuteWorkflow,
+} from '@/hooks/use-api';
 
 interface WorkflowStep {
   id: string;
@@ -47,6 +53,11 @@ const STEP_TYPES = [
 
 export default function MacroBuilderScreen() {
   const colors = useColors();
+  const { data: fetchedWorkflows, loading, error: fetchError, refetch } = useWorkflows();
+  const { mutate: createWorkflow, loading: createLoading } = useCreateWorkflow();
+  const { mutate: saveWorkflow, loading: saveLoading } = useSaveWorkflow();
+  const { mutate: executeWorkflow, loading: executeLoading } = useExecuteWorkflow();
+  
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
   const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
@@ -55,7 +66,12 @@ export default function MacroBuilderScreen() {
   const [newWorkflowDesc, setNewWorkflowDesc] = useState('');
   const [showStepPicker, setShowStepPicker] = useState(false);
   const [selectedStepType, setSelectedStepType] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    if (fetchedWorkflows) {
+      setWorkflows(fetchedWorkflows as Workflow[]);
+    }
+  }, [fetchedWorkflows]);
 
   const handleCreateWorkflow = async () => {
     if (!newWorkflowName) {
@@ -63,21 +79,29 @@ export default function MacroBuilderScreen() {
       return;
     }
 
-    const workflow: Workflow = {
-      id: `workflow-${Date.now()}`,
-      name: newWorkflowName,
-      description: newWorkflowDesc,
-      steps: [],
-      createdAt: new Date(),
-      lastModified: new Date(),
-    };
-
-    setWorkflows([...workflows, workflow]);
-    setSelectedWorkflow(workflow);
-    setActiveTab('editor');
-    setNewWorkflowName('');
-    setNewWorkflowDesc('');
-    setShowNewModal(false);
+    try {
+      const newWorkflow = await createWorkflow({
+        name: newWorkflowName,
+        description: newWorkflowDesc,
+      });
+      const workflow: Workflow = {
+        id: newWorkflow.id,
+        name: newWorkflow.name,
+        description: newWorkflow.description || '',
+        steps: [],
+        createdAt: new Date(),
+        lastModified: new Date(),
+      };
+      setWorkflows([...workflows, workflow]);
+      setSelectedWorkflow(workflow);
+      setActiveTab('editor');
+      setNewWorkflowName('');
+      setNewWorkflowDesc('');
+      setShowNewModal(false);
+      refetch();
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to create workflow');
+    }
   };
 
   const handleAddStep = (stepType: string) => {
@@ -124,14 +148,17 @@ export default function MacroBuilderScreen() {
       return;
     }
 
-    setLoading(true);
     try {
-      // TODO: Call tRPC to save workflow
+      await saveWorkflow({
+        id: selectedWorkflow.id,
+        name: selectedWorkflow.name,
+        description: selectedWorkflow.description,
+        steps: selectedWorkflow.steps,
+      });
       Alert.alert('Success', `Workflow "${selectedWorkflow.name}" saved successfully`);
+      refetch();
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to save workflow');
-    } finally {
-      setLoading(false);
     }
   };
 

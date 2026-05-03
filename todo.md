@@ -1344,3 +1344,38 @@
 - [x] Create execution history search
 - [ ] Implement analytics export (CSV/JSON)
 - [ ] Add performance recommendations
+
+
+## Backend API Integration (Completed)
+
+### tRPC Hooks & API Layer
+- [x] Create generic useQuery hook for data fetching
+- [x] Create token management hooks (list, store, revoke, rotate)
+- [x] Create workflow management hooks (list, create, save, execute)
+- [x] Create analytics hooks (generate report, get stats)
+- [x] Implement error handling in all hooks
+- [x] Add refetch and caching logic
+
+### Token Management Screen Integration
+- [x] Wire up useTokens hook for data loading
+- [x] Integrate useStoreToken for registration
+- [x] Integrate useRevokeToken for token revocation
+- [x] Integrate useRotateToken for token rotation
+- [x] Add loading states and error handling
+- [x] Implement real-time token updates
+
+### Macro Builder Screen Integration
+- [x] Wire up useWorkflows hook for loading
+- [x] Integrate useCreateWorkflow for new workflows
+- [x] Integrate useSaveWorkflow for persistence
+- [x] Integrate useExecuteWorkflow for execution
+- [x] Add loading states and error handling
+- [x] Implement workflow state synchronization
+
+### Analytics Dashboard Integration
+- [x] Wire up useAnalyticsReport for data loading
+- [x] Integrate useToolStats for tool metrics
+- [x] Integrate useServerStats for server metrics
+- [x] Integrate useRecordExecution for tracking
+- [x] Add date range filtering
+- [x] Implement real-time analytics updates

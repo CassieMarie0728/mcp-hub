@@ -17,6 +17,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
+import { useAnalyticsReport } from '@/hooks/use-api';
 
 interface ToolStats {
   toolName: string;

@@ -20,6 +20,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
+import {
+  useTokens,
+  useStoreToken,
+  useRevokeToken,
+  useRotateToken,
+} from '@/hooks/use-api';
 
 interface Token {
   id: string;
@@ -68,9 +74,13 @@ const SERVER_TYPES: ServerType[] = [
 
 export default function TokenManagementScreen() {
   const colors = useColors();
+  const { data: fetchedTokens, loading, error: fetchError, refetch } = useTokens();
+  const { mutate: storeToken, loading: storeLoading } = useStoreToken();
+  const { mutate: revokeToken, loading: revokeLoading } = useRevokeToken();
+  const { mutate: rotateToken, loading: rotateLoading } = useRotateToken();
+  
   const [activeTab, setActiveTab] = useState<'register' | 'manage'>('manage');
   const [tokens, setTokens] = useState<Token[]>([]);
-  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedServer, setSelectedServer] = useState<ServerType | null>(null);
   const [tokenInput, setTokenInput] = useState('');
@@ -85,7 +95,7 @@ export default function TokenManagementScreen() {
   }, []);
 
   const loadTokens = async () => {
-    setLoading(true);
+    
     try {
       // TODO: Call tRPC listServerTokens for each server
       // For now, using mock data
@@ -114,7 +124,7 @@ export default function TokenManagementScreen() {
     } catch (error) {
       Alert.alert('Error', 'Failed to load tokens');
     } finally {
-      setLoading(false);
+      
     }
   };
 
@@ -124,20 +134,32 @@ export default function TokenManagementScreen() {
       return;
     }
 
-    setLoading(true);
     try {
-      // TODO: Call tRPC storeToken
+      const newToken = await storeToken({
+        serverId: selectedServer.id,
+        serverType: selectedServer.id,
+        name: tokenName,
+        token: tokenInput,
+      });
+      const formattedToken: Token = {
+        id: newToken.id,
+        serverId: newToken.serverId,
+        serverType: newToken.serverType,
+        name: newToken.name,
+        maskedToken: `••••${tokenInput.slice(-4)}`,
+        createdAt: new Date(),
+        isActive: true,
+      };
+      setTokens([...tokens, formattedToken]);
       Alert.alert('Success', `Token "${tokenName}" registered successfully`);
       setTokenInput('');
       setTokenName('');
       setSelectedServer(null);
       setShowTokenInput(false);
       setActiveTab('manage');
-      await loadTokens();
+      refetch();
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to register token');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -151,15 +173,13 @@ export default function TokenManagementScreen() {
           text: 'Revoke',
           style: 'destructive',
           onPress: async () => {
-            setLoading(true);
             try {
-              // TODO: Call tRPC revokeToken
+              await revokeToken(token.id);
+              setTokens(tokens.filter((t) => t.id !== token.id));
               Alert.alert('Success', 'Token revoked');
-              await loadTokens();
+              refetch();
             } catch (error: any) {
               Alert.alert('Error', error.message || 'Failed to revoke token');
-            } finally {
-              setLoading(false);
             }
           },
         },
@@ -173,7 +193,7 @@ export default function TokenManagementScreen() {
       return;
     }
 
-    setLoading(true);
+    
     try {
       // TODO: Call tRPC rotateToken
       Alert.alert('Success', `Token "${selectedToken.name}" rotated successfully`);
@@ -184,7 +204,7 @@ export default function TokenManagementScreen() {
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to rotate token');
     } finally {
-      setLoading(false);
+      
     }
   };
 
