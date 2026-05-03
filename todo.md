@@ -1287,12 +1287,12 @@
 - [x] Add token permission scoping
 
 ### Token Management UI
-- [ ] Build token list screen with masked display
-- [ ] Create token creation/registration flow
-- [ ] Implement token rotation UI
-- [ ] Add token revocation confirmation
-- [ ] Build token usage history view
-- [ ] Create token permission management UI
+- [x] Build token list screen with masked display
+- [x] Create token creation/registration flow
+- [x] Implement token rotation UI
+- [x] Add token revocation confirmation
+- [x] Build token usage history view
+- [x] Create token permission management UI
 
 ## Advanced Macro Workflows (Current Sprint)
 
@@ -1305,12 +1305,12 @@
 - [x] Build workflow execution context
 
 ### Macro Builder UI
-- [ ] Create visual macro builder
-- [ ] Implement drag-and-drop workflow editor
-- [ ] Add conditional block UI
-- [ ] Build loop configuration UI
-- [ ] Create variable editor
-- [ ] Implement workflow preview/simulation
+- [x] Create visual macro builder
+- [x] Implement drag-and-drop workflow editor
+- [x] Add conditional block UI
+- [x] Build loop configuration UI
+- [x] Create variable editor
+- [x] Implement workflow preview/simulation
 
 ### Workflow Testing
 - [x] Build workflow validation system
@@ -1330,12 +1330,12 @@
 - [x] Build execution timeline tracking
 
 ### Analytics Dashboard
-- [ ] Create dashboard overview screen
-- [ ] Build tool usage charts
-- [ ] Implement execution timeline visualization
-- [ ] Add error rate analytics
-- [ ] Create performance metrics display
-- [ ] Build trend analysis charts
+- [x] Create dashboard overview screen
+- [x] Build tool usage charts
+- [x] Implement execution timeline visualization
+- [x] Add error rate analytics
+- [x] Create performance metrics display
+- [x] Build trend analysis charts
 
 ### Analytics Features
 - [x] Implement date range filtering

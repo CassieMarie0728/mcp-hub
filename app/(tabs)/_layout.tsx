@@ -37,6 +37,27 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="token-management"
+        options={{
+          title: "Tokens",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="lock.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="macro-builder"
+        options={{
+          title: "Macros",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="gear" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="analytics-dashboard"
+        options={{
+          title: "Analytics",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="mcp-servers"
         options={{
           title: "MCP Servers",
