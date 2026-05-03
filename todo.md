@@ -1266,3 +1266,81 @@
 - [x] End-to-end test Notion server integration
 - [x] Performance test with multiple concurrent executions
 - [x] Security audit for credential handling
+
+
+## Secure Token Management (Current Sprint)
+
+### Token Encryption & Storage
+- [x] Implement token encryption using crypto module
+- [x] Build secure token storage in database
+- [x] Create token rotation mechanism
+- [x] Implement token expiration and refresh
+- [x] Add audit logging for token access
+- [x] Build token encryption/decryption utilities
+
+### Token Management System
+- [x] Create token manager service
+- [x] Implement token validation and verification
+- [x] Add token revocation system
+- [x] Build token metadata tracking (created, last used, etc.)
+- [x] Implement secure token retrieval
+- [x] Add token permission scoping
+
+### Token Management UI
+- [ ] Build token list screen with masked display
+- [ ] Create token creation/registration flow
+- [ ] Implement token rotation UI
+- [ ] Add token revocation confirmation
+- [ ] Build token usage history view
+- [ ] Create token permission management UI
+
+## Advanced Macro Workflows (Current Sprint)
+
+### Workflow Engine
+- [x] Implement conditional execution (if/else)
+- [x] Add loop support (for, while)
+- [x] Build variable substitution system
+- [x] Implement error handling and recovery
+- [x] Add workflow state management
+- [x] Build workflow execution context
+
+### Macro Builder UI
+- [ ] Create visual macro builder
+- [ ] Implement drag-and-drop workflow editor
+- [ ] Add conditional block UI
+- [ ] Build loop configuration UI
+- [ ] Create variable editor
+- [ ] Implement workflow preview/simulation
+
+### Workflow Testing
+- [x] Build workflow validation system
+- [x] Create workflow dry-run mode
+- [x] Implement step-by-step debugging
+- [x] Add workflow error simulation
+- [x] Build workflow performance profiling
+
+## Execution Analytics & Dashboard (Current Sprint)
+
+### Analytics Tracking
+- [x] Implement execution event logging
+- [x] Build tool usage tracking
+- [x] Add performance metrics collection
+- [x] Implement error rate tracking
+- [x] Create success/failure statistics
+- [x] Build execution timeline tracking
+
+### Analytics Dashboard
+- [ ] Create dashboard overview screen
+- [ ] Build tool usage charts
+- [ ] Implement execution timeline visualization
+- [ ] Add error rate analytics
+- [ ] Create performance metrics display
+- [ ] Build trend analysis charts
+
+### Analytics Features
+- [x] Implement date range filtering
+- [x] Add server-specific analytics
+- [x] Build tool-specific performance metrics
+- [x] Create execution history search
+- [ ] Implement analytics export (CSV/JSON)
+- [ ] Add performance recommendations
