@@ -1471,3 +1471,114 @@
 - [x] Implement analytics dashboard live updates
 - [x] Add client-side socket listeners
 - [x] Update charts on real-time data
+
+
+## Dry-Run UI & Workflow Preview (Current Sprint)
+
+### Dry-Run Mode Implementation
+- [x] Add dry-run toggle to macro builder screen
+- [x] Create dry-run execution mode in workflow engine
+- [x] Implement step-by-step preview without side effects
+- [x] Track predicted variable values at each step
+- [x] Calculate estimated execution time
+- [x] Identify potential error points
+
+### Dry-Run UI Components
+- [x] Build dry-run preview panel
+- [x] Display step results with variable values
+- [x] Show execution timeline with durations
+- [x] Highlight conditional branches taken
+- [x] Display loop iterations preview
+- [x] Add error prediction warnings
+
+### Dry-Run Testing
+- [x] Test preview accuracy vs real execution
+- [x] Validate variable substitution in preview
+- [x] Test conditional path prediction
+- [x] Test loop iteration counting
+- [x] Verify error detection
+
+## OAuth Authentication Flows (Current Sprint)
+
+### GitHub OAuth
+- [x] Set up GitHub OAuth app registration
+- [x] Implement GitHub OAuth flow (authorization code)
+- [x] Handle OAuth callback and token exchange
+- [x] Store GitHub tokens securely
+- [x] Implement token refresh for GitHub
+- [x] Add GitHub scope management
+
+### Slack OAuth
+- [x] Set up Slack OAuth app registration
+- [x] Implement Slack OAuth flow
+- [x] Handle OAuth callback and token exchange
+- [x] Store Slack tokens securely
+- [x] Implement token refresh for Slack
+- [x] Add Slack scope management
+
+### Notion OAuth
+- [x] Set up Notion OAuth app registration
+- [x] Implement Notion OAuth flow
+- [x] Handle OAuth callback and token exchange
+- [x] Store Notion tokens securely
+- [x] Implement token refresh for Notion
+- [x] Add Notion scope management
+
+### OAuth UI
+- [ ] Create OAuth connection flow screens
+- [ ] Build server selection UI
+- [ ] Implement OAuth redirect handling
+- [ ] Add token status display
+- [ ] Build token refresh UI
+- [ ] Add disconnect/revoke UI
+
+### Token Refresh & Expiration
+- [x] Implement token expiration tracking
+- [x] Build automatic token refresh logic
+- [x] Add refresh token storage
+- [ ] Implement expiration alerts
+- [ ] Add manual refresh button
+- [ ] Handle refresh failures gracefully
+
+## Production Deployment (Current Sprint)
+
+### Database Migrations
+- [x] Create tokens table migration
+- [x] Create workflows table migration
+- [x] Create executions table migration
+- [x] Create analytics table migration
+- [x] Add indexes for performance
+- [x] Set up migration runner
+
+### Production WebSocket
+- [x] Configure WebSocket for production
+- [x] Set up SSL/TLS for WebSocket
+- [x] Implement connection pooling
+- [x] Add monitoring and logging
+- [x] Set up reconnection strategies
+- [x] Configure CORS for production
+
+### Environment Configuration
+- [x] Set up production environment variables
+- [x] Configure database connection string
+- [x] Set up API endpoints
+- [x] Configure OAuth redirect URIs
+- [x] Set up logging and monitoring
+- [x] Configure error tracking
+
+### End-to-End Testing
+- [ ] Test token creation and storage
+- [ ] Test workflow execution end-to-end
+- [ ] Test OAuth flows with real servers
+- [ ] Test WebSocket real-time updates
+- [ ] Test error recovery
+- [ ] Performance testing under load
+
+### Deployment Checklist
+- [x] Database migrations applied
+- [x] Environment variables configured
+- [ ] SSL certificates installed
+- [x] WebSocket configured
+- [ ] Monitoring enabled
+- [ ] Backup strategy in place
+- [x] Rollback plan documented
