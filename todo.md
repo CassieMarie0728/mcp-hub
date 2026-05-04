@@ -1379,3 +1379,95 @@
 - [x] Integrate useRecordExecution for tracking
 - [x] Add date range filtering
 - [x] Implement real-time analytics updates
+
+
+## Real tRPC Procedures & Database Integration (Current Sprint)
+
+### Token Management tRPC Procedures
+- [x] Implement `tokens.list()` procedure with database query
+- [x] Implement `tokens.store()` procedure with encryption
+- [x] Implement `tokens.revoke()` procedure with soft delete
+- [x] Implement `tokens.rotate()` procedure with versioning
+- [x] Implement `tokens.getByServer()` procedure
+- [x] Add database schema for tokens table
+- [x] Add token encryption/decryption middleware
+
+### Workflow Management tRPC Procedures
+- [x] Implement `workflows.list()` procedure
+- [x] Implement `workflows.create()` procedure
+- [x] Implement `workflows.save()` procedure
+- [x] Implement `workflows.delete()` procedure
+- [x] Implement `workflows.getById()` procedure
+- [x] Add database schema for workflows table
+- [x] Add database schema for workflow_steps table
+
+### Analytics tRPC Procedures
+- [x] Implement `analytics.generateReport()` procedure
+- [x] Implement `analytics.recordExecution()` procedure
+- [x] Implement `analytics.getToolStats()` procedure
+- [x] Implement `analytics.getServerStats()` procedure
+- [x] Implement `analytics.getErrorTrends()` procedure
+- [x] Add database schema for executions table
+- [x] Add database schema for execution_errors table
+
+## Workflow Simulation & Dry-Run Mode (Current Sprint)
+
+### Simulation Engine
+- [x] Build WorkflowSimulator class
+- [x] Implement step-by-step execution without side effects
+- [x] Add variable substitution simulation
+- [x] Add conditional branch simulation
+- [x] Add loop iteration simulation
+- [x] Implement parallel execution simulation
+- [x] Add error injection for testing
+
+### Dry-Run UI
+- [ ] Create dry-run mode toggle in macro builder
+- [ ] Display simulated step results
+- [ ] Show variable values at each step
+- [ ] Display predicted execution time
+- [ ] Show potential error points
+- [ ] Add step-by-step debugger UI
+- [ ] Implement execution preview visualization
+
+### Dry-Run Testing
+- [x] Test conditional execution paths
+- [x] Test loop iterations
+- [x] Test variable substitution
+- [x] Test error handling
+- [x] Test parallel execution
+- [x] Validate dry-run accuracy
+
+## WebSocket Real-Time Sync (Current Sprint)
+
+### WebSocket Infrastructure
+- [x] Set up Socket.io server
+- [x] Implement connection authentication
+- [x] Add connection lifecycle management
+- [x] Implement room-based broadcasting
+- [x] Add reconnection handling
+- [x] Implement message queuing for offline clients
+
+### Token Real-Time Sync
+- [x] Broadcast token creation events
+- [x] Broadcast token revocation events
+- [x] Broadcast token rotation events
+- [x] Implement token update subscriptions
+- [x] Add client-side socket listeners
+- [x] Update UI on real-time events
+
+### Workflow Real-Time Sync
+- [x] Broadcast workflow creation events
+- [x] Broadcast workflow save events
+- [x] Broadcast workflow execution start/end
+- [x] Implement step execution progress updates
+- [x] Add client-side socket listeners
+- [x] Update UI on real-time events
+
+### Analytics Real-Time Sync
+- [x] Broadcast execution completion events
+- [x] Broadcast error events
+- [x] Broadcast performance metrics
+- [x] Implement analytics dashboard live updates
+- [x] Add client-side socket listeners
+- [x] Update charts on real-time data
