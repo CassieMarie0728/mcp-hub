@@ -53,8 +53,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="analytics-dashboard"
         options={{
-          title: "Analytics",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.bar.fill" color={color} />,
+          title: 'Analytics',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.right" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="workflow-templates"
+        options={{
+          title: 'Templates',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
       <Tabs.Screen
