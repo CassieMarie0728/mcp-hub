@@ -1525,20 +1525,20 @@
 - [x] Add Notion scope management
 
 ### OAuth UI
-- [ ] Create OAuth connection flow screens
-- [ ] Build server selection UI
-- [ ] Implement OAuth redirect handling
-- [ ] Add token status display
-- [ ] Build token refresh UI
-- [ ] Add disconnect/revoke UI
+- [x] Create OAuth connection flow screens
+- [x] Build server selection UI
+- [x] Implement OAuth redirect handling
+- [x] Add token status display
+- [x] Build token refresh UI
+- [x] Add disconnect/revoke UI
 
 ### Token Refresh & Expiration
 - [x] Implement token expiration tracking
 - [x] Build automatic token refresh logic
 - [x] Add refresh token storage
-- [ ] Implement expiration alerts
-- [ ] Add manual refresh button
-- [ ] Handle refresh failures gracefully
+- [x] Implement expiration alerts
+- [x] Add manual refresh button
+- [x] Handle refresh failures gracefully
 
 ## Production Deployment (Current Sprint)
 
