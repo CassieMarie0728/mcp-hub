@@ -1670,3 +1670,24 @@
 - [x] Test retry logic
 - [x] Test webhook execution flow
 - [x] Performance test with high volume
+
+
+## Mobile Onboarding Flow (Current Sprint)
+
+- [x] Create onboarding flow orchestrator
+- [x] Build server selection UI screen
+- [x] Build OAuth connection wizard with progress tracking
+- [x] Create first workflow creation tutorial
+- [x] Add in-app tips and guided tooltips
+- [x] Implement progress persistence
+- [x] Add skip/complete flow options
+
+## Execution Replay & Debugging (Current Sprint)
+
+- [x] Build execution replay engine
+- [x] Implement step-by-step execution replay
+- [x] Create variable inspection system
+- [x] Add breakpoint support
+- [x] Build execution comparison (dry-run vs actual)
+- [x] Create debugger UI with step controls
+- [x] Add execution history replay
