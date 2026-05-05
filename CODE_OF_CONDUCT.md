@@ -2,49 +2,36 @@
 
 ## Our Pledge
 
-We are committed to making participation in MCP Hub respectful, harassment-free, and collaborative for everyone.
+In the interest of fostering an open and welcoming environment, we as contributors and maintainers pledge to making participation in our project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
-## Scope
+## Our Standards
 
-This Code of Conduct applies within all project spaces, including:
-- GitHub issues, pull requests, discussions, and reviews
-- Project chat channels and community forums
-- Public spaces when representing MCP Hub
+Examples of behavior that contributes to creating a positive environment include:
 
-## Acceptable Behavior
+- Using welcoming and inclusive language
+- Being respectful of differing viewpoints and experiences
+- Gracefully accepting constructive criticism
+- Focusing on what is best for the community
+- Showing empathy towards other community members
 
-- Use respectful, inclusive language.
-- Give and receive constructive feedback.
-- Assume good intent while still addressing technical concerns clearly.
-- Focus on the problem, not the person.
-- Help new contributors learn project patterns.
+Examples of unacceptable behavior by participants include:
 
-## Unacceptable Behavior
+- The use of sexualized language or imagery and unwelcome sexual attention or advances
+- Trolling, insulting/derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others' private information, such as a physical or electronic address, without explicit permission
+- Other conduct which could reasonably be considered inappropriate in a professional setting
 
-- Harassment, discrimination, personal attacks, or intimidation.
-- Trolling, insulting/derogatory comments, or inflammatory language.
-- Publishing private information without explicit permission.
-- Sustained disruption of discussions, reviews, or release workflows.
+## Enforcement
 
-## Reporting
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at conduct@mcphub.io. All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances.
 
-Report incidents by emailing **conduct@mcp-hub.example** with:
-- What happened
-- Links/screenshots if available
-- Who was involved
-- Time/date (with timezone)
-
-## Enforcement Guidelines
-
-Maintainers may take any action considered appropriate, including:
-1. Warning
-2. Temporary interaction limits
-3. Content removal
-4. Temporary suspension
-5. Permanent ban
-
-Enforcement decisions are made by maintainers in good faith to protect the community.
+The project team is obligated to maintain confidentiality with regard to the reporter of an incident.
 
 ## Attribution
 
-This policy is inspired by the Contributor Covenant v2.1 and adapted for this repository.
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org/), version 1.4.
+
+---
+
+Thank you for helping make MCP Hub a welcoming community.

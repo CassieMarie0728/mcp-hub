@@ -1,33 +1,108 @@
 # Deployment Guide
 
-## Local development deployment
+MCP Hub can be deployed to various cloud platforms or self-hosted environments.
 
-```bash
-pnpm install
-cp .env.example .env
-pnpm dev
+## Prerequisites
+
+- Node.js 22.13.0+
+- PostgreSQL 14+
+- Docker (optional, for containerized deployment)
+- SSL certificate (for production)
+
+## Environment Variables
+
+Create a `.env` file with:
+
+```
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/mcp_hub
+
+# API
+API_PORT=3000
+API_URL=https://api.mcphub.io
+
+# OAuth
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+SLACK_CLIENT_ID=your-slack-client-id
+SLACK_CLIENT_SECRET=your-slack-client-secret
+NOTION_CLIENT_ID=your-notion-client-id
+NOTION_CLIENT_SECRET=your-notion-client-secret
+
+# Encryption
+ENCRYPTION_KEY=your-256-bit-encryption-key
+
+# JWT
+JWT_SECRET=your-jwt-secret
+
+# WebSocket
+WEBSOCKET_URL=wss://api.mcphub.io
+
+# Monitoring
+SENTRY_DSN=your-sentry-dsn
 ```
 
-## Production build
+## Database Setup
 
 ```bash
-pnpm build
-pnpm start
+# Run migrations
+pnpm db:push
+
+# Create indexes
+pnpm db:index
 ```
 
-## Docker deployment
+## Deployment Options
+
+### AWS ECS
+
+1. Build Docker image
+2. Push to ECR
+3. Create ECS task definition
+4. Deploy to ECS cluster
+5. Configure ALB for load balancing
+
+### Google Cloud Run
 
 ```bash
-docker compose up --build -d
+gcloud run deploy mcp-hub \
+  --source . \
+  --platform managed \
+  --region us-central1 \
+  --set-env-vars DATABASE_URL=$DATABASE_URL
 ```
 
-## Kubernetes deployment
+### Self-Hosted (Docker)
 
 ```bash
-kubectl apply -f kubernetes/deployment.yaml
-kubectl apply -f kubernetes/ingress.yaml
+docker build -t mcp-hub .
+docker run -p 3000:3000 \
+  -e DATABASE_URL=postgresql://... \
+  mcp-hub
 ```
 
-## Reverse proxy
+## Monitoring & Logging
 
-An example nginx config is provided in `nginx.conf` for upstream proxying.
+- **Sentry** for error tracking
+- **CloudWatch** for logs
+- **Prometheus** for metrics
+- **Grafana** for dashboards
+
+## SSL/TLS
+
+Use Let's Encrypt for free SSL certificates:
+
+```bash
+certbot certonly --standalone -d api.mcphub.io
+```
+
+## Backup & Recovery
+
+- Daily automated backups
+- Point-in-time recovery
+- Cross-region replication
+- Backup encryption
+
+---
+
+See [DEPLOYMENT.md](../../DEPLOYMENT.md) for detailed instructions.
