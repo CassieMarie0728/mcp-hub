@@ -1,4 +1,4 @@
-import cron from 'node-cron';
+import type * as cronType from 'node-cron';
 
 export interface ScheduledWorkflow {
   id: string;
@@ -18,7 +18,7 @@ export interface ExecutionRetry {
 }
 
 export class Scheduler {
-  private jobs = new Map<string, cron.ScheduledTask>();
+  private jobs = new Map<string, cronType.ScheduledTask>();
 
   static async scheduleWorkflow(workflowId: string, cronExpression: string): Promise<ScheduledWorkflow> {
     return {
