@@ -1,7 +1,5 @@
 import { Tabs } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Platform } from "react-native";
@@ -16,7 +14,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.tint,
+        tabBarActiveTintColor: colors.primary,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
@@ -37,59 +35,45 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="webhooks"
+        name="mcp-servers"
         options={{
-          title: "Webhooks",
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="webhook" color={color as any} />,
-        }}
-      />
-      <Tabs.Screen
-        name="token-management"
-        options={{
-          title: "Tokens",
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="security" color={color as any} />,
+          title: "Servers",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
       <Tabs.Screen
         name="macro-builder"
         options={{
           title: "Builder",
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="build" color={color as any} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="analytics-dashboard"
+        name="onboarding"
         options={{
-          title: "Analytics",
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="bar-chart" color={color as any} />,
+          title: "Onboarding",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="workflow-templates"
+        name="execution-debugger"
         options={{
-          title: "Templates",
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="dashboard" color={color as any} />,
+          title: "Debug",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="oauth-connect"
+        name="team-workspace"
         options={{
-          title: "OAuth",
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="login" color={color as any} />,
+          title: "Team",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="tool-browser"
+        name="schedule-workflow"
         options={{
-          title: "Tools",
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="apps" color={color as any} />,
-        }}
-      />
-      <Tabs.Screen
-        name="mcp-servers"
-        options={{
-          title: "Servers",
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="dns" color={color as any} />,
+          title: "Schedule",
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
     </Tabs>
