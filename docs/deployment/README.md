@@ -39,7 +39,8 @@ JWT_SECRET=your-jwt-secret
 WEBSOCKET_URL=wss://api.mcphub.io
 
 # Monitoring
-SENTRY_DSN=your-sentry-dsn
+PROMETHEUS_PORT=9090
+LOG_LEVEL=info
 ```
 
 ## Database Setup
@@ -47,9 +48,6 @@ SENTRY_DSN=your-sentry-dsn
 ```bash
 # Run migrations
 pnpm db:push
-
-# Create indexes
-pnpm db:index
 ```
 
 ## Deployment Options

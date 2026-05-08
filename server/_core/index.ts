@@ -6,6 +6,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
+import path from "path";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise((resolve) => {
@@ -54,10 +55,18 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+  // Serve landing page at root
+  app.get("/", (_req, res) => {
+    res.sendFile(path.join(__dirname, "../../landing/index.html"));
+  });
+
+  // Serve landing assets (CSS, JS, images)
+  app.use(express.static(path.join(__dirname, "../../landing")));
+
   registerOAuthRoutes(app);
 
   app.get("/api/health", (_req, res) => {
-    res.json({ ok: true, timestamp: Date.now() });
+    res.json({ ok: true, timestamp: Date.now(), version: "1.0.0" });
   });
 
   app.use(
@@ -77,6 +86,7 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`[api] server listening on port ${port}`);
+    console.log(`[landing] available at http://localhost:${port}`);
   });
 }
 
