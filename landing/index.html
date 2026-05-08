@@ -515,8 +515,8 @@
                 MCP Hub is a production-grade automation platform that connects your favorite tools (GitHub, Slack, Notion, and beyond) into a unified workflow engine. Record macros once, execute them everywhere. No more manual copy-paste. No more context switching. Just pure, unapologetic automation.
             </p>
             <div class="cta-group">
-                <button class="btn btn-primary" onclick="window.location.href='https://app.mcphub.io'">Get Started Now</button>
-                <button class="btn btn-secondary" onclick="document.getElementById('demo').scrollIntoView({behavior: 'smooth'})">See It In Action</button>
+            <button class="btn btn-primary" onclick="window.location.href='https://app.mcphub.io'">Get Started Now</button>
+            <button class="btn btn-secondary" onclick="document.querySelector('[href=\"/demo-workflow-builder.html\"]').click()">Try Demo</button>
             </div>
         </section>
 
@@ -575,6 +575,31 @@
                     <h4>Deploy & Monitor</h4>
                     <p>Execute manually, schedule recurring runs, or trigger via webhooks. Monitor execution in real-time with full audit trails.</p>
                 </div>
+            </div>
+        </section>
+
+        <!-- Demo Links -->
+        <section style="margin-bottom: 100px;">
+            <h2 class="section-title">Try Interactive Demos</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <a href="/demo-workflow-builder.html" style="text-decoration: none;">
+                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">⚡ Workflow Builder</div>
+                        <p style="font-size: 14px; color: #a8a9ad;">Drag tools to build workflows. No code required.</p>
+                    </div>
+                </a>
+                <a href="/demo-execution-simulator.html" style="text-decoration: none;">
+                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">⚙️ Live Execution</div>
+                        <p style="font-size: 14px; color: #a8a9ad;">Watch workflows execute in real-time with metrics.</p>
+                    </div>
+                </a>
+                <a href="/demo-features.html" style="text-decoration: none;">
+                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">🎯 Features</div>
+                        <p style="font-size: 14px; color: #a8a9ad;">Explore security, performance, and monitoring.</p>
+                    </div>
+                </a>
             </div>
         </section>
 

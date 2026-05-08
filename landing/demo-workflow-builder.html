@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Workflow Builder Demo – MCP Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0b0f0f;
+            color: #a8a9ad;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .demo-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: rgba(152, 21, 24, 0.05);
+            border: 2px solid #981518;
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        h1 {
+            font-family: 'Special Elite', serif;
+            font-size: 36px;
+            color: #981518;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #a8a9ad;
+            margin-bottom: 30px;
+        }
+
+        .builder-wrapper {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        /* Tools Palette */
+        .tools-palette {
+            border: 2px solid #981518;
+            padding: 20px;
+            background-color: rgba(152, 21, 24, 0.08);
+            border-radius: 4px;
+            overflow-y: auto;
+        }
+
+        .tools-title {
+            font-size: 12px;
+            color: #981518;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .tool-item {
+            background-color: #981518;
+            color: #0b0f0f;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: move;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            user-select: none;
+            transition: all 0.3s ease;
+            border: 2px solid #981518;
+        }
+
+        .tool-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(152, 21, 24, 0.4);
+        }
+
+        .tool-item.github { background-color: #333; color: #fff; }
+        .tool-item.slack { background-color: #36c5f0; color: #000; }
+        .tool-item.notion { background-color: #000; color: #fff; }
+        .tool-item.email { background-color: #ea4c89; color: #fff; }
+        .tool-item.condition { background-color: #f39c12; color: #000; }
+        .tool-item.delay { background-color: #9b59b6; color: #fff; }
+
+        /* Canvas Area */
+        .canvas {
+            border: 3px dashed #981518;
+            padding: 20px;
+            background-color: rgba(11, 15, 15, 0.8);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .canvas-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: #a8a9ad;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        .workflow-step {
+            background-color: #981518;
+            color: #0b0f0f;
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.3s ease;
+            border: 2px solid #981518;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .workflow-step:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(152, 21, 24, 0.3);
+        }
+
+        .workflow-step.grabbing {
+            opacity: 0.7;
+            cursor: grabbing;
+        }
+
+        .step-label {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .step-remove {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: #0b0f0f;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .step-remove:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .step-arrow {
+            text-align: center;
+            color: #981518;
+            font-size: 18px;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            border: 2px solid #981518;
+            padding: 20px;
+            background-color: rgba(152, 21, 24, 0.08);
+            border-radius: 4px;
+            overflow-y: auto;
+        }
+
+        .preview-title {
+            font-size: 12px;
+            color: #981518;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .preview-item {
+            background-color: rgba(152, 21, 24, 0.1);
+            border-left: 3px solid #981518;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+
+        .preview-item strong {
+            color: #981518;
+        }
+
+        .preview-empty {
+            text-align: center;
+            color: #a8a9ad;
+            font-size: 12px;
+            opacity: 0.6;
+            padding: 20px 0;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid #981518;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        .btn-primary:hover {
+            background-color: transparent;
+            color: #981518;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #981518;
+        }
+
+        .btn-secondary:hover {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Execution Simulation */
+        .execution-status {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid #981518;
+            background-color: rgba(152, 21, 24, 0.08);
+            border-radius: 4px;
+            display: none;
+        }
+
+        .execution-status.active {
+            display: block;
+        }
+
+        .status-title {
+            font-size: 12px;
+            color: #981518;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .execution-step {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(152, 21, 24, 0.2);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .execution-step:last-child {
+            border-bottom: none;
+        }
+
+        .status-icon {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #a8a9ad;
+        }
+
+        .status-icon.pending {
+            background-color: #a8a9ad;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .status-icon.success {
+            background-color: #22c55e;
+        }
+
+        .status-icon.error {
+            background-color: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 1024px) {
+            .builder-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .tools-palette, .preview-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>⚡ Workflow Builder</h1>
+        <p class="subtitle">Drag tools from the left to build your automation. No code required.</p>
+
+        <div class="builder-wrapper">
+            <!-- Tools Palette -->
+            <div class="tools-palette">
+                <div class="tools-title">Available Tools</div>
+                <div class="tool-item github" draggable="true">GitHub<br>Create Issue</div>
+                <div class="tool-item slack" draggable="true">Slack<br>Send Message</div>
+                <div class="tool-item notion" draggable="true">Notion<br>Add Page</div>
+                <div class="tool-item email" draggable="true">Email<br>Send</div>
+                <div class="tool-item condition" draggable="true">Condition<br>If/Then</div>
+                <div class="tool-item delay" draggable="true">Delay<br>Wait</div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="canvas" id="canvas">
+                <div class="canvas-empty">
+                    Drag tools here to build your workflow →
+                </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="preview-panel">
+                <div class="preview-title">Workflow Preview</div>
+                <div id="preview" class="preview-empty">
+                    Your workflow will appear here
+                </div>
+            </div>
+        </div>
+
+        <!-- Execution Status -->
+        <div class="execution-status" id="executionStatus">
+            <div class="status-title">Execution Simulation</div>
+            <div id="executionLog"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-secondary" onclick="clearWorkflow()">Clear</button>
+            <button class="btn btn-primary" onclick="simulateExecution()">Run Simulation</button>
+        </div>
+    </div>
+
+    <script>
+        let workflow = [];
+        const toolNames = {
+            'GitHub\nCreate Issue': 'Create GitHub Issue',
+            'Slack\nSend Message': 'Send Slack Message',
+            'Notion\nAdd Page': 'Add Notion Page',
+            'Email\nSend': 'Send Email',
+            'Condition\nIf/Then': 'Add Condition',
+            'Delay\nWait': 'Add Delay'
+        };
+
+        // Drag and drop
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.classList.contains('tool-item')) {
+                e.dataTransfer.effectAllowed = 'copy';
+                e.dataTransfer.setData('text/plain', e.target.textContent);
+            }
+        });
+
+        const canvas = document.getElementById('canvas');
+
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            canvas.style.borderColor = '#22c55e';
+        });
+
+        canvas.addEventListener('dragleave', () => {
+            canvas.style.borderColor = '#981518';
+        });
+
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            canvas.style.borderColor = '#981518';
+
+            const toolText = e.dataTransfer.getData('text/plain');
+            const toolName = toolNames[toolText] || toolText;
+
+            // Add to workflow
+            const stepId = Date.now();
+            workflow.push({ id: stepId, name: toolName });
+
+            // Remove empty state
+            const emptyState = canvas.querySelector('.canvas-empty');
+            if (emptyState) emptyState.remove();
+
+            // Add step to canvas
+            const step = document.createElement('div');
+            step.className = 'workflow-step';
+            step.innerHTML = `
+                <span class="step-label">${toolName}</span>
+                <button class="step-remove" onclick="removeStep(${stepId})">Remove</button>
+            `;
+            canvas.appendChild(step);
+
+            // Add arrow
+            if (workflow.length > 1) {
+                const arrow = document.createElement('div');
+                arrow.className = 'step-arrow';
+                arrow.textContent = '↓';
+                canvas.insertBefore(arrow, step);
+            }
+
+            updatePreview();
+        });
+
+        function removeStep(id) {
+            workflow = workflow.filter(s => s.id !== id);
+            const steps = document.querySelectorAll('.workflow-step');
+            steps.forEach(step => {
+                if (step.textContent.includes('Remove')) {
+                    const label = step.querySelector('.step-label');
+                    const matchingStep = workflow.find(s => s.name === label.textContent);
+                    if (!matchingStep) step.remove();
+                }
+            });
+
+            // Remove arrows
+            document.querySelectorAll('.step-arrow').forEach(arrow => arrow.remove());
+
+            // Re-add arrows
+            const remainingSteps = document.querySelectorAll('.workflow-step');
+            remainingSteps.forEach((step, index) => {
+                if (index > 0) {
+                    const arrow = document.createElement('div');
+                    arrow.className = 'step-arrow';
+                    arrow.textContent = '↓';
+                    step.parentNode.insertBefore(arrow, step);
+                }
+            });
+
+            if (workflow.length === 0) {
+                canvas.innerHTML = '<div class="canvas-empty">Drag tools here to build your workflow →</div>';
+            }
+
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const preview = document.getElementById('preview');
+            if (workflow.length === 0) {
+                preview.innerHTML = '<div class="preview-empty">Your workflow will appear here</div>';
+                return;
+            }
+
+            let html = '';
+            workflow.forEach((step, index) => {
+                html += `<div class="preview-item"><strong>Step ${index + 1}:</strong> ${step.name}</div>`;
+            });
+            preview.innerHTML = html;
+        }
+
+        function clearWorkflow() {
+            workflow = [];
+            canvas.innerHTML = '<div class="canvas-empty">Drag tools here to build your workflow →</div>';
+            updatePreview();
+            document.getElementById('executionStatus').classList.remove('active');
+        }
+
+        function simulateExecution() {
+            if (workflow.length === 0) {
+                alert('Add some steps to your workflow first!');
+                return;
+            }
+
+            const status = document.getElementById('executionStatus');
+            const log = document.getElementById('executionLog');
+            status.classList.add('active');
+            log.innerHTML = '';
+
+            let delay = 0;
+            workflow.forEach((step, index) => {
+                setTimeout(() => {
+                    const entry = document.createElement('div');
+                    entry.className = 'execution-step';
+                    entry.innerHTML = `
+                        <span class="status-icon pending"></span>
+                        <span>Step ${index + 1}: ${step.name}</span>
+                    `;
+                    log.appendChild(entry);
+
+                    // Simulate execution time
+                    setTimeout(() => {
+                        const icon = entry.querySelector('.status-icon');
+                        icon.classList.remove('pending');
+                        icon.classList.add('success');
+                        entry.innerHTML = `
+                            <span class="status-icon success"></span>
+                            <span>Step ${index + 1}: ${step.name} ✓ Completed (${Math.floor(Math.random() * 2000) + 500}ms)</span>
+                        `;
+                    }, 800);
+                }, delay);
+                delay += 1200;
+            });
+
+            // Add completion message
+            setTimeout(() => {
+                const completion = document.createElement('div');
+                completion.className = 'execution-step';
+                completion.style.borderBottom = 'none';
+                completion.style.marginTop = '10px';
+                completion.innerHTML = `
+                    <span class="status-icon success"></span>
+                    <strong>Workflow completed successfully!</strong>
+                `;
+                log.appendChild(completion);
+            }, delay);
+        }
+    </script>
+</body>
+</html>
