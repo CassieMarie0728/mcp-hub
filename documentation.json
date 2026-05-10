@@ -1,0 +1,45 @@
+{
+  "name": "MCP Hub Documentation",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Documentation",
+        "pages": [
+          {
+            "title": "Overview",
+            "path": "README"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "MCP Hub is a production-grade automation platform that connects your favorite tools (GitHub, Slack, Notion, and beyond) into a unified workflow engine. Record macros once, execute them everywhere. No more manual copy-paste. No more context switching. Just pure, unapologetic automation.",
+  "template": "atlas",
+  "colors": {
+    "light": {
+      "brand": "#981518",
+      "heading": "#981518",
+      "text": "#0b0f0f"
+    },
+    "dark": {
+      "brand": "#981518",
+      "heading": "#981518",
+      "text": "#a8a9ad"
+    }
+  },
+  "integrations": {
+    "cookies": {
+      "analytics": {
+        "key": "",
+        "value": ""
+      }
+    },
+    "telemetry": {
+      "category": "essential"
+    }
+  },
+  "feedback": {
+    "github-issues": true,
+    "github-repo": "https://github.com/CassieMarie0728/mcp-hub"
+  }
+}

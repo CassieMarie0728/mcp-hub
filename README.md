@@ -1,213 +1,179 @@
-# MCP Hub: The Automation Engine That Actually Works
+# MCP Hub
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/manus-ai/mcp-hub)
-[![Test Coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)](https://github.com/manus-ai/mcp-hub)
-[![Tests Passing](https://img.shields.io/badge/tests-723%20passing-brightgreen)](https://github.com/manus-ai/mcp-hub)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/typescript-5.9-blue)](https://www.typescriptlang.org/)
 [![React Native](https://img.shields.io/badge/react--native-0.81-blue)](https://reactnative.dev/)
+[![Expo](https://img.shields.io/badge/expo-54-black)](https://expo.dev/)
 
-**Stop wasting time on repetitive bullshit.** MCP Hub is a production-grade automation platform that connects your favorite tools (GitHub, Slack, Notion, and beyond) into a unified workflow engine. Record macros once, execute them everywhere. No more manual copy-paste. No more context switching. Just pure, unapologetic automation.
+MCP Hub is a centralized platform for connecting to and interacting with Model Context Protocol servers across web, iOS, and Android surfaces backed by an Express and tRPC server runtime.
 
-## What This Thing Does
+## Overview
 
-MCP Hub lets you:
+The repository combines an Expo application, a Node.js backend, and a documentation set for working with MCP servers, discovering tools, executing actions, and extending the platform over time.
 
-- **Record macros** from any MCP server (GitHub, Slack, Notion, etc.) without writing a single line of code
-- **Build workflows** with conditional logic, loops, and parallel execution—all through an intuitive visual builder
-- **Trigger automation** via webhooks, schedules, or manual execution with real-time execution tracking
-- **Manage credentials securely** with AES-256-GCM encryption and automatic token refresh
-- **Collaborate with teams** using workspaces, role-based access control, and audit logging
-- **Monitor everything** with real-time analytics, error tracking, and performance metrics
+> The repository contains more feature modules than are currently mounted in the main backend router. This README distinguishes between implemented repository surfaces and the backend/API surfaces that are clearly registered in code.
 
-## Quick Start
+## Current architecture
+
+MCP Hub currently includes:
+
+- an Expo Router application under `app/` for web and mobile interfaces
+- an Express server entry point at `server/_core/index.ts`
+- a tRPC router assembled in `server/routers.ts`
+- a Drizzle ORM schema in `drizzle/schema.ts`
+- container and deployment assets including `Dockerfile`, `docker-compose.yml`, `nginx.conf`, and `kubernetes/`
+
+## Implemented core surfaces
+
+These areas are clearly wired into the current runtime and developer workflow:
+
+- **Frontend application**: Expo + React Native app with tabbed screens and shared hooks
+- **Backend runtime**: Express server serving the landing page, `/api/health`, OAuth routes, and `/api/trpc`
+- **Mounted backend routers**: `system`, `auth`, `mcp`, and `mcpServers`
+- **Database layer**: Drizzle ORM configured against a MySQL-compatible database
+- **Development workflow**: local app and server startup through `pnpm dev`
+
+## Feature modules present in the repository
+
+The repository also contains substantial modules and UI surfaces for broader capabilities, including:
+
+- workflows and macros
+- scheduling
+- webhooks
+- tokens and credential management
+- collaboration and workspaces
+- governance and permissions
+- analytics and recommendations
+- templates and marketplace-style flows
+- notifications, debugging, profiling, and versioning
+
+These modules are important to the project structure, but they should not automatically be treated as currently mounted public API surfaces unless confirmed in backend registration code.
+
+## Quick start
 
 ### Prerequisites
 
-- **Node.js** 22.13.0 or higher
-- **pnpm** 9.12.0 or higher
-- **Expo CLI** for mobile development
-- **PostgreSQL** 14+ (for production deployment)
+- Node.js 20+
+- pnpm 9.12.0+
+- a MySQL-compatible database reachable through `DATABASE_URL`
+- optional Expo mobile tooling if you plan to run Android or iOS targets locally
 
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/manus-ai/mcp-hub.git
+git clone https://github.com/CassieMarie0728/mcp-hub.git
 cd mcp-hub
-
-# Install dependencies
 pnpm install
-
-# Set up environment variables
 cp .env.example .env
-
-# Run database migrations
 pnpm db:push
-
-# Start development server
 pnpm dev
 ```
 
-The app will be available at `http://localhost:8081` for web and via Expo Go on mobile.
+Default local ports from the repo configuration:
 
-### Your First Workflow
+- app/web: `http://localhost:8081`
+- backend/landing/API: `http://localhost:3000`
 
-1. **Register an MCP Server** — Navigate to "Servers" tab, select GitHub, and authenticate via OAuth
-2. **Discover Tools** — Browse available GitHub tools (create issue, update PR, etc.)
-3. **Build a Macro** — Use the visual builder to create a workflow: GitHub Issue → Slack Notification → Notion Database
-4. **Test with Dry-Run** — Preview execution without side effects
-5. **Deploy** — Execute in production or schedule for recurring runs
+### Basic usage
 
-## Project Structure
+1. Start the full local stack with `pnpm dev`.
+2. Open the Expo web app on port `8081`.
+3. Use the backend on port `3000` for the landing page, health check, OAuth routes, and tRPC requests.
+4. Review the docs hub in [README.mdx](README.mdx) and the repository docs under [`docs/`](docs/README.md).
 
-```
+## Development scripts
+
+| Script | Purpose |
+|---|---|
+| `pnpm dev` | Run the backend watcher and Expo web dev server together |
+| `pnpm dev:server` | Start the Express/tRPC server in watch mode |
+| `pnpm dev:metro` | Start Expo for web on the configured Expo port |
+| `pnpm build` | Bundle the server entry point into `dist/` |
+| `pnpm start` | Run the production server bundle |
+| `pnpm check` | Run TypeScript type-checking |
+| `pnpm lint` | Run the Expo/ESLint lint workflow |
+| `pnpm format` | Format the repository with Prettier |
+| `pnpm test` | Run the Vitest test suite |
+| `pnpm db:push` | Generate and apply Drizzle migrations |
+| `pnpm android` | Run the Expo Android target |
+| `pnpm ios` | Run the Expo iOS target |
+
+## Repository structure
+
+```text
 mcp-hub/
-├── app/                          # React Native mobile app
-│   ├── (tabs)/                   # Tab-based navigation screens
-│   ├── oauth/                    # OAuth callback handling
-│   └── __tests__/                # Comprehensive test suite (723 tests)
-├── server/                       # Backend API & business logic
-│   ├── _core/                    # Core infrastructure (tRPC, WebSocket, auth)
-│   ├── mcp/                      # MCP server integrations
-│   ├── webhooks/                 # Webhook infrastructure
-│   ├── tokens/                   # Secure token management
-│   ├── macros/                   # Workflow engine & execution
-│   ├── analytics/                # Execution tracking & metrics
-│   ├── templates/                # Pre-built workflow templates
-│   ├── auth/                     # OAuth & authentication
-│   ├── notifications/            # Push notifications & alerts
-│   └── procedures/               # tRPC procedures
-├── lib/                          # Shared utilities & hooks
-│   ├── utils/                    # Performance profiler, helpers
-│   ├── _core/                    # Theme, tRPC client
-│   └── theme-provider.tsx        # Global theme context
-├── components/                   # Reusable React Native components
-├── hooks/                        # Custom React hooks
-├── constants/                    # App constants & theme
-├── assets/                       # Icons, images, splash screens
-├── migrations/                   # Database migration scripts
-└── docs/                         # Comprehensive documentation
+├── app/                  # Expo Router application surfaces
+├── components/           # Shared UI components
+├── docs/                 # Repository documentation by topic
+├── drizzle/              # Drizzle schema, SQL, and migration metadata
+├── hooks/                # App-level hooks
+├── kubernetes/           # Kubernetes manifests
+├── lib/                  # Shared client libraries, engines, and utilities
+├── scripts/              # Setup, test, build, and deploy helpers
+├── server/               # Express, tRPC, MCP, and backend modules
+├── .github/              # GitHub templates and workflow automation
+├── README.mdx            # Documentation landing page for docs deployment
+└── documentation.json    # Documentation site configuration
 ```
 
-## Key Features
+## API and runtime notes
 
-### 🔐 Secure Credential Management
+The backend runtime in `server/_core/index.ts` currently does the following:
 
-Tokens are encrypted using **AES-256-GCM** with automatic rotation and expiration tracking. No plaintext credentials ever stored. OAuth flows handle refresh tokens seamlessly.
+- serves the landing page from `landing/index.html`
+- exposes `GET /api/health`
+- registers OAuth routes
+- mounts tRPC at `/api/trpc`
 
-### 🔄 Advanced Workflow Engine
+The main tRPC router in `server/routers.ts` currently mounts these top-level routers:
 
-Build complex automations with:
+- `system`
+- `auth`
+- `mcp`
+- `mcpServers`
 
-- **Conditional Execution** — If/else branches based on tool outputs
-- **Loops** — Iterate over collections with variable substitution
-- **Parallel Execution** — Run multiple steps simultaneously
-- **Error Handling** — Automatic retry with exponential backoff
-- **Variable Substitution** — Pass data between workflow steps
+## Database notes
 
-### 📊 Real-Time Analytics
+The current codebase indicates a MySQL-oriented database setup:
 
-Track everything:
+- `.env.example` uses a MySQL `DATABASE_URL`
+- `drizzle/schema.ts` imports from `drizzle-orm/mysql-core`
+- `package.json` includes the `mysql2` dependency
 
-- Tool usage patterns and success rates
-- Execution timelines and performance metrics
-- Error trends and failure analysis
-- Team activity and audit logs
+If you encounter older references to PostgreSQL elsewhere in the repository, verify them against the current schema and environment configuration before treating them as authoritative.
 
-### 🪝 Webhook Triggers
+## Deployment options
 
-External systems can trigger workflows via webhooks with:
+### Docker
 
-- **HMAC-SHA256 signatures** for request verification
-- **Rate limiting** (configurable per webhook)
-- **IP whitelist/blacklist** for security
-- **Automatic retry** with exponential backoff
-- **Execution logging** for debugging
+The provided `Dockerfile` builds the application with Node 20 Alpine, installs dependencies with pnpm, runs `pnpm build`, exposes port `3000`, and starts the production server with `pnpm start`.
 
-### 👥 Team Collaboration
+### Docker Compose
 
-- **Workspaces** for organizing team macros
-- **Role-Based Access Control** (admin, editor, viewer)
-- **Audit Logging** for compliance
-- **Shared Credentials** with granular permissions
+`docker-compose.yml` defines a single `mcp-hub` service that builds the local image, loads `.env`, publishes `3000:3000`, and restarts unless stopped.
 
-## Technology Stack
+### Nginx
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Frontend** | React Native, Expo Router | 0.81, 6.0 |
-| **Styling** | NativeWind (Tailwind CSS) | 4.2 |
-| **Backend** | Express, tRPC | 4.22, 11.7 |
-| **Real-Time** | Socket.io | Latest |
-| **Database** | PostgreSQL, Drizzle ORM | 14+, 0.44 |
-| **Authentication** | OAuth 2.0, JWT | - |
-| **Encryption** | crypto (Node.js), AES-256-GCM | - |
-| **Testing** | Vitest | 2.1 |
-| **Language** | TypeScript | 5.9 |
+`nginx.conf` is available for reverse-proxy or web-serving scenarios and should be reviewed alongside your chosen deployment topology.
 
-## API Documentation
+### Kubernetes
 
-The backend exposes a comprehensive tRPC API with 50+ procedures organized into routers:
+The `kubernetes/` directory contains deployment and ingress manifests for cluster-based deployment workflows.
 
-- **tokens** — Token CRUD, encryption, rotation
-- **workflows** — Workflow management and execution
-- **macros** — Macro recording and playback
-- **webhooks** — Webhook management and testing
-- **analytics** — Execution metrics and reporting
-- **mcp** — MCP server discovery and tool execution
-- **templates** — Pre-built workflow templates
-- **auth** — OAuth flows and session management
+## Documentation
 
-See [API Documentation](docs/api/README.md) for full details.
+For fuller technical documentation, see:
 
-## Deployment
+- [Documentation hub](README.mdx)
+- [Documentation overview](docs/README.md)
+- [API overview](docs/api/README.md)
+- [Architecture overview](docs/architecture/README.md)
+- [Deployment docs](docs/deployment/README.md)
+- [Development docs](docs/development/README.md)
 
-MCP Hub is production-ready and can be deployed to:
+## Contributing, security, support, and license
 
-- **AWS** (ECS, Lambda, RDS)
-- **Google Cloud** (Cloud Run, Cloud SQL)
-- **Azure** (App Service, SQL Database)
-- **Self-Hosted** (Docker, Kubernetes)
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step instructions.
-
-## Contributing
-
-We welcome contributions from developers of all skill levels. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
-
-- Setting up your development environment
-- Coding standards and conventions
-- Testing requirements
-- Pull request process
-- Code review expectations
-
-## Security
-
-Security is not an afterthought—it's baked in. See [SECURITY.md](SECURITY.md) for:
-
-- Vulnerability reporting procedures
-- Security update policy
-- Supported versions
-- Bug bounty information
-
-## Support
-
-Need help? Check out:
-
-- [FAQ](docs/user-guides/FAQ.md)
-- [Troubleshooting Guide](docs/user-guides/TROUBLESHOOTING.md)
-- [Community Discussions](https://github.com/manus-ai/mcp-hub/discussions)
-- [Email Support](mailto:support@mcphub.io)
-
-## License
-
-MCP Hub is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
-
-## Acknowledgments
-
-Built with passion by the Manus AI team. Special thanks to the open-source community for the incredible tools that make this possible.
-
----
-
-**Ready to automate?** [Get Started Now](docs/user-guides/GETTING_STARTED.md) or check out [Architecture Overview](docs/architecture/OVERVIEW.md) to understand how it all works.
+- [Contributing guide](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Support information](SUPPORT.md)
+- [License](LICENSE)
