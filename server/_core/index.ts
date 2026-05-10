@@ -7,6 +7,10 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise((resolve) => {
@@ -60,7 +64,7 @@ async function startServer() {
     res.sendFile(path.join(__dirname, "../../landing/index.html"));
   });
 
-  // Serve landing assets (CSS, JS, images)
+  // Serve landing assets (CSS, JS, images, demos)
   app.use(express.static(path.join(__dirname, "../../landing")));
 
   registerOAuthRoutes(app);
@@ -87,6 +91,7 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`[api] server listening on port ${port}`);
     console.log(`[landing] available at http://localhost:${port}`);
+    console.log(`[demos] available at http://localhost:${port}/demo-*.html`);
   });
 }
 
