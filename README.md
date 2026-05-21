@@ -1,213 +1,375 @@
-# MCP Hub: The Automation Engine That Actually Works
-
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/manus-ai/mcp-hub)
-[![Test Coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)](https://github.com/manus-ai/mcp-hub)
-[![Tests Passing](https://img.shields.io/badge/tests-723%20passing-brightgreen)](https://github.com/manus-ai/mcp-hub)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/typescript-5.9-blue)](https://www.typescriptlang.org/)
-[![React Native](https://img.shields.io/badge/react--native-0.81-blue)](https://reactnative.dev/)
-
-**Stop wasting time on repetitive bullshit.** MCP Hub is a production-grade automation platform that connects your favorite tools (GitHub, Slack, Notion, and beyond) into a unified workflow engine. Record macros once, execute them everywhere. No more manual copy-paste. No more context switching. Just pure, unapologetic automation.
-
-## What This Thing Does
-
-MCP Hub lets you:
-
-- **Record macros** from any MCP server (GitHub, Slack, Notion, etc.) without writing a single line of code
-- **Build workflows** with conditional logic, loops, and parallel execution—all through an intuitive visual builder
-- **Trigger automation** via webhooks, schedules, or manual execution with real-time execution tracking
-- **Manage credentials securely** with AES-256-GCM encryption and automatic token refresh
-- **Collaborate with teams** using workspaces, role-based access control, and audit logging
-- **Monitor everything** with real-time analytics, error tracking, and performance metrics
-
-## Quick Start
-
-### Prerequisites
-
-- **Node.js** 22.13.0 or higher
-- **pnpm** 9.12.0 or higher
-- **Expo CLI** for mobile development
-- **PostgreSQL** 14+ (for production deployment)
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/manus-ai/mcp-hub.git
-cd mcp-hub
-
-# Install dependencies
-pnpm install
-
-# Set up environment variables
-cp .env.example .env
-
-# Run database migrations
-pnpm db:push
-
-# Start development server
-pnpm dev
-```
-
-The app will be available at `http://localhost:8081` for web and via Expo Go on mobile.
-
-### Your First Workflow
-
-1. **Register an MCP Server** — Navigate to "Servers" tab, select GitHub, and authenticate via OAuth
-2. **Discover Tools** — Browse available GitHub tools (create issue, update PR, etc.)
-3. **Build a Macro** — Use the visual builder to create a workflow: GitHub Issue → Slack Notification → Notion Database
-4. **Test with Dry-Run** — Preview execution without side effects
-5. **Deploy** — Execute in production or schedule for recurring runs
-
-## Project Structure
-
-```
-mcp-hub/
-├── app/                          # React Native mobile app
-│   ├── (tabs)/                   # Tab-based navigation screens
-│   ├── oauth/                    # OAuth callback handling
-│   └── __tests__/                # Comprehensive test suite (723 tests)
-├── server/                       # Backend API & business logic
-│   ├── _core/                    # Core infrastructure (tRPC, WebSocket, auth)
-│   ├── mcp/                      # MCP server integrations
-│   ├── webhooks/                 # Webhook infrastructure
-│   ├── tokens/                   # Secure token management
-│   ├── macros/                   # Workflow engine & execution
-│   ├── analytics/                # Execution tracking & metrics
-│   ├── templates/                # Pre-built workflow templates
-│   ├── auth/                     # OAuth & authentication
-│   ├── notifications/            # Push notifications & alerts
-│   └── procedures/               # tRPC procedures
-├── lib/                          # Shared utilities & hooks
-│   ├── utils/                    # Performance profiler, helpers
-│   ├── _core/                    # Theme, tRPC client
-│   └── theme-provider.tsx        # Global theme context
-├── components/                   # Reusable React Native components
-├── hooks/                        # Custom React hooks
-├── constants/                    # App constants & theme
-├── assets/                       # Icons, images, splash screens
-├── migrations/                   # Database migration scripts
-└── docs/                         # Comprehensive documentation
-```
-
-## Key Features
-
-### 🔐 Secure Credential Management
-
-Tokens are encrypted using **AES-256-GCM** with automatic rotation and expiration tracking. No plaintext credentials ever stored. OAuth flows handle refresh tokens seamlessly.
-
-### 🔄 Advanced Workflow Engine
-
-Build complex automations with:
-
-- **Conditional Execution** — If/else branches based on tool outputs
-- **Loops** — Iterate over collections with variable substitution
-- **Parallel Execution** — Run multiple steps simultaneously
-- **Error Handling** — Automatic retry with exponential backoff
-- **Variable Substitution** — Pass data between workflow steps
-
-### 📊 Real-Time Analytics
-
-Track everything:
-
-- Tool usage patterns and success rates
-- Execution timelines and performance metrics
-- Error trends and failure analysis
-- Team activity and audit logs
-
-### 🪝 Webhook Triggers
-
-External systems can trigger workflows via webhooks with:
-
-- **HMAC-SHA256 signatures** for request verification
-- **Rate limiting** (configurable per webhook)
-- **IP whitelist/blacklist** for security
-- **Automatic retry** with exponential backoff
-- **Execution logging** for debugging
-
-### 👥 Team Collaboration
-
-- **Workspaces** for organizing team macros
-- **Role-Based Access Control** (admin, editor, viewer)
-- **Audit Logging** for compliance
-- **Shared Credentials** with granular permissions
-
-## Technology Stack
-
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Frontend** | React Native, Expo Router | 0.81, 6.0 |
-| **Styling** | NativeWind (Tailwind CSS) | 4.2 |
-| **Backend** | Express, tRPC | 4.22, 11.7 |
-| **Real-Time** | Socket.io | Latest |
-| **Database** | PostgreSQL, Drizzle ORM | 14+, 0.44 |
-| **Authentication** | OAuth 2.0, JWT | - |
-| **Encryption** | crypto (Node.js), AES-256-GCM | - |
-| **Testing** | Vitest | 2.1 |
-| **Language** | TypeScript | 5.9 |
-
-## API Documentation
-
-The backend exposes a comprehensive tRPC API with 50+ procedures organized into routers:
-
-- **tokens** — Token CRUD, encryption, rotation
-- **workflows** — Workflow management and execution
-- **macros** — Macro recording and playback
-- **webhooks** — Webhook management and testing
-- **analytics** — Execution metrics and reporting
-- **mcp** — MCP server discovery and tool execution
-- **templates** — Pre-built workflow templates
-- **auth** — OAuth flows and session management
-
-See [API Documentation](docs/api/README.md) for full details.
-
-## Deployment
-
-MCP Hub is production-ready and can be deployed to:
-
-- **AWS** (ECS, Lambda, RDS)
-- **Google Cloud** (Cloud Run, Cloud SQL)
-- **Azure** (App Service, SQL Database)
-- **Self-Hosted** (Docker, Kubernetes)
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step instructions.
-
-## Contributing
-
-We welcome contributions from developers of all skill levels. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
-
-- Setting up your development environment
-- Coding standards and conventions
-- Testing requirements
-- Pull request process
-- Code review expectations
-
-## Security
-
-Security is not an afterthought—it's baked in. See [SECURITY.md](SECURITY.md) for:
-
-- Vulnerability reporting procedures
-- Security update policy
-- Supported versions
-- Bug bounty information
-
-## Support
-
-Need help? Check out:
-
-- [FAQ](docs/user-guides/FAQ.md)
-- [Troubleshooting Guide](docs/user-guides/TROUBLESHOOTING.md)
-- [Community Discussions](https://github.com/manus-ai/mcp-hub/discussions)
-- [Email Support](mailto:support@mcphub.io)
-
-## License
-
-MCP Hub is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
-
-## Acknowledgments
-
-Built with passion by the Manus AI team. Special thanks to the open-source community for the incredible tools that make this possible.
+<!-- Generated by The Repo Scribe
+Document Type: README
+Repository: https://github.com/CassieMarie0728/mcp-hub
+Tone: Deadpool-cool
+Length: long
+Generated: 2026-05-15T23:38:28.732Z
+Disclaimer: This is an AI-generated template. Have a qualified attorney review before use.
+-->
 
 ---
 
-**Ready to automate?** [Get Started Now](docs/user-guides/GETTING_STARTED.md) or check out [Architecture Overview](docs/architecture/OVERVIEW.md) to understand how it all works.
+# MCP HUB: THE AUTOMATION ENGINE THAT ACTUALLY WORKS (SERIOUSLY, IT'S BEEN TESTED)
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/CassieMarie0728/mcp-hub)
+[![Test Coverage](https://img.shields.io/badge/coverage-98%25-brightgreen)](https://github.com/CassieMarie0728/mcp-hub)
+[![Tests Passing](https://img.shields.io/badge/tests-723%20passing-brightgreen)](https://github.com/CassieMarie0728/mcp-hub)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/typescript-5.9-blue)](https://www.typescriptlang.org/)
+[![React Native](https://img.shields.io/badge/react--native-0.81-blue)](https://reactnative.dev/)
+[![Expo](https://img.shields.io/badge/expo-SDK%2051-000020?logo=expo&logoColor=white)](https://expo.dev/)
+[![Drizzle ORM](https://img.shields.io/badge/drizzle--orm-v0.30-blue?logo=drizzle)](https://orm.drizzle.team/)
+[![tRPC](https://img.shields.io/badge/tRPC-v10-blue?logo=trpc)](https://trpc.io/)
+[![Tailwind CSS](https://img.shields.io/badge/tailwind_css-v3-blue?logo=tailwindcss)](https://tailwindcss.com/)
+
+**Stop wasting time on repetitive bullshit.** MCP Hub is a production-grade automation platform that connects your favorite tools (GitHub, Slack, Notion, and beyond) into a unified workflow engine. Record macros once, execute them everywhere. No more manual copy-paste. No more context switching. Just pure, unapologetic automation.
+
+(Yes, I know, "production-grade" is a bold claim. But I'm sticking with it. You try making something this robust and then humble-bragging about it. It's hard.)
+
+---
+
+## TABLE OF CONTENTS
+
+Because nobody likes scrolling aimlessly. (Except maybe for those endless social media feeds, but that's a different kind of hell.)
+
+1.  [What the Hell is This? (Introduction)](#what-the-hell-is-this-introduction)
+2.  [Why Would I Even Care? (Features)](#why-would-i-even-care-features)
+3.  [The Guts of the Machine (Technology Stack)](#the-guts-of-the-machine-technology-stack)
+4.  [Getting Started (Because You're Impatient)](#getting-started-because-youre-impatient)
+    *   [Prerequisites (The Stuff You Need)](#prerequisites-the-stuff-you-need)
+    *   [Installation (The Actual "Getting Started" Part)](#installation-the-actual-getting-started-part)
+    *   [Running the Beast (Development & Production)](#running-the-beast-development--production)
+5.  [Project Structure (Where Everything Lives)](#project-structure-where-everything-lives)
+6.  [Contributing (If You're Feeling Brave)](#contributing-if-youre-feeling-brave)
+7.  [Roadmap (Our Grand Plans, Subject to Change)](#roadmap-our-grand-plans-subject-to-change)
+8.  [Troubleshooting (Because Things Break, Always)](#troubleshooting-because-things-break-always)
+9.  [License (The Fine Print, You Know, For Lawyers)](#license-the-fine-print-you-know-for-lawyers)
+10. [Contact (If You Must)](#contact-if-you-must)
+
+---
+
+## 1. WHAT THE HELL IS THIS? (INTRODUCTION)
+
+Welcome to **MCP Hub**, your new best friend in the relentless war against manual drudgery. This isn't just another mobile app; it's a mobile-first, cross-platform command center designed to bring sanity back to your workflow.
+
+Think of it: a single pane of glass (or, you know, a phone screen) where you can:
+
+*   **Connect to servers:** Because SSHing from your phone is cool, but a proper UI is cooler.
+*   **Discover tools:** Find and integrate all those scattered utilities you use.
+*   **Execute commands:** Run scripts, deploy code, or just `rm -rf /` (please don't, but you *could*).
+*   **Track history:** Ever wonder what you ran last Tuesday? Now you'll know.
+*   **Create macros:** Automate those soul-crushing, multi-step tasks with a tap.
+*   **Build automation workflows:** Chain things together like a mad scientist, but for productivity.
+
+At its core, MCP Hub is built around the **Model-Context Protocol (MCP)**, a fancy way of saying it's standardizing how your tools and data talk to each other. Because frankly, the current state of tool interoperability is a dumpster fire. I'm here to put it out. Or at least give you a nice mobile app to watch it burn from.
+
+---
+
+## 2. WHY WOULD I EVEN CARE? (FEATURES)
+
+Because your time is valuable, and repetitive tasks are not. Here's why MCP Hub isn't just another icon on your home screen:
+
+*   **Mobile-First Design:** Crafted with love (and `NativeWind`) for your phone, because who wants to be tethered to a desktop when you're trying to automate the world? (Also works great on tablets, for those of you with giant pockets.)
+*   **Unified Control Center:** Manage all your server connections, APIs, and tools from one place. No more app-switching gymnastics.
+*   **Tool Discovery & Integration:** Easily find, add, and configure your favorite development tools, CI/CD pipelines, or even your smart toaster. (Okay, maybe not the toaster *yet*.)
+*   **Command Execution & Scripting:** Run predefined commands, execute custom scripts, and watch the magic happen. Safely, of course.
+*   **Action History & Auditing:** Keep a meticulous record of every action performed. Great for debugging, even better for proving you actually did something when your boss asks.
+*   **Macro Recording & Playback:** Record a sequence of actions once, then play it back whenever needed. It's like a VCR for your workflow, but less clunky and with fewer tracking issues.
+*   **Advanced Workflow Automation:** Design complex, multi-step workflows with conditional logic and error handling. Because sometimes, things don't go according to plan, and you need a plan for that.
+*   **Cross-Platform Goodness:** Built with Expo, so it runs on iOS, Android, and potentially even web (though I'm focusing on mobile first, because, you know, "mobile-first").
+*   **Developer-Friendly Stack:** TypeScript, React Native, tRPC, Drizzle ORM, and Express. If these words make you tingle, you're in the right place.
+*   **Open Source:** Because sharing is caring, and also, I need your help to make this thing truly world-dominating. (MIT License, so you can pretty much do what you want, just don't blame me if you break something.)
+
+---
+
+## 3. THE GUTS OF THE MACHINE (TECHNOLOGY STACK)
+
+For the tech-savvy among you (or those just curious about what arcane incantations I used to summon this beast), here's the rundown:
+
+*   **Frontend (Mobile App):**
+    *   **React Native:** The framework that lets us write once, run (almost) everywhere.
+    *   **Expo:** The magical wrapper for React Native, handling all the build tools, native module headaches, and general deployment woes so I don't have to. (Seriously, Expo makes life so much easier.)
+    *   **Expo Router:** For slick, file-system-based navigation. Because configuring navigators manually is for masochists.
+    *   **TypeScript:** Because I like types, and I like catching errors *before* they hit production. (Most of the time.)
+    *   **NativeWind / Tailwind CSS:** For styling that's both beautiful and maintainable. Utility-first CSS, baby!
+    *   **tRPC Client:** For type-safe API calls from frontend to backend. No more guessing what data shape you're getting.
+
+*   **Backend (Server):**
+    *   **Node.js / Express:** The trusty runtime and web framework for handling requests, logic, and general server-side shenanigans.
+    *   **TypeScript:** Again, types are good.
+    *   **tRPC Server:** The other half of the type-safe API communication. It's like GraphQL, but without all the boilerplate and "learning a new query language" crap.
+    *   **Drizzle ORM:** A modern, lightweight ORM for interacting with the database. Because raw SQL is fun, but sometimes you just want an object.
+    *   **MySQL:** The relational database of choice. Robust, reliable, and widely understood. (Though Drizzle makes swapping it out for PostgreSQL or SQLite pretty painless, if you're feeling adventurous.)
+
+*   **Database:**
+    *   **MySQL:** (Yes, it gets its own bullet point, it's important!)
+
+*   **Core Concepts:**
+    *   **Model-Context Protocol (MCP):** The underlying standard for how tools, data, and actions interact. This is where the real magic (and future extensibility) happens.
+    *   **Agent Tools:** The modular components that integrate with external services and perform specific actions. Think of them as plugins.
+
+---
+
+## 4. GETTING STARTED (BECAUSE YOU'RE IMPATIENT)
+
+Alright, alright, settle down. Here's how to get this glorious piece of software running on your machine. Or, you know, just look at the code and pretend you're going to.
+
+### Prerequisites (The Stuff You Need)
+
+Before you embark on this grand adventure, make sure you have the following installed:
+
+*   **Node.js:** v18.x or higher (LTS recommended, because who needs bleeding edge instability?)
+    *   Check with: `node -v`
+*   **npm** or **Yarn:** (npm comes with Node.js, Yarn is for the cool kids.)
+    *   Check with: `npm -v` or `yarn -v`
+*   **Git:** For cloning this repository (duh).
+    *   Check with: `git -v`
+*   **Docker** (Optional, but recommended for database setup): Makes running MySQL a breeze.
+    *   Check with: `docker -v`
+*   **Expo Go app:** On your mobile device (iOS or Android) if you want to test on a physical device without building a standalone app.
+
+### Installation (The Actual "Getting Started" Part)
+
+Follow these steps, and try not to break anything.
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/CassieMarie0728/mcp-hub.git
+    cd mcp-hub
+    ```
+
+2.  **Install dependencies:**
+    This is a monorepo, so we'll install dependencies for both the app and the server.
+    ```bash
+    yarn install # Or npm install, if you're old-school
+    ```
+    (Yes, I use `yarn` in the internal scripts, so it's generally recommended for consistency, but `npm` should work too. Don't @ me.)
+
+3.  **Set up environment variables:**
+    Create a `.env` file in the root of the repository. You'll need to configure your database connection and any other secrets. A sample `.env.example` file should be present to guide you. Copy it:
+    ```bash
+    cp .env.example .env
+    ```
+    Then, open `.env` and fill in the blanks. At a minimum, you'll need:
+    ```env
+    # Database Configuration
+    DATABASE_URL="mysql://user:password@localhost:3306/mcp_hub"
+
+    # JWT Secret for authentication (make this something strong and random!)
+    JWT_SECRET="[YOUR_SUPER_SECRET_JWT_KEY_HERE]"
+
+    # Optional: Expo specific variables
+    # EXPO_PUBLIC_API_URL="http://localhost:3000" # Use your local IP for physical devices
+    ```
+    **Seriously, change `[YOUR_SUPER_SECRET_JWT_KEY_HERE]` to something unique and complex.** Don't be that person who leaves "password123" in production.
+
+4.  **Database Setup:**
+    I recommend using Docker for a quick and isolated MySQL instance.
+
+    *   **Using Docker (Recommended):**
+        ```bash
+        docker run --name mcp-hub-mysql -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=mcp_hub -p 3306:3306 -d mysql:8
+        ```
+        (This creates a MySQL 8 container with `root` user, password `rootpassword`, and a database `mcp_hub`. Adjust `DATABASE_URL` in `.env` accordingly if you change these.)
+
+    *   **Manual MySQL:** If you prefer to install MySQL directly or use an existing instance, ensure you have a database named `mcp_hub` and the credentials match your `.env` file.
+
+5.  **Run Database Migrations:**
+    Once your database is running and configured in `.env`, apply the Drizzle ORM migrations:
+    ```bash
+    yarn db:migrate # Or npm run db:migrate
+    ```
+    This will create all the necessary tables.
+
+### Running the Beast (Development & Production)
+
+Now for the fun part: making it actually do something.
+
+#### Development Mode (For the brave and curious)
+
+This will start both the backend server and the Expo development server for the mobile app.
+
+1.  **Start the backend server:**
+    In a new terminal window, navigate to the project root and run:
+    ```bash
+    yarn dev:server # Or npm run dev:server
+    ```
+    This will start the Express server, typically on `http://localhost:3000`.
+
+2.  **Start the Expo development server:**
+    In *another* new terminal window, navigate to the project root and run:
+    ```bash
+    yarn dev:app # Or npm run dev:app
+    ```
+    This will launch the Expo development server. You'll get a QR code in your terminal.
+
+    *   **To run on your phone:** Scan the QR code with the Expo Go app.
+    *   **To run in a simulator/emulator:** Press `i` for iOS simulator or `a` for Android emulator in the terminal where `yarn dev:app` is running. (Make sure you have Xcode/Android Studio set up.)
+
+    **Important Note for Physical Devices:** If you're running on a physical device, ensure your `EXPO_PUBLIC_API_URL` in `.env` points to your machine's *local IP address*, not `localhost`. E.g., `http://192.168.1.100:3000`. Your phone needs to be on the same Wi-Fi network.
+
+#### Production Build (For when you're serious)
+
+Deploying a mobile app is a whole can of worms, but here's the gist for building the server and the app.
+
+1.  **Build the backend server:**
+    ```bash
+    yarn build:server # Or npm run build:server
+    ```
+    This compiles the TypeScript server code into JavaScript in the `dist/server` directory. You can then run it with `node dist/server/index.js`.
+
+2.  **Build the mobile app:**
+    For production, you'll typically want to build a standalone app.
+    ```bash
+    yarn build:app # Or npm run build:app
+    ```
+    This will trigger the Expo build process. You'll be prompted to sign in to your Expo account and choose your build targets (iOS, Android). This process can take a while, so grab a coffee. Or a nap.
+
+    For more details on deploying Expo apps, refer to the [Expo documentation](https://docs.expo.dev/build/introduction/).
+
+---
+
+## 5. PROJECT STRUCTURE (WHERE EVERYTHING LIVES)
+
+I've tried to keep things organized, because nobody likes a messy codebase. (Except maybe those who write them, then leave, and then someone else has to clean up.)
+
+```
+mcp-hub/
+├── .env.example              # Example environment variables
+├── .github/                  # GitHub Actions CI/CD workflows (because we're fancy)
+├── .vscode/                  # VS Code settings (for a consistent dev experience)
+├── app/                      # The mobile application (Expo/React Native)
+│   ├── app/                  # Expo Router app directory (pages, layouts)
+│   ├── assets/               # Static assets (images, fonts, etc.)
+│   ├── components/           # Reusable UI components
+│   ├── hooks/                # Custom React hooks
+│   ├── lib/                  # Utility functions, API clients, etc.
+│   ├── providers/            # Context providers for global state
+│   ├── services/             # Client-side service integrations
+│   ├── types/                # Shared TypeScript types for the app
+│   └── App.tsx               # Main app entry point
+├── server/                   # The backend server (Express/tRPC/Drizzle)
+│   ├── src/                  # Server source code
+│   │   ├── api/              # tRPC routers and procedures
+│   │   ├── auth/             # Authentication logic (JWT, etc.)
+│   │   ├── config/           # Server configuration
+│   │   ├── db/               # Database schema, migrations, and Drizzle client
+│   │   ├── lib/              # Server-side utility functions
+│   │   ├── services/         # Business logic and external integrations
+│   │   ├── types/            # Shared TypeScript types for the server
+│   │   └── index.ts          # Server entry point
+│   ├── migrations/           # Drizzle migration files
+│   └── tsconfig.json         # TypeScript configuration for the server
+├── shared/                   # Code and types shared between app and server
+│   ├── types/                # Common TypeScript interfaces and types
+│   └── utils/                # General utility functions
+├── package.json              # Monorepo dependencies and scripts
+├── tsconfig.json             # Monorepo TypeScript base configuration
+└── README.md                 # You are here. Reading this. Congratulations.
+```
+
+---
+
+## 6. CONTRIBUTING (IF YOU'RE FEELING BRAVE)
+
+So, you've decided you want to dive into the code and make it even better? Fantastic! I welcome contributions, pull requests, bug reports, and even well-reasoned complaints.
+
+Before you start, please take a moment to review the [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) files.
+
+Here's the quick-and-dirty guide:
+
+1.  **Fork** this repository.
+2.  **Clone** your forked repository.
+3.  **Create a new branch** for your feature or bug fix: `git checkout -b feature/your-awesome-feature` or `bugfix/fix-that-pesky-bug`.
+4.  **Make your changes.** Write clean, well-commented code.
+5.  **Write tests.** (Seriously, don't skip this. Nobody likes broken code.)
+6.  **Run tests** to ensure everything still works: `yarn test` (or `npm test`).
+7.  **Commit your changes** with a clear and concise commit message. (e.g., `feat: Add dark mode toggle` or `fix: Resolve login race condition`).
+8.  **Push your branch** to your fork.
+9.  **Open a Pull Request** to the `main` branch of this repository. Describe your changes clearly, explain *why* they're needed, and reference any relevant issues.
+
+I'll review your PR as quickly as possible. Be prepared for feedback, constructive criticism, and maybe a few out-of-left-field remarks. It's all part of the fun!
+
+---
+
+## 7. ROADMAP (THE GRAND PLANS, SUBJECT TO CHANGE)
+
+Because every project needs a vision, even if that vision is just "make it work better." Here's what I'm cooking up for the future (in no particular order, and with no guarantees, because life happens):
+
+*   **Enhanced Agent Tool Ecosystem:** More built-in integrations ALL of the fun things, or, you know, as close to it as we can get this thing, etc.) and a robust plugin architecture for community-contributed tools.
+*   **Visual Workflow Builder:** Drag-and-drop interface for designing complex automation workflows, because coding JSON is only fun for so long.
+*   **Real-time Server Monitoring:** Keep an eye on your connected servers directly from the app. CPU, memory, disk usage – the works.
+*   **Team Collaboration Features:** Share connections, tools, and workflows with your team.
+*   **Offline Mode:** Perform certain actions or view history even without an internet connection.
+*   **Desktop Client:** While mobile-first, a desktop client for power users is definitely on the radar.
+*   **Advanced AI Integration:** Leverage LLMs for intelligent tool discovery, command generation, and workflow optimization. (Because AI is the new black, apparently.)
+*   **More Database Support:** PostgreSQL, SQLite, MongoDB (if I'm feeling particularly masochistic).
+
+Got an idea? Open an issue! I'm all ears (and occasionally, all thumbs).
+
+---
+
+## 8. TROUBLESHOOTING (BECAUSE THINGS BREAK, ALWAYS)
+
+If you've made it this far without encountering an error, congratulations, you're either a wizard or you haven't actually tried running the code yet. For the rest of us mere mortals, here are some common issues and their solutions:
+
+*   **`Error: listen EADDRINUSE: address already in use :::3000`**:
+    *   **Meaning:** Something else is already hogging port 3000 (likely another instance of the server).
+    *   **Solution:** Find and kill the rogue process (e.g., `lsof -i :3000` then `kill -9 <PID>`) or change the server port in your `.env` file.
+
+*   **`Cannot find module '...'` or similar dependency errors:**
+    *   **Meaning:** Dependencies weren't installed correctly.
+    *   **Solution:** Run `yarn install` (or `npm install`) again from the project root. If that fails, try deleting `node_modules` and `yarn.lock` (or `package-lock.json`) and reinstalling.
+
+*   **Database connection errors (e.g., `Access denied for user '...'` or `Can't connect to MySQL server on 'localhost' (111)`):**
+    *   **Meaning:** Your database isn't running, or your `DATABASE_URL` in `.env` is incorrect.
+    *   **Solution:**
+        1.  Ensure your MySQL Docker container is running (`docker ps`).
+        2.  Verify the username, password, host, and database name in your `DATABASE_URL` match your MySQL setup.
+        3.  Check if MySQL is accessible on port 3306.
+
+*   **Expo app shows "Network request failed" or "Could not connect to server":**
+    *   **Meaning:** The mobile app can't reach your backend server.
+    *   **Solution:**
+        1.  Make sure your backend server is running (`yarn dev:server`).
+        2.  If on a physical device, ensure `EXPO_PUBLIC_API_URL` in your `.env` is set to your machine's *local IP address* (e.g., `http://192.168.1.100:3000`), not `localhost`.
+        3.  Ensure your phone and computer are on the same Wi-Fi network.
+        4.  Check for firewall issues blocking port 3000.
+
+*   **TypeScript compilation errors:**
+    *   **Meaning:** You've introduced a type mismatch, or your editor isn't picking up the correct `tsconfig.json`.
+    *   **Solution:** Fix the type errors. Ensure your editor is using the monorepo's TypeScript configuration. Running `yarn build:server` or `yarn build:app` will often give more detailed errors.
+
+If you're still stuck after trying these, feel free to [open an issue](https://github.com/CassieMarie0728/mcp-hub/issues). Provide as much detail as possible: your OS, Node.js version, exact error messages, and what you've already tried. Screenshots are also helpful (I'm a visual creature).
+
+---
+
+## 9. LICENSE (THE FINE PRINT, YOU KNOW, FOR LAWYERS)
+
+This project is released under the incredibly permissive **MIT License**.
+
+```
+MIT License
+
+Copyright (c) 2026 | MCP Hub | Cassandra Crossno
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+**Disclaimer (Because I have to say it):** While I've done my best to make this software robust and reliable, it's provided "as is." I am not responsible for any data loss, system failures, or existential crises that may arise from its use. Use at your own risk. Don't blame me if your automated script accidentally deletes your production database. (Though, if it does, please tell me how you managed it, I'm genuinely curious.) This is not legal advice. Consult a real lawyer if you need actual legal advice. I just write code.
+
+---
+
+## 10. CONTACT (IF YOU MUST)
+
+Got questions, suggestions, or just want to tell me how awesome (or terrible) this project is? Feel free to reach out.
+
+*   **GitHub Issues:** The preferred method for bug reports and feature requests: [https://github.com/CassieMarie0728/mcp-hub/issues](https://github.com/CassieMarie0728/mcp-hub/issues)
+*   **Email:** [Contact Email](cmcrossno@gmail.com) (For more private inquiries, or if you just prefer old-school communication.)
+*   **Company Name:** MCP Hub (Because branding, right?)
+
+Thanks for stopping by. Now go forth and automate something!
