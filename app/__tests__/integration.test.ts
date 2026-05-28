@@ -13,7 +13,7 @@ describe('Integration Tests: End-to-End Workflows', () => {
       connectionType: 'sse',
       connectionDetails: {
         url: 'http://localhost:3000',
-        headers: { Authorization: 'Bearer token' },
+        headers: { 'Authorization': 'Bearer token' },
       },
       status: 'connected',
       toolCount: 5,
@@ -86,7 +86,7 @@ describe('Integration Tests: End-to-End Workflows', () => {
 
     it('should support custom headers in connection', () => {
       expect(mockServer.connectionDetails.headers).toEqual({
-        Authorization: 'Bearer token',
+        'Authorization': 'Bearer token',
       });
     });
   });
@@ -98,14 +98,12 @@ describe('Integration Tests: End-to-End Workflows', () => {
     });
 
     it('should cache discovered tools', () => {
-      const cachedTools = Array(mockServer.toolCount)
-        .fill(null)
-        .map((_, i) => ({
-          serverId: mockServer.id,
-          name: `tool-${i}`,
-          description: `Tool ${i}`,
-          inputSchema: { type: 'object' },
-        }));
+      const cachedTools = Array(mockServer.toolCount).fill(null).map((_, i) => ({
+        serverId: mockServer.id,
+        name: `tool-${i}`,
+        description: `Tool ${i}`,
+        inputSchema: { type: 'object' },
+      }));
 
       expect(cachedTools).toHaveLength(5);
       expect(cachedTools[0].serverId).toBe('server-1');

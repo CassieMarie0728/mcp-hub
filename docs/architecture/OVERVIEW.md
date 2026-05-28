@@ -65,14 +65,12 @@ MCP Hub is built on a modern, scalable architecture combining React Native for m
 ## Key Components
 
 ### Token Management
-
 - **AES-256-GCM Encryption** for secure storage
 - **Automatic Rotation** with versioning
 - **OAuth Token Refresh** for expiring credentials
 - **Audit Logging** for compliance
 
 ### Workflow Engine
-
 - **Conditional Execution** (if/else branches)
 - **Loop Support** (for, while iterations)
 - **Parallel Execution** (concurrent steps)
@@ -80,14 +78,12 @@ MCP Hub is built on a modern, scalable architecture combining React Native for m
 - **Dry-Run Mode** (preview without side effects)
 
 ### MCP Integration
-
 - **Server Discovery** (GitHub, Slack, Notion)
 - **Tool Discovery** (dynamic from servers)
 - **Real-Time Execution** (with progress tracking)
 - **Error Recovery** (graceful fallbacks)
 
 ### Webhook System
-
 - **HMAC-SHA256 Signatures** for verification
 - **Rate Limiting** (per-minute per webhook)
 - **IP Whitelist/Blacklist** for security
@@ -95,7 +91,6 @@ MCP Hub is built on a modern, scalable architecture combining React Native for m
 - **Execution Logging** for debugging
 
 ### Real-Time Sync
-
 - **Socket.io** for WebSocket connections
 - **Room-Based Broadcasting** for scalability
 - **Message Queuing** for offline clients

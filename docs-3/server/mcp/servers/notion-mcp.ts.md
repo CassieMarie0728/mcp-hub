@@ -58,34 +58,35 @@ Sends `GET /users/me` to verify token validity. Returns `true` if response is OK
 
 The following table lists all tools exposed by **NotionMCPServer** :
 
-| Tool Name                 | Description                     | Required Params                 |
-| ------------------------- | ------------------------------- | ------------------------------- |
-| `query_database`          | Query a Notion database         | `database_id`                   |
-| `create_page`             | Create a new page in a database | `parent`, `properties`          |
-| `update_page`             | Update an existing page         | `page_id`                       |
-| `get_page`                | Get page details                | `page_id`                       |
-| `get_database`            | Get database schema             | `database_id`                   |
-| `append_block_children`   | Add blocks to a page            | `block_id`, `children`          |
-| `search`                  | Search for pages and databases  | `query`                         |
-| `create_database`         | Create a new database           | `parent`, `title`, `properties` |
-| `retrieve_block_children` | Get child blocks of a page      | `block_id`                      |
-| `delete_block`            | Delete a block                  | `block_id`                      |
+| Tool Name | Description | Required Params |
+| --- | --- | --- |
+| `query_database` | Query a Notion database | `database_id` |
+| `create_page` | Create a new page in a database | `parent`, `properties` |
+| `update_page` | Update an existing page | `page_id` |
+| `get_page` | Get page details | `page_id` |
+| `get_database` | Get database schema | `database_id` |
+| `append_block_children` | Add blocks to a page | `block_id`, `children` |
+| `search` | Search for pages and databases | `query` |
+| `create_database` | Create a new database | `parent`, `title`, `properties` |
+| `retrieve_block_children` | Get child blocks of a page | `block_id` |
+| `delete_block` | Delete a block | `block_id` |
+
 
 Example JSON Schema for <code>query_database</code>{
-"type": "object",
-"properties": {
-"database_id": { "type": "string", "description": "Database ID" },
-"filter": { "type": "object", "description": "Filter conditions" },
-"sorts": { "type": "array", "description": "Sort order" },
-"page_size": { "type": "number", "description": "Items per page" }
-},
-"required": ["database_id"]
+  "type": "object",
+  "properties": {
+    "database_id": { "type": "string", "description": "Database ID" },
+    "filter":      { "type": "object", "description": "Filter conditions" },
+    "sorts":       { "type": "array",  "description": "Sort order" },
+    "page_size":   { "type": "number", "description": "Items per page" }
+  },
+  "required": ["database_id"]
 }
 
 ## Dependencies
 
 - Relies on the global `fetch` API for HTTP requests.
-- Conforms to `MCPServerConfig` from .
+- Conforms to `MCPServerConfig` from  .
 
 ## Testing Considerations
 
@@ -95,10 +96,11 @@ Example JSON Schema for <code>query_database</code>{
 
 ## Key Classes Reference
 
-| Class             | Location | Responsibility                                  |
-| ----------------- | -------- | ----------------------------------------------- |
-| `NotionConfig`    |          | Defines constructor input for NotionMCPServer   |
-| `NotionMCPServer` |          | Builds MCP config, lists tools, validates token |
+| Class | Location | Responsibility |
+| --- | --- | --- |
+| `NotionConfig` |  | Defines constructor input for NotionMCPServer |
+| `NotionMCPServer` |  | Builds MCP config, lists tools, validates token |
+
 
 ## Error Handling
 

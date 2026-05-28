@@ -185,7 +185,10 @@ export default function AnalyticsDashboardScreen() {
 
       {/* Progress Bar */}
       <View className="h-2 bg-background rounded-full overflow-hidden">
-        <View className="h-full bg-success" style={{ width: `${tool.successRate}%` }} />
+        <View
+          className="h-full bg-success"
+          style={{ width: `${tool.successRate}%` }}
+        />
       </View>
     </View>
   );
@@ -217,13 +220,13 @@ export default function AnalyticsDashboardScreen() {
             />
           </View>
           <View className="flex-1">
-            <Text className="text-foreground font-semibold capitalize">{server.serverType}</Text>
+            <Text className="text-foreground font-semibold capitalize">
+              {server.serverType}
+            </Text>
             <Text className="text-muted text-xs">{server.totalExecutions} executions</Text>
           </View>
           <View className="bg-success/10 rounded px-2 py-1">
-            <Text className="text-success text-xs font-semibold">
-              {server.successRate.toFixed(1)}%
-            </Text>
+            <Text className="text-success text-xs font-semibold">{server.successRate.toFixed(1)}%</Text>
           </View>
         </View>
 
@@ -247,13 +250,15 @@ export default function AnalyticsDashboardScreen() {
             onPress={() => setTimeRange(range)}
             className={cn(
               'flex-1 py-2 rounded border',
-              timeRange === range ? 'bg-primary border-primary' : 'bg-surface border-border',
+              timeRange === range
+                ? 'bg-primary border-primary'
+                : 'bg-surface border-border'
             )}
           >
             <Text
               className={cn(
                 'text-center font-semibold text-sm',
-                timeRange === range ? 'text-background' : 'text-foreground',
+                timeRange === range ? 'text-background' : 'text-foreground'
               )}
             >
               {range === '24h' ? '24h' : range === '7d' ? '7 days' : '30 days'}
@@ -270,13 +275,13 @@ export default function AnalyticsDashboardScreen() {
             onPress={() => setActiveTab(tab)}
             className={cn(
               'flex-1 py-3 px-4 border-b-2',
-              activeTab === tab ? 'border-primary' : 'border-transparent',
+              activeTab === tab ? 'border-primary' : 'border-transparent'
             )}
           >
             <Text
               className={cn(
                 'text-center font-semibold text-sm',
-                activeTab === tab ? 'text-primary' : 'text-muted',
+                activeTab === tab ? 'text-primary' : 'text-muted'
               )}
             >
               {tab === 'overview' ? 'Overview' : tab === 'tools' ? 'Tools' : 'Servers'}
@@ -365,9 +370,7 @@ export default function AnalyticsDashboardScreen() {
 
             {activeTab === 'servers' && (
               <View className="gap-3">
-                <Text className="text-foreground font-semibold text-lg mb-2">
-                  Server Statistics
-                </Text>
+                <Text className="text-foreground font-semibold text-lg mb-2">Server Statistics</Text>
                 {analytics.serverStats.map((server) => (
                   <ServerRow key={server.serverId} server={server} />
                 ))}

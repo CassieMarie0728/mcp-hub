@@ -147,8 +147,8 @@ export default function MCPControlScreen() {
           {/* Info */}
           <View className="bg-primary bg-opacity-10 rounded-lg p-3 border border-primary">
             <Text className="text-primary text-xs">
-              This screen demonstrates the IPC bridge between React Native and the Kotlin MCP Server
-              backend. Use these controls to start/stop the server and test tool execution.
+              This screen demonstrates the IPC bridge between React Native and the Kotlin MCP
+              Server backend. Use these controls to start/stop the server and test tool execution.
             </Text>
           </View>
         </View>

@@ -14,18 +14,18 @@ A typical contributor environment is a Unix-like shell with Node.js, pnpm, Git, 
 
 ## Required and optional dependencies
 
-| Category                  | Required | Notes                                                                   |
-| ------------------------- | -------- | ----------------------------------------------------------------------- |
-| Node.js                   | Yes      | Use Node.js 20+ to align with the Docker base image and current tooling |
-| pnpm                      | Yes      | The repo is pnpm-first and uses `pnpm@9.12.0`                           |
-| Git                       | Yes      | Required for cloning, branching, and contribution workflow              |
-| MySQL-compatible database | Yes      | Required for `DATABASE_URL`, Drizzle, and local schema operations       |
-| Docker                    | Optional | Useful for containerized local and deployment workflows                 |
-| Docker Compose            | Optional | Used with `docker-compose.yml`                                          |
-| kubectl                   | Optional | Needed if you deploy with the Kubernetes manifests                      |
-| Android Studio            | Optional | Needed for Android emulator or device workflows                         |
-| Xcode                     | Optional | Needed for iOS simulator/device workflows on macOS                      |
-| Expo mobile tooling       | Optional | Helpful for native mobile testing beyond the web target                 |
+| Category | Required | Notes |
+|---|---|---|
+| Node.js | Yes | Use Node.js 20+ to align with the Docker base image and current tooling |
+| pnpm | Yes | The repo is pnpm-first and uses `pnpm@9.12.0` |
+| Git | Yes | Required for cloning, branching, and contribution workflow |
+| MySQL-compatible database | Yes | Required for `DATABASE_URL`, Drizzle, and local schema operations |
+| Docker | Optional | Useful for containerized local and deployment workflows |
+| Docker Compose | Optional | Used with `docker-compose.yml` |
+| kubectl | Optional | Needed if you deploy with the Kubernetes manifests |
+| Android Studio | Optional | Needed for Android emulator or device workflows |
+| Xcode | Optional | Needed for iOS simulator/device workflows on macOS |
+| Expo mobile tooling | Optional | Helpful for native mobile testing beyond the web target |
 
 ## Core software requirements
 

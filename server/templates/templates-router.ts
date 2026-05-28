@@ -17,13 +17,15 @@ export const templatesRouter = router({
   /**
    * Get template by ID
    */
-  getTemplate: publicProcedure.input(z.object({ templateId: z.string() })).query(({ input }) => {
-    const template = WorkflowTemplateManager.getTemplate(input.templateId);
-    if (!template) {
-      throw new Error(`Template ${input.templateId} not found`);
-    }
-    return template;
-  }),
+  getTemplate: publicProcedure
+    .input(z.object({ templateId: z.string() }))
+    .query(({ input }) => {
+      const template = WorkflowTemplateManager.getTemplate(input.templateId);
+      if (!template) {
+        throw new Error(`Template ${input.templateId} not found`);
+      }
+      return template;
+    }),
 
   /**
    * Clone a template
@@ -34,7 +36,7 @@ export const templatesRouter = router({
         templateId: z.string(),
         newName: z.string(),
         variables: z.record(z.string(), z.any()).optional(),
-      }),
+      })
     )
     .mutation(({ input }) => {
       const cloneInput: TemplateCloneInput = {
@@ -54,7 +56,7 @@ export const templatesRouter = router({
         category: z.enum(['github', 'slack', 'notion', 'multi-server', 'custom']).optional(),
         tags: z.array(z.string()).optional(),
         searchText: z.string().optional(),
-      }),
+      })
     )
     .query(({ input }) => {
       return WorkflowTemplateManager.searchTemplates({

@@ -44,62 +44,62 @@ flowchart TB
 
 - **Key Methods**
 
-| Method                                   | Visibility      | Description                                                        | Returns                                     |
-| ---------------------------------------- | --------------- | ------------------------------------------------------------------ | ------------------------------------------- |
-| `registerServer(config)`                 | [badge:public]  | Registers a new server and initializes its Axios client.           | `void`                                      |
-| `buildHeaders(config)`                   | [badge:private] | Constructs HTTP headers, including authentication tokens.          | `Record<string, string>`                    |
-| `discoverTools(serverId)`                | [badge:public]  | Retrieves and caches available tools via `POST /mcp/tools/list`.   | `Promise<MCPTool[]>`                        |
-| `executeTool(serverId, toolName, input)` | [badge:public]  | Executes a tool via `POST /mcp/tools/call` and returns the result. | `Promise<MCPToolResult>`                    |
-| `getServerStatus(serverId)`              | [badge:public]  | Returns status information for a specific server.                  | `ServerStatus \| null`                      |
-| `getAllServerStatuses()`                 | [badge:public]  | Returns statuses for all registered servers.                       | `ServerStatus[]`                            |
-| `testConnection(serverId)`               | [badge:public]  | Sends `GET /health` to verify server reachability.                 | `Promise<boolean>`                          |
-| `clearToolCache(serverId)`               | [badge:public]  | Invalidates the tool cache for a given server.                     | `void`                                      |
-| `clearAllCaches()`                       | [badge:public]  | Clears tool caches for all servers.                                | `void`                                      |
-| `removeServer(serverId)`                 | [badge:public]  | Unregisters a server and cleans up its resources.                  | `void`                                      |
-| `getAllServers()`                        | [badge:public]  | Lists all registered server configurations.                        | `MCPServerConfigWithUnknownHeaders[]`       |
-| `getServer(serverId)`                    | [badge:public]  | Retrieves a server configuration by ID.                            | `MCPServerConfigWithUnknownHeaders \| null` |
+| Method                                       | Visibility      | Description                                                        | Returns                              |
+|----------------------------------------------|-----------------|--------------------------------------------------------------------|--------------------------------------|
+| `registerServer(config)`                     | [badge:public]  | Registers a new server and initializes its Axios client.          | `void`                               |
+| `buildHeaders(config)`                       | [badge:private] | Constructs HTTP headers, including authentication tokens.         | `Record<string, string>`             |
+| `discoverTools(serverId)`                    | [badge:public]  | Retrieves and caches available tools via `POST /mcp/tools/list`.  | `Promise<MCPTool[]>`                 |
+| `executeTool(serverId, toolName, input)`     | [badge:public]  | Executes a tool via `POST /mcp/tools/call` and returns the result.| `Promise<MCPToolResult>`             |
+| `getServerStatus(serverId)`                  | [badge:public]  | Returns status information for a specific server.                 | `ServerStatus \| null`               |
+| `getAllServerStatuses()`                     | [badge:public]  | Returns statuses for all registered servers.                      | `ServerStatus[]`                     |
+| `testConnection(serverId)`                   | [badge:public]  | Sends `GET /health` to verify server reachability.                | `Promise<boolean>`                   |
+| `clearToolCache(serverId)`                   | [badge:public]  | Invalidates the tool cache for a given server.                    | `void`                               |
+| `clearAllCaches()`                           | [badge:public]  | Clears tool caches for all servers.                               | `void`                               |
+| `removeServer(serverId)`                     | [badge:public]  | Unregisters a server and cleans up its resources.                 | `void`                               |
+| `getAllServers()`                            | [badge:public]  | Lists all registered server configurations.                       | `MCPServerConfigWithUnknownHeaders[]`|
+| `getServer(serverId)`                        | [badge:public]  | Retrieves a server configuration by ID.                           | `MCPServerConfigWithUnknownHeaders \| null` |
 
 ## Data Models
 
 ### **MCPServerConfig**
 
-| Property         | Type                                     | Description                      |
-| ---------------- | ---------------------------------------- | -------------------------------- |
-| `id`             | `string`                                 | Unique server identifier         |
-| `name`           | `string`                                 | Display name of the server       |
-| `url`            | `string`                                 | Base URL for Axios HTTP requests |
-| `type`           | `'http' \| 'websocket' \| 'stdio'`       | Transport mechanism              |
-| `headers?`       | `Record<string, string>`                 | Custom HTTP headers              |
-| `auth?`          | `{ type, token?, username?, password? }` | Authentication configuration     |
-| `timeout?`       | `number`                                 | Request timeout in milliseconds  |
-| `retryAttempts?` | `number`                                 | Retry attempts on failure        |
+| Property        | Type                                            | Description                               |
+|-----------------|-------------------------------------------------|-------------------------------------------|
+| `id`            | `string`                                        | Unique server identifier                  |
+| `name`          | `string`                                        | Display name of the server                |
+| `url`           | `string`                                        | Base URL for Axios HTTP requests          |
+| `type`          | `'http' \| 'websocket' \| 'stdio'`              | Transport mechanism                       |
+| `headers?`      | `Record<string, string>`                       | Custom HTTP headers                       |
+| `auth?`         | `{ type, token?, username?, password? }`        | Authentication configuration              |
+| `timeout?`      | `number`                                        | Request timeout in milliseconds           |
+| `retryAttempts?`| `number`                                        | Retry attempts on failure                 |
 
 ### **MCPTool**
 
-| Property      | Type                                                                     | Description            |
-| ------------- | ------------------------------------------------------------------------ | ---------------------- |
-| `name`        | `string`                                                                 | Tool identifier        |
-| `description` | `string`                                                                 | Human-readable summary |
-| `inputSchema` | `{ type: string; properties: Record<string, any>; required?: string[] }` | JSON schema for inputs |
+| Property         | Type                                                    | Description                   |
+|------------------|---------------------------------------------------------|-------------------------------|
+| `name`           | `string`                                                | Tool identifier               |
+| `description`    | `string`                                                | Human-readable summary        |
+| `inputSchema`    | `{ type: string; properties: Record<string, any>; required?: string[] }` | JSON schema for inputs |
 
 ### **MCPToolResult**
 
-| Property  | Type      | Description                 |
-| --------- | --------- | --------------------------- |
-| `success` | `boolean` | Indicates execution success |
-| `data?`   | `any`     | Result payload on success   |
-| `error?`  | `string`  | Error message on failure    |
+| Property   | Type     | Description                              |
+|------------|----------|------------------------------------------|
+| `success`  | `boolean`| Indicates execution success              |
+| `data?`    | `any`    | Result payload on success                |
+| `error?`   | `string` | Error message on failure                 |
 
 ### **ServerStatus**
 
-| Property         | Type                                       | Description                         |
-| ---------------- | ------------------------------------------ | ----------------------------------- |
-| `id`             | `string`                                   | Server identifier                   |
-| `name`           | `string`                                   | Display name                        |
-| `status`         | `'connected' \| 'disconnected' \| 'error'` | Current connection state            |
-| `lastConnected?` | `Date`                                     | Timestamp of last successful action |
-| `lastError?`     | `string`                                   | Last error message                  |
-| `toolCount?`     | `number`                                   | Number of cached tools              |
+| Property         | Type                                          | Description                              |
+|------------------|-----------------------------------------------|------------------------------------------|
+| `id`             | `string`                                      | Server identifier                        |
+| `name`           | `string`                                      | Display name                             |
+| `status`         | `'connected' \| 'disconnected' \| 'error'`    | Current connection state                 |
+| `lastConnected?` | `Date`                                        | Timestamp of last successful action      |
+| `lastError?`     | `string`                                      | Last error message                       |
+| `toolCount?`     | `number`                                      | Number of cached tools                   |
 
 ## API Integration
 
@@ -251,9 +251,9 @@ sequenceDiagram
 
 ## Key Classes Reference
 
-| Class              | Location                           | Responsibility                                                      |
-| ------------------ | ---------------------------------- | ------------------------------------------------------------------- |
-| `MCPServerManager` | `server/mcp/mcp-server-manager.ts` | Manages server configs, HTTP clients, tool operations, and statuses |
+| Class              | Location                                  | Responsibility                                                        |
+|--------------------|-------------------------------------------|-----------------------------------------------------------------------|
+| `MCPServerManager` | `server/mcp/mcp-server-manager.ts`        | Manages server configs, HTTP clients, tool operations, and statuses   |
 
 ## Testing Considerations
 

@@ -87,7 +87,7 @@ export default function MacroSharingScreen() {
       if (importResult.errors.length > 0) {
         Alert.alert(
           'Import Complete',
-          `Imported: ${importResult.imported}\nSkipped: ${importResult.skipped}\n\nErrors:\n${importResult.errors.join('\n')}`,
+          `Imported: ${importResult.imported}\nSkipped: ${importResult.skipped}\n\nErrors:\n${importResult.errors.join('\n')}`
         );
       } else {
         Alert.alert('Success', `Imported ${importResult.imported} macro(s)`);
@@ -122,11 +122,14 @@ export default function MacroSharingScreen() {
   /**
    * Toggle macro selection
    */
-  const toggleMacroSelection = useCallback((macroId: string) => {
-    setSelectedMacros((prev) =>
-      prev.includes(macroId) ? prev.filter((id) => id !== macroId) : [...prev, macroId],
-    );
-  }, []);
+  const toggleMacroSelection = useCallback(
+    (macroId: string) => {
+      setSelectedMacros((prev) =>
+        prev.includes(macroId) ? prev.filter((id) => id !== macroId) : [...prev, macroId]
+      );
+    },
+    []
+  );
 
   /**
    * Render macro list item
@@ -139,13 +142,13 @@ export default function MacroSharingScreen() {
         onPress={() => toggleMacroSelection(item.id)}
         className={cn(
           'flex-row items-center gap-3 p-4 rounded-lg border mb-3',
-          isSelected ? 'bg-primary/10 border-primary' : 'bg-surface border-border',
+          isSelected ? 'bg-primary/10 border-primary' : 'bg-surface border-border'
         )}
       >
         <View
           className={cn(
             'w-6 h-6 rounded border-2 items-center justify-center',
-            isSelected ? 'bg-primary border-primary' : 'border-border',
+            isSelected ? 'bg-primary border-primary' : 'border-border'
           )}
         >
           {isSelected && <MaterialIcons name="check" size={16} color="white" />}
@@ -175,7 +178,7 @@ export default function MacroSharingScreen() {
             disabled={isLoading || macros.length === 0}
             className={cn(
               'flex-row items-center justify-center gap-2 py-3 px-4 rounded-lg',
-              isLoading || macros.length === 0 ? 'bg-border opacity-50' : 'bg-primary',
+              isLoading || macros.length === 0 ? 'bg-border opacity-50' : 'bg-primary'
             )}
           >
             <MaterialIcons name="download" size={18} color="white" />
@@ -185,10 +188,7 @@ export default function MacroSharingScreen() {
           <Pressable
             onPress={handleImport}
             disabled={isLoading}
-            className={cn(
-              'flex-row items-center justify-center gap-2 py-3 px-4 rounded-lg',
-              'bg-surface border border-border',
-            )}
+            className={cn('flex-row items-center justify-center gap-2 py-3 px-4 rounded-lg', 'bg-surface border border-border')}
           >
             <MaterialIcons name="upload" size={18} color={colors.foreground} />
             <Text className="text-foreground font-semibold">Import Macros</Text>
@@ -199,9 +199,7 @@ export default function MacroSharingScreen() {
             disabled={isLoading || macros.length === 0}
             className={cn(
               'flex-row items-center justify-center gap-2 py-3 px-4 rounded-lg',
-              isLoading || macros.length === 0
-                ? 'bg-border opacity-50'
-                : 'bg-surface border border-border',
+              isLoading || macros.length === 0 ? 'bg-border opacity-50' : 'bg-surface border border-border'
             )}
           >
             <MaterialIcons name="backup" size={18} color={colors.foreground} />
@@ -257,8 +255,7 @@ export default function MacroSharingScreen() {
         <View className="p-4 bg-surface rounded-lg border border-border mt-6">
           <Text className="text-xs font-semibold text-foreground mb-2">💡 Sharing Tips</Text>
           <Text className="text-xs text-muted leading-relaxed">
-            Export macros as JSON files to share with teammates. Import shared macros to add them to
-            your collection. Create regular backups to protect your macro library.
+            Export macros as JSON files to share with teammates. Import shared macros to add them to your collection. Create regular backups to protect your macro library.
           </Text>
         </View>
       </ScrollView>

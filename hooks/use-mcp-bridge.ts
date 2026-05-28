@@ -68,7 +68,7 @@ export function useMCPBridge() {
         config.httpPort,
         config.enableSSE,
         config.enableWebSocket,
-        config.enableStdio,
+        config.enableStdio
       );
 
       console.log('Server started:', result);
@@ -202,7 +202,7 @@ export function useMCPBridge() {
         console.error('Error executing communication tool:', err);
       }
     },
-    [],
+    []
   );
 
   /**
@@ -215,7 +215,7 @@ export function useMCPBridge() {
       redirectUri: string,
       authorizationEndpoint: string,
       tokenEndpoint: string,
-      scope: string,
+      scope: string
     ) => {
       if (!MCPServerBridge) {
         setError('MCPServerBridge module not available');
@@ -229,7 +229,7 @@ export function useMCPBridge() {
           redirectUri,
           authorizationEndpoint,
           tokenEndpoint,
-          scope,
+          scope
         );
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
@@ -237,7 +237,7 @@ export function useMCPBridge() {
         console.error('Error configuring OAuth2:', err);
       }
     },
-    [],
+    []
   );
 
   /**

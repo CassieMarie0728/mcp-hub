@@ -93,9 +93,7 @@ export default function AnalyticsDashboardScreen() {
           <View className="flex-row gap-2">
             <View className="flex-1 bg-success/10 rounded-lg p-4 border border-success">
               <Text className="text-xs text-muted">Total Executions</Text>
-              <Text className="text-2xl font-bold text-success mt-1">
-                {globalMetrics.totalExecutions}
-              </Text>
+              <Text className="text-2xl font-bold text-success mt-1">{globalMetrics.totalExecutions}</Text>
             </View>
             <View className="flex-1 bg-primary/10 rounded-lg p-4 border border-primary">
               <Text className="text-xs text-muted">Success Rate</Text>
@@ -105,15 +103,11 @@ export default function AnalyticsDashboardScreen() {
           <View className="flex-row gap-2">
             <View className="flex-1 bg-warning/10 rounded-lg p-4 border border-warning">
               <Text className="text-xs text-muted">Avg Duration</Text>
-              <Text className="text-2xl font-bold text-warning mt-1">
-                {formatDuration(globalMetrics.averageDuration)}
-              </Text>
+              <Text className="text-2xl font-bold text-warning mt-1">{formatDuration(globalMetrics.averageDuration)}</Text>
             </View>
             <View className="flex-1 bg-error/10 rounded-lg p-4 border border-error">
               <Text className="text-xs text-muted">Failed</Text>
-              <Text className="text-2xl font-bold text-error mt-1">
-                {globalMetrics.totalFailed}
-              </Text>
+              <Text className="text-2xl font-bold text-error mt-1">{globalMetrics.totalFailed}</Text>
             </View>
           </View>
         </View>
@@ -130,9 +124,7 @@ export default function AnalyticsDashboardScreen() {
             <View className="bg-surface rounded-lg p-3 mb-2 border border-border">
               <View className="flex-row items-center justify-between">
                 <View className="flex-1">
-                  <Text className="font-semibold text-foreground">
-                    #{index + 1} {item.name}
-                  </Text>
+                  <Text className="font-semibold text-foreground">#{index + 1} {item.name}</Text>
                   <Text className="text-xs text-muted mt-1">{item.executions} executions</Text>
                 </View>
                 <View className="items-end">
@@ -156,15 +148,11 @@ export default function AnalyticsDashboardScreen() {
             <View className="bg-surface rounded-lg p-3 mb-2 border border-border">
               <View className="flex-row items-center justify-between">
                 <View className="flex-1">
-                  <Text className="font-semibold text-foreground">
-                    #{index + 1} {item.name}
-                  </Text>
+                  <Text className="font-semibold text-foreground">#{index + 1} {item.name}</Text>
                   <Text className="text-xs text-muted mt-1">{item.executions} executions</Text>
                 </View>
                 <View className="items-end">
-                  <Text className="font-bold text-primary">
-                    {formatDuration(item.averageDuration)}
-                  </Text>
+                  <Text className="font-bold text-primary">{formatDuration(item.averageDuration)}</Text>
                   <Text className="text-xs text-muted">avg</Text>
                 </View>
               </View>
@@ -277,13 +265,13 @@ export default function AnalyticsDashboardScreen() {
                 onPress={() => setView(tab as any)}
                 className={cn(
                   'flex-1 rounded-lg p-3 active:opacity-80',
-                  view === tab ? 'bg-primary' : 'bg-surface border border-border',
+                  view === tab ? 'bg-primary' : 'bg-surface border border-border'
                 )}
               >
                 <Text
                   className={cn(
                     'text-center text-xs font-semibold capitalize',
-                    view === tab ? 'text-background' : 'text-foreground',
+                    view === tab ? 'text-background' : 'text-foreground'
                   )}
                 >
                   {tab}

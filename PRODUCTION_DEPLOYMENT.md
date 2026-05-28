@@ -127,14 +127,14 @@ systemctl restart postgresql
 
 ### Server Requirements
 
-| Component | Minimum        | Recommended    |
-| --------- | -------------- | -------------- |
-| CPU       | 2 cores        | 8 cores        |
-| RAM       | 4 GB           | 16 GB          |
-| Storage   | 50 GB          | 500 GB SSD     |
-| Network   | 100 Mbps       | 1 Gbps         |
-| Database  | PostgreSQL 12+ | PostgreSQL 15+ |
-| Cache     | Redis 6+       | Redis 7+       |
+| Component | Minimum | Recommended |
+|-----------|---------|-------------|
+| CPU | 2 cores | 8 cores |
+| RAM | 4 GB | 16 GB |
+| Storage | 50 GB | 500 GB SSD |
+| Network | 100 Mbps | 1 Gbps |
+| Database | PostgreSQL 12+ | PostgreSQL 15+ |
+| Cache | Redis 6+ | Redis 7+ |
 
 ### Network Security
 
@@ -343,31 +343,30 @@ groups:
         expr: rate(workflow_errors_total[5m]) > 0.05
         for: 5m
         annotations:
-          summary: 'High error rate detected'
+          summary: "High error rate detected"
 
       - alert: DatabaseDown
         expr: pg_up == 0
         for: 1m
         annotations:
-          summary: 'PostgreSQL database is down'
+          summary: "PostgreSQL database is down"
 
       - alert: HighMemoryUsage
         expr: process_resident_memory_bytes / 1024 / 1024 > 1024
         for: 5m
         annotations:
-          summary: 'High memory usage (>1GB)'
+          summary: "High memory usage (>1GB)"
 
       - alert: WorkflowQueueBacklog
         expr: workflow_queue_size > 10000
         for: 5m
         annotations:
-          summary: 'Workflow queue backlog detected'
+          summary: "Workflow queue backlog detected"
 ```
 
 ### Grafana Dashboards
 
 Import dashboards for:
-
 - Node.js Application Metrics
 - PostgreSQL Performance
 - Redis Memory Usage
@@ -505,13 +504,13 @@ After deployment, verify:
 
 ## Maintenance Schedule
 
-| Task                 | Frequency | Command                             |
-| -------------------- | --------- | ----------------------------------- |
-| Database maintenance | Weekly    | `VACUUM ANALYZE;`                   |
-| Log rotation         | Daily     | Automatic via logrotate             |
-| Certificate renewal  | Monthly   | Automatic via certbot               |
-| Dependency updates   | Monthly   | `pnpm update`                       |
-| Security patches     | As needed | `apt-get update && apt-get upgrade` |
+| Task | Frequency | Command |
+|------|-----------|----------|
+| Database maintenance | Weekly | `VACUUM ANALYZE;` |
+| Log rotation | Daily | Automatic via logrotate |
+| Certificate renewal | Monthly | Automatic via certbot |
+| Dependency updates | Monthly | `pnpm update` |
+| Security patches | As needed | `apt-get update && apt-get upgrade` |
 
 ## Incident Response
 
@@ -531,12 +530,12 @@ journalctl -u mcp-hub -f
 
 Common issues and solutions:
 
-| Issue                 | Solution                                |
-| --------------------- | --------------------------------------- |
-| API not responding    | Check service status and logs           |
-| High error rate       | Check database connectivity and metrics |
-| WebSocket disconnects | Verify Nginx WebSocket config           |
-| Memory leak           | Restart service and review logs         |
-| Database slow queries | Run VACUUM ANALYZE and check indexes    |
+| Issue | Solution |
+|-------|----------|
+| API not responding | Check service status and logs |
+| High error rate | Check database connectivity and metrics |
+| WebSocket disconnects | Verify Nginx WebSocket config |
+| Memory leak | Restart service and review logs |
+| Database slow queries | Run VACUUM ANALYZE and check indexes |
 
 Contact support at support@mcphub.io

@@ -49,8 +49,7 @@ class PerformanceProfiler {
   static endMeasure(name: string): number | null {
     const index = this.activeTimers.get(name);
     if (index === undefined) {
-      if (process.env.NODE_ENV === 'development')
-        console.warn(`No active timer for metric: ${name}`);
+      if (process.env.NODE_ENV === 'development') console.warn(`No active timer for metric: ${name}`);
       return null;
     }
 
@@ -158,14 +157,10 @@ class PerformanceProfiler {
     stats.forEach((stat) => {
       if (process.env.NODE_ENV === 'development') console.log(`${stat.metric}:`);
       if (process.env.NODE_ENV === 'development') console.log(`  Count: ${stat.count}`);
-      if (process.env.NODE_ENV === 'development')
-        console.log(`  Average: ${stat.averageTime.toFixed(2)}ms`);
-      if (process.env.NODE_ENV === 'development')
-        console.log(`  Min: ${stat.minTime.toFixed(2)}ms`);
-      if (process.env.NODE_ENV === 'development')
-        console.log(`  Max: ${stat.maxTime.toFixed(2)}ms`);
-      if (process.env.NODE_ENV === 'development')
-        console.log(`  Last: ${stat.lastMeasurement.toFixed(2)}ms`);
+      if (process.env.NODE_ENV === 'development') console.log(`  Average: ${stat.averageTime.toFixed(2)}ms`);
+      if (process.env.NODE_ENV === 'development') console.log(`  Min: ${stat.minTime.toFixed(2)}ms`);
+      if (process.env.NODE_ENV === 'development') console.log(`  Max: ${stat.maxTime.toFixed(2)}ms`);
+      if (process.env.NODE_ENV === 'development') console.log(`  Last: ${stat.lastMeasurement.toFixed(2)}ms`);
     });
     if (process.env.NODE_ENV === 'development') console.log('===========================\n');
   }

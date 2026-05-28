@@ -214,9 +214,7 @@ export default function MacroCommentsScreen() {
                 </Pressable>
 
                 <Pressable className="flex-1 bg-primary rounded-lg p-2 active:opacity-80">
-                  <Text className="text-center font-semibold text-background text-sm">
-                    Post Comment
-                  </Text>
+                  <Text className="text-center font-semibold text-background text-sm">Post Comment</Text>
                 </Pressable>
               </View>
             </View>

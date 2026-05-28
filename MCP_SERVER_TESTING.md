@@ -7,25 +7,21 @@ Complete testing infrastructure for validating MCP Hub against real MCP servers.
 ### 1. Filesystem MCP Server
 
 **Installation:**
-
 ```bash
 npm install -g @modelcontextprotocol/server-filesystem
 ```
 
 **Start Server (HTTP):**
-
 ```bash
 mcp-server-filesystem --port 3001 --host 127.0.0.1
 ```
 
 **Start Server (WebSocket):**
-
 ```bash
 mcp-server-filesystem --port 3002 --transport websocket --host 127.0.0.1
 ```
 
 **Available Tools:**
-
 - `read_file` - Read file contents
 - `write_file` - Write to file
 - `list_files` - List directory contents
@@ -35,19 +31,16 @@ mcp-server-filesystem --port 3002 --transport websocket --host 127.0.0.1
 ### 2. Web MCP Server
 
 **Installation:**
-
 ```bash
 npm install -g @modelcontextprotocol/server-web
 ```
 
 **Start Server (HTTP):**
-
 ```bash
 mcp-server-web --port 3003 --host 127.0.0.1
 ```
 
 **Available Tools:**
-
 - `fetch` - Fetch URL content
 - `search` - Search the web
 
@@ -60,7 +53,6 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Verify connection to MCP server
 
 **Steps:**
-
 1. Open MCP Hub app
 2. Navigate to "Connect" tab
 3. Enter server details:
@@ -70,13 +62,11 @@ mcp-server-web --port 3003 --host 127.0.0.1
 4. Tap "Connect"
 
 **Expected Result:**
-
 - Connection status shows "Connected"
 - No error messages
 - Connection time < 2 seconds
 
 **Failure Modes to Check:**
-
 - Server unreachable
 - Invalid host/port
 - Connection timeout
@@ -89,13 +79,11 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Verify tool discovery from server
 
 **Steps:**
-
 1. Connect to filesystem server (Test 1)
 2. Navigate to "Tools" tab
 3. Tap "Discover Tools"
 
 **Expected Result:**
-
 - Tool list loads within 2 seconds
 - Shows all filesystem tools (read_file, write_file, etc.)
 - Each tool shows description and parameters
@@ -103,7 +91,6 @@ mcp-server-web --port 3003 --host 127.0.0.1
 - Tools are searchable
 
 **Failure Modes to Check:**
-
 - Discovery timeout
 - Empty tool list
 - Malformed tool schemas
@@ -116,7 +103,6 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Execute tool with simple string parameter
 
 **Steps:**
-
 1. Connect to filesystem server
 2. Discover tools
 3. Select `list_files` tool
@@ -124,14 +110,12 @@ mcp-server-web --port 3003 --host 127.0.0.1
 5. Tap "Execute"
 
 **Expected Result:**
-
 - Execution completes within 5 seconds
 - Shows file list in result
 - Result displays in readable format
 - Execution time shown
 
 **Failure Modes to Check:**
-
 - Invalid path handling
 - Permission denied
 - Timeout on large directories
@@ -144,7 +128,6 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Execute file read/write operations
 
 **Steps:**
-
 1. Connect to filesystem server
 2. Execute `write_file` with:
    - Path: `/tmp/test.txt`
@@ -153,14 +136,12 @@ mcp-server-web --port 3003 --host 127.0.0.1
    - Path: `/tmp/test.txt`
 
 **Expected Result:**
-
 - Write succeeds
 - Read returns "Hello World"
 - Both complete within 5 seconds
 - No data corruption
 
 **Failure Modes to Check:**
-
 - Write permission denied
 - File not found
 - Encoding issues
@@ -173,21 +154,18 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Verify parameter validation
 
 **Steps:**
-
 1. Connect to filesystem server
 2. Select `read_file` tool
 3. Leave path empty
 4. Tap "Execute"
 
 **Expected Result:**
-
 - Validation error shown before execution
 - Error message: "Path is required"
 - Execution blocked
 - User can fix and retry
 
 **Failure Modes to Check:**
-
 - Missing validation
 - Unclear error messages
 - Execution despite validation error
@@ -200,20 +178,17 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Verify graceful handling when server is unreachable
 
 **Steps:**
-
 1. Stop filesystem server
 2. Try to connect to `127.0.0.1:3001`
 3. Observe error handling
 
 **Expected Result:**
-
 - Error message shown within 5 seconds
 - Suggests checking server status
 - "Retry" button available
 - App doesn't crash
 
 **Failure Modes to Check:**
-
 - Hangs indefinitely
 - Cryptic error message
 - App crash
@@ -226,20 +201,17 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Verify handling of slow operations
 
 **Steps:**
-
 1. Connect to filesystem server
 2. Execute `list_files` on large directory
 3. Observe timeout handling
 
 **Expected Result:**
-
 - Operation times out after configured timeout
 - User-friendly timeout message
 - "Retry" option available
 - App responsive
 
 **Failure Modes to Check:**
-
 - Hangs indefinitely
 - No timeout message
 - App becomes unresponsive
@@ -252,7 +224,6 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Verify result display in multiple formats
 
 **Steps:**
-
 1. Execute `list_files` tool
 2. In results screen, select different formats:
    - Raw Text
@@ -261,14 +232,12 @@ mcp-server-web --port 3003 --host 127.0.0.1
    - Tree
 
 **Expected Result:**
-
 - Each format displays correctly
 - No data loss in formatting
 - Easy to read and understand
 - Copy/share buttons work
 
 **Failure Modes to Check:**
-
 - Format rendering broken
 - Data corruption
 - Unreadable output
@@ -281,21 +250,18 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Record execution as macro
 
 **Steps:**
-
 1. Execute `read_file` tool
 2. Tap "Save as Macro"
 3. Enter macro name: "Read Test File"
 4. Tap "Save"
 
 **Expected Result:**
-
 - Macro saved successfully
 - Appears in macro gallery
 - Can be executed again
 - Parameters preserved
 
 **Failure Modes to Check:**
-
 - Macro not saved
 - Parameters lost
 - Macro not executable
@@ -308,21 +274,18 @@ mcp-server-web --port 3003 --host 127.0.0.1
 **Objective:** Connect to multiple servers simultaneously
 
 **Steps:**
-
 1. Connect to filesystem server (port 3001)
 2. Connect to web server (port 3003)
 3. Switch between tabs
 4. Discover tools from each
 
 **Expected Result:**
-
 - Both connections active
 - Tools from each server available
 - No cross-contamination
 - Can execute from either
 
 **Failure Modes to Check:**
-
 - Only one connection works
 - Tools mixed up
 - Connection conflicts
@@ -334,18 +297,17 @@ mcp-server-web --port 3003 --host 127.0.0.1
 
 ### Expected Performance
 
-| Operation       | Target | Acceptable | Unacceptable |
-| --------------- | ------ | ---------- | ------------ |
-| Connection      | < 1s   | < 2s       | > 5s         |
-| Tool Discovery  | < 2s   | < 3s       | > 10s        |
-| Tool Execution  | < 5s   | < 10s      | > 30s        |
-| Result Display  | < 1s   | < 2s       | > 5s         |
-| Macro Execution | < 5s   | < 10s      | > 30s        |
+| Operation | Target | Acceptable | Unacceptable |
+|-----------|--------|-----------|--------------|
+| Connection | < 1s | < 2s | > 5s |
+| Tool Discovery | < 2s | < 3s | > 10s |
+| Tool Execution | < 5s | < 10s | > 30s |
+| Result Display | < 1s | < 2s | > 5s |
+| Macro Execution | < 5s | < 10s | > 30s |
 
 ### Profiling
 
 Use React Native Debugger to profile:
-
 1. Bridge call overhead
 2. JSON parsing time
 3. UI rendering time
@@ -451,7 +413,6 @@ kill $FS_PID $WEB_PID
 ### Integration Tests
 
 Create `mcp-integration.test.ts` with:
-
 - Connection tests
 - Discovery tests
 - Execution tests
@@ -485,7 +446,6 @@ jobs:
 ## Success Criteria
 
 All tests must pass with:
-
 - ✅ No crashes
 - ✅ All operations complete within acceptable time
 - ✅ Error messages clear and actionable

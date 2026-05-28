@@ -104,19 +104,14 @@ export function useActionExecutor() {
         setIsLoading(false);
       }
     },
-    [],
+    []
   );
 
   /**
    * Execute long tap action
    */
   const longTap = useCallback(
-    async (
-      x: number,
-      y: number,
-      duration: number = 500,
-      delay: number = 300,
-    ): Promise<ExecutionResult | null> => {
+    async (x: number, y: number, duration: number = 500, delay: number = 300): Promise<ExecutionResult | null> => {
       try {
         setIsLoading(true);
         setError(null);
@@ -135,7 +130,7 @@ export function useActionExecutor() {
         setIsLoading(false);
       }
     },
-    [],
+    []
   );
 
   /**
@@ -148,21 +143,14 @@ export function useActionExecutor() {
       endX: number,
       endY: number,
       duration: number = 500,
-      delay: number = 300,
+      delay: number = 300
     ): Promise<ExecutionResult | null> => {
       try {
         setIsLoading(true);
         setError(null);
 
         if (Platform.OS === 'android' && executorRef.current) {
-          const result = await executorRef.current.swipe(
-            startX,
-            startY,
-            endX,
-            endY,
-            duration,
-            delay,
-          );
+          const result = await executorRef.current.swipe(startX, startY, endX, endY, duration, delay);
           return result as ExecutionResult;
         }
         return null;
@@ -175,7 +163,7 @@ export function useActionExecutor() {
         setIsLoading(false);
       }
     },
-    [],
+    []
   );
 
   /**
@@ -201,41 +189,40 @@ export function useActionExecutor() {
         setIsLoading(false);
       }
     },
-    [],
+    []
   );
 
   /**
    * Execute clear text action
    */
-  const clearText = useCallback(async (delay: number = 300): Promise<ExecutionResult | null> => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const clearText = useCallback(
+    async (delay: number = 300): Promise<ExecutionResult | null> => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      if (Platform.OS === 'android' && executorRef.current) {
-        const result = await executorRef.current.clearText(delay);
-        return result as ExecutionResult;
+        if (Platform.OS === 'android' && executorRef.current) {
+          const result = await executorRef.current.clearText(delay);
+          return result as ExecutionResult;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error clearing text:', err);
+        return null;
+      } finally {
+        setIsLoading(false);
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error clearing text:', err);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Execute scroll action
    */
   const scroll = useCallback(
-    async (
-      direction: string,
-      distance: number = 500,
-      delay: number = 300,
-    ): Promise<ExecutionResult | null> => {
+    async (direction: string, distance: number = 500, delay: number = 300): Promise<ExecutionResult | null> => {
       try {
         setIsLoading(true);
         setError(null);
@@ -254,131 +241,149 @@ export function useActionExecutor() {
         setIsLoading(false);
       }
     },
-    [],
+    []
   );
 
   /**
    * Execute wait action
    */
-  const wait = useCallback(async (duration: number): Promise<ExecutionResult | null> => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const wait = useCallback(
+    async (duration: number): Promise<ExecutionResult | null> => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      if (Platform.OS === 'android' && executorRef.current) {
-        const result = await executorRef.current.wait(duration);
-        return result as ExecutionResult;
+        if (Platform.OS === 'android' && executorRef.current) {
+          const result = await executorRef.current.wait(duration);
+          return result as ExecutionResult;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error waiting:', err);
+        return null;
+      } finally {
+        setIsLoading(false);
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error waiting:', err);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Find element by text
    */
-  const findElementByText = useCallback(async (text: string): Promise<ElementInfo | null> => {
-    try {
-      setError(null);
+  const findElementByText = useCallback(
+    async (text: string): Promise<ElementInfo | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && executorRef.current) {
-        const result = await executorRef.current.findElementByText(text);
-        return result as ElementInfo;
+        if (Platform.OS === 'android' && executorRef.current) {
+          const result = await executorRef.current.findElementByText(text);
+          return result as ElementInfo;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error finding element:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error finding element:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Get all clickable elements
    */
-  const getAllClickableElements = useCallback(async (): Promise<ElementInfo[] | null> => {
-    try {
-      setError(null);
+  const getAllClickableElements = useCallback(
+    async (): Promise<ElementInfo[] | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && executorRef.current) {
-        const result = await executorRef.current.getAllClickableElements();
-        return result as ElementInfo[];
+        if (Platform.OS === 'android' && executorRef.current) {
+          const result = await executorRef.current.getAllClickableElements();
+          return result as ElementInfo[];
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error getting clickable elements:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error getting clickable elements:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Get execution log
    */
-  const getExecutionLog = useCallback(async (macroId?: string): Promise<any[] | null> => {
-    try {
-      setError(null);
+  const getExecutionLog = useCallback(
+    async (macroId?: string): Promise<any[] | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && executorRef.current) {
-        const result = await executorRef.current.getExecutionLog(macroId);
-        return result as any[];
+        if (Platform.OS === 'android' && executorRef.current) {
+          const result = await executorRef.current.getExecutionLog(macroId);
+          return result as any[];
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error getting execution log:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error getting execution log:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Get execution statistics
    */
-  const getExecutionStats = useCallback(async (): Promise<ExecutionStats | null> => {
-    try {
-      setError(null);
+  const getExecutionStats = useCallback(
+    async (): Promise<ExecutionStats | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && executorRef.current) {
-        const result = await executorRef.current.getExecutionStats();
-        return result as ExecutionStats;
+        if (Platform.OS === 'android' && executorRef.current) {
+          const result = await executorRef.current.getExecutionStats();
+          return result as ExecutionStats;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error getting stats:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error getting stats:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Start macro execution
    */
-  const startMacroExecution = useCallback(async (macroId: string): Promise<boolean> => {
-    try {
-      setError(null);
+  const startMacroExecution = useCallback(
+    async (macroId: string): Promise<boolean> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && executorRef.current) {
-        const result = await executorRef.current.startMacroExecution(macroId);
-        return result as boolean;
+        if (Platform.OS === 'android' && executorRef.current) {
+          const result = await executorRef.current.startMacroExecution(macroId);
+          return result as boolean;
+        }
+        return false;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error starting macro:', err);
+        return false;
       }
-      return false;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error starting macro:', err);
-      return false;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * End macro execution
@@ -400,28 +405,31 @@ export function useActionExecutor() {
         return null;
       }
     },
-    [],
+    []
   );
 
   /**
    * Clear execution log
    */
-  const clearExecutionLog = useCallback(async (): Promise<boolean> => {
-    try {
-      setError(null);
+  const clearExecutionLog = useCallback(
+    async (): Promise<boolean> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && executorRef.current) {
-        const result = await executorRef.current.clearExecutionLog();
-        return result as boolean;
+        if (Platform.OS === 'android' && executorRef.current) {
+          const result = await executorRef.current.clearExecutionLog();
+          return result as boolean;
+        }
+        return false;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error clearing log:', err);
+        return false;
       }
-      return false;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error clearing log:', err);
-      return false;
-    }
-  }, []);
+    },
+    []
+  );
 
   return {
     // State

@@ -334,7 +334,7 @@ describe('Execution History Model and Manager', () => {
       const filtered = entries.filter(
         (e) =>
           e.toolName.toLowerCase().includes(search.toLowerCase()) ||
-          e.serverName.toLowerCase().includes(search.toLowerCase()),
+          e.serverName.toLowerCase().includes(search.toLowerCase())
       );
 
       expect(filtered).toHaveLength(1);

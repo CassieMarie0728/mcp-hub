@@ -29,10 +29,11 @@ flowchart TB
 
 Defines the credentials and optional endpoint for Slack integration.
 
-| Property  | Type   | Description                                                  |
-| --------- | ------ | ------------------------------------------------------------ |
-| **token** | string | Bearer token for Slack OAuth                                 |
-| baseUrl   | string | Base URL for Slack API , defaults to `https://slack.com/api` |
+| Property | Type | Description |
+| --- | --- | --- |
+| **token** | string | Bearer token for Slack OAuth  |
+| baseUrl | string | Base URL for Slack API , defaults to `https://slack.com/api` |
+
 
 ### SlackMCPServer (Integration Class)
 
@@ -50,11 +51,12 @@ constructor(config: SlackConfig)
 
 #### Methods Summary
 
-| Method                | Signature                 | Description                                                       |
-| --------------------- | ------------------------- | ----------------------------------------------------------------- |
-| **getMCPConfig**      | (): MCPServerConfig       | Builds MCP server configuration pointing at Slack’s `/mcp` path   |
+| Method | Signature | Description |
+| --- | --- | --- |
+| **getMCPConfig** | (): MCPServerConfig | Builds MCP server configuration pointing at Slack’s `/mcp` path |
 | **getAvailableTools** | (): SlackToolDefinition[] | Returns list of Slack actions as MCP tools (e.g., `send_message`) |
-| **validateToken**     | (): Promise<boolean>      | Verifies OAuth token via Slack `auth.test` endpoint               |
+| **validateToken** | (): Promise<boolean> | Verifies OAuth token via Slack `auth.test` endpoint |
+
 
 ## Data Models
 
@@ -62,26 +64,28 @@ constructor(config: SlackConfig)
 
 Returned by `getMCPConfig`.
 
-| Property | Type   | Description                                        |
-| -------- | ------ | -------------------------------------------------- |
-| id       | string | Unique server ID (`slack-mcp`)                     |
-| name     | string | Human-readable name (`Slack`)                      |
-| url      | string | Full MCP endpoint (e.g., `https://…/mcp`)          |
-| type     | string | Transport type (`http`)                            |
-| auth     | object | `{ type: 'bearer', token: string }`                |
-| headers  | object | Default headers (`Content-Type: application/json`) |
-| timeout  | number | Request timeout in ms (30000)                      |
+| Property | Type | Description |
+| --- | --- | --- |
+| id | string | Unique server ID (`slack-mcp`) |
+| name | string | Human-readable name (`Slack`) |
+| url | string | Full MCP endpoint (e.g., `https://…/mcp`) |
+| type | string | Transport type (`http`) |
+| auth | object | `{ type: 'bearer', token: string }` |
+| headers | object | Default headers (`Content-Type: application/json`) |
+| timeout | number | Request timeout in ms (30000) |
+
 
 #### SlackToolDefinition
 
 Represents a Slack action exposed via MCP.
 
-| Property    | Type                | Description                                     |
-| ----------- | ------------------- | ----------------------------------------------- |
-| name        | string              | Internal tool identifier (e.g., `send_message`) |
-| description | string              | Human-friendly description                      |
-| inputSchema | object              | JSON Schema detailing allowed input params      |
-| required    | string[] (optional) | Keys required by `inputSchema`                  |
+| Property | Type | Description |
+| --- | --- | --- |
+| name | string | Internal tool identifier (e.g., `send_message`) |
+| description | string | Human-friendly description |
+| inputSchema | object | JSON Schema detailing allowed input params |
+| required | string[] (optional) | Keys required by `inputSchema` |
+
 
 ## Slack API Integration
 
@@ -141,10 +145,11 @@ sequenceDiagram
 
 ## Key Classes Reference
 
-| Class              | Location | Responsibility                              |
-| ------------------ | -------- | ------------------------------------------- |
-| **SlackConfig**    |          | Holds Slack token and optional API base URL |
-| **SlackMCPServer** |          | MCP adapter for Slack API                   |
+| Class | Location | Responsibility |
+| --- | --- | --- |
+| **SlackConfig** |  | Holds Slack token and optional API base URL |
+| **SlackMCPServer** |  | MCP adapter for Slack API |
+
 
 ## Error Handling
 

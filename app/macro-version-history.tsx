@@ -72,7 +72,7 @@ export default function MacroVersionHistoryScreen() {
             Alert.alert('Success', `Rolled back to v${version.versionNumber}`);
           },
         },
-      ],
+      ]
     );
   };
 
@@ -93,11 +93,7 @@ export default function MacroVersionHistoryScreen() {
    * Format date
    */
   const formatDate = (date: Date) => {
-    return (
-      date.toLocaleDateString() +
-      ' ' +
-      date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    );
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   /**
@@ -108,7 +104,7 @@ export default function MacroVersionHistoryScreen() {
       onPress={() => setSelectedVersion(item)}
       className={cn(
         'bg-surface rounded-xl p-4 mb-3 border active:opacity-70',
-        selectedVersion?.id === item.id ? 'border-primary' : 'border-border',
+        selectedVersion?.id === item.id ? 'border-primary' : 'border-border'
       )}
     >
       <View className="gap-2">
@@ -134,13 +130,13 @@ export default function MacroVersionHistoryScreen() {
             onPress={() => handleCompare(item)}
             className={cn(
               'flex-1 rounded-lg p-2 active:opacity-70',
-              compareVersion?.id === item.id ? 'bg-primary' : 'bg-background border border-border',
+              compareVersion?.id === item.id ? 'bg-primary' : 'bg-background border border-border'
             )}
           >
             <Text
               className={cn(
                 'text-center text-xs font-semibold',
-                compareVersion?.id === item.id ? 'text-background' : 'text-foreground',
+                compareVersion?.id === item.id ? 'text-background' : 'text-foreground'
               )}
             >
               Compare
@@ -182,15 +178,11 @@ export default function MacroVersionHistoryScreen() {
         <View className="gap-2">
           <View className="flex-row gap-2">
             <View className="flex-1 bg-error/10 rounded-lg p-2 border border-error">
-              <Text className="text-xs font-semibold text-error">
-                From v{selectedVersion?.versionNumber}
-              </Text>
+              <Text className="text-xs font-semibold text-error">From v{selectedVersion?.versionNumber}</Text>
               <Text className="text-xs text-muted mt-1">{selectedVersion?.description}</Text>
             </View>
             <View className="flex-1 bg-success/10 rounded-lg p-2 border border-success">
-              <Text className="text-xs font-semibold text-success">
-                To v{compareVersion.versionNumber}
-              </Text>
+              <Text className="text-xs font-semibold text-success">To v{compareVersion.versionNumber}</Text>
               <Text className="text-xs text-muted mt-1">{compareVersion.description}</Text>
             </View>
           </View>
@@ -202,9 +194,7 @@ export default function MacroVersionHistoryScreen() {
             </View>
             <View className="flex-row items-center justify-between">
               <Text className="text-xs text-muted">Lines Changed</Text>
-              <Text className="text-sm font-bold text-foreground">
-                ~{compareVersion.changes * 3}
-              </Text>
+              <Text className="text-sm font-bold text-foreground">~{compareVersion.changes * 3}</Text>
             </View>
           </View>
 
@@ -234,9 +224,7 @@ export default function MacroVersionHistoryScreen() {
             <View className="flex-row items-center justify-between">
               <Text className="text-sm font-semibold text-muted">VERSIONS ({versions.length})</Text>
               <View className="bg-primary/20 rounded-full px-2 py-1">
-                <Text className="text-xs font-bold text-primary">
-                  v{versions[versions.length - 1].versionNumber}
-                </Text>
+                <Text className="text-xs font-bold text-primary">v{versions[versions.length - 1].versionNumber}</Text>
               </View>
             </View>
 
@@ -258,15 +246,11 @@ export default function MacroVersionHistoryScreen() {
               </View>
               <View className="flex-row items-center justify-between">
                 <Text className="text-sm text-foreground">Released</Text>
-                <Text className="text-lg font-bold text-success">
-                  {versions.filter((v) => v.isReleased).length}
-                </Text>
+                <Text className="text-lg font-bold text-success">{versions.filter((v) => v.isReleased).length}</Text>
               </View>
               <View className="flex-row items-center justify-between">
                 <Text className="text-sm text-foreground">Total Changes</Text>
-                <Text className="text-lg font-bold text-warning">
-                  {versions.reduce((sum, v) => sum + v.changes, 0)}
-                </Text>
+                <Text className="text-lg font-bold text-warning">{versions.reduce((sum, v) => sum + v.changes, 0)}</Text>
               </View>
             </View>
           </View>

@@ -4,15 +4,15 @@ This page explains how users, contributors, and evaluators can get help with MCP
 
 ## I need help with...
 
-| Need                               | Best place to start                                     |
-| ---------------------------------- | ------------------------------------------------------- |
+| Need | Best place to start |
+|---|---|
 | Understanding the project or setup | [`README.md`](README.md) and [`README.mdx`](README.mdx) |
-| Technical documentation            | [`docs/`](docs/README.md)                               |
-| Contributing workflow              | [`CONTRIBUTING.md`](CONTRIBUTING.md)                    |
-| Reporting a bug                    | GitHub Issues using the bug report template             |
-| Requesting a feature               | GitHub Issues using the feature request template        |
-| Submitting a fix                   | GitHub pull request using the PR template               |
-| Community expectations             | [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)              |
+| Technical documentation | [`docs/`](docs/README.md) |
+| Contributing workflow | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+| Reporting a bug | GitHub Issues using the bug report template |
+| Requesting a feature | GitHub Issues using the feature request template |
+| Submitting a fix | GitHub pull request using the PR template |
+| Community expectations | [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) |
 
 ## When to use support, issues, or pull requests
 

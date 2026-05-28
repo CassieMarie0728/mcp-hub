@@ -148,7 +148,6 @@ npx @modelcontextprotocol/server-web
 **Test Case 3b: Read File**
 
 1. Create a test file first:
-
    ```bash
    echo "Hello from MCP!" > /tmp/mcp-test/test.txt
    ```
@@ -321,7 +320,6 @@ ___________
 **Problem:** `npm install` or `npx` command fails
 
 **Solution:**
-
 - Ensure Node.js v18+ is installed: `node --version`
 - Try clearing npm cache: `npm cache clean --force`
 - Try installing globally: `npm install -g @modelcontextprotocol/server-filesystem`
@@ -333,7 +331,6 @@ ___________
 **Problem:** "Cannot connect to server"
 
 **Solution:**
-
 - Verify server is running: `lsof -i :3001` (check if port is in use)
 - Verify host/port in MCP Hub settings
 - If testing on physical device, ensure it's on same network as server
@@ -346,7 +343,6 @@ ___________
 **Problem:** "No tools found" after connecting
 
 **Solution:**
-
 - Verify connection status shows "Connected"
 - Try refreshing tool list (pull down to refresh)
 - Check server logs for errors
@@ -359,7 +355,6 @@ ___________
 **Problem:** "Error displaying result"
 
 **Solution:**
-
 - Check result format selection
 - Try switching to different format
 - Check if result is too large (>1MB)
@@ -390,7 +385,6 @@ After successful testing:
 ## Contact & Support
 
 For issues or questions:
-
 - Open an issue on GitHub
 - Check existing issues for solutions
 - Review this guide for troubleshooting steps

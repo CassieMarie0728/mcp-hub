@@ -1,547 +1,529 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Execution Simulator – MCP Hub</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        background-color: #0b0f0f;
-        color: #a8a9ad;
-        font-family: 'JetBrains Mono', monospace;
-        line-height: 1.6;
-        padding: 20px;
-      }
-
-      .demo-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background-color: rgba(152, 21, 24, 0.05);
-        border: 2px solid #981518;
-        border-radius: 8px;
-        padding: 30px;
-      }
-
-      h1 {
-        font-family: 'Special Elite', serif;
-        font-size: 36px;
-        color: #981518;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-      }
-
-      .subtitle {
-        font-size: 14px;
-        color: #a8a9ad;
-        margin-bottom: 30px;
-      }
-
-      .simulator-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        margin-bottom: 30px;
-      }
-
-      .panel {
-        border: 2px solid #981518;
-        padding: 20px;
-        background-color: rgba(152, 21, 24, 0.08);
-        border-radius: 4px;
-      }
-
-      .panel-title {
-        font-size: 12px;
-        color: #981518;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 15px;
-        font-weight: bold;
-      }
-
-      .workflow-display {
-        background-color: rgba(11, 15, 15, 0.8);
-        padding: 15px;
-        border-radius: 4px;
-        margin-bottom: 15px;
-        min-height: 200px;
-      }
-
-      .workflow-item {
-        background-color: #981518;
-        color: #0b0f0f;
-        padding: 12px 15px;
-        margin-bottom: 8px;
-        border-radius: 4px;
-        font-size: 13px;
-        font-weight: 600;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .workflow-item.active {
-        animation: pulse 1s ease-in-out infinite;
-        box-shadow: 0 0 15px rgba(152, 21, 24, 0.6);
-      }
-
-      .workflow-item.completed {
-        background-color: #22c55e;
-        color: #0b0f0f;
-      }
-
-      .workflow-item.error {
-        background-color: #ef4444;
-        color: #fff;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        50% {
-          opacity: 0.7;
+
+        body {
+            background-color: #0b0f0f;
+            color: #a8a9ad;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            padding: 20px;
         }
-      }
 
-      .step-arrow {
-        text-align: center;
-        color: #981518;
-        font-size: 16px;
-        margin: 5px 0;
-      }
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(152, 21, 24, 0.05);
+            border: 2px solid #981518;
+            border-radius: 8px;
+            padding: 30px;
+        }
 
-      .metrics {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 15px;
-      }
+        h1 {
+            font-family: 'Special Elite', serif;
+            font-size: 36px;
+            color: #981518;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-      .metric {
-        background-color: rgba(152, 21, 24, 0.1);
-        border-left: 3px solid #981518;
-        padding: 10px;
-        border-radius: 2px;
-      }
+        .subtitle {
+            font-size: 14px;
+            color: #a8a9ad;
+            margin-bottom: 30px;
+        }
 
-      .metric-label {
-        font-size: 11px;
-        color: #a8a9ad;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .metric-value {
-        font-size: 18px;
-        color: #981518;
-        font-weight: bold;
-        margin-top: 5px;
-      }
-
-      .execution-log {
-        background-color: rgba(11, 15, 15, 0.8);
-        padding: 15px;
-        border-radius: 4px;
-        max-height: 400px;
-        overflow-y: auto;
-        font-size: 12px;
-        font-family: 'Courier New', monospace;
-      }
-
-      .log-entry {
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(152, 21, 24, 0.2);
-        display: flex;
-        gap: 10px;
-        align-items: flex-start;
-      }
-
-      .log-entry:last-child {
-        border-bottom: none;
-      }
-
-      .log-time {
-        color: #981518;
-        font-weight: bold;
-        min-width: 80px;
-      }
-
-      .log-status {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        margin-right: 5px;
-        margin-top: 2px;
-      }
-
-      .log-status.success {
-        background-color: #22c55e;
-      }
-
-      .log-status.pending {
-        background-color: #f39c12;
-        animation: pulse 1.5s ease-in-out infinite;
-      }
-
-      .log-status.error {
-        background-color: #ef4444;
-      }
-
-      .log-message {
-        flex: 1;
-        color: #a8a9ad;
-      }
-
-      .controls {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-        flex-wrap: wrap;
-      }
-
-      .btn {
-        padding: 12px 24px;
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border: 2px solid #981518;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: 'JetBrains Mono', monospace;
-        border-radius: 4px;
-      }
-
-      .btn-primary {
-        background-color: #981518;
-        color: #0b0f0f;
-      }
-
-      .btn-primary:hover:not(:disabled) {
-        background-color: transparent;
-        color: #981518;
-      }
-
-      .btn-secondary {
-        background-color: transparent;
-        color: #981518;
-      }
-
-      .btn-secondary:hover:not(:disabled) {
-        background-color: #981518;
-        color: #0b0f0f;
-      }
-
-      .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      .preset-buttons {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
-
-      .preset-btn {
-        padding: 8px 16px;
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border: 1px solid #981518;
-        background-color: transparent;
-        color: #981518;
-        cursor: pointer;
-        border-radius: 3px;
-        transition: all 0.2s ease;
-      }
-
-      .preset-btn:hover {
-        background-color: #981518;
-        color: #0b0f0f;
-      }
-
-      .stats-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      .stat-box {
-        background-color: rgba(152, 21, 24, 0.1);
-        border: 1px solid #981518;
-        padding: 15px;
-        border-radius: 4px;
-        text-align: center;
-      }
-
-      .stat-number {
-        font-size: 24px;
-        color: #981518;
-        font-weight: bold;
-      }
-
-      .stat-label {
-        font-size: 11px;
-        color: #a8a9ad;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-top: 5px;
-      }
-
-      @media (max-width: 768px) {
         .simulator-grid {
-          grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
         }
-      }
+
+        .panel {
+            border: 2px solid #981518;
+            padding: 20px;
+            background-color: rgba(152, 21, 24, 0.08);
+            border-radius: 4px;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            color: #981518;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .workflow-display {
+            background-color: rgba(11, 15, 15, 0.8);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            min-height: 200px;
+        }
+
+        .workflow-item {
+            background-color: #981518;
+            color: #0b0f0f;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .workflow-item.active {
+            animation: pulse 1s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(152, 21, 24, 0.6);
+        }
+
+        .workflow-item.completed {
+            background-color: #22c55e;
+            color: #0b0f0f;
+        }
+
+        .workflow-item.error {
+            background-color: #ef4444;
+            color: #fff;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .step-arrow {
+            text-align: center;
+            color: #981518;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .metric {
+            background-color: rgba(152, 21, 24, 0.1);
+            border-left: 3px solid #981518;
+            padding: 10px;
+            border-radius: 2px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #a8a9ad;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            color: #981518;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .execution-log {
+            background-color: rgba(11, 15, 15, 0.8);
+            padding: 15px;
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(152, 21, 24, 0.2);
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-time {
+            color: #981518;
+            font-weight: bold;
+            min-width: 80px;
+        }
+
+        .log-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+            margin-top: 2px;
+        }
+
+        .log-status.success {
+            background-color: #22c55e;
+        }
+
+        .log-status.pending {
+            background-color: #f39c12;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .log-status.error {
+            background-color: #ef4444;
+        }
+
+        .log-message {
+            flex: 1;
+            color: #a8a9ad;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid #981518;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: transparent;
+            color: #981518;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #981518;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid #981518;
+            background-color: transparent;
+            color: #981518;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background-color: rgba(152, 21, 24, 0.1);
+            border: 1px solid #981518;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            color: #981518;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #a8a9ad;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .simulator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="demo-container">
-      <h1>⚙️ Live Execution Simulator</h1>
-      <p class="subtitle">
-        Watch your workflow execute in real-time with detailed metrics and logging.
-      </p>
+        <h1>⚙️ Live Execution Simulator</h1>
+        <p class="subtitle">Watch your workflow execute in real-time with detailed metrics and logging.</p>
 
-      <div class="controls">
-        <button class="btn btn-primary" onclick="runPreset('github-to-slack')">
-          Run: GitHub → Slack
-        </button>
-        <button class="btn btn-primary" onclick="runPreset('github-to-notion')">
-          Run: GitHub → Notion
-        </button>
-        <button class="btn btn-primary" onclick="runPreset('full-workflow')">
-          Run: Full Workflow
-        </button>
-        <button class="btn btn-secondary" onclick="clearExecution()">Clear</button>
-      </div>
+        <div class="controls">
+            <button class="btn btn-primary" onclick="runPreset('github-to-slack')">Run: GitHub → Slack</button>
+            <button class="btn btn-primary" onclick="runPreset('github-to-notion')">Run: GitHub → Notion</button>
+            <button class="btn btn-primary" onclick="runPreset('full-workflow')">Run: Full Workflow</button>
+            <button class="btn btn-secondary" onclick="clearExecution()">Clear</button>
+        </div>
 
-      <div class="simulator-grid">
-        <!-- Workflow Execution Panel -->
-        <div class="panel">
-          <div class="panel-title">Workflow Execution</div>
-          <div class="workflow-display" id="workflowDisplay">
-            <div style="text-align: center; color: #a8a9ad; padding: 40px 20px">
-              Select a workflow to execute →
+        <div class="simulator-grid">
+            <!-- Workflow Execution Panel -->
+            <div class="panel">
+                <div class="panel-title">Workflow Execution</div>
+                <div class="workflow-display" id="workflowDisplay">
+                    <div style="text-align: center; color: #a8a9ad; padding: 40px 20px;">
+                        Select a workflow to execute →
+                    </div>
+                </div>
+
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-label">Total Time</div>
+                        <div class="metric-value" id="totalTime">0ms</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Status</div>
+                        <div class="metric-value" id="status" style="color: #a8a9ad;">Idle</div>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          <div class="metrics">
-            <div class="metric">
-              <div class="metric-label">Total Time</div>
-              <div class="metric-value" id="totalTime">0ms</div>
+            <!-- Execution Log Panel -->
+            <div class="panel">
+                <div class="panel-title">Execution Log</div>
+                <div class="execution-log" id="executionLog">
+                    <div class="log-entry">
+                        <span class="log-time">[00:00]</span>
+                        <span class="log-message">Waiting for execution...</span>
+                    </div>
+                </div>
             </div>
-            <div class="metric">
-              <div class="metric-label">Status</div>
-              <div class="metric-value" id="status" style="color: #a8a9ad">Idle</div>
-            </div>
-          </div>
         </div>
 
-        <!-- Execution Log Panel -->
-        <div class="panel">
-          <div class="panel-title">Execution Log</div>
-          <div class="execution-log" id="executionLog">
-            <div class="log-entry">
-              <span class="log-time">[00:00]</span>
-              <span class="log-message">Waiting for execution...</span>
+        <!-- Statistics -->
+        <div class="stats-row" id="statsRow" style="display: none;">
+            <div class="stat-box">
+                <div class="stat-number" id="successCount">0</div>
+                <div class="stat-label">Steps Completed</div>
             </div>
-          </div>
+            <div class="stat-box">
+                <div class="stat-number" id="errorCount">0</div>
+                <div class="stat-label">Errors</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="avgTime">0ms</div>
+                <div class="stat-label">Avg Step Time</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="successRate">0%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
         </div>
-      </div>
-
-      <!-- Statistics -->
-      <div class="stats-row" id="statsRow" style="display: none">
-        <div class="stat-box">
-          <div class="stat-number" id="successCount">0</div>
-          <div class="stat-label">Steps Completed</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-number" id="errorCount">0</div>
-          <div class="stat-label">Errors</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-number" id="avgTime">0ms</div>
-          <div class="stat-label">Avg Step Time</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-number" id="successRate">0%</div>
-          <div class="stat-label">Success Rate</div>
-        </div>
-      </div>
     </div>
 
     <script>
-      const workflows = {
-        'github-to-slack': [
-          { name: 'Fetch GitHub Issue', duration: 450 },
-          { name: 'Parse Issue Data', duration: 200 },
-          { name: 'Format Slack Message', duration: 150 },
-          { name: 'Send to Slack #issues', duration: 380 },
-        ],
-        'github-to-notion': [
-          { name: 'Fetch GitHub Issue', duration: 450 },
-          { name: 'Extract Labels & Assignee', duration: 200 },
-          { name: 'Create Notion Database Entry', duration: 520 },
-          { name: 'Link to GitHub Issue', duration: 180 },
-        ],
-        'full-workflow': [
-          { name: 'Fetch GitHub Issue', duration: 450 },
-          { name: 'Parse Issue Data', duration: 200 },
-          { name: 'Send Slack Notification', duration: 380 },
-          { name: 'Create Notion Entry', duration: 520 },
-          { name: 'Assign to Team Member', duration: 250 },
-          { name: 'Send Email Notification', duration: 420 },
-          { name: 'Update Project Status', duration: 180 },
-        ],
-      };
+        const workflows = {
+            'github-to-slack': [
+                { name: 'Fetch GitHub Issue', duration: 450 },
+                { name: 'Parse Issue Data', duration: 200 },
+                { name: 'Format Slack Message', duration: 150 },
+                { name: 'Send to Slack #issues', duration: 380 }
+            ],
+            'github-to-notion': [
+                { name: 'Fetch GitHub Issue', duration: 450 },
+                { name: 'Extract Labels & Assignee', duration: 200 },
+                { name: 'Create Notion Database Entry', duration: 520 },
+                { name: 'Link to GitHub Issue', duration: 180 }
+            ],
+            'full-workflow': [
+                { name: 'Fetch GitHub Issue', duration: 450 },
+                { name: 'Parse Issue Data', duration: 200 },
+                { name: 'Send Slack Notification', duration: 380 },
+                { name: 'Create Notion Entry', duration: 520 },
+                { name: 'Assign to Team Member', duration: 250 },
+                { name: 'Send Email Notification', duration: 420 },
+                { name: 'Update Project Status', duration: 180 }
+            ]
+        };
 
-      let isRunning = false;
-      let startTime = 0;
-      let stepTimes = [];
+        let isRunning = false;
+        let startTime = 0;
+        let stepTimes = [];
 
-      function runPreset(presetName) {
-        if (isRunning) return;
+        function runPreset(presetName) {
+            if (isRunning) return;
 
-        isRunning = true;
-        startTime = Date.now();
-        stepTimes = [];
+            isRunning = true;
+            startTime = Date.now();
+            stepTimes = [];
 
-        const workflow = workflows[presetName];
-        const display = document.getElementById('workflowDisplay');
-        const log = document.getElementById('executionLog');
+            const workflow = workflows[presetName];
+            const display = document.getElementById('workflowDisplay');
+            const log = document.getElementById('executionLog');
 
-        display.innerHTML = '';
-        log.innerHTML = '';
+            display.innerHTML = '';
+            log.innerHTML = '';
 
-        document.getElementById('statsRow').style.display = 'grid';
-        document.getElementById('status').textContent = 'Running...';
-        document.getElementById('status').style.color = '#f39c12';
+            document.getElementById('statsRow').style.display = 'grid';
+            document.getElementById('status').textContent = 'Running...';
+            document.getElementById('status').style.color = '#f39c12';
 
-        let delay = 0;
+            let delay = 0;
 
-        workflow.forEach((step, index) => {
-          setTimeout(() => {
-            // Add to display
-            const stepEl = document.createElement('div');
-            stepEl.className = 'workflow-item active';
-            stepEl.id = `step-${index}`;
-            stepEl.innerHTML = `
+            workflow.forEach((step, index) => {
+                setTimeout(() => {
+                    // Add to display
+                    const stepEl = document.createElement('div');
+                    stepEl.className = 'workflow-item active';
+                    stepEl.id = `step-${index}`;
+                    stepEl.innerHTML = `
                         <span>${index + 1}. ${step.name}</span>
                         <span id="step-time-${index}">0ms</span>
                     `;
-            display.appendChild(stepEl);
+                    display.appendChild(stepEl);
 
-            // Add to log
-            const logEntry = document.createElement('div');
-            logEntry.className = 'log-entry';
-            const time = formatTime(Date.now() - startTime);
-            logEntry.innerHTML = `
+                    // Add to log
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    const time = formatTime(Date.now() - startTime);
+                    logEntry.innerHTML = `
                         <span class="log-time">[${time}]</span>
                         <span class="log-status pending"></span>
                         <span class="log-message">Executing: ${step.name}</span>
                     `;
-            log.appendChild(logEntry);
-            log.scrollTop = log.scrollHeight;
+                    log.appendChild(logEntry);
+                    log.scrollTop = log.scrollHeight;
 
-            // Simulate execution
-            setTimeout(() => {
-              const stepEl = document.getElementById(`step-${index}`);
-              stepEl.classList.remove('active');
-              stepEl.classList.add('completed');
+                    // Simulate execution
+                    setTimeout(() => {
+                        const stepEl = document.getElementById(`step-${index}`);
+                        stepEl.classList.remove('active');
+                        stepEl.classList.add('completed');
 
-              const timeEl = document.getElementById(`step-time-${index}`);
-              timeEl.textContent = step.duration + 'ms';
+                        const timeEl = document.getElementById(`step-time-${index}`);
+                        timeEl.textContent = step.duration + 'ms';
 
-              stepTimes.push(step.duration);
+                        stepTimes.push(step.duration);
 
-              // Update log
-              const logEntry = document.createElement('div');
-              logEntry.className = 'log-entry';
-              const time = formatTime(Date.now() - startTime);
-              logEntry.innerHTML = `
+                        // Update log
+                        const logEntry = document.createElement('div');
+                        logEntry.className = 'log-entry';
+                        const time = formatTime(Date.now() - startTime);
+                        logEntry.innerHTML = `
                             <span class="log-time">[${time}]</span>
                             <span class="log-status success"></span>
                             <span class="log-message">✓ ${step.name} (${step.duration}ms)</span>
                         `;
-              log.appendChild(logEntry);
-              log.scrollTop = log.scrollHeight;
+                        log.appendChild(logEntry);
+                        log.scrollTop = log.scrollHeight;
 
-              // Update metrics
-              updateMetrics();
+                        // Update metrics
+                        updateMetrics();
 
-              // Check if done
-              if (index === workflow.length - 1) {
-                setTimeout(() => {
-                  isRunning = false;
-                  document.getElementById('status').textContent = 'Completed';
-                  document.getElementById('status').style.color = '#22c55e';
+                        // Check if done
+                        if (index === workflow.length - 1) {
+                            setTimeout(() => {
+                                isRunning = false;
+                                document.getElementById('status').textContent = 'Completed';
+                                document.getElementById('status').style.color = '#22c55e';
 
-                  const finalLog = document.createElement('div');
-                  finalLog.className = 'log-entry';
-                  const time = formatTime(Date.now() - startTime);
-                  finalLog.innerHTML = `
+                                const finalLog = document.createElement('div');
+                                finalLog.className = 'log-entry';
+                                const time = formatTime(Date.now() - startTime);
+                                finalLog.innerHTML = `
                                     <span class="log-time">[${time}]</span>
                                     <span class="log-status success"></span>
                                     <span class="log-message"><strong>Workflow completed successfully!</strong></span>
                                 `;
-                  log.appendChild(finalLog);
-                  log.scrollTop = log.scrollHeight;
-                }, 300);
-              }
-            }, step.duration);
-          }, delay);
+                                log.appendChild(finalLog);
+                                log.scrollTop = log.scrollHeight;
+                            }, 300);
+                        }
+                    }, step.duration);
+                }, delay);
 
-          delay += step.duration + 400;
-        });
-      }
-
-      function updateMetrics() {
-        const totalTime = Date.now() - startTime;
-        document.getElementById('totalTime').textContent = totalTime + 'ms';
-        document.getElementById('successCount').textContent = stepTimes.length;
-
-        if (stepTimes.length > 0) {
-          const avgTime = Math.round(stepTimes.reduce((a, b) => a + b, 0) / stepTimes.length);
-          document.getElementById('avgTime').textContent = avgTime + 'ms';
+                delay += step.duration + 400;
+            });
         }
-      }
 
-      function formatTime(ms) {
-        const seconds = Math.floor(ms / 1000);
-        const milliseconds = ms % 1000;
-        return `${String(seconds).padStart(2, '0')}:${String(milliseconds).padStart(3, '0')}`;
-      }
+        function updateMetrics() {
+            const totalTime = Date.now() - startTime;
+            document.getElementById('totalTime').textContent = totalTime + 'ms';
+            document.getElementById('successCount').textContent = stepTimes.length;
 
-      function clearExecution() {
-        isRunning = false;
-        document.getElementById('workflowDisplay').innerHTML =
-          '<div style="text-align: center; color: #a8a9ad; padding: 40px 20px;">Select a workflow to execute →</div>';
-        document.getElementById('executionLog').innerHTML =
-          '<div class="log-entry"><span class="log-time">[00:00]</span><span class="log-message">Waiting for execution...</span></div>';
-        document.getElementById('status').textContent = 'Idle';
-        document.getElementById('status').style.color = '#a8a9ad';
-        document.getElementById('statsRow').style.display = 'none';
-        stepTimes = [];
-      }
+            if (stepTimes.length > 0) {
+                const avgTime = Math.round(stepTimes.reduce((a, b) => a + b, 0) / stepTimes.length);
+                document.getElementById('avgTime').textContent = avgTime + 'ms';
+            }
+        }
+
+        function formatTime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const milliseconds = ms % 1000;
+            return `${String(seconds).padStart(2, '0')}:${String(milliseconds).padStart(3, '0')}`;
+        }
+
+        function clearExecution() {
+            isRunning = false;
+            document.getElementById('workflowDisplay').innerHTML = '<div style="text-align: center; color: #a8a9ad; padding: 40px 20px;">Select a workflow to execute →</div>';
+            document.getElementById('executionLog').innerHTML = '<div class="log-entry"><span class="log-time">[00:00]</span><span class="log-message">Waiting for execution...</span></div>';
+            document.getElementById('status').textContent = 'Idle';
+            document.getElementById('status').style.color = '#a8a9ad';
+            document.getElementById('statsRow').style.display = 'none';
+            stepTimes = [];
+        }
     </script>
-  </body>
+</body>
 </html>

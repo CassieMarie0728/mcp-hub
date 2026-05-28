@@ -40,7 +40,7 @@ export async function saveServers(servers: MCPServer[]): Promise<void> {
  */
 export async function saveServerCredentials(
   serverId: string,
-  credentials: Record<string, string>,
+  credentials: Record<string, string>
 ): Promise<void> {
   try {
     const key = `mcp_creds_${serverId}`;
@@ -55,7 +55,7 @@ export async function saveServerCredentials(
  * Load server credentials securely
  */
 export async function loadServerCredentials(
-  serverId: string,
+  serverId: string
 ): Promise<Record<string, string> | null> {
   try {
     const key = `mcp_creds_${serverId}`;
@@ -150,7 +150,11 @@ export async function saveExecutionHistory(history: any[]): Promise<void> {
  */
 export async function clearAllData(): Promise<void> {
   try {
-    await AsyncStorage.multiRemove([SERVERS_KEY, SETTINGS_KEY, EXECUTION_HISTORY_KEY]);
+    await AsyncStorage.multiRemove([
+      SERVERS_KEY,
+      SETTINGS_KEY,
+      EXECUTION_HISTORY_KEY,
+    ]);
   } catch (error) {
     console.error('Failed to clear data:', error);
     throw error;

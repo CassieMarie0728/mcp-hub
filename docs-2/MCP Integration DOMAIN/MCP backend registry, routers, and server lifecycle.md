@@ -1,6 +1,6 @@
 # MCP Integration Domain
 
-_server/mcp/mcp-router.ts, server/mcp/mcp-router-extended.ts, server/mcp/mcp-server-manager.ts, server/mcp/mcp-server-registry.ts, server/routers.ts, docs/api/README.md_
+*server/mcp/mcp-router.ts, server/mcp/mcp-router-extended.ts, server/mcp/mcp-server-manager.ts, server/mcp/mcp-server-registry.ts, server/routers.ts, docs/api/README.md*
 
 ## Overview
 
@@ -67,273 +67,298 @@ flowchart TB
 
 ####
 
-only lists mcp.discoverTools(), mcp.executeTool(), and mcp.getServerStatus(), but also mounts mcp.registerServer(), cache operations, lifecycle operations, and the full mcpServers router surface.
+ only lists mcp.discoverTools(), mcp.executeTool(), and mcp.getServerStatus(), but  also mounts mcp.registerServer(), cache operations, lifecycle operations, and the full mcpServers router surface.
 
-_server/routers.ts_
+*server/routers.ts*
 
 `appRouter` is the top-level tRPC composition point for the server. In this domain it mounts `mcp` for core server lifecycle and tool operations, and `mcpServers` for registry-driven discovery and real-server onboarding.
 
-| Namespace    | Source              | Responsibility                                                          |
-| ------------ | ------------------- | ----------------------------------------------------------------------- |
-| `mcp`        | `mcpRouter`         | Server registration, discovery, execution, status, and cache control    |
+| Namespace | Source | Responsibility |
+| --- | --- | --- |
+| `mcp` | `mcpRouter` | Server registration, discovery, execution, status, and cache control |
 | `mcpServers` | `mcpExtendedRouter` | Registry discovery, provider validation, and real MCP server onboarding |
+
 
 ####
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 `mcpRouter` is the protected tRPC surface for already-registered MCP servers. It delegates all lifecycle work to `mcpServerManager`, and it converts thrown errors into structured `{ success: false, ... }` responses for discovery and execution operations.
 
-| Procedure              | Description                                                                |
-| ---------------------- | -------------------------------------------------------------------------- |
-| `registerServer`       | Registers an MCP server configuration and initializes manager state        |
-| `discoverTools`        | Discovers tools from a registered server and returns a cached or live list |
-| `executeTool`          | Executes a tool against a registered server                                |
-| `getServerStatus`      | Returns the current status record for a single server                      |
-| `getAllServerStatuses` | Returns all known server status records                                    |
-| `testConnection`       | Probes a registered server health endpoint                                 |
-| `clearToolCache`       | Clears the cached tool list for a server                                   |
-| `clearAllCaches`       | Clears all cached tool lists                                               |
-| `removeServer`         | Removes a server and all of its manager state                              |
-| `getAllServers`        | Returns all registered server configurations                               |
-| `getServer`            | Returns a single registered server configuration                           |
+| Procedure | Description |
+| --- | --- |
+| `registerServer` | Registers an MCP server configuration and initializes manager state |
+| `discoverTools` | Discovers tools from a registered server and returns a cached or live list |
+| `executeTool` | Executes a tool against a registered server |
+| `getServerStatus` | Returns the current status record for a single server |
+| `getAllServerStatuses` | Returns all known server status records |
+| `testConnection` | Probes a registered server health endpoint |
+| `clearToolCache` | Clears the cached tool list for a server |
+| `clearAllCaches` | Clears all cached tool lists |
+| `removeServer` | Removes a server and all of its manager state |
+| `getAllServers` | Returns all registered server configurations |
+| `getServer` | Returns a single registered server configuration |
+
 
 ####
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 `mcpExtendedRouter` adds registry and onboarding procedures on top of `mcpServerManager`. It resolves built-in server types, validates provider tokens, creates provider-specific configs, and can register and test a real server in one flow.
 
-| Procedure              | Description                                                                 |
-| ---------------------- | --------------------------------------------------------------------------- |
-| `getAvailableServers`  | Returns all built-in server definitions                                     |
-| `getServerDefinition`  | Returns a built-in definition for a server type                             |
-| `getServerTools`       | Returns the tool inventory for a server type without connecting             |
-| `validateToken`        | Validates a token against the provider API for a server type                |
-| `registerRealServer`   | Validates a token, creates a config, registers it, and tests the connection |
-| `getRegisteredServers` | Returns registered servers merged with runtime status                       |
-| `discoverServerTools`  | Discovers and caches tools for a registered server                          |
-| `executeServerTool`    | Executes a tool on a registered server                                      |
-| `testServerConnection` | Probes connectivity for a registered server                                 |
-| `unregisterServer`     | Removes a server from the manager                                           |
+| Procedure | Description |
+| --- | --- |
+| `getAvailableServers` | Returns all built-in server definitions |
+| `getServerDefinition` | Returns a built-in definition for a server type |
+| `getServerTools` | Returns the tool inventory for a server type without connecting |
+| `validateToken` | Validates a token against the provider API for a server type |
+| `registerRealServer` | Validates a token, creates a config, registers it, and tests the connection |
+| `getRegisteredServers` | Returns registered servers merged with runtime status |
+| `discoverServerTools` | Discovers and caches tools for a registered server |
+| `executeServerTool` | Executes a tool on a registered server |
+| `testServerConnection` | Probes connectivity for a registered server |
+| `unregisterServer` | Removes a server from the manager |
+
 
 ####
 
-_docs/api/README.md_
+*docs/api/README.md*
 
 This document defines the shared API contract for the backend. It establishes the base URLs, JWT requirement, standard error envelope, and request rate limit that apply to the MCP domain procedures exposed through tRPC.
 
-| Contract Item         | Value                                                |
-| --------------------- | ---------------------------------------------------- |
-| Development base URL  | `http://localhost:3000`                              |
-| Production base URL   |                                                      |
-| Authentication header | `Authorization: Bearer <jwt_token>`                  |
-| Error format          | `{ "code": "...", "message": "...", "details": {} }` |
-| Rate limit            | `1000` requests per minute per user                  |
+| Contract Item | Value |
+| --- | --- |
+| Development base URL | `http://localhost:3000` |
+| Production base URL |  |
+| Authentication header | `Authorization: Bearer <jwt_token>` |
+| Error format | `{ "code": "...", "message": "...", "details": {} }` |
+| Rate limit | `1000` requests per minute per user |
+
 
 ### 2. Business Layer
 
 ####
 
-The API documentation names mcp.discoverTools(), mcp.executeTool(), and mcp.getServerStatus(), while exposes a wider MCP surface through mcp and mcpServers.
+The API documentation names mcp.discoverTools(), mcp.executeTool(), and mcp.getServerStatus(), while  exposes a wider MCP surface through mcp and mcpServers.
 
-_server/mcp/mcp-server-manager.ts_
+*server/mcp/mcp-server-manager.ts*
 
 `MCPServerManager` is the runtime controller for registered servers. It owns the live HTTP clients, the tool cache, and the status map, and it is the layer that actually talks to a remote MCP server.
 
-| Property       | Type                                             | Description                                          |
-| -------------- | ------------------------------------------------ | ---------------------------------------------------- |
-| `servers`      | `Map<string, MCPServerConfigWithUnknownHeaders>` | Registered server configurations keyed by `serverId` |
-| `clients`      | `Map<string, AxiosInstance>`                     | Live Axios clients keyed by `serverId`               |
-| `toolCache`    | `Map<string, MCPTool[]>`                         | Cached tool lists keyed by `serverId`                |
-| `serverStatus` | `Map<string, ServerStatus>`                      | Runtime status records keyed by `serverId`           |
+| Property | Type | Description |
+| --- | --- | --- |
+| `servers` | `Map<string, MCPServerConfigWithUnknownHeaders>` | Registered server configurations keyed by `serverId` |
+| `clients` | `Map<string, AxiosInstance>` | Live Axios clients keyed by `serverId` |
+| `toolCache` | `Map<string, MCPTool[]>` | Cached tool lists keyed by `serverId` |
+| `serverStatus` | `Map<string, ServerStatus>` | Runtime status records keyed by `serverId` |
 
-| Method                 | Description                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `registerServer`       | Stores the config, creates an Axios client, and initializes status as `disconnected`                          |
-| `discoverTools`        | Returns cached tools when present, otherwise fetches `/mcp/tools/list`, caches the result, and updates status |
-| `executeTool`          | Calls `/mcp/tools/call` and returns the remote tool result                                                    |
-| `getServerStatus`      | Returns the status record for one server                                                                      |
-| `getAllServerStatuses` | Returns all status records                                                                                    |
-| `testConnection`       | GETs `/health` with a 5 second timeout and returns a boolean                                                  |
-| `clearToolCache`       | Deletes one server’s cached tool list                                                                         |
-| `clearAllCaches`       | Clears all cached tool lists                                                                                  |
-| `removeServer`         | Deletes the server config, client, cache entry, and status entry                                              |
-| `getAllServers`        | Returns all stored server configs                                                                             |
-| `getServer`            | Returns one stored server config                                                                              |
+
+| Method | Description |
+| --- | --- |
+| `registerServer` | Stores the config, creates an Axios client, and initializes status as `disconnected` |
+| `discoverTools` | Returns cached tools when present, otherwise fetches `/mcp/tools/list`, caches the result, and updates status |
+| `executeTool` | Calls `/mcp/tools/call` and returns the remote tool result |
+| `getServerStatus` | Returns the status record for one server |
+| `getAllServerStatuses` | Returns all status records |
+| `testConnection` | GETs `/health` with a 5 second timeout and returns a boolean |
+| `clearToolCache` | Deletes one server’s cached tool list |
+| `clearAllCaches` | Clears all cached tool lists |
+| `removeServer` | Deletes the server config, client, cache entry, and status entry |
+| `getAllServers` | Returns all stored server configs |
+| `getServer` | Returns one stored server config |
+
 
 ####
 
-_server/mcp/mcp-server-registry.ts_
+*server/mcp/mcp-server-registry.ts*
 
 `MCPServerRegistry` is the static catalog of supported server types. It maps each `ServerType` to a definition object, and it knows how to synthesize provider configs, enumerate provider tools, and validate provider tokens.
 
-| Property  | Type                                | Description                                       |
-| --------- | ----------------------------------- | ------------------------------------------------- |
+| Property | Type | Description |
+| --- | --- | --- |
 | `servers` | `Map<ServerType, ServerDefinition>` | Built-in server definitions keyed by `ServerType` |
 
-| Method                | Description                                                        |
-| --------------------- | ------------------------------------------------------------------ |
-| `getServerDefinition` | Returns the definition for a single server type                    |
-| `getAllServers`       | Returns every built-in server definition                           |
-| `createServerConfig`  | Builds a provider-specific `MCPServerConfig` from a type and token |
-| `getServerTools`      | Returns the static tool inventory for a provider type              |
-| `validateToken`       | Validates a provider token through the provider adapter            |
+
+| Method | Description |
+| --- | --- |
+| `getServerDefinition` | Returns the definition for a single server type |
+| `getAllServers` | Returns every built-in server definition |
+| `createServerConfig` | Builds a provider-specific `MCPServerConfig` from a type and token |
+| `getServerTools` | Returns the static tool inventory for a provider type |
+| `validateToken` | Validates a provider token through the provider adapter |
+
 
 ####
 
-_server/mcp/servers/github-mcp.ts_
+*server/mcp/servers/github-mcp.ts*
 
 `GitHubMCPServer` wraps the GitHub provider-specific MCP shape. It creates the MCP server config, exposes the GitHub tool inventory, and validates tokens with a live GitHub request.
 
-| Property | Type           | Description                                                          |
-| -------- | -------------- | -------------------------------------------------------------------- |
+| Property | Type | Description |
+| --- | --- | --- |
 | `config` | `GitHubConfig` | Provider configuration with the supplied token and optional base URL |
 
-| Constructor Dependencies | Description                                                           |
-| ------------------------ | --------------------------------------------------------------------- |
-| `GitHubConfig`           | Requires a token and optionally overrides the default GitHub base URL |
 
-| Method              | Description                                                                         |
-| ------------------- | ----------------------------------------------------------------------------------- |
-| `getMCPConfig`      | Returns the GitHub MCP server config with headers, auth, timeout, and transport URL |
-| `getAvailableTools` | Returns the GitHub tool inventory                                                   |
-| `validateToken`     | Calls GitHub and returns whether the token is accepted                              |
+| Constructor Dependencies | Description |
+| --- | --- |
+| `GitHubConfig` | Requires a token and optionally overrides the default GitHub base URL |
+
+
+| Method | Description |
+| --- | --- |
+| `getMCPConfig` | Returns the GitHub MCP server config with headers, auth, timeout, and transport URL |
+| `getAvailableTools` | Returns the GitHub tool inventory |
+| `validateToken` | Calls GitHub and returns whether the token is accepted |
+
 
 ####
 
-_server/mcp/servers/slack-mcp.ts_
+*server/mcp/servers/slack-mcp.ts*
 
 `SlackMCPServer` encapsulates Slack-specific MCP configuration and validation. It produces the Slack server config, exposes Slack tools, and validates the token with Slack’s auth endpoint.
 
-| Property | Type          | Description                                                          |
-| -------- | ------------- | -------------------------------------------------------------------- |
+| Property | Type | Description |
+| --- | --- | --- |
 | `config` | `SlackConfig` | Provider configuration with the supplied token and optional base URL |
 
-| Constructor Dependencies | Description                                                          |
-| ------------------------ | -------------------------------------------------------------------- |
-| `SlackConfig`            | Requires a token and optionally overrides the default Slack base URL |
 
-| Method              | Description                                                                   |
-| ------------------- | ----------------------------------------------------------------------------- |
-| `getMCPConfig`      | Returns the Slack MCP server config with JSON content headers and bearer auth |
-| `getAvailableTools` | Returns the Slack tool inventory                                              |
-| `validateToken`     | Calls Slack and returns whether the token is accepted                         |
+| Constructor Dependencies | Description |
+| --- | --- |
+| `SlackConfig` | Requires a token and optionally overrides the default Slack base URL |
+
+
+| Method | Description |
+| --- | --- |
+| `getMCPConfig` | Returns the Slack MCP server config with JSON content headers and bearer auth |
+| `getAvailableTools` | Returns the Slack tool inventory |
+| `validateToken` | Calls Slack and returns whether the token is accepted |
+
 
 ####
 
-_server/mcp/servers/notion-mcp.ts_
+*server/mcp/servers/notion-mcp.ts*
 
 `NotionMCPServer` encapsulates Notion-specific MCP configuration and validation. It produces the Notion server config, exposes Notion tools, and validates the token with the Notion user endpoint.
 
-| Property | Type           | Description                                                          |
-| -------- | -------------- | -------------------------------------------------------------------- |
+| Property | Type | Description |
+| --- | --- | --- |
 | `config` | `NotionConfig` | Provider configuration with the supplied token and optional base URL |
 
-| Constructor Dependencies | Description                                                           |
-| ------------------------ | --------------------------------------------------------------------- |
-| `NotionConfig`           | Requires a token and optionally overrides the default Notion base URL |
 
-| Method              | Description                                                                      |
-| ------------------- | -------------------------------------------------------------------------------- |
-| `getMCPConfig`      | Returns the Notion MCP server config with Notion version headers and bearer auth |
-| `getAvailableTools` | Returns the Notion tool inventory                                                |
-| `validateToken`     | Calls Notion and returns whether the token is accepted                           |
+| Constructor Dependencies | Description |
+| --- | --- |
+| `NotionConfig` | Requires a token and optionally overrides the default Notion base URL |
+
+
+| Method | Description |
+| --- | --- |
+| `getMCPConfig` | Returns the Notion MCP server config with Notion version headers and bearer auth |
+| `getAvailableTools` | Returns the Notion tool inventory |
+| `validateToken` | Calls Notion and returns whether the token is accepted |
+
 
 ### 3. Data Models
 
 #### `ServerDefinition`
 
-_server/mcp/mcp-server-registry.ts_
+*server/mcp/mcp-server-registry.ts*
 
-| Property         | Type         | Description                                                 |
-| ---------------- | ------------ | ----------------------------------------------------------- | -------- | -------------------------------------------- |
-| `id`             | `ServerType` | Registry identifier for the server type                     |
-| `name`           | `string`     | Display name shown in server selection and onboarding flows |
-| `description`    | `string`     | Human-readable summary of the provider capability           |
-| `icon`           | `string`     | Icon key used by the UI layer                               |
-| `docs`           | `string`     | Provider documentation URL                                  |
-| `requiredScopes` | `string[]`   | Optional provider scopes required for access                |
-| `authMethod`     | `'bearer' \  | 'api-key' \                                                 | 'basic'` | Authentication mode expected by the provider |
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | `ServerType` | Registry identifier for the server type |
+| `name` | `string` | Display name shown in server selection and onboarding flows |
+| `description` | `string` | Human-readable summary of the provider capability |
+| `icon` | `string` | Icon key used by the UI layer |
+| `docs` | `string` | Provider documentation URL |
+| `requiredScopes` | `string[]` | Optional provider scopes required for access |
+| `authMethod` | `'bearer' \ | 'api-key' \ | 'basic'` | Authentication mode expected by the provider |
+
 
 #### `MCPServerConfig`
 
-_server/mcp/mcp-server-manager.ts_
+*server/mcp/mcp-server-manager.ts*
 
-| Property        | Type                     | Description                                                        |
-| --------------- | ------------------------ | ------------------------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------------------------- |
-| `id`            | `string`                 | Unique server identifier used as the manager key                   |
-| `name`          | `string`                 | Display name for the registered server                             |
-| `url`           | `string`                 | Base URL used by `MCPServerManager` when building the Axios client |
-| `type`          | `'http' \                | 'websocket' \                                                      | 'stdio'`                                                          | Transport type                                      |
-| `headers`       | `Record<string, string>` | Optional custom headers merged into every request                  |
-| `auth`          | `{ type: 'bearer' \      | 'api-key' \                                                        | 'basic'; token?: string; username?: string; password?: string; }` | Optional auth bundle converted into request headers |
-| `timeout`       | `number`                 | Optional request timeout in milliseconds                           |
-| `retryAttempts` | `number`                 | Optional retry count retained in config                            |
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Unique server identifier used as the manager key |
+| `name` | `string` | Display name for the registered server |
+| `url` | `string` | Base URL used by `MCPServerManager` when building the Axios client |
+| `type` | `'http' \ | 'websocket' \ | 'stdio'` | Transport type |
+| `headers` | `Record<string, string>` | Optional custom headers merged into every request |
+| `auth` | `{ type: 'bearer' \ | 'api-key' \ | 'basic'; token?: string; username?: string; password?: string; }` | Optional auth bundle converted into request headers |
+| `timeout` | `number` | Optional request timeout in milliseconds |
+| `retryAttempts` | `number` | Optional retry count retained in config |
+
 
 #### `ServerStatus`
 
-_server/mcp/mcp-server-manager.ts_
+*server/mcp/mcp-server-manager.ts*
 
-| Property        | Type            | Description                                     |
-| --------------- | --------------- | ----------------------------------------------- | -------- | ---------------------- |
-| `id`            | `string`        | Server identifier                               |
-| `name`          | `string`        | Display name                                    |
-| `status`        | `'connected' \  | 'disconnected' \                                | 'error'` | Current runtime status |
-| `lastConnected` | `Date`          | Timestamp of the last successful tool discovery |
-| `lastError`     | `string`        | Last recorded error message                     |
-| `toolCount`     | `number`        | Number of tools discovered for the server       |
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Server identifier |
+| `name` | `string` | Display name |
+| `status` | `'connected' \ | 'disconnected' \ | 'error'` | Current runtime status |
+| `lastConnected` | `Date` | Timestamp of the last successful tool discovery |
+| `lastError` | `string` | Last recorded error message |
+| `toolCount` | `number` | Number of tools discovered for the server |
+
 
 #### `MCPTool`
 
-_server/mcp/mcp-server-manager.ts_
+*server/mcp/mcp-server-manager.ts*
 
-| Property      | Type                                                                      | Description                               |
-| ------------- | ------------------------------------------------------------------------- | ----------------------------------------- |
-| `name`        | `string`                                                                  | Tool name sent to `/mcp/tools/call`       |
-| `description` | `string`                                                                  | Human-readable tool description           |
+| Property | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | Tool name sent to `/mcp/tools/call` |
+| `description` | `string` | Human-readable tool description |
 | `inputSchema` | `{ type: string; properties: Record<string, any>; required?: string[]; }` | JSON schema-like input shape for the tool |
+
 
 #### `MCPToolResult`
 
-_server/mcp/mcp-server-manager.ts_
+*server/mcp/mcp-server-manager.ts*
 
-| Property  | Type      | Description                                |
-| --------- | --------- | ------------------------------------------ |
+| Property | Type | Description |
+| --- | --- | --- |
 | `success` | `boolean` | Indicates whether tool execution succeeded |
-| `data`    | `any`     | Tool response payload on success           |
-| `error`   | `string`  | Error message on failure                   |
+| `data` | `any` | Tool response payload on success |
+| `error` | `string` | Error message on failure |
+
 
 #### `GitHubConfig`
 
-_server/mcp/servers/github-mcp.ts_
+*server/mcp/servers/github-mcp.ts*
 
-| Property  | Type     | Description                                   |
-| --------- | -------- | --------------------------------------------- |
-| `token`   | `string` | GitHub bearer token                           |
+| Property | Type | Description |
+| --- | --- | --- |
+| `token` | `string` | GitHub bearer token |
 | `baseUrl` | `string` | Optional override for the GitHub API base URL |
+
 
 #### `SlackConfig`
 
-_server/mcp/servers/slack-mcp.ts_
+*server/mcp/servers/slack-mcp.ts*
 
-| Property  | Type     | Description                                  |
-| --------- | -------- | -------------------------------------------- |
-| `token`   | `string` | Slack bearer token                           |
+| Property | Type | Description |
+| --- | --- | --- |
+| `token` | `string` | Slack bearer token |
 | `baseUrl` | `string` | Optional override for the Slack API base URL |
+
 
 #### `NotionConfig`
 
-_server/mcp/servers/notion-mcp.ts_
+*server/mcp/servers/notion-mcp.ts*
 
-| Property  | Type     | Description                                   |
-| --------- | -------- | --------------------------------------------- |
-| `token`   | `string` | Notion bearer token                           |
+| Property | Type | Description |
+| --- | --- | --- |
+| `token` | `string` | Notion bearer token |
 | `baseUrl` | `string` | Optional override for the Notion API base URL |
+
 
 #### `ServerType`
 
-_server/mcp/mcp-server-registry.ts_
+*server/mcp/mcp-server-registry.ts*
 
 `github`, `slack`, `notion`
 
@@ -341,7 +366,7 @@ _server/mcp/mcp-server-registry.ts_
 
 #### `mcp.registerServer`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -379,7 +404,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.discoverTools`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -417,7 +442,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.executeTool`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -455,7 +480,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.getServerStatus`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -493,7 +518,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.getAllServerStatuses`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -531,7 +556,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.testConnection`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -569,7 +594,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.clearToolCache`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -607,7 +632,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.clearAllCaches`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -645,7 +670,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.removeServer`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -683,7 +708,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.getAllServers`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -721,7 +746,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcp.getServer`
 
-_server/mcp/mcp-router.ts_
+*server/mcp/mcp-router.ts*
 
 ```api
 {
@@ -759,7 +784,7 @@ _server/mcp/mcp-router.ts_
 
 #### `mcpServers.getAvailableServers`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -797,7 +822,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.getServerDefinition`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -835,7 +860,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.getServerTools`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -873,7 +898,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.validateToken`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -911,7 +936,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.registerRealServer`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -949,7 +974,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.getRegisteredServers`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -987,7 +1012,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.discoverServerTools`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -1025,7 +1050,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.executeServerTool`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -1063,7 +1088,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.testServerConnection`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -1101,7 +1126,7 @@ _server/mcp/mcp-router-extended.ts_
 
 #### `mcpServers.unregisterServer`
 
-_server/mcp/mcp-router-extended.ts_
+*server/mcp/mcp-router-extended.ts*
 
 ```api
 {
@@ -1261,16 +1286,13 @@ stateDiagram-v2
 The MCP domain uses three distinct error patterns:
 
 1. **Structured return objects**- `discoverTools` and `executeTool` catch errors and return `success: false` with an error string.
-
 - `validateToken`, `registerRealServer`, `discoverServerTools`, and `executeServerTool` also wrap failures in structured return values.
 
 1. **Inline fallback objects**- `getServerDefinition` and `getServer` return `{ error: '...' }` when a lookup misses.
-
 - `getServerTools` returns an empty list for an unknown server type.
 - `validateToken` returns `false` for an unsupported type.
 
 1. **Thrown errors from the manager**- `discoverTools` throws when the server or client is missing.
-
 - `executeTool` throws when the server or client is missing.
 - `getServerStatus` and `getServer` return `null` when a lookup misses, allowing the router to translate that into an error object.
 
@@ -1294,13 +1316,14 @@ try {
 
 ## Caching Strategy
 
-| Cache or State Map          | Key          | Populated By                                     | Cleared By                                         |
-| --------------------------- | ------------ | ------------------------------------------------ | -------------------------------------------------- |
-| `toolCache`                 | `serverId`   | `discoverTools` after a successful remote fetch  | `clearToolCache`, `clearAllCaches`, `removeServer` |
-| `servers`                   | `serverId`   | `registerServer`                                 | `removeServer`                                     |
-| `clients`                   | `serverId`   | `registerServer`                                 | `removeServer`                                     |
-| `serverStatus`              | `serverId`   | `registerServer`, `discoverTools`, `executeTool` | `removeServer`                                     |
-| `MCPServerRegistry.servers` | `ServerType` | Module initialization                            | Module lifetime                                    |
+| Cache or State Map | Key | Populated By | Cleared By |
+| --- | --- | --- | --- |
+| `toolCache` | `serverId` | `discoverTools` after a successful remote fetch | `clearToolCache`, `clearAllCaches`, `removeServer` |
+| `servers` | `serverId` | `registerServer` | `removeServer` |
+| `clients` | `serverId` | `registerServer` | `removeServer` |
+| `serverStatus` | `serverId` | `registerServer`, `discoverTools`, `executeTool` | `removeServer` |
+| `MCPServerRegistry.servers` | `ServerType` | Module initialization | Module lifetime |
+
 
 registerRealServer returns { success: true, connected } after the connection test even when connected is false, because connection test failure does not convert the mutation into an error response. [!NOTE] MCPServerManager creates its Axios client with baseURL: config.url, while discoverTools(), executeTool(), and testConnection() call /mcp/tools/list, /mcp/tools/call, and /health. The provider adapters return url: \\${baseUrl}/mcp\`, so configs created by createServerConfig() and registerRealServer() produce requests with a duplicated mcp` path segment.
 
@@ -1324,8 +1347,8 @@ registerRealServer returns { success: true, connected } after the connection tes
 
 ### Application Integration
 
-- mounts the MCP routers under `mcp` and `mcpServers`
-- defines the shared auth, rate limiting, and error format contract
+-  mounts the MCP routers under `mcp` and `mcpServers`
+-  defines the shared auth, rate limiting, and error format contract
 
 ## Testing Considerations
 
@@ -1341,14 +1364,14 @@ registerRealServer returns { success: true, connected } after the connection tes
 
 ## Key Classes Reference
 
-| Class               | Location                 | Responsibility                                                                   |
-| ------------------- | ------------------------ | -------------------------------------------------------------------------------- |
-| `appRouter`         | `routers.ts`             | Composes the backend router tree and mounts the MCP namespaces                   |
-| `mcpRouter`         | `mcp-router.ts`          | Exposes protected MCP lifecycle, status, execution, and cache procedures         |
+| Class | Location | Responsibility |
+| --- | --- | --- |
+| `appRouter` | `routers.ts` | Composes the backend router tree and mounts the MCP namespaces |
+| `mcpRouter` | `mcp-router.ts` | Exposes protected MCP lifecycle, status, execution, and cache procedures |
 | `mcpExtendedRouter` | `mcp-router-extended.ts` | Exposes registry lookup, token validation, and real-server onboarding procedures |
-| `MCPServerManager`  | `mcp-server-manager.ts`  | Manages live clients, discovery cache, status records, and tool execution        |
-| `MCPServerRegistry` | `mcp-server-registry.ts` | Stores built-in server definitions and creates provider-specific configs         |
-| `GitHubMCPServer`   | `github-mcp.ts`          | Builds the GitHub MCP config, tool inventory, and token validation call          |
-| `SlackMCPServer`    | `slack-mcp.ts`           | Builds the Slack MCP config, tool inventory, and token validation call           |
-| `NotionMCPServer`   | `notion-mcp.ts`          | Builds the Notion MCP config, tool inventory, and token validation call          |
-|                     | `README.md`              | Defines the shared API contract for authentication, errors, and rate limits      |
+| `MCPServerManager` | `mcp-server-manager.ts` | Manages live clients, discovery cache, status records, and tool execution |
+| `MCPServerRegistry` | `mcp-server-registry.ts` | Stores built-in server definitions and creates provider-specific configs |
+| `GitHubMCPServer` | `github-mcp.ts` | Builds the GitHub MCP config, tool inventory, and token validation call |
+| `SlackMCPServer` | `slack-mcp.ts` | Builds the Slack MCP config, tool inventory, and token validation call |
+| `NotionMCPServer` | `notion-mcp.ts` | Builds the Notion MCP config, tool inventory, and token validation call |
+|  | `README.md` | Defines the shared API contract for authentication, errors, and rate limits |

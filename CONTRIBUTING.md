@@ -67,20 +67,20 @@ This runs the backend watcher and the Expo web development server together.
 
 ## Script reference
 
-| Command           | Purpose                                       |
-| ----------------- | --------------------------------------------- |
-| `pnpm dev`        | Run backend and Expo web development together |
-| `pnpm dev:server` | Watch and restart the backend entry point     |
-| `pnpm dev:metro`  | Start Expo for web                            |
-| `pnpm build`      | Build the production server bundle            |
-| `pnpm start`      | Start the built production server             |
-| `pnpm check`      | Type-check the codebase                       |
-| `pnpm lint`       | Run linting                                   |
-| `pnpm format`     | Format the repository with Prettier           |
-| `pnpm test`       | Run the Vitest suite                          |
-| `pnpm db:push`    | Generate and apply Drizzle migrations         |
-| `pnpm android`    | Run the Android target                        |
-| `pnpm ios`        | Run the iOS target                            |
+| Command | Purpose |
+|---|---|
+| `pnpm dev` | Run backend and Expo web development together |
+| `pnpm dev:server` | Watch and restart the backend entry point |
+| `pnpm dev:metro` | Start Expo for web |
+| `pnpm build` | Build the production server bundle |
+| `pnpm start` | Start the built production server |
+| `pnpm check` | Type-check the codebase |
+| `pnpm lint` | Run linting |
+| `pnpm format` | Format the repository with Prettier |
+| `pnpm test` | Run the Vitest suite |
+| `pnpm db:push` | Generate and apply Drizzle migrations |
+| `pnpm android` | Run the Android target |
+| `pnpm ios` | Run the iOS target |
 
 ## Coding and style expectations
 

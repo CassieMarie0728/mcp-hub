@@ -81,7 +81,9 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'UPDATE_SERVER':
       return {
         ...state,
-        servers: state.servers.map((s) => (s.id === action.payload.id ? action.payload : s)),
+        servers: state.servers.map((s) =>
+          s.id === action.payload.id ? action.payload : s
+        ),
       };
     case 'DELETE_SERVER': {
       const { [action.payload]: _, ...remainingTools } = state.tools;
@@ -147,16 +149,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       dispatch({ type: 'ADD_SERVER', payload: server });
       await saveServers([...state.servers, server]);
     },
-    [state.servers],
+    [state.servers]
   );
 
   const updateServer = useCallback(
     async (server: MCPServer) => {
       dispatch({ type: 'UPDATE_SERVER', payload: server });
-      const updated = state.servers.map((s) => (s.id === server.id ? server : s));
+      const updated = state.servers.map((s) =>
+        s.id === server.id ? server : s
+      );
       await saveServers(updated);
     },
-    [state.servers],
+    [state.servers]
   );
 
   const deleteServer = useCallback(
@@ -165,7 +169,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const updated = state.servers.filter((s) => s.id !== serverId);
       await saveServers(updated);
     },
-    [state.servers],
+    [state.servers]
   );
 
   const setServerStatus = useCallback(
@@ -181,7 +185,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         await updateServer(updated);
       }
     },
-    [state.servers, updateServer],
+    [state.servers, updateServer]
   );
 
   const setTools = useCallback(
@@ -196,14 +200,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         await updateServer({ ...server, toolCount: tools.length });
       }
     },
-    [state.servers, updateServer],
+    [state.servers, updateServer]
   );
 
   const getServerTools = useCallback(
     (serverId: string) => {
       return state.tools[serverId] || [];
     },
-    [state.tools],
+    [state.tools]
   );
 
   const addExecutionResult = useCallback(
@@ -212,7 +216,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const updated = [result, ...state.executionHistory].slice(0, 100);
       await saveExecutionHistory(updated);
     },
-    [state.executionHistory],
+    [state.executionHistory]
   );
 
   const clearExecutionHistoryFn = useCallback(async () => {
@@ -226,7 +230,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       dispatch({ type: 'SET_SETTINGS', payload: updated });
       await saveSettings(updated);
     },
-    [state.settings],
+    [state.settings]
   );
 
   const value: AppContextType = {

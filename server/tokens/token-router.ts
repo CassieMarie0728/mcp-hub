@@ -19,7 +19,7 @@ export const tokenRouter = router({
         token: z.string(),
         expiresAt: z.date().optional(),
         scopes: z.array(z.string()).optional(),
-      }),
+      })
     )
     .mutation(async ({ input }) => {
       return TokenManager.storeToken(input);
@@ -83,7 +83,7 @@ export const tokenRouter = router({
       z.object({
         tokenScopes: z.array(z.string()).optional(),
         requiredScopes: z.array(z.string()),
-      }),
+      })
     )
     .query(({ input }) => {
       return TokenManager.validateScopes(input.tokenScopes, input.requiredScopes);

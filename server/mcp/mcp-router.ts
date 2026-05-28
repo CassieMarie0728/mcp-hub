@@ -7,37 +7,6 @@ import { z } from 'zod';
 import { router, publicProcedure, protectedProcedure } from '../_core/trpc';
 import { mcpServerManager, MCPServerConfig } from './mcp-server-manager';
 
-/**
- * Sanitize MCP server configuration by redacting sensitive information
- * such as auth tokens, passwords, and authorization headers.
- */
-function sanitizeConfig(config: any) {
-  if (!config) return config;
-
-  const sanitized = { ...config };
-
-  // Redact auth credentials
-  if (sanitized.auth) {
-    sanitized.auth = { ...sanitized.auth };
-    if (sanitized.auth.token) sanitized.auth.token = '[REDACTED]';
-    if (sanitized.auth.password) sanitized.auth.password = '[REDACTED]';
-  }
-
-  // Redact sensitive headers
-  if (sanitized.headers) {
-    sanitized.headers = { ...sanitized.headers };
-    const sensitiveHeaders = ['authorization', 'x-api-key', 'api-key', 'cookie', 'set-cookie'];
-
-    Object.keys(sanitized.headers).forEach((key) => {
-      if (sensitiveHeaders.includes(key.toLowerCase())) {
-        sanitized.headers[key] = '[REDACTED]';
-      }
-    });
-  }
-
-  return sanitized;
-}
-
 // Validation schemas
 const MCPServerConfigSchema = z.object({
   id: z.string().min(1),
@@ -61,13 +30,15 @@ export const mcpRouter = router({
   /**
    * Register a new MCP server
    */
-  registerServer: protectedProcedure.input(MCPServerConfigSchema).mutation(({ input }) => {
-    mcpServerManager.registerServer(input);
-    return {
-      success: true,
-      serverId: input.id,
-    };
-  }),
+  registerServer: protectedProcedure
+    .input(MCPServerConfigSchema)
+    .mutation(({ input }) => {
+      mcpServerManager.registerServer(input);
+      return {
+        success: true,
+        serverId: input.id,
+      };
+    }),
 
   /**
    * Discover tools from an MCP server
@@ -101,14 +72,14 @@ export const mcpRouter = router({
         serverId: z.string(),
         toolName: z.string(),
         input: z.record(z.string(), z.any()),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       try {
         const result = await mcpServerManager.executeTool(
           input.serverId,
           input.toolName,
-          input.input,
+          input.input
         );
 
         return {
@@ -194,18 +165,18 @@ export const mcpRouter = router({
    * Get all registered servers
    */
   getAllServers: protectedProcedure.query(() => {
-    const servers = mcpServerManager.getAllServers();
-    return servers.map(sanitizeConfig);
+    return mcpServerManager.getAllServers();
   }),
 
   /**
    * Get a specific server config
    */
-  getServer: protectedProcedure.input(z.object({ serverId: z.string() })).query(({ input }) => {
-    const server = mcpServerManager.getServer(input.serverId);
-    if (!server) return { error: 'Server not found' };
-    return sanitizeConfig(server);
-  }),
+  getServer: protectedProcedure
+    .input(z.object({ serverId: z.string() }))
+    .query(({ input }) => {
+      const server = mcpServerManager.getServer(input.serverId);
+      return server || { error: 'Server not found' };
+    }),
 });
 
 export type MCPRouter = typeof mcpRouter;

@@ -1,21 +1,21 @@
-import { ScrollView, Text, View, Pressable, TextInput } from 'react-native';
-import { ScreenContainer } from '@/components/screen-container';
-import { useColors } from '@/hooks/use-colors';
-import { useState } from 'react';
+import { ScrollView, Text, View, Pressable, TextInput } from "react-native";
+import { ScreenContainer } from "@/components/screen-container";
+import { useColors } from "@/hooks/use-colors";
+import { useState } from "react";
 
 export default function TeamWorkspaceScreen() {
   const colors = useColors();
   const [members, setMembers] = useState([
-    { id: '1', name: 'You', role: 'admin', email: 'you@example.com' },
-    { id: '2', name: 'John Doe', role: 'editor', email: 'john@example.com' },
-    { id: '3', name: 'Jane Smith', role: 'viewer', email: 'jane@example.com' },
+    { id: "1", name: "You", role: "admin", email: "you@example.com" },
+    { id: "2", name: "John Doe", role: "editor", email: "john@example.com" },
+    { id: "3", name: "Jane Smith", role: "viewer", email: "jane@example.com" },
   ]);
-  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteEmail, setInviteEmail] = useState("");
 
   const roles = [
-    { id: 'admin', label: 'Admin', description: 'Full access' },
-    { id: 'editor', label: 'Editor', description: 'Can edit workflows' },
-    { id: 'viewer', label: 'Viewer', description: 'Read-only access' },
+    { id: "admin", label: "Admin", description: "Full access" },
+    { id: "editor", label: "Editor", description: "Can edit workflows" },
+    { id: "viewer", label: "Viewer", description: "Read-only access" },
   ];
 
   return (
@@ -24,13 +24,19 @@ export default function TeamWorkspaceScreen() {
         <View className="flex-1 gap-6">
           {/* Header */}
           <View className="gap-2">
-            <Text className="text-2xl font-bold text-foreground">Team Workspace</Text>
-            <Text className="text-sm text-muted">Manage team members and permissions</Text>
+            <Text className="text-2xl font-bold text-foreground">
+              Team Workspace
+            </Text>
+            <Text className="text-sm text-muted">
+              Manage team members and permissions
+            </Text>
           </View>
 
           {/* Invite Section */}
           <View className="gap-3 bg-surface rounded-2xl p-4">
-            <Text className="text-sm font-semibold text-foreground">Invite Team Member</Text>
+            <Text className="text-sm font-semibold text-foreground">
+              Invite Team Member
+            </Text>
             <View className="flex-row gap-2">
               <TextInput
                 placeholder="email@example.com"
@@ -59,11 +65,17 @@ export default function TeamWorkspaceScreen() {
                 className="bg-surface rounded-xl p-4 flex-row items-center justify-between"
               >
                 <View className="flex-1">
-                  <Text className="font-semibold text-foreground">{member.name}</Text>
-                  <Text className="text-xs text-muted mt-1">{member.email}</Text>
+                  <Text className="font-semibold text-foreground">
+                    {member.name}
+                  </Text>
+                  <Text className="text-xs text-muted mt-1">
+                    {member.email}
+                  </Text>
                 </View>
                 <View className="bg-primary/10 px-3 py-1 rounded-full">
-                  <Text className="text-xs font-semibold text-primary">{member.role}</Text>
+                  <Text className="text-xs font-semibold text-primary">
+                    {member.role}
+                  </Text>
                 </View>
               </View>
             ))}
@@ -71,12 +83,21 @@ export default function TeamWorkspaceScreen() {
 
           {/* Roles Reference */}
           <View className="gap-3">
-            <Text className="text-sm font-semibold text-foreground">Role Permissions</Text>
+            <Text className="text-sm font-semibold text-foreground">
+              Role Permissions
+            </Text>
             {roles.map((role) => (
-              <View key={role.id} className="bg-surface rounded-xl p-3 flex-row items-start gap-3">
+              <View
+                key={role.id}
+                className="bg-surface rounded-xl p-3 flex-row items-start gap-3"
+              >
                 <View className="flex-1">
-                  <Text className="font-semibold text-foreground">{role.label}</Text>
-                  <Text className="text-xs text-muted mt-1">{role.description}</Text>
+                  <Text className="font-semibold text-foreground">
+                    {role.label}
+                  </Text>
+                  <Text className="text-xs text-muted mt-1">
+                    {role.description}
+                  </Text>
                 </View>
               </View>
             ))}

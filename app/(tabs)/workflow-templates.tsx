@@ -58,7 +58,11 @@ export default function WorkflowTemplatesScreen() {
     filterTemplates(mockTemplates, selectedCategory, searchText);
   }, []);
 
-  const filterTemplates = (items: Template[], category: string | null, search: string) => {
+  const filterTemplates = (
+    items: Template[],
+    category: string | null,
+    search: string
+  ) => {
     let filtered = items;
 
     if (category) {
@@ -71,7 +75,7 @@ export default function WorkflowTemplatesScreen() {
         (t) =>
           t.name.toLowerCase().includes(searchLower) ||
           t.description.toLowerCase().includes(searchLower) ||
-          t.tags.some((tag) => tag.toLowerCase().includes(searchLower)),
+          t.tags.some((tag) => tag.toLowerCase().includes(searchLower))
       );
     }
 
@@ -159,7 +163,9 @@ export default function WorkflowTemplatesScreen() {
           {/* Header */}
           <View className="gap-2">
             <Text className="text-3xl font-bold text-foreground">Templates</Text>
-            <Text className="text-sm text-muted">Pre-built workflows to automate your tasks</Text>
+            <Text className="text-sm text-muted">
+              Pre-built workflows to automate your tasks
+            </Text>
           </View>
 
           {/* Search Bar */}

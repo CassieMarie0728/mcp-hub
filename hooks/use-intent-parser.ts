@@ -68,33 +68,36 @@ export function useIntentParser() {
   /**
    * Parse natural language intent
    */
-  const parseIntent = useCallback(async (input: string): Promise<ParsedIntent | null> => {
-    if (!input.trim()) {
-      setError('Input cannot be empty');
-      return null;
-    }
-
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.parseIntent(input);
-        return result as ParsedIntent;
-      } else {
-        // Fallback for non-Android platforms
-        console.warn('Intent Parser only available on Android');
+  const parseIntent = useCallback(
+    async (input: string): Promise<ParsedIntent | null> => {
+      if (!input.trim()) {
+        setError('Input cannot be empty');
         return null;
       }
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error parsing intent:', err);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.parseIntent(input);
+          return result as ParsedIntent;
+        } else {
+          // Fallback for non-Android platforms
+          console.warn('Intent Parser only available on Android');
+          return null;
+        }
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error parsing intent:', err);
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   /**
    * Extract entities from text
@@ -119,7 +122,7 @@ export function useIntentParser() {
         setIsLoading(false);
       }
     },
-    [],
+    []
   );
 
   /**
@@ -145,111 +148,126 @@ export function useIntentParser() {
         setIsLoading(false);
       }
     },
-    [],
+    []
   );
 
   /**
    * Substitute variables in text
    */
-  const substituteVariables = useCallback(async (text: string): Promise<string | null> => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const substituteVariables = useCallback(
+    async (text: string): Promise<string | null> => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.substituteVariables(text);
-        return result as string;
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.substituteVariables(text);
+          return result as string;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error substituting variables:', err);
+        return null;
+      } finally {
+        setIsLoading(false);
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error substituting variables:', err);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Set variable
    */
-  const setVariable = useCallback(async (name: string, value: string): Promise<boolean> => {
-    try {
-      setError(null);
+  const setVariable = useCallback(
+    async (name: string, value: string): Promise<boolean> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.setVariable(name, value);
-        return result as boolean;
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.setVariable(name, value);
+          return result as boolean;
+        }
+        return false;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error setting variable:', err);
+        return false;
       }
-      return false;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error setting variable:', err);
-      return false;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Get variable
    */
-  const getVariable = useCallback(async (name: string): Promise<string | null> => {
-    try {
-      setError(null);
+  const getVariable = useCallback(
+    async (name: string): Promise<string | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.getVariable(name);
-        return result as string;
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.getVariable(name);
+          return result as string;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error getting variable:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error getting variable:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Get all variables
    */
-  const getAllVariables = useCallback(async (): Promise<Record<string, string> | null> => {
-    try {
-      setError(null);
+  const getAllVariables = useCallback(
+    async (): Promise<Record<string, string> | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.getAllVariables();
-        return result as Record<string, string>;
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.getAllVariables();
+          return result as Record<string, string>;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error getting all variables:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error getting all variables:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Clear variables
    */
-  const clearVariables = useCallback(async (): Promise<boolean> => {
-    try {
-      setError(null);
+  const clearVariables = useCallback(
+    async (): Promise<boolean> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.clearVariables();
-        return result as boolean;
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.clearVariables();
+          return result as boolean;
+        }
+        return false;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error clearing variables:', err);
+        return false;
       }
-      return false;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error clearing variables:', err);
-      return false;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Record action execution
@@ -260,7 +278,7 @@ export function useIntentParser() {
       parameters: Record<string, string>,
       success: boolean,
       error?: string,
-      duration: number = 0,
+      duration: number = 0
     ): Promise<boolean> => {
       try {
         setError(null);
@@ -271,7 +289,7 @@ export function useIntentParser() {
             parameters,
             success,
             error,
-            duration,
+            duration
           );
           return result as boolean;
         }
@@ -283,88 +301,100 @@ export function useIntentParser() {
         return false;
       }
     },
-    [],
+    []
   );
 
   /**
    * Get execution history
    */
-  const getExecutionHistory = useCallback(async (): Promise<ExecutionRecord[] | null> => {
-    try {
-      setError(null);
+  const getExecutionHistory = useCallback(
+    async (): Promise<ExecutionRecord[] | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.getExecutionHistory();
-        return result as ExecutionRecord[];
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.getExecutionHistory();
+          return result as ExecutionRecord[];
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error getting execution history:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error getting execution history:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Get execution statistics
    */
-  const getExecutionStats = useCallback(async (): Promise<ExecutionStats | null> => {
-    try {
-      setError(null);
+  const getExecutionStats = useCallback(
+    async (): Promise<ExecutionStats | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.getExecutionStats();
-        return result as ExecutionStats;
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.getExecutionStats();
+          return result as ExecutionStats;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error getting execution stats:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error getting execution stats:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Estimate execution time
    */
-  const estimateExecutionTime = useCallback(async (actions: Action[]): Promise<number | null> => {
-    try {
-      setError(null);
+  const estimateExecutionTime = useCallback(
+    async (actions: Action[]): Promise<number | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.estimateExecutionTime(actions);
-        return result as number;
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.estimateExecutionTime(actions);
+          return result as number;
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error estimating execution time:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error estimating execution time:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Optimize action sequence
    */
-  const optimizeActions = useCallback(async (actions: Action[]): Promise<Action[] | null> => {
-    try {
-      setError(null);
+  const optimizeActions = useCallback(
+    async (actions: Action[]): Promise<Action[] | null> => {
+      try {
+        setError(null);
 
-      if (Platform.OS === 'android' && parserRef.current) {
-        const result = await parserRef.current.optimizeActions(actions);
-        return result as Action[];
+        if (Platform.OS === 'android' && parserRef.current) {
+          const result = await parserRef.current.optimizeActions(actions);
+          return result as Action[];
+        }
+        return null;
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMsg);
+        console.error('Error optimizing actions:', err);
+        return null;
       }
-      return null;
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setError(errorMsg);
-      console.error('Error optimizing actions:', err);
-      return null;
-    }
-  }, []);
+    },
+    []
+  );
 
   return {
     // State

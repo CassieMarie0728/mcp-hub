@@ -191,7 +191,7 @@ export default function MacroEditorScreen() {
         },
       ]);
     },
-    [macro],
+    [macro]
   );
 
   // Update step
@@ -207,7 +207,7 @@ export default function MacroEditorScreen() {
         steps: newSteps,
       });
     },
-    [macro],
+    [macro]
   );
 
   if (isLoading || !macro) {
@@ -267,7 +267,10 @@ export default function MacroEditorScreen() {
         <View className="mb-6">
           <View className="flex-row justify-between items-center mb-4">
             <Text className="text-lg font-bold text-foreground">Steps ({macro.steps.length})</Text>
-            <Pressable onPress={handleAddStep} className="bg-primary rounded-lg px-4 py-2">
+            <Pressable
+              onPress={handleAddStep}
+              className="bg-primary rounded-lg px-4 py-2"
+            >
               <Text className="text-white font-semibold">+ Add Step</Text>
             </Pressable>
           </View>
@@ -282,7 +285,10 @@ export default function MacroEditorScreen() {
             <FlatList
               data={macro.steps}
               renderItem={({ item, index }) => (
-                <View key={item.id} className="bg-surface rounded-lg p-4 mb-3 border border-border">
+                <View
+                  key={item.id}
+                  className="bg-surface rounded-lg p-4 mb-3 border border-border"
+                >
                   <View className="flex-row justify-between items-start mb-3">
                     <View className="flex-1">
                       <Text className="text-sm text-muted">Step {index + 1}</Text>
@@ -315,15 +321,13 @@ export default function MacroEditorScreen() {
                             }
                             className={cn(
                               'p-2 rounded mb-1',
-                              item.serverId === server.id ? 'bg-primary/20' : '',
+                              item.serverId === server.id ? 'bg-primary/20' : ''
                             )}
                           >
                             <Text
                               className={cn(
                                 'text-sm',
-                                item.serverId === server.id
-                                  ? 'text-primary font-semibold'
-                                  : 'text-foreground',
+                                item.serverId === server.id ? 'text-primary font-semibold' : 'text-foreground'
                               )}
                             >
                               {server.name}
@@ -345,7 +349,7 @@ export default function MacroEditorScreen() {
                               }
                               className={cn(
                                 'p-2 rounded mb-1',
-                                item.toolName === tool.name ? 'bg-primary/20' : '',
+                                item.toolName === tool.name ? 'bg-primary/20' : ''
                               )}
                             >
                               <Text
@@ -353,7 +357,7 @@ export default function MacroEditorScreen() {
                                   'text-sm',
                                   item.toolName === tool.name
                                     ? 'text-primary font-semibold'
-                                    : 'text-foreground',
+                                    : 'text-foreground'
                                 )}
                               >
                                 {tool.name}
@@ -377,9 +381,7 @@ export default function MacroEditorScreen() {
                       onPress={() => setEditingStepIndex(index)}
                       className="bg-primary/10 rounded p-2"
                     >
-                      <Text className="text-primary font-semibold text-center text-sm">
-                        Edit Step
-                      </Text>
+                      <Text className="text-primary font-semibold text-center text-sm">Edit Step</Text>
                     </Pressable>
                   )}
                 </View>

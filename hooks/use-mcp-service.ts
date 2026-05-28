@@ -21,19 +21,17 @@ export function useMCPService() {
         await updateServer({ ...server, status: 'connecting', error: undefined });
 
         // Create MCP client
-        const { settings } = useApp();
-        const timeout =
-          timeoutOverride ??
-          (settings.executionTimeoutEnabled ? settings.executionTimeout : undefined);
+      const { settings } = useApp();
+      const timeout = timeoutOverride ?? (settings.executionTimeoutEnabled ? settings.executionTimeout : undefined);
 
-        const client = mcpClientManager.createClient({
-          serverId: server.id,
-          connectionType: server.connectionType,
-          command: server.connectionDetails.command,
-          url: server.connectionDetails.url,
-          headers: server.connectionDetails.headers,
-          timeout,
-        });
+      const client = mcpClientManager.createClient({
+        serverId: server.id,
+        connectionType: server.connectionType,
+        command: server.connectionDetails.command,
+        url: server.connectionDetails.url,
+        headers: server.connectionDetails.headers,
+        timeout,
+      });
 
         // Initialize connection
         await client.initialize();
@@ -56,7 +54,7 @@ export function useMCPService() {
         throw error;
       }
     },
-    [updateServer],
+    [updateServer]
   );
 
   /**
@@ -86,7 +84,7 @@ export function useMCPService() {
         throw error;
       }
     },
-    [setTools],
+    [setTools]
   );
 
   /**
@@ -130,20 +128,23 @@ export function useMCPService() {
         };
       }
     },
-    [],
+    []
   );
 
   /**
    * Disconnect from a server
    */
-  const disconnectServer = useCallback(async (serverId: string) => {
-    const client = clientsRef.current.get(serverId);
-    if (client) {
-      await client.close();
-      clientsRef.current.delete(serverId);
-    }
-    await mcpClientManager.removeClient(serverId);
-  }, []);
+  const disconnectServer = useCallback(
+    async (serverId: string) => {
+      const client = clientsRef.current.get(serverId);
+      if (client) {
+        await client.close();
+        clientsRef.current.delete(serverId);
+      }
+      await mcpClientManager.removeClient(serverId);
+    },
+    []
+  );
 
   /**
    * Disconnect all servers

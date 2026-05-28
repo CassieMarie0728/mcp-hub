@@ -34,7 +34,7 @@ describe('MCPClient', () => {
               },
             },
           }),
-      }),
+      })
     ) as any;
 
     await client.initialize();
@@ -51,7 +51,7 @@ describe('MCPClient', () => {
             id: 1,
             error: { code: -32600, message: 'Invalid Request' },
           }),
-      }),
+      })
     ) as any;
 
     await expect(client.initialize()).rejects.toThrow('Initialization failed');
@@ -68,7 +68,7 @@ describe('MCPClient', () => {
             id: 1,
             result: { capabilities: { tools: {} } },
           }),
-      }),
+      })
     ) as any;
 
     await client.initialize();

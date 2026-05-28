@@ -43,10 +43,9 @@ export default function MacroMarketplaceScreen() {
     let filtered = macros;
 
     if (searchQuery) {
-      filtered = filtered.filter(
-        (m) =>
-          m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          m.description.toLowerCase().includes(searchQuery.toLowerCase()),
+      filtered = filtered.filter((m) =>
+        m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        m.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -225,15 +224,11 @@ export default function MacroMarketplaceScreen() {
             </View>
             <View className="flex-row items-center justify-between">
               <Text className="text-sm text-muted">Downloads</Text>
-              <Text className="text-sm font-semibold text-foreground">
-                {selectedMacro.downloads}
-              </Text>
+              <Text className="text-sm font-semibold text-foreground">{selectedMacro.downloads}</Text>
             </View>
             <View className="flex-row items-center justify-between">
               <Text className="text-sm text-muted">Category</Text>
-              <Text className="text-sm font-semibold text-foreground capitalize">
-                {selectedMacro.category}
-              </Text>
+              <Text className="text-sm font-semibold text-foreground capitalize">{selectedMacro.category}</Text>
             </View>
           </View>
 
@@ -312,13 +307,13 @@ export default function MacroMarketplaceScreen() {
                 onPress={() => setSelectedCategory(null)}
                 className={cn(
                   'rounded-full px-4 py-2 active:opacity-80',
-                  selectedCategory === null ? 'bg-primary' : 'bg-surface border border-border',
+                  selectedCategory === null ? 'bg-primary' : 'bg-surface border border-border'
                 )}
               >
                 <Text
                   className={cn(
                     'font-semibold text-sm',
-                    selectedCategory === null ? 'text-background' : 'text-foreground',
+                    selectedCategory === null ? 'text-background' : 'text-foreground'
                   )}
                 >
                   All
@@ -330,13 +325,13 @@ export default function MacroMarketplaceScreen() {
                   onPress={() => setSelectedCategory(cat)}
                   className={cn(
                     'rounded-full px-4 py-2 active:opacity-80',
-                    selectedCategory === cat ? 'bg-primary' : 'bg-surface border border-border',
+                    selectedCategory === cat ? 'bg-primary' : 'bg-surface border border-border'
                   )}
                 >
                   <Text
                     className={cn(
                       'font-semibold text-sm capitalize',
-                      selectedCategory === cat ? 'text-background' : 'text-foreground',
+                      selectedCategory === cat ? 'text-background' : 'text-foreground'
                     )}
                   >
                     {cat}
@@ -356,13 +351,13 @@ export default function MacroMarketplaceScreen() {
                   onPress={() => setSortBy(sort)}
                   className={cn(
                     'rounded-lg px-3 py-2 active:opacity-80',
-                    sortBy === sort ? 'bg-primary' : 'bg-surface border border-border',
+                    sortBy === sort ? 'bg-primary' : 'bg-surface border border-border'
                   )}
                 >
                   <Text
                     className={cn(
                       'text-xs font-semibold capitalize',
-                      sortBy === sort ? 'text-background' : 'text-foreground',
+                      sortBy === sort ? 'text-background' : 'text-foreground'
                     )}
                   >
                     {sort}

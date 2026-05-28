@@ -41,19 +41,19 @@ flowchart TB
 
 **Procedures Overview**
 
-| Procedure            | Type     | Input Schema                                                     | Description                       | Response                                                           |
-| -------------------- | -------- | ---------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------ |
-| registerServer       | Mutation | `MCPServerConfigSchema`                                          | Register a new MCP server         | `{ success: boolean; serverId: string }`                           |
-| discoverTools        | Query    | `{ serverId: string }`                                           | Discover tools from a server      | `{ success:boolean; tools:MCPTool[]; count:number; error?:string}` |
-| executeTool          | Mutation | `{ serverId:string; toolName:string; input:Record<string,any> }` | Execute a tool on a server        | `{ success:boolean; data?:any; error?:string }`                    |
-| getServerStatus      | Query    | `{ serverId: string }`                                           | Get status of a specific server   | `ServerStatus \| { error:string }`                                 |
-| getAllServerStatuses | Query    | _none_                                                           | Get statuses of all servers       | `ServerStatus[]`                                                   |
-| testConnection       | Mutation | `{ serverId: string }`                                           | Test connection to a server       | `{ success:boolean; connected:boolean; error?:string }`            |
-| clearToolCache       | Mutation | `{ serverId: string }`                                           | Clear cached tools for one server | `{ success:boolean }`                                              |
-| clearAllCaches       | Mutation | _none_                                                           | Clear all tool caches             | `{ success:boolean }`                                              |
-| removeServer         | Mutation | `{ serverId: string }`                                           | Unregister a server               | `{ success:boolean }`                                              |
-| getAllServers        | Query    | _none_                                                           | List all registered servers       | `MCPServerConfig[]`                                                |
-| getServer            | Query    | `{ serverId: string }`                                           | Get config of a specific server   | `MCPServerConfig \| { error:string }`                              |
+| Procedure              | Type      | Input Schema                      | Description                            | Response                                                         |
+|------------------------|-----------|-----------------------------------|----------------------------------------|------------------------------------------------------------------|
+| registerServer         | Mutation  | `MCPServerConfigSchema`           | Register a new MCP server              | `{ success: boolean; serverId: string }`                         |
+| discoverTools          | Query     | `{ serverId: string }`            | Discover tools from a server           | `{ success:boolean; tools:MCPTool[]; count:number; error?:string}` |
+| executeTool            | Mutation  | `{ serverId:string; toolName:string; input:Record<string,any> }` | Execute a tool on a server | `{ success:boolean; data?:any; error?:string }`                 |
+| getServerStatus        | Query     | `{ serverId: string }`            | Get status of a specific server        | `ServerStatus \| { error:string }`                               |
+| getAllServerStatuses   | Query     | _none_                            | Get statuses of all servers            | `ServerStatus[]`                                                 |
+| testConnection         | Mutation  | `{ serverId: string }`            | Test connection to a server            | `{ success:boolean; connected:boolean; error?:string }`         |
+| clearToolCache         | Mutation  | `{ serverId: string }`            | Clear cached tools for one server      | `{ success:boolean }`                         |
+| clearAllCaches         | Mutation  | _none_                            | Clear all tool caches                  | `{ success:boolean }`                                           |
+| removeServer           | Mutation  | `{ serverId: string }`            | Unregister a server                    | `{ success:boolean }`                                           |
+| getAllServers          | Query     | _none_                            | List all registered servers            | `MCPServerConfig[]`                                              |
+| getServer              | Query     | `{ serverId: string }`            | Get config of a specific server        | `MCPServerConfig \| { error:string }`                            |
 
 ### 2. Business Layer
 
@@ -68,19 +68,19 @@ flowchart TB
 
 **Key Methods**
 
-| Method                                   | Description                                          | Returns                                                  |
-| ---------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------- |
-| `registerServer(config)`                 | Store config and initialize HTTP client              | `void`                                                   |
-| `discoverTools(serverId)`                | Fetch or return cached tool list                     | `Promise<MCPTool[]>`                                     |
-| `executeTool(serverId, toolName, input)` | Invoke a tool via JSON-RPC                           | `Promise<{ success:boolean; data?:any; error?:string }>` |
-| `getServerStatus(serverId)`              | Retrieve the current status                          | `ServerStatus \| undefined`                              |
-| `getAllServerStatuses()`                 | Retrieve statuses for all servers                    | `ServerStatus[]`                                         |
-| `testConnection(serverId)`               | Perform JSON-RPC `initialize` to verify connectivity | `Promise<boolean>`                                       |
-| `clearToolCache(serverId)`               | Invalidate cache for one server                      | `void`                                                   |
-| `clearAllCaches()`                       | Invalidate cache for all servers                     | `void`                                                   |
-| `removeServer(serverId)`                 | Remove config and client mapping                     | `void`                                                   |
-| `getAllServers()`                        | List all stored server configs                       | `MCPServerConfig[]`                                      |
-| `getServer(serverId)`                    | Retrieve a single server config                      | `MCPServerConfig \| undefined`                           |
+| Method                            | Description                                               | Returns                                          |
+|-----------------------------------|-----------------------------------------------------------|--------------------------------------------------|
+| `registerServer(config)`          | Store config and initialize HTTP client                   | `void`                                           |
+| `discoverTools(serverId)`         | Fetch or return cached tool list                          | `Promise<MCPTool[]>`                             |
+| `executeTool(serverId, toolName, input)` | Invoke a tool via JSON-RPC                         | `Promise<{ success:boolean; data?:any; error?:string }>` |
+| `getServerStatus(serverId)`       | Retrieve the current status                               | `ServerStatus \| undefined`                      |
+| `getAllServerStatuses()`          | Retrieve statuses for all servers                         | `ServerStatus[]`                                 |
+| `testConnection(serverId)`        | Perform JSON-RPC `initialize` to verify connectivity      | `Promise<boolean>`                               |
+| `clearToolCache(serverId)`        | Invalidate cache for one server                           | `void`                                           |
+| `clearAllCaches()`                | Invalidate cache for all servers                          | `void`                                           |
+| `removeServer(serverId)`          | Remove config and client mapping                          | `void`                                           |
+| `getAllServers()`                 | List all stored server configs                            | `MCPServerConfig[]`                              |
+| `getServer(serverId)`             | Retrieve a single server config                           | `MCPServerConfig \| undefined`                   |
 
 ### 3. Data Access Layer
 
@@ -90,32 +90,30 @@ flowchart TB
 ### 4. Data Models
 
 #### **MCPServerConfig**
-
 Defines server connection parameters .
 
-| Property         | Type                                                                  | Description               |
-| ---------------- | --------------------------------------------------------------------- | ------------------------- |
-| `id`             | `string`                                                              | Unique server identifier  |
-| `name`           | `string`                                                              | Display name              |
-| `url`            | `string`                                                              | Base URL or stdio command |
-| `type`           | `'http' \| 'websocket' \| 'stdio'`                                    | Transport type            |
-| `headers?`       | `Record<string,string>`                                               | Custom HTTP headers       |
-| `auth?`          | `{ type:'bearer'\|'api-key'\|'basic'; token?; username?; password? }` | Authentication details    |
-| `timeout?`       | `number`                                                              | Request timeout (ms)      |
-| `retryAttempts?` | `number`                                                              | Number of retry attempts  |
+| Property       | Type                                         | Description                             |
+|----------------|----------------------------------------------|-----------------------------------------|
+| `id`           | `string`                                     | Unique server identifier                |
+| `name`         | `string`                                     | Display name                            |
+| `url`          | `string`                                     | Base URL or stdio command               |
+| `type`         | `'http' \| 'websocket' \| 'stdio'`           | Transport type                          |
+| `headers?`     | `Record<string,string>`                      | Custom HTTP headers                     |
+| `auth?`        | `{ type:'bearer'\|'api-key'\|'basic'; token?; username?; password? }` | Authentication details |
+| `timeout?`     | `number`                                     | Request timeout (ms)                    |
+| `retryAttempts?` | `number`                                   | Number of retry attempts                |
 
 #### **ServerStatus**
-
 Tracks runtime status of each server .
 
-| Property         | Type                                   | Description                          |
-| ---------------- | -------------------------------------- | ------------------------------------ |
-| `id`             | `string`                               | Server identifier                    |
-| `name`           | `string`                               | Display name                         |
-| `status`         | `'connected'\|'disconnected'\|'error'` | Current status                       |
-| `lastConnected?` | `Date`                                 | Timestamp of last successful connect |
-| `lastError?`     | `string`                               | Last error message                   |
-| `toolCount?`     | `number`                               | Cached tool count                    |
+| Property         | Type                                             | Description                           |
+|------------------|--------------------------------------------------|---------------------------------------|
+| `id`             | `string`                                         | Server identifier                     |
+| `name`           | `string`                                         | Display name                          |
+| `status`         | `'connected'\|'disconnected'\|'error'`           | Current status                        |
+| `lastConnected?` | `Date`                                           | Timestamp of last successful connect  |
+| `lastError?`     | `string`                                         | Last error message                    |
+| `toolCount?`     | `number`                                         | Cached tool count                     |
 
 ---
 
@@ -474,13 +472,13 @@ sequenceDiagram
 
 ## Key Classes Reference
 
-| Class                     | Location                           | Responsibility                                                |
-| ------------------------- | ---------------------------------- | ------------------------------------------------------------- |
-| **mcpRouter**             | `server/mcp/mcp-router.ts`         | Defines tRPC procedures for MCP server lifecycle and tool ops |
-| **MCPServerConfigSchema** | `server/mcp/mcp-router.ts`         | Zod schema validating server config input                     |
-| **MCPServerManager**      | `server/mcp/mcp-server-manager.ts` | Business logic for server registration, discovery, execution  |
-| **MCPServerConfig**       | `server/mcp/mcp-server-manager.ts` | Interface defining server connection parameters               |
-| **ServerStatus**          | `server/mcp/mcp-server-manager.ts` | Interface representing server runtime status                  |
+| Class                     | Location                              | Responsibility                                                   |
+|---------------------------|---------------------------------------|------------------------------------------------------------------|
+| **mcpRouter**             | `server/mcp/mcp-router.ts`            | Defines tRPC procedures for MCP server lifecycle and tool ops    |
+| **MCPServerConfigSchema** | `server/mcp/mcp-router.ts`            | Zod schema validating server config input                        |
+| **MCPServerManager**      | `server/mcp/mcp-server-manager.ts`    | Business logic for server registration, discovery, execution     |
+| **MCPServerConfig**       | `server/mcp/mcp-server-manager.ts`    | Interface defining server connection parameters                  |
+| **ServerStatus**          | `server/mcp/mcp-server-manager.ts`    | Interface representing server runtime status                     |
 
 ## Error Handling
 

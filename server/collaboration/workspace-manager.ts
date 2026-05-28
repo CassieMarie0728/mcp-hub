@@ -44,11 +44,7 @@ export class WorkspaceManager {
     return workspace;
   }
 
-  static async addMember(
-    workspaceId: string,
-    userId: string,
-    role: 'admin' | 'editor' | 'viewer',
-  ): Promise<WorkspaceMember> {
+  static async addMember(workspaceId: string, userId: string, role: 'admin' | 'editor' | 'viewer'): Promise<WorkspaceMember> {
     return {
       userId,
       workspaceId,
@@ -61,11 +57,7 @@ export class WorkspaceManager {
     // Remove member from workspace
   }
 
-  static async updateMemberRole(
-    workspaceId: string,
-    userId: string,
-    role: 'admin' | 'editor' | 'viewer',
-  ): Promise<WorkspaceMember> {
+  static async updateMemberRole(workspaceId: string, userId: string, role: 'admin' | 'editor' | 'viewer'): Promise<WorkspaceMember> {
     return {
       userId,
       workspaceId,
@@ -74,14 +66,7 @@ export class WorkspaceManager {
     };
   }
 
-  static async logAuditEvent(
-    workspaceId: string,
-    userId: string,
-    action: string,
-    resourceType: string,
-    resourceId: string,
-    changes: Record<string, unknown>,
-  ): Promise<AuditLog> {
+  static async logAuditEvent(workspaceId: string, userId: string, action: string, resourceType: string, resourceId: string, changes: Record<string, unknown>): Promise<AuditLog> {
     return {
       id: crypto.randomUUID(),
       workspaceId,

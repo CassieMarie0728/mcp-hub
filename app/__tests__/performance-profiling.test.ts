@@ -178,7 +178,8 @@ describe('Performance Profiling', () => {
 
       const filtered = tools.filter(
         (tool) =>
-          tool.name.toLowerCase().includes(searchQuery.toLowerCase()) && tool.category === category,
+          tool.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          tool.category === category
       );
 
       PerformanceProfiler.endMeasure('tool_filtering_search');
@@ -307,15 +308,14 @@ describe('Performance Profiling', () => {
     });
 
     it('should handle concurrent measurements', () => {
-      const operations = Array.from({ length: 20 }).map(
-        (_, i) =>
-          new Promise<void>((resolve) => {
-            PerformanceProfiler.startMeasure(`concurrent_${i}`);
-            setTimeout(() => {
-              PerformanceProfiler.endMeasure(`concurrent_${i}`);
-              resolve();
-            }, Math.random() * 50);
-          }),
+      const operations = Array.from({ length: 20 }).map((_, i) =>
+        new Promise<void>((resolve) => {
+          PerformanceProfiler.startMeasure(`concurrent_${i}`);
+          setTimeout(() => {
+            PerformanceProfiler.endMeasure(`concurrent_${i}`);
+            resolve();
+          }, Math.random() * 50);
+        })
       );
 
       return Promise.all(operations).then(() => {

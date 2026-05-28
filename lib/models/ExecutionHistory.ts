@@ -114,9 +114,7 @@ export class ExecutionHistoryManager {
       }
 
       if (filter.toolName) {
-        history = history.filter((e) =>
-          e.toolName.toLowerCase().includes(filter.toolName!.toLowerCase()),
-        );
+        history = history.filter((e) => e.toolName.toLowerCase().includes(filter.toolName!.toLowerCase()));
       }
 
       if (filter.status) {
@@ -137,7 +135,7 @@ export class ExecutionHistoryManager {
           (e) =>
             e.toolName.toLowerCase().includes(search) ||
             e.serverName.toLowerCase().includes(search) ||
-            (e.notes && e.notes.toLowerCase().includes(search)),
+            (e.notes && e.notes.toLowerCase().includes(search))
         );
       }
 

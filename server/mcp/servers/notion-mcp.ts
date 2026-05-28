@@ -179,7 +179,7 @@ export class NotionMCPServer {
     try {
       const response = await fetch(`${this.config.baseUrl}/users/me`, {
         headers: {
-          Authorization: `Bearer ${this.config.token}`,
+          'Authorization': `Bearer ${this.config.token}`,
           'Notion-Version': '2022-06-28',
         },
       });

@@ -68,7 +68,7 @@ export function useLoadingAnimation() {
         toValue: 1,
         duration: 1000,
         useNativeDriver: true,
-      }),
+      })
     ).start();
   }, [spinValue]);
 
@@ -102,51 +102,45 @@ export function useFeedbackAnimation() {
   const [isVisible, setIsVisible] = useState(false);
   const fadeValue = new Animated.Value(0);
 
-  const showSuccess = useCallback(
-    async (message?: string) => {
-      setFeedbackType('success');
-      setIsVisible(true);
-      await triggerHapticFeedback('success');
+  const showSuccess = useCallback(async (message?: string) => {
+    setFeedbackType('success');
+    setIsVisible(true);
+    await triggerHapticFeedback('success');
 
-      Animated.sequence([
-        Animated.timing(fadeValue, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.delay(2000),
-        Animated.timing(fadeValue, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start(() => setIsVisible(false));
-    },
-    [fadeValue],
-  );
+    Animated.sequence([
+      Animated.timing(fadeValue, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.delay(2000),
+      Animated.timing(fadeValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setIsVisible(false));
+  }, [fadeValue]);
 
-  const showError = useCallback(
-    async (message?: string) => {
-      setFeedbackType('error');
-      setIsVisible(true);
-      await triggerHapticFeedback('error');
+  const showError = useCallback(async (message?: string) => {
+    setFeedbackType('error');
+    setIsVisible(true);
+    await triggerHapticFeedback('error');
 
-      Animated.sequence([
-        Animated.timing(fadeValue, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.delay(2000),
-        Animated.timing(fadeValue, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start(() => setIsVisible(false));
-    },
-    [fadeValue],
-  );
+    Animated.sequence([
+      Animated.timing(fadeValue, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.delay(2000),
+      Animated.timing(fadeValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setIsVisible(false));
+  }, [fadeValue]);
 
   return {
     feedbackType,

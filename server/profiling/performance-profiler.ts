@@ -32,7 +32,11 @@ export class MacroPerformanceProfiler {
   /**
    * Record action execution
    */
-  recordAction(executionId: string, macroId: string, action: ActionRecord): void {
+  recordAction(
+    executionId: string,
+    macroId: string,
+    action: ActionRecord
+  ): void {
     const traces = this.executionTraces.get(macroId) || [];
     const trace = traces.find((t) => t.executionId === executionId);
 
@@ -48,7 +52,7 @@ export class MacroPerformanceProfiler {
     executionId: string,
     macroId: string,
     status: 'success' | 'failed',
-    errorMessage?: string,
+    errorMessage?: string
   ): ExecutionTrace | null {
     const traces = this.executionTraces.get(macroId) || [];
     const trace = traces.find((t) => t.executionId === executionId);
@@ -168,10 +172,7 @@ export class MacroPerformanceProfiler {
           waitCount > 3
             ? `Found ${waitCount} explicit waits. Consider using element detection instead.`
             : 'Found explicit wait actions. Consider replacing static waits with readiness checks.',
-        estimatedImprovement:
-          waitCount > 3
-            ? `${Math.round(((waitCount * 500) / trace.duration) * 100)}% faster`
-            : 'Potentially faster',
+        estimatedImprovement: waitCount > 3 ? `${Math.round((waitCount * 500) / trace.duration * 100)}% faster` : 'Potentially faster',
         implementation: 'Replace wait actions with element detection where possible',
       });
     }
@@ -323,7 +324,8 @@ export class MacroPerformanceProfiler {
       minDuration: Math.min(...durations),
       maxDuration: Math.max(...durations),
       successRate: (successful / traces.length) * 100,
-      avgActionsPerExecution: traces.reduce((sum, t) => sum + t.actions.length, 0) / traces.length,
+      avgActionsPerExecution:
+        traces.reduce((sum, t) => sum + t.actions.length, 0) / traces.length,
     };
   }
 
@@ -333,7 +335,7 @@ export class MacroPerformanceProfiler {
   compareExecutions(
     macroId: string,
     executionId1: string,
-    executionId2: string,
+    executionId2: string
   ): ExecutionComparison | null {
     const traces = this.executionTraces.get(macroId) || [];
     const trace1 = traces.find((t) => t.executionId === executionId1);
@@ -364,7 +366,7 @@ export class MacroPerformanceProfiler {
         statistics: this.getPerformanceStatistics(macroId),
       },
       null,
-      2,
+      2
     );
   }
 }

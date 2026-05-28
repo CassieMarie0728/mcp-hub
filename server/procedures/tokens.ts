@@ -137,7 +137,10 @@ export const tokensProcedures = router({
     .input(RotateTokenInput)
     .mutation(async ({ input }: { input: z.infer<typeof RotateTokenInput> }) => {
       try {
-        const token = await TokenManager.rotateToken(input.tokenId, input.newToken);
+        const token = await TokenManager.rotateToken(
+          input.tokenId,
+          input.newToken
+        );
 
         if (!token) {
           throw new Error('Token not found');
@@ -160,13 +163,15 @@ export const tokensProcedures = router({
   /**
    * Get token details (for verification)
    */
-  verify: publicProcedure.input(z.string()).query(async ({ input: tokenId }: { input: string }) => {
-    try {
-      const metadata = await TokenManager.getTokenMetadata(tokenId);
-      const isValid = metadata !== null && metadata.isActive;
-      return { tokenId, isValid };
-    } catch (error: any) {
-      throw new Error(`Failed to verify token: ${error.message}`);
-    }
-  }),
+  verify: publicProcedure
+    .input(z.string())
+    .query(async ({ input: tokenId }: { input: string }) => {
+      try {
+        const metadata = await TokenManager.getTokenMetadata(tokenId);
+        const isValid = metadata !== null && metadata.isActive;
+        return { tokenId, isValid };
+      } catch (error: any) {
+        throw new Error(`Failed to verify token: ${error.message}`);
+      }
+    }),
 });

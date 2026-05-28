@@ -50,7 +50,7 @@ export interface ToolDiscoveryState {
  */
 export function useToolDiscovery() {
   const [discoveryStates, setDiscoveryStates] = useState<Map<string, ToolDiscoveryState>>(
-    new Map(),
+    new Map()
   );
   const [globalError, setGlobalError] = useState<string | null>(null);
   const cacheRef = useRef<Map<string, { tools: ToolSchema[]; timestamp: number }>>(new Map());
@@ -138,7 +138,7 @@ export function useToolDiscovery() {
         throw err;
       }
     },
-    [],
+    []
   );
 
   /**
@@ -148,7 +148,7 @@ export function useToolDiscovery() {
     (serverId: string): ToolSchema[] => {
       return discoveryStates.get(serverId)?.tools ?? [];
     },
-    [discoveryStates],
+    [discoveryStates]
   );
 
   /**
@@ -163,10 +163,10 @@ export function useToolDiscovery() {
         (tool) =>
           tool.name.toLowerCase().includes(lowerQuery) ||
           tool.description.toLowerCase().includes(lowerQuery) ||
-          tool.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery)),
+          tool.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery))
       );
     },
-    [getTools],
+    [getTools]
   );
 
   /**
@@ -177,7 +177,7 @@ export function useToolDiscovery() {
       const tools = getTools(serverId);
       return tools.filter((tool) => tool.category === category);
     },
-    [getTools],
+    [getTools]
   );
 
   /**
@@ -188,7 +188,7 @@ export function useToolDiscovery() {
       const tools = getTools(serverId);
       return tools.find((tool) => tool.name === toolName);
     },
-    [getTools],
+    [getTools]
   );
 
   /**
@@ -207,7 +207,7 @@ export function useToolDiscovery() {
 
       return Array.from(categories).sort();
     },
-    [getTools],
+    [getTools]
   );
 
   /**
@@ -228,7 +228,7 @@ export function useToolDiscovery() {
     (serverId: string): ToolDiscoveryState | undefined => {
       return discoveryStates.get(serverId);
     },
-    [discoveryStates],
+    [discoveryStates]
   );
 
   /**
@@ -241,7 +241,7 @@ export function useToolDiscovery() {
   return {
     // State
     discoveryStates: Array.from(discoveryStates.values()),
-    tools: Array.from(discoveryStates.values()).flatMap((state) => state.tools || []), // Alias for all tools
+    tools: Array.from(discoveryStates.values()).flatMap(state => state.tools || []), // Alias for all tools
     globalError,
 
     // Methods

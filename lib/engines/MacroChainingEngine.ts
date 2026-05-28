@@ -49,7 +49,7 @@ export class MacroChainingEngine {
   static createChain(
     name: string,
     macroSequence: MacroChainStep[],
-    options?: Partial<MacroChain>,
+    options?: Partial<MacroChain>
   ): MacroChain {
     const macroIds = macroSequence.map((step) => step.macroId);
 
@@ -73,7 +73,7 @@ export class MacroChainingEngine {
   static async executeChain(
     chain: MacroChain,
     macros: Map<string, Macro>,
-    variables?: Record<string, any>,
+    variables?: Record<string, any>
   ): Promise<ChainExecution> {
     const execution: ChainExecution = {
       id: `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -170,7 +170,7 @@ export class MacroChainingEngine {
   static async resumeExecution(
     executionId: string,
     chain: MacroChain,
-    macros: Map<string, Macro>,
+    macros: Map<string, Macro>
   ): Promise<ChainExecution> {
     const execution = this.activeExecutions.get(executionId);
     if (!execution) {
@@ -256,7 +256,7 @@ export class MacroChainingEngine {
   private static mapParameters(
     step: MacroChainStep,
     macro: Macro,
-    context: Record<string, any>,
+    context: Record<string, any>
   ): Record<string, any> {
     const parameters: Record<string, any> = {};
 

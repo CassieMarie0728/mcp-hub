@@ -20,12 +20,7 @@ describe('Macro Versioning & Notifications', () => {
 
   describe('MacroVersionEngine', () => {
     it('should create versions', () => {
-      const v1 = versionEngine.createVersion(
-        'macro1',
-        'user1',
-        { action: 'tap' },
-        'Initial version',
-      );
+      const v1 = versionEngine.createVersion('macro1', 'user1', { action: 'tap' }, 'Initial version');
       expect(v1.versionNumber).toBe(1);
       expect(v1.macroId).toBe('macro1');
       expect(v1.userId).toBe('user1');
@@ -219,7 +214,7 @@ describe('Macro Versioning & Notifications', () => {
         'user1',
         'macro_execution',
         'Macro executed',
-        'Success',
+        'Success'
       );
 
       expect(notif.userId).toBe('user1');
@@ -240,7 +235,7 @@ describe('Macro Versioning & Notifications', () => {
         'user1',
         'macro_execution',
         'Macro executed',
-        'Success',
+        'Success'
       );
 
       notificationEngine.markAsRead(notif.id);
@@ -262,7 +257,7 @@ describe('Macro Versioning & Notifications', () => {
         'system_alert',
         'System Update',
         'New features available',
-        ['user1', 'user2', 'user3'],
+        ['user1', 'user2', 'user3']
       );
 
       expect(notifs).toHaveLength(3);

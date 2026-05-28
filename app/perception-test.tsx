@@ -158,9 +158,7 @@ export default function PerceptionTestScreen() {
                         <Text className="text-sm text-primary font-semibold">Back to List</Text>
                       </TouchableOpacity>
                       <Image
-                        source={{
-                          uri: `data:image/png;base64,${perception.visualChips[selectedChip]}`,
-                        }}
+                        source={{ uri: `data:image/png;base64,${perception.visualChips[selectedChip]}` }}
                         style={{ width: '100%', height: 300, borderRadius: 8 }}
                         resizeMode="contain"
                       />
@@ -176,9 +174,7 @@ export default function PerceptionTestScreen() {
                           onPress={() => setSelectedChip(idx)}
                           className="bg-background border border-border rounded p-3 flex-row items-center justify-between"
                         >
-                          <Text className="text-sm text-foreground font-semibold">
-                            Chip {idx + 1}
-                          </Text>
+                          <Text className="text-sm text-foreground font-semibold">Chip {idx + 1}</Text>
                           <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
                         </TouchableOpacity>
                       ))}
@@ -201,7 +197,7 @@ export default function PerceptionTestScreen() {
                       timestamp: perception.timestamp,
                     },
                     null,
-                    2,
+                    2
                   )}
                 </Text>
               </View>

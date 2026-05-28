@@ -255,29 +255,26 @@ export function usePermissions() {
   /**
    * Get required permissions for a tool
    */
-  const getToolPermissions = useCallback(
-    async (toolName: string): Promise<ToolPermissions | null> => {
-      if (Platform.OS !== 'android') {
-        return { toolName, permissions: [], count: 0 };
-      }
+  const getToolPermissions = useCallback(async (toolName: string): Promise<ToolPermissions | null> => {
+    if (Platform.OS !== 'android') {
+      return { toolName, permissions: [], count: 0 };
+    }
 
-      if (!PermissionBridge) {
-        setError('PermissionBridge module not available');
-        return null;
-      }
+    if (!PermissionBridge) {
+      setError('PermissionBridge module not available');
+      return null;
+    }
 
-      try {
-        const result = await PermissionBridge.getToolPermissions(toolName);
-        return result;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        setError(errorMessage);
-        console.error('Error getting tool permissions:', err);
-        return null;
-      }
-    },
-    [],
-  );
+    try {
+      const result = await PermissionBridge.getToolPermissions(toolName);
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
+      console.error('Error getting tool permissions:', err);
+      return null;
+    }
+  }, []);
 
   /**
    * Check and request permissions if needed
@@ -292,7 +289,7 @@ export function usePermissions() {
       await requestToolPermissions(toolName);
       return false;
     },
-    [canExecuteTool, requestToolPermissions],
+    [canExecuteTool, requestToolPermissions]
   );
 
   return {

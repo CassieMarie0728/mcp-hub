@@ -376,7 +376,7 @@ export class ResultDisplayFormatter {
   static toDownloadable(
     result: any,
     resultType: ResultType,
-    filename: string,
+    filename: string
   ): { uri: string; filename: string; mimeType: string } {
     let content = '';
     let mimeType = 'text/plain';

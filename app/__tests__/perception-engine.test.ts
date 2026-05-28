@@ -105,8 +105,7 @@ describe('Hybrid Perception Engine', () => {
     });
 
     it('should encode visual chip as Base64', () => {
-      const mockBase64 =
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      const mockBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
       expect(mockBase64).toBeTruthy();
       expect(mockBase64.length).toBeGreaterThan(0);
     });
@@ -163,7 +162,9 @@ describe('Hybrid Perception Engine', () => {
     });
 
     it('should format condensed JSON with minimal tokens', () => {
-      const mockElements = [{ id: '1', type: 'button', text: 'Submit', interactive: true }];
+      const mockElements = [
+        { id: '1', type: 'button', text: 'Submit', interactive: true },
+      ];
 
       const condensed = {
         t: Date.now(),
@@ -181,7 +182,11 @@ describe('Hybrid Perception Engine', () => {
     });
 
     it('should extract text content from screen', () => {
-      const mockElements = [{ text: 'Hello' }, { text: 'World' }, { text: '' }];
+      const mockElements = [
+        { text: 'Hello' },
+        { text: 'World' },
+        { text: '' },
+      ];
 
       const textContent = mockElements
         .filter((e) => e.text)
@@ -207,12 +212,7 @@ describe('Hybrid Perception Engine', () => {
     it('should extract input fields', () => {
       const mockElements = [
         { id: '1', isEditable: true, className: 'EditText', contentDescription: 'Email' },
-        {
-          id: '2',
-          isEditable: true,
-          className: 'PasswordEditText',
-          contentDescription: 'Password',
-        },
+        { id: '2', isEditable: true, className: 'PasswordEditText', contentDescription: 'Password' },
         { id: '3', isEditable: false, className: 'TextView' },
       ];
 
@@ -244,7 +244,9 @@ describe('Hybrid Perception Engine', () => {
         { id: '1', type: 'button', text: 'Submit', interactive: true },
       ];
 
-      const visualChips = [{ elementId: '1', elementText: 'Submit', base64Data: 'mock_base64' }];
+      const visualChips = [
+        { elementId: '1', elementText: 'Submit', base64Data: 'mock_base64' },
+      ];
 
       const hybrid = {
         accessibility: accessibilityElements,
@@ -265,8 +267,7 @@ describe('Hybrid Perception Engine', () => {
       const complexity = {
         totalElements: mockElements.length,
         maxDepth: Math.max(...mockElements.map((e) => e.depth)),
-        complexity:
-          mockElements.length > 100 ? 'high' : mockElements.length > 50 ? 'medium' : 'low',
+        complexity: mockElements.length > 100 ? 'high' : mockElements.length > 50 ? 'medium' : 'low',
       };
 
       expect(complexity.complexity).toBe('medium');
@@ -286,9 +287,7 @@ describe('Hybrid Perception Engine', () => {
 
       const added = current.filter((c) => !previous.some((p) => p.id === c.id));
       const removed = previous.filter((p) => !current.some((c) => c.id === p.id));
-      const changed = current.filter((c) =>
-        previous.some((p) => p.id === c.id && p.text !== c.text),
-      );
+      const changed = current.filter((c) => previous.some((p) => p.id === c.id && p.text !== c.text));
 
       expect(added).toHaveLength(1);
       expect(removed).toHaveLength(0);
@@ -395,7 +394,11 @@ describe('Hybrid Perception Engine', () => {
     });
 
     it('should handle elements with missing properties', () => {
-      const elements = [{ id: '1', text: 'Button' }, { id: '2' }, { id: '3', text: '' }];
+      const elements = [
+        { id: '1', text: 'Button' },
+        { id: '2' },
+        { id: '3', text: '' },
+      ];
 
       const withText = elements.filter((e) => e.text);
       expect(withText).toHaveLength(1);

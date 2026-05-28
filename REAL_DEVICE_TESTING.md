@@ -14,7 +14,6 @@ This guide covers setting up and testing MCP Hub on real Android devices and emu
 ### Android Emulator Setup
 
 1. **Start Android Emulator:**
-
    ```bash
    emulator -avd Pixel_6_API_31 -netdelay none -netspeed full
    ```
@@ -79,7 +78,6 @@ mcp-git --port 3003
 ## Metro Bundler
 
 1. **Start Development Server:**
-
    ```bash
    cd /home/ubuntu/mcp-hub
    npm run dev
@@ -101,7 +99,6 @@ mcp-git --port 3003
 **Objective:** Test basic server connection with filesystem MCP
 
 **Steps:**
-
 1. Open MCP Hub app
 2. Go to "Connect" tab
 3. Enter server details:
@@ -112,7 +109,6 @@ mcp-git --port 3003
 5. Verify connection status shows "Connected"
 
 **Expected Results:**
-
 - Connection established without errors
 - Status indicator shows green/connected
 - No timeout errors
@@ -123,7 +119,6 @@ mcp-git --port 3003
 **Objective:** Test discovering tools from connected server
 
 **Steps:**
-
 1. From "Connect" tab, select connected filesystem server
 2. Go to "Tools" tab
 3. Verify tools list loads
@@ -131,7 +126,6 @@ mcp-git --port 3003
 5. Tap on tool to view details
 
 **Expected Results:**
-
 - Tools list loads in < 2 seconds
 - Shows 10+ filesystem tools
 - Tool details display correctly
@@ -143,7 +137,6 @@ mcp-git --port 3003
 **Objective:** Test executing tool with simple string parameter
 
 **Steps:**
-
 1. From Tools tab, select "list_directory" tool
 2. Go to "Execute" tab
 3. Enter path parameter: `/tmp`
@@ -152,7 +145,6 @@ mcp-git --port 3003
 6. View results in default format
 
 **Expected Results:**
-
 - Form validates input
 - Execution completes in < 5 seconds
 - Results display successfully
@@ -164,7 +156,6 @@ mcp-git --port 3003
 **Objective:** Test executing tool with file path and options
 
 **Steps:**
-
 1. Select "read_file" tool
 2. Enter file path: `/etc/hosts`
 3. Click "Execute"
@@ -173,7 +164,6 @@ mcp-git --port 3003
 6. Switch to Code Block format
 
 **Expected Results:**
-
 - All parameter types work correctly
 - File contents display properly
 - Format switching works smoothly
@@ -185,7 +175,6 @@ mcp-git --port 3003
 **Objective:** Test file picker for file parameters
 
 **Steps:**
-
 1. Select "read_file" tool
 2. Tap file picker icon
 3. Browse to a file
@@ -194,7 +183,6 @@ mcp-git --port 3003
 6. Execute tool
 
 **Expected Results:**
-
 - File picker opens correctly
 - File selection works
 - Path is correctly populated
@@ -206,14 +194,12 @@ mcp-git --port 3003
 **Objective:** Test error handling for invalid parameters
 
 **Steps:**
-
 1. Select "read_file" tool
 2. Enter invalid path: `/nonexistent/file/path`
 3. Click "Execute"
 4. Observe error message
 
 **Expected Results:**
-
 - Error message displays clearly
 - Error indicates "File not found"
 - User can retry with different path
@@ -225,7 +211,6 @@ mcp-git --port 3003
 **Objective:** Test error handling when server is unreachable
 
 **Steps:**
-
 1. Stop MCP server (Ctrl+C)
 2. Try to execute a tool
 3. Observe timeout/connection error
@@ -234,7 +219,6 @@ mcp-git --port 3003
 6. Click "Retry" again
 
 **Expected Results:**
-
 - Connection error displays clearly
 - Retry button appears
 - Retry succeeds after server restarts
@@ -246,7 +230,6 @@ mcp-git --port 3003
 **Objective:** Test execution history tracking
 
 **Steps:**
-
 1. Execute 3-5 tools successfully
 2. Go to "History" tab
 3. Verify all executions are listed
@@ -255,7 +238,6 @@ mcp-git --port 3003
 6. Click on execution to view details
 
 **Expected Results:**
-
 - All executions are recorded
 - Search/filter works correctly
 - Execution details display properly
@@ -267,7 +249,6 @@ mcp-git --port 3003
 **Objective:** Test server preset management
 
 **Steps:**
-
 1. Go to "Presets" tab
 2. Create new preset with filesystem server details
 3. Name it "My Filesystem"
@@ -276,7 +257,6 @@ mcp-git --port 3003
 6. Select preset to quick-connect
 
 **Expected Results:**
-
 - Preset creation works
 - Preset is saved and listed
 - Favorite marking works
@@ -288,7 +268,6 @@ mcp-git --port 3003
 **Objective:** Test performance with 100+ tools
 
 **Steps:**
-
 1. Generate test data with 100+ tools
 2. Connect to test server
 3. Go to Tools tab
@@ -298,7 +277,6 @@ mcp-git --port 3003
 7. Measure response time
 
 **Expected Results:**
-
 - Initial load completes in < 3 seconds
 - Scrolling is smooth (60 FPS)
 - Search responds in < 500ms
@@ -309,16 +287,16 @@ mcp-git --port 3003
 
 Record the following metrics for each test:
 
-| Metric               | Expected | Actual | Notes |
-| -------------------- | -------- | ------ | ----- |
-| Connection time      | < 2s     |        |       |
-| Tool discovery time  | < 2s     |        |       |
-| Tool execution time  | < 5s     |        |       |
-| Results display time | < 1s     |        |       |
-| Format switch time   | < 500ms  |        |       |
-| List scroll FPS      | 60 FPS   |        |       |
-| Search response      | < 500ms  |        |       |
-| Memory usage         | < 100MB  |        |       |
+| Metric | Expected | Actual | Notes |
+|--------|----------|--------|-------|
+| Connection time | < 2s | | |
+| Tool discovery time | < 2s | | |
+| Tool execution time | < 5s | | |
+| Results display time | < 1s | | |
+| Format switch time | < 500ms | | |
+| List scroll FPS | 60 FPS | | |
+| Search response | < 500ms | | |
+| Memory usage | < 100MB | | |
 
 ## Troubleshooting
 
@@ -327,7 +305,6 @@ Record the following metrics for each test:
 **Problem:** Cannot connect to MCP server
 
 **Solutions:**
-
 1. Verify server is running: `netstat -an | grep 3001`
 2. Check firewall settings
 3. Verify correct host/port in app
@@ -339,7 +316,6 @@ Record the following metrics for each test:
 **Problem:** Tool execution times out
 
 **Solutions:**
-
 1. Increase timeout in server preset (default 30s)
 2. Check network connectivity
 3. Verify server is responsive: `curl http://host:port/health`
@@ -351,7 +327,6 @@ Record the following metrics for each test:
 **Problem:** No tools appear after connecting
 
 **Solutions:**
-
 1. Verify server supports tools/list endpoint
 2. Check server logs for errors
 3. Try reconnecting
@@ -363,7 +338,6 @@ Record the following metrics for each test:
 **Problem:** File picker doesn't open or select files
 
 **Solutions:**
-
 1. Verify app has file permissions
 2. Check Android permissions: Settings > Apps > MCP Hub > Permissions
 3. Try different file location
@@ -375,7 +349,6 @@ Record the following metrics for each test:
 **Problem:** App is slow or laggy
 
 **Solutions:**
-
 1. Profile with React DevTools
 2. Check for large result sets
 3. Reduce tool list size
@@ -388,13 +361,11 @@ Record the following metrics for each test:
 # Test Results - [Date]
 
 ## Device Info
-
 - Device: [Emulator/Physical]
 - OS: Android [Version]
 - App Version: [Version]
 
 ## Server Configuration
-
 - Filesystem Server: [Host:Port]
 - Web Server: [Host:Port]
 - Git Server: [Host:Port]
@@ -402,58 +373,48 @@ Record the following metrics for each test:
 ## Test Results
 
 ### Scenario 1: Connect to Filesystem Server
-
 - Status: [PASS/FAIL]
 - Notes: [Any issues or observations]
 
 ### Scenario 2: Tool Discovery
-
 - Status: [PASS/FAIL]
 - Load Time: [Time]
 - Tool Count: [Number]
 - Notes: [Any issues or observations]
 
 ### Scenario 3: Simple Tool Execution
-
 - Status: [PASS/FAIL]
 - Execution Time: [Time]
 - Notes: [Any issues or observations]
 
 ### Scenario 4: Complex Tool Execution
-
 - Status: [PASS/FAIL]
 - Execution Time: [Time]
 - Format Switch Time: [Time]
 - Notes: [Any issues or observations]
 
 ### Scenario 5: File Picker
-
 - Status: [PASS/FAIL]
 - Notes: [Any issues or observations]
 
 ### Scenario 6: Error Handling
-
 - Status: [PASS/FAIL]
 - Notes: [Any issues or observations]
 
 ### Scenario 7: Server Unreachable
-
 - Status: [PASS/FAIL]
 - Recovery Time: [Time]
 - Notes: [Any issues or observations]
 
 ### Scenario 8: Execution History
-
 - Status: [PASS/FAIL]
 - Notes: [Any issues or observations]
 
 ### Scenario 9: Server Presets
-
 - Status: [PASS/FAIL]
 - Notes: [Any issues or observations]
 
 ### Scenario 10: Performance
-
 - Status: [PASS/FAIL]
 - Load Time: [Time]
 - Scroll FPS: [FPS]
@@ -462,20 +423,17 @@ Record the following metrics for each test:
 - Notes: [Any issues or observations]
 
 ## Overall Summary
-
 - Total Tests: 10
 - Passed: [Number]
 - Failed: [Number]
 - Pass Rate: [Percentage]
 
 ## Issues Found
-
 1. [Issue 1]
 2. [Issue 2]
 3. [Issue 3]
 
 ## Recommendations
-
 1. [Recommendation 1]
 2. [Recommendation 2]
 3. [Recommendation 3]

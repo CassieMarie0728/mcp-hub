@@ -85,7 +85,7 @@ export default function OAuthConnectScreen() {
       // Open OAuth URL in browser
       const result = await WebBrowser.openAuthSessionAsync(
         mockAuthUrl,
-        `http://localhost:3000/oauth/${serverType}/callback`,
+        `http://localhost:3000/oauth/${serverType}/callback`
       );
 
       if (result.type === 'success') {
@@ -93,7 +93,7 @@ export default function OAuthConnectScreen() {
         setConnectedServers((prev) => [...prev, serverType]);
         Alert.alert(
           'Success',
-          `${serverType.charAt(0).toUpperCase() + serverType.slice(1)} connected successfully!`,
+          `${serverType.charAt(0).toUpperCase() + serverType.slice(1)} connected successfully!`
         );
       } else if (result.type === 'cancel') {
         Alert.alert('Cancelled', 'OAuth connection was cancelled');
@@ -108,25 +108,36 @@ export default function OAuthConnectScreen() {
   }, []);
 
   const handleDisconnect = useCallback((serverType: ServerType) => {
-    Alert.alert('Disconnect', `Are you sure you want to disconnect ${serverType}?`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Disconnect',
-        style: 'destructive',
-        onPress: () => {
-          setConnectedServers((prev) => prev.filter((s) => s !== serverType));
-          Alert.alert('Disconnected', `${serverType} has been disconnected`);
+    Alert.alert(
+      'Disconnect',
+      `Are you sure you want to disconnect ${serverType}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Disconnect',
+          style: 'destructive',
+          onPress: () => {
+            setConnectedServers((prev) =>
+              prev.filter((s) => s !== serverType)
+            );
+            Alert.alert('Disconnected', `${serverType} has been disconnected`);
+          },
         },
-      },
-    ]);
+      ]
+    );
   }, []);
 
   return (
     <ScreenContainer className="p-0">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="flex-1">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        className="flex-1"
+      >
         {/* Header */}
         <View className="bg-surface border-b border-border p-6">
-          <Text className="text-2xl font-bold text-foreground mb-2">Connect Services</Text>
+          <Text className="text-2xl font-bold text-foreground mb-2">
+            Connect Services
+          </Text>
           <Text className="text-sm text-muted">
             Link your GitHub, Slack, and Notion accounts to automate workflows
           </Text>
@@ -151,10 +162,16 @@ export default function OAuthConnectScreen() {
                         className="w-12 h-12 rounded-full items-center justify-center"
                         style={{ backgroundColor: server.color + '20' }}
                       >
-                        <MaterialIcons name={server.icon as any} size={24} color={server.color} />
+                        <MaterialIcons
+                          name={server.icon as any}
+                          size={24}
+                          color={server.color}
+                        />
                       </View>
                       <View className="flex-1">
-                        <Text className="text-lg font-semibold text-foreground">{server.name}</Text>
+                        <Text className="text-lg font-semibold text-foreground">
+                          {server.name}
+                        </Text>
                         <Text className="text-xs text-muted">
                           {isConnected ? 'Connected' : 'Not connected'}
                         </Text>
@@ -164,22 +181,40 @@ export default function OAuthConnectScreen() {
                     {/* Status Indicator */}
                     <View className="flex-row items-center gap-2">
                       {isConnected && (
-                        <MaterialIcons name="check-circle" size={20} color={colors.success} />
+                        <MaterialIcons
+                          name="check-circle"
+                          size={20}
+                          color={colors.success}
+                        />
                       )}
-                      {isConnecting && <ActivityIndicator size="small" color={colors.primary} />}
+                      {isConnecting && (
+                        <ActivityIndicator
+                          size="small"
+                          color={colors.primary}
+                        />
+                      )}
                     </View>
                   </View>
 
                   {/* Description */}
-                  <Text className="text-sm text-muted mb-4">{server.description}</Text>
+                  <Text className="text-sm text-muted mb-4">
+                    {server.description}
+                  </Text>
 
                   {/* Scopes */}
                   <View className="mb-4">
-                    <Text className="text-xs font-semibold text-muted mb-2">Permissions</Text>
+                    <Text className="text-xs font-semibold text-muted mb-2">
+                      Permissions
+                    </Text>
                     <View className="flex-row flex-wrap gap-2">
                       {server.scopes.map((scope) => (
-                        <View key={scope} className="bg-background rounded-full px-3 py-1">
-                          <Text className="text-xs text-foreground">{scope}</Text>
+                        <View
+                          key={scope}
+                          className="bg-background rounded-full px-3 py-1"
+                        >
+                          <Text className="text-xs text-foreground">
+                            {scope}
+                          </Text>
                         </View>
                       ))}
                     </View>
@@ -188,7 +223,9 @@ export default function OAuthConnectScreen() {
                   {/* Action Button */}
                   <Pressable
                     onPress={() =>
-                      isConnected ? handleDisconnect(server.id) : handleStartOAuth(server.id)
+                      isConnected
+                        ? handleDisconnect(server.id)
+                        : handleStartOAuth(server.id)
                     }
                     disabled={isConnecting}
                     style={({ pressed }) => [
@@ -197,22 +234,38 @@ export default function OAuthConnectScreen() {
                     ]}
                     className={cn(
                       'rounded-lg p-3 items-center',
-                      isConnected ? 'bg-background border border-error' : 'bg-primary',
+                      isConnected
+                        ? 'bg-background border border-error'
+                        : 'bg-primary'
                     )}
                   >
                     <View className="flex-row items-center gap-2">
                       <MaterialIcons
-                        name={isConnecting ? 'hourglass-empty' : isConnected ? 'logout' : 'login'}
+                        name={
+                          isConnecting
+                            ? 'hourglass-empty'
+                            : isConnected
+                              ? 'logout'
+                              : 'login'
+                        }
                         size={18}
-                        color={isConnected ? colors.error : colors.background}
+                        color={
+                          isConnected ? colors.error : colors.background
+                        }
                       />
                       <Text
                         className={cn(
                           'font-semibold',
-                          isConnected ? 'text-error' : 'text-background',
+                          isConnected
+                            ? 'text-error'
+                            : 'text-background'
                         )}
                       >
-                        {isConnecting ? 'Connecting...' : isConnected ? 'Disconnect' : 'Connect'}
+                        {isConnecting
+                          ? 'Connecting...'
+                          : isConnected
+                            ? 'Disconnect'
+                            : 'Connect'}
                       </Text>
                     </View>
                   </Pressable>
@@ -222,12 +275,24 @@ export default function OAuthConnectScreen() {
                 {isConnected && (
                   <View className="bg-background border-t border-border p-4">
                     <View className="flex-row items-center gap-2 mb-2">
-                      <MaterialIcons name="info" size={16} color={colors.muted} />
-                      <Text className="text-xs text-muted">Last used: 2 hours ago</Text>
+                      <MaterialIcons
+                        name="info"
+                        size={16}
+                        color={colors.muted}
+                      />
+                      <Text className="text-xs text-muted">
+                        Last used: 2 hours ago
+                      </Text>
                     </View>
                     <View className="flex-row items-center gap-2">
-                      <MaterialIcons name="schedule" size={16} color={colors.muted} />
-                      <Text className="text-xs text-muted">Expires in 89 days</Text>
+                      <MaterialIcons
+                        name="schedule"
+                        size={16}
+                        color={colors.muted}
+                      />
+                      <Text className="text-xs text-muted">
+                        Expires in 89 days
+                      </Text>
                     </View>
                   </View>
                 )}
@@ -240,7 +305,11 @@ export default function OAuthConnectScreen() {
         {connectedServers.length > 0 && (
           <View className="mx-4 mb-4 bg-success/10 rounded-lg p-4 border border-success/20">
             <View className="flex-row items-center gap-2 mb-2">
-              <MaterialIcons name="check-circle" size={20} color={colors.success} />
+              <MaterialIcons
+                name="check-circle"
+                size={20}
+                color={colors.success}
+              />
               <Text className="text-sm font-semibold text-success">
                 {connectedServers.length} service
                 {connectedServers.length !== 1 ? 's' : ''} connected
@@ -262,10 +331,12 @@ export default function OAuthConnectScreen() {
               style={{ marginTop: 2 }}
             />
             <View className="flex-1">
-              <Text className="text-sm font-semibold text-warning mb-1">Security</Text>
+              <Text className="text-sm font-semibold text-warning mb-1">
+                Security
+              </Text>
               <Text className="text-xs text-muted">
-                Your tokens are encrypted and stored securely. Never share your authentication links
-                with anyone.
+                Your tokens are encrypted and stored securely. Never share your
+                authentication links with anyone.
               </Text>
             </View>
           </View>

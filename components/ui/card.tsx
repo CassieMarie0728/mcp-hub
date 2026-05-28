@@ -38,7 +38,7 @@ export function Card({
         'rounded-lg p-4',
         variantStyles[variant],
         interactive && 'active:opacity-80',
-        className,
+        className
       )}
       style={
         interactive
@@ -99,7 +99,9 @@ interface CardFooterProps {
 
 export function CardFooter({ children, className }: CardFooterProps) {
   return (
-    <View className={cn('flex-row gap-2 pt-4 border-t border-border', className)}>{children}</View>
+    <View className={cn('flex-row gap-2 pt-4 border-t border-border', className)}>
+      {children}
+    </View>
   );
 }
 

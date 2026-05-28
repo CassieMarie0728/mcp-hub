@@ -11,7 +11,7 @@ describe('New Features Tests', () => {
         connectionDetails: {
           url: 'https://api.example.com/mcp',
           headers: {
-            Authorization: 'Bearer token123',
+            'Authorization': 'Bearer token123',
             'X-API-Key': 'secret-key',
           },
         },
@@ -33,7 +33,7 @@ describe('New Features Tests', () => {
         connectionDetails: {
           url: 'https://api.example.com/mcp',
           headers: {
-            Authorization: 'Bearer old-token',
+            'Authorization': 'Bearer old-token',
           },
         },
         status: 'disconnected',
@@ -46,7 +46,7 @@ describe('New Features Tests', () => {
         connectionDetails: {
           ...server.connectionDetails,
           headers: {
-            Authorization: 'Bearer new-token',
+            'Authorization': 'Bearer new-token',
             'X-API-Key': 'new-key',
           },
         },
@@ -98,9 +98,7 @@ describe('New Features Tests', () => {
 
       expect(settings.executionTimeoutEnabled).toBe(false);
       // When disabled, timeout should not be applied
-      const effectiveTimeout = settings.executionTimeoutEnabled
-        ? settings.executionTimeout
-        : undefined;
+      const effectiveTimeout = settings.executionTimeoutEnabled ? settings.executionTimeout : undefined;
       expect(effectiveTimeout).toBeUndefined();
     });
 
@@ -113,9 +111,7 @@ describe('New Features Tests', () => {
         autoRefreshInterval: 0,
       };
 
-      const effectiveTimeout = settings.executionTimeoutEnabled
-        ? settings.executionTimeout
-        : undefined;
+      const effectiveTimeout = settings.executionTimeoutEnabled ? settings.executionTimeout : undefined;
       expect(effectiveTimeout).toBe(15000);
     });
   });

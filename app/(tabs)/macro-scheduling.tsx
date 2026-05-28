@@ -5,11 +5,7 @@ import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
 import { useMacroExecution } from '@/lib/hooks/useMacroExecution';
-import {
-  MacroSchedulingEngine,
-  ScheduleFrequency,
-  MacroSchedule,
-} from '@/lib/engines/MacroSchedulingEngine';
+import { MacroSchedulingEngine, ScheduleFrequency, MacroSchedule } from '@/lib/engines/MacroSchedulingEngine';
 
 /**
  * Macro Scheduling Screen
@@ -88,7 +84,7 @@ export default function MacroSchedulingScreen() {
         },
       ]);
     },
-    [loadSchedules],
+    [loadSchedules]
   );
 
   /**
@@ -105,7 +101,7 @@ export default function MacroSchedulingScreen() {
         Alert.alert('Error', 'Failed to update schedule');
       }
     },
-    [loadSchedules],
+    [loadSchedules]
   );
 
   /**
@@ -188,13 +184,13 @@ export default function MacroSchedulingScreen() {
                     'py-2 px-3 rounded-full border',
                     selectedMacroId === macro.id
                       ? 'bg-primary border-primary'
-                      : 'bg-background border-border',
+                      : 'bg-background border-border'
                   )}
                 >
                   <Text
                     className={cn(
                       'text-xs font-semibold',
-                      selectedMacroId === macro.id ? 'text-white' : 'text-foreground',
+                      selectedMacroId === macro.id ? 'text-white' : 'text-foreground'
                     )}
                   >
                     {macro.name}
@@ -214,15 +210,13 @@ export default function MacroSchedulingScreen() {
                   onPress={() => setFrequency(freq)}
                   className={cn(
                     'py-2 px-3 rounded-full border',
-                    frequency === freq
-                      ? 'bg-primary border-primary'
-                      : 'bg-background border-border',
+                    frequency === freq ? 'bg-primary border-primary' : 'bg-background border-border'
                   )}
                 >
                   <Text
                     className={cn(
                       'text-xs font-semibold',
-                      frequency === freq ? 'text-white' : 'text-foreground',
+                      frequency === freq ? 'text-white' : 'text-foreground'
                     )}
                   >
                     {formatFrequency(freq)}
@@ -242,9 +236,7 @@ export default function MacroSchedulingScreen() {
                 onPress={() => {
                   const [h, m] = scheduledTime.split(':').map(Number);
                   const newH = (h + 1) % 24;
-                  setScheduledTime(
-                    `${String(newH).padStart(2, '0')}:${m.toString().padStart(2, '0')}`,
-                  );
+                  setScheduledTime(`${String(newH).padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
                 }}
               >
                 <MaterialIcons name="add" size={18} color={colors.primary} />
@@ -258,7 +250,7 @@ export default function MacroSchedulingScreen() {
             disabled={isLoading || !selectedMacroId}
             className={cn(
               'py-3 px-4 rounded-lg flex-row items-center justify-center gap-2',
-              isLoading || !selectedMacroId ? 'bg-border opacity-50' : 'bg-primary',
+              isLoading || !selectedMacroId ? 'bg-border opacity-50' : 'bg-primary'
             )}
           >
             <MaterialIcons name="add-circle" size={18} color="white" />
@@ -291,8 +283,7 @@ export default function MacroSchedulingScreen() {
         <View className="p-4 bg-surface rounded-lg border border-border mt-6">
           <Text className="text-xs font-semibold text-foreground mb-2">💡 Scheduling Tips</Text>
           <Text className="text-xs text-muted leading-relaxed">
-            Schedules run in the background. Make sure to enable background app refresh in your
-            device settings for reliable execution.
+            Schedules run in the background. Make sure to enable background app refresh in your device settings for reliable execution.
           </Text>
         </View>
       </ScrollView>

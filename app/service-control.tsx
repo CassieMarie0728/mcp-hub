@@ -21,8 +21,12 @@ export default function ServiceControlScreen() {
   const navigation = useNavigation();
   const router = useRouter();
   const colors = useColors();
-  const { getServiceStatus, startMCPService, stopMCPService, toggleServiceNotification } =
-    useMCPBridgeExtended();
+  const {
+    getServiceStatus,
+    startMCPService,
+    stopMCPService,
+    toggleServiceNotification,
+  } = useMCPBridgeExtended();
   const [status, setStatus] = useState<ServiceStatus>({
     isRunning: false,
     notificationEnabled: true,
@@ -123,9 +127,7 @@ export default function ServiceControlScreen() {
   return (
     <ScreenContainer className="p-0">
       {/* Header */}
-      <View
-        className={`${status.isRunning ? 'bg-gradient-to-b from-success to-success/80' : 'bg-gradient-to-b from-error to-error/80'} px-6 pt-6 pb-8`}
-      >
+      <View className={`${status.isRunning ? 'bg-gradient-to-b from-success to-success/80' : 'bg-gradient-to-b from-error to-error/80'} px-6 pt-6 pb-8`}>
         <View className="flex-row items-center justify-between mb-4">
           <View className="flex-1">
             <Text className="text-4xl font-bold text-background">Service Control</Text>
@@ -167,6 +169,7 @@ export default function ServiceControlScreen() {
             </View>
           </View>
         </Card>
+
         {/* Stats Grid */}
         <View className="flex-row gap-3 mb-6">
           <Card variant="outlined" className="flex-1">
@@ -185,6 +188,7 @@ export default function ServiceControlScreen() {
             </View>
           </Card>
         </View>
+
         {/* Controls */}
         <Card variant="elevated" className="mb-6">
           <CardHeader title="Service Controls" />
@@ -211,8 +215,7 @@ export default function ServiceControlScreen() {
               </Button>
             )}
           </CardContent>
-        </Card>{' '}
-        {/* Service Status */}
+        </Card>        {/* Service Status */}
         <Card variant="outlined" className="mb-6">
           <CardHeader title="Service Status" />
           <CardContent>

@@ -43,18 +43,10 @@ describe('Bridge Integration Tests', () => {
     it('should fetch governance settings', () => {
       const settings = {
         allowlist: [
-          {
-            packageName: 'com.google.android.gms',
-            appName: 'Google Play Services',
-            status: 'allowed' as const,
-          },
+          { packageName: 'com.google.android.gms', appName: 'Google Play Services', status: 'allowed' as const },
         ],
         blocklist: [
-          {
-            packageName: 'com.malicious.app',
-            appName: 'Malicious App',
-            status: 'blocked' as const,
-          },
+          { packageName: 'com.malicious.app', appName: 'Malicious App', status: 'blocked' as const },
         ],
       };
 
@@ -119,12 +111,7 @@ describe('Bridge Integration Tests', () => {
         elementCount: 15,
         elements: [
           { type: 'button', label: 'Send', description: 'Send message', isInteractive: true },
-          {
-            type: 'textinput',
-            label: 'Message',
-            description: 'Message input',
-            isInteractive: true,
-          },
+          { type: 'textinput', label: 'Message', description: 'Message input', isInteractive: true },
         ],
         visualChips: ['base64chip1', 'base64chip2'],
         timestamp: Date.now(),
@@ -146,8 +133,7 @@ describe('Bridge Integration Tests', () => {
     });
 
     it('should validate visual chips are base64', () => {
-      const chip =
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      const chip = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
       expect(chip).toMatch(/^[A-Za-z0-9+/=]+$/);
     });
   });

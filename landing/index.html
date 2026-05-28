@@ -1,913 +1,757 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MCP Hub – Automation Without the Bullshit</title>
-    <meta
-      name="description"
-      content="Stop wasting time on repetitive work. MCP Hub connects your tools into a unified workflow engine. Record macros once, execute them everywhere."
-    />
-    <meta name="theme-color" content="#0b0f0f" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="description" content="Stop wasting time on repetitive work. MCP Hub connects your tools into a unified workflow engine. Record macros once, execute them everywhere.">
+    <meta name="theme-color" content="#0b0f0f">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        background-color: #0b0f0f;
-        color: #a8a9ad;
-        font-family: 'JetBrains Mono', monospace;
-        line-height: 1.6;
-        overflow-x: hidden;
-      }
-
-      /* Grungy texture overlay */
-      body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: repeating-linear-gradient(
-          0deg,
-          rgba(0, 0, 0, 0.15),
-          rgba(0, 0, 0, 0.15) 1px,
-          transparent 1px,
-          transparent 2px
-        );
-        pointer-events: none;
-        z-index: 1;
-      }
-
-      .container {
-        position: relative;
-        z-index: 2;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
-
-      /* Navigation */
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 30px 0;
-        border-bottom: 2px solid #981518;
-        margin-bottom: 60px;
-      }
-
-      .logo {
-        font-family: 'Special Elite', serif;
-        font-size: 28px;
-        font-weight: bold;
-        color: #981518;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-      }
-
-      nav a {
-        color: #a8a9ad;
-        text-decoration: none;
-        margin-left: 40px;
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: color 0.3s ease;
-        border-bottom: 2px solid transparent;
-        padding-bottom: 5px;
-      }
-
-      nav a:hover {
-        color: #981518;
-        border-bottom-color: #981518;
-      }
-
-      /* Hero Section */
-      .hero {
-        margin-bottom: 100px;
-        text-align: center;
-      }
-
-      .hero h1 {
-        font-family: 'Special Elite', serif;
-        font-size: 72px;
-        font-weight: bold;
-        color: #981518;
-        margin-bottom: 20px;
-        line-height: 1.2;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        text-shadow: 3px 3px 0px rgba(152, 21, 24, 0.3);
-      }
-
-      .hero .tagline {
-        font-size: 24px;
-        color: #a8a9ad;
-        margin-bottom: 30px;
-        font-style: italic;
-        letter-spacing: 1px;
-      }
-
-      .hero p {
-        font-size: 16px;
-        color: #a8a9ad;
-        max-width: 700px;
-        margin: 0 auto 40px;
-        line-height: 1.8;
-      }
-
-      /* CTA Buttons */
-      .cta-group {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-bottom: 80px;
-      }
-
-      .btn {
-        padding: 16px 40px;
-        font-size: 16px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        border: 2px solid #981518;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: 'JetBrains Mono', monospace;
-        text-decoration: none;
-        display: inline-block;
-      }
-
-      .btn-primary {
-        background-color: #981518;
-        color: #0b0f0f;
-      }
-
-      .btn-primary:hover {
-        background-color: transparent;
-        color: #981518;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(152, 21, 24, 0.3);
-      }
-
-      .btn-secondary {
-        background-color: transparent;
-        color: #981518;
-      }
-
-      .btn-secondary:hover {
-        background-color: #981518;
-        color: #0b0f0f;
-        transform: translateY(-2px);
-      }
-
-      /* Features Section */
-      .features {
-        margin-bottom: 100px;
-      }
-
-      .section-title {
-        font-family: 'Special Elite', serif;
-        font-size: 48px;
-        color: #981518;
-        margin-bottom: 60px;
-        text-align: center;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-      }
-
-      .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 40px;
-        margin-bottom: 60px;
-      }
-
-      .feature-card {
-        border: 2px solid #981518;
-        padding: 30px;
-        background-color: rgba(152, 21, 24, 0.05);
-        transition: all 0.3s ease;
-        position: relative;
-      }
-
-      .feature-card::before {
-        content: '';
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        border: 2px solid #981518;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: -1;
-      }
-
-      .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(152, 21, 24, 0.2);
-      }
-
-      .feature-card h3 {
-        font-family: 'Special Elite', serif;
-        font-size: 24px;
-        color: #981518;
-        margin-bottom: 15px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .feature-card p {
-        font-size: 14px;
-        color: #a8a9ad;
-        line-height: 1.8;
-      }
-
-      /* How It Works */
-      .how-it-works {
-        margin-bottom: 100px;
-      }
-
-      .steps {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 30px;
-      }
-
-      .step {
-        text-align: center;
-        padding: 30px;
-        border-left: 4px solid #981518;
-        background-color: rgba(152, 21, 24, 0.05);
-      }
-
-      .step-number {
-        font-family: 'Special Elite', serif;
-        font-size: 48px;
-        color: #981518;
-        margin-bottom: 15px;
-        font-weight: bold;
-      }
-
-      .step h4 {
-        font-size: 18px;
-        color: #981518;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .step p {
-        font-size: 14px;
-        color: #a8a9ad;
-      }
-
-      /* Tech Stack */
-      .tech-stack {
-        margin-bottom: 100px;
-      }
-
-      .tech-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 20px;
-        text-align: center;
-      }
-
-      .tech-item {
-        padding: 20px;
-        border: 1px solid #981518;
-        background-color: rgba(152, 21, 24, 0.05);
-        font-size: 14px;
-        color: #a8a9ad;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s ease;
-      }
-
-      .tech-item:hover {
-        background-color: #981518;
-        color: #0b0f0f;
-      }
-
-      /* Testimonial / Use Case */
-      .use-case {
-        margin-bottom: 100px;
-        border: 2px solid #981518;
-        padding: 40px;
-        background-color: rgba(152, 21, 24, 0.08);
-      }
-
-      .use-case h3 {
-        font-family: 'Special Elite', serif;
-        font-size: 32px;
-        color: #981518;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-      }
-
-      .use-case p {
-        font-size: 16px;
-        color: #a8a9ad;
-        margin-bottom: 15px;
-        line-height: 1.8;
-      }
-
-      .use-case strong {
-        color: #981518;
-      }
-
-      /* Pricing Section */
-      .pricing {
-        margin-bottom: 100px;
-      }
-
-      .pricing-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
-      }
-
-      .pricing-card {
-        border: 2px solid #981518;
-        padding: 40px;
-        text-align: center;
-        background-color: rgba(152, 21, 24, 0.05);
-        transition: all 0.3s ease;
-      }
-
-      .pricing-card.featured {
-        border-width: 3px;
-        transform: scale(1.05);
-        background-color: rgba(152, 21, 24, 0.15);
-      }
-
-      .pricing-card h4 {
-        font-family: 'Special Elite', serif;
-        font-size: 24px;
-        color: #981518;
-        margin-bottom: 15px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .price {
-        font-size: 48px;
-        color: #981518;
-        font-weight: bold;
-        margin-bottom: 10px;
-      }
-
-      .price-period {
-        font-size: 14px;
-        color: #a8a9ad;
-        margin-bottom: 30px;
-      }
-
-      .pricing-features {
-        text-align: left;
-        margin-bottom: 30px;
-        font-size: 14px;
-        color: #a8a9ad;
-      }
-
-      .pricing-features li {
-        list-style: none;
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(152, 21, 24, 0.2);
-      }
-
-      .pricing-features li:before {
-        content: '✓ ';
-        color: #981518;
-        font-weight: bold;
-        margin-right: 10px;
-      }
-
-      /* CTA Section */
-      .final-cta {
-        text-align: center;
-        padding: 60px 40px;
-        border: 3px solid #981518;
-        background-color: rgba(152, 21, 24, 0.1);
-        margin-bottom: 60px;
-      }
-
-      .final-cta h2 {
-        font-family: 'Special Elite', serif;
-        font-size: 48px;
-        color: #981518;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-      }
-
-      .final-cta p {
-        font-size: 18px;
-        color: #a8a9ad;
-        margin-bottom: 30px;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      /* Footer */
-      footer {
-        border-top: 2px solid #981518;
-        padding: 40px 0;
-        text-align: center;
-        color: #a8a9ad;
-        font-size: 12px;
-      }
-
-      footer a {
-        color: #981518;
-        text-decoration: none;
-        margin: 0 15px;
-      }
-
-      footer a:hover {
-        text-decoration: underline;
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        .hero h1 {
-          font-size: 48px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .hero .tagline {
-          font-size: 18px;
+        body {
+            background-color: #0b0f0f;
+            color: #a8a9ad;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Grungy texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0.15),
+                    rgba(0, 0, 0, 0.15) 1px,
+                    transparent 1px,
+                    transparent 2px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #981518;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-family: 'Special Elite', serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #981518;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         nav a {
-          margin-left: 20px;
-          font-size: 12px;
+            color: #a8a9ad;
+            text-decoration: none;
+            margin-left: 40px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 5px;
         }
 
-        .section-title {
-          font-size: 36px;
+        nav a:hover {
+            color: #981518;
+            border-bottom-color: #981518;
         }
 
+        /* Hero Section */
+        .hero {
+            margin-bottom: 100px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Special Elite', serif;
+            font-size: 72px;
+            font-weight: bold;
+            color: #981518;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 3px 3px 0px rgba(152, 21, 24, 0.3);
+        }
+
+        .hero .tagline {
+            font-size: 24px;
+            color: #a8a9ad;
+            margin-bottom: 30px;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: #a8a9ad;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        /* CTA Buttons */
         .cta-group {
-          flex-direction: column;
-          align-items: center;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 80px;
         }
 
         .btn {
-          width: 100%;
-          max-width: 300px;
+            padding: 16px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 2px solid #981518;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        .btn-primary:hover {
+            background-color: transparent;
+            color: #981518;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(152, 21, 24, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #981518;
+        }
+
+        .btn-secondary:hover {
+            background-color: #981518;
+            color: #0b0f0f;
+            transform: translateY(-2px);
+        }
+
+        /* Features Section */
+        .features {
+            margin-bottom: 100px;
+        }
+
+        .section-title {
+            font-family: 'Special Elite', serif;
+            font-size: 48px;
+            color: #981518;
+            margin-bottom: 60px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            border: 2px solid #981518;
+            padding: 30px;
+            background-color: rgba(152, 21, 24, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 2px solid #981518;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(152, 21, 24, 0.2);
+        }
+
+        .feature-card h3 {
+            font-family: 'Special Elite', serif;
+            font-size: 24px;
+            color: #981518;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #a8a9ad;
+            line-height: 1.8;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            margin-bottom: 100px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 30px;
+            border-left: 4px solid #981518;
+            background-color: rgba(152, 21, 24, 0.05);
+        }
+
+        .step-number {
+            font-family: 'Special Elite', serif;
+            font-size: 48px;
+            color: #981518;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .step h4 {
+            font-size: 18px;
+            color: #981518;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: #a8a9ad;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            margin-bottom: 100px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .tech-item {
+            padding: 20px;
+            border: 1px solid #981518;
+            background-color: rgba(152, 21, 24, 0.05);
+            font-size: 14px;
+            color: #a8a9ad;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        /* Testimonial / Use Case */
+        .use-case {
+            margin-bottom: 100px;
+            border: 2px solid #981518;
+            padding: 40px;
+            background-color: rgba(152, 21, 24, 0.08);
+        }
+
+        .use-case h3 {
+            font-family: 'Special Elite', serif;
+            font-size: 32px;
+            color: #981518;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .use-case p {
+            font-size: 16px;
+            color: #a8a9ad;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .use-case strong {
+            color: #981518;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            margin-bottom: 100px;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .pricing-card {
+            border: 2px solid #981518;
+            padding: 40px;
+            text-align: center;
+            background-color: rgba(152, 21, 24, 0.05);
+            transition: all 0.3s ease;
         }
 
         .pricing-card.featured {
-          transform: scale(1);
+            border-width: 3px;
+            transform: scale(1.05);
+            background-color: rgba(152, 21, 24, 0.15);
         }
-      }
 
-      /* Animations */
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
+        .pricing-card h4 {
+            font-family: 'Special Elite', serif;
+            font-size: 24px;
+            color: #981518;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+
+        .price {
+            font-size: 48px;
+            color: #981518;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
-      }
 
-      .feature-card,
-      .step,
-      .pricing-card {
-        animation: fadeInUp 0.6s ease-out forwards;
-      }
+        .price-period {
+            font-size: 14px;
+            color: #a8a9ad;
+            margin-bottom: 30px;
+        }
 
-      .feature-card:nth-child(1) {
-        animation-delay: 0.1s;
-      }
-      .feature-card:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-      .feature-card:nth-child(3) {
-        animation-delay: 0.3s;
-      }
+        .pricing-features {
+            text-align: left;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: #a8a9ad;
+        }
+
+        .pricing-features li {
+            list-style: none;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(152, 21, 24, 0.2);
+        }
+
+        .pricing-features li:before {
+            content: '✓ ';
+            color: #981518;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* CTA Section */
+        .final-cta {
+            text-align: center;
+            padding: 60px 40px;
+            border: 3px solid #981518;
+            background-color: rgba(152, 21, 24, 0.1);
+            margin-bottom: 60px;
+        }
+
+        .final-cta h2 {
+            font-family: 'Special Elite', serif;
+            font-size: 48px;
+            color: #981518;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .final-cta p {
+            font-size: 18px;
+            color: #a8a9ad;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 2px solid #981518;
+            padding: 40px 0;
+            text-align: center;
+            color: #a8a9ad;
+            font-size: 12px;
+        }
+
+        footer a {
+            color: #981518;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .hero .tagline {
+                font-size: 18px;
+            }
+
+            nav a {
+                margin-left: 20px;
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card, .step, .pricing-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <!-- Navigation -->
-      <header>
-        <div class="logo">MCP Hub</div>
-        <nav>
-          <a href="#features">Features</a>
-          <a href="#how">How It Works</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </header>
+        <!-- Navigation -->
+        <header>
+            <div class="logo">MCP Hub</div>
+            <nav>
+                <a href="#features">Features</a>
+                <a href="#how">How It Works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </header>
 
-      <!-- Hero Section -->
-      <section class="hero">
-        <h1>Stop Wasting Time on Repetitive Bullshit</h1>
-        <p class="tagline">Where Mindless Grunt Work Goes to Die</p>
-        <p>
-          MCP Hub is a production-grade automation platform that connects your favorite tools
-          (GitHub, Slack, Notion, and beyond) into a unified workflow engine. Record macros once,
-          execute them everywhere. No more manual copy-paste. No more context switching. Just pure,
-          unapologetic automation.
-        </p>
-        <div class="cta-group">
-          <button class="btn btn-primary" onclick="window.location.href = 'https://app.mcphub.io'">
-            Get Started Now
-          </button>
-          <button
-            class="btn btn-secondary"
-            onclick="window.location.href = './demo-workflow-builder.html'"
-          >
-            Try Demo
-          </button>
-        </div>
-      </section>
-
-      <!-- Features Section -->
-      <section class="features" id="features">
-        <h2 class="section-title">What You Actually Get</h2>
-        <div class="features-grid">
-          <div class="feature-card">
-            <h3>🔐 Secure by Default</h3>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Stop Wasting Time on Repetitive Bullshit</h1>
+            <p class="tagline">Where Mindless Grunt Work Goes to Die</p>
             <p>
-              Tokens encrypted with AES-256-GCM. No plaintext credentials ever stored. OAuth flows
-              handle refresh tokens seamlessly. Your data stays yours.
+                MCP Hub is a production-grade automation platform that connects your favorite tools (GitHub, Slack, Notion, and beyond) into a unified workflow engine. Record macros once, execute them everywhere. No more manual copy-paste. No more context switching. Just pure, unapologetic automation.
             </p>
-          </div>
-          <div class="feature-card">
-            <h3>⚡ Real-Time Execution</h3>
-            <p>
-              Trigger workflows instantly via webhooks, schedules, or manual execution. Watch
-              execution timelines in real-time. No waiting, no guessing.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>🛠️ Advanced Workflows</h3>
-            <p>
-              Conditional logic, loops, parallel execution, error handling with automatic retry.
-              Build complex automations without writing a single line of code.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>📊 Full Visibility</h3>
-            <p>
-              Real-time analytics, error tracking, performance metrics. Admin dashboard with live
-              system health, token inventory, and alert management.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>👥 Team Collaboration</h3>
-            <p>
-              Workspaces for organizing team macros. Role-based access control. Shared credentials
-              with granular permissions. Audit logging for compliance.
-            </p>
-          </div>
-          <div class="feature-card">
-            <h3>🚀 Production Ready</h3>
-            <p>
-              Enterprise-grade infrastructure. Horizontal scaling. Disaster recovery. Prometheus
-              monitoring. Slack/Email alerts. Deploy anywhere.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- How It Works -->
-      <section class="how-it-works" id="how">
-        <h2 class="section-title">How It Works</h2>
-        <div class="steps">
-          <div class="step">
-            <div class="step-number">1</div>
-            <h4>Connect Your Tools</h4>
-            <p>
-              Register MCP servers (GitHub, Slack, Notion, etc.) and authenticate via OAuth. We
-              handle the credentials securely.
-            </p>
-          </div>
-          <div class="step">
-            <div class="step-number">2</div>
-            <h4>Discover Available Tools</h4>
-            <p>
-              Browse the complete list of available tools and actions from each connected service.
-              No configuration needed.
-            </p>
-          </div>
-          <div class="step">
-            <div class="step-number">3</div>
-            <h4>Build Your Workflow</h4>
-            <p>
-              Use the visual builder to chain tools together. Add conditions, loops, and error
-              handling. Test with dry-run before deploying.
-            </p>
-          </div>
-          <div class="step">
-            <div class="step-number">4</div>
-            <h4>Deploy & Monitor</h4>
-            <p>
-              Execute manually, schedule recurring runs, or trigger via webhooks. Monitor execution
-              in real-time with full audit trails.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Demo Links -->
-      <section style="margin-bottom: 100px">
-        <h2 class="section-title">Try Interactive Demos</h2>
-        <div
-          style="
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-          "
-        >
-          <a href="./demo-workflow-builder.html" style="text-decoration: none">
-            <div
-              style="
-                border: 2px solid #981518;
-                padding: 30px;
-                background-color: rgba(152, 21, 24, 0.05);
-                border-radius: 4px;
-                text-align: center;
-                transition: all 0.3s ease;
-                cursor: pointer;
-              "
-              onmouseover="
-                this.style.transform = 'translateY(-5px)';
-                this.style.boxShadow = '0 15px 30px rgba(152, 21, 24, 0.2)';
-              "
-              onmouseout="
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = 'none';
-              "
-            >
-              <div
-                style="
-                  font-family: 'Special Elite', serif;
-                  font-size: 24px;
-                  color: #981518;
-                  margin-bottom: 10px;
-                  text-transform: uppercase;
-                  letter-spacing: 1px;
-                "
-              >
-                ⚡ Workflow Builder
-              </div>
-              <p style="font-size: 14px; color: #a8a9ad">
-                Drag tools to build workflows. No code required.
-              </p>
+            <div class="cta-group">
+            <button class="btn btn-primary" onclick="window.location.href='https://app.mcphub.io'">Get Started Now</button>
+            <button class="btn btn-secondary" onclick="window.location.href='./demo-workflow-builder.html'">Try Demo</button>
             </div>
-          </a>
-          <a href="./demo-execution-simulator.html" style="text-decoration: none">
-            <div
-              style="
-                border: 2px solid #981518;
-                padding: 30px;
-                background-color: rgba(152, 21, 24, 0.05);
-                border-radius: 4px;
-                text-align: center;
-                transition: all 0.3s ease;
-                cursor: pointer;
-              "
-              onmouseover="
-                this.style.transform = 'translateY(-5px)';
-                this.style.boxShadow = '0 15px 30px rgba(152, 21, 24, 0.2)';
-              "
-              onmouseout="
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = 'none';
-              "
-            >
-              <div
-                style="
-                  font-family: 'Special Elite', serif;
-                  font-size: 24px;
-                  color: #981518;
-                  margin-bottom: 10px;
-                  text-transform: uppercase;
-                  letter-spacing: 1px;
-                "
-              >
-                ⚙️ Live Execution
-              </div>
-              <p style="font-size: 14px; color: #a8a9ad">
-                Watch workflows execute in real-time with metrics.
-              </p>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2 class="section-title">What You Actually Get</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🔐 Secure by Default</h3>
+                    <p>Tokens encrypted with AES-256-GCM. No plaintext credentials ever stored. OAuth flows handle refresh tokens seamlessly. Your data stays yours.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚡ Real-Time Execution</h3>
+                    <p>Trigger workflows instantly via webhooks, schedules, or manual execution. Watch execution timelines in real-time. No waiting, no guessing.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛠️ Advanced Workflows</h3>
+                    <p>Conditional logic, loops, parallel execution, error handling with automatic retry. Build complex automations without writing a single line of code.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 Full Visibility</h3>
+                    <p>Real-time analytics, error tracking, performance metrics. Admin dashboard with live system health, token inventory, and alert management.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>👥 Team Collaboration</h3>
+                    <p>Workspaces for organizing team macros. Role-based access control. Shared credentials with granular permissions. Audit logging for compliance.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🚀 Production Ready</h3>
+                    <p>Enterprise-grade infrastructure. Horizontal scaling. Disaster recovery. Prometheus monitoring. Slack/Email alerts. Deploy anywhere.</p>
+                </div>
             </div>
-          </a>
-          <a href="./demo-features.html" style="text-decoration: none">
-            <div
-              style="
-                border: 2px solid #981518;
-                padding: 30px;
-                background-color: rgba(152, 21, 24, 0.05);
-                border-radius: 4px;
-                text-align: center;
-                transition: all 0.3s ease;
-                cursor: pointer;
-              "
-              onmouseover="
-                this.style.transform = 'translateY(-5px)';
-                this.style.boxShadow = '0 15px 30px rgba(152, 21, 24, 0.2)';
-              "
-              onmouseout="
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = 'none';
-              "
-            >
-              <div
-                style="
-                  font-family: 'Special Elite', serif;
-                  font-size: 24px;
-                  color: #981518;
-                  margin-bottom: 10px;
-                  text-transform: uppercase;
-                  letter-spacing: 1px;
-                "
-              >
-                🎯 Features
-              </div>
-              <p style="font-size: 14px; color: #a8a9ad">
-                Explore security, performance, and monitoring.
-              </p>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works" id="how">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Connect Your Tools</h4>
+                    <p>Register MCP servers (GitHub, Slack, Notion, etc.) and authenticate via OAuth. We handle the credentials securely.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Discover Available Tools</h4>
+                    <p>Browse the complete list of available tools and actions from each connected service. No configuration needed.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Build Your Workflow</h4>
+                    <p>Use the visual builder to chain tools together. Add conditions, loops, and error handling. Test with dry-run before deploying.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Deploy & Monitor</h4>
+                    <p>Execute manually, schedule recurring runs, or trigger via webhooks. Monitor execution in real-time with full audit trails.</p>
+                </div>
             </div>
-          </a>
-        </div>
-      </section>
+        </section>
 
-      <!-- Use Case -->
-      <section class="use-case" id="demo">
-        <h3>Real-World Example</h3>
-        <p>
-          <strong>Scenario:</strong> You're managing a GitHub repository. Every time someone opens
-          an issue, you want to:
-        </p>
-        <p>
-          1. Create a Slack notification in #issues channel<br />
-          2. Add the issue to a Notion database for tracking<br />
-          3. Assign it to the right team member based on labels<br />
-          4. Send them an email with the issue details
-        </p>
-        <p>
-          <strong>Without MCP Hub:</strong> Manual process every single time. Copy issue link, paste
-          in Slack, switch to Notion, create entry, send email. Repeat 50 times a week.
-        </p>
-        <p>
-          <strong>With MCP Hub:</strong> Set it up once. It runs automatically. Forever. You're
-          welcome.
-        </p>
-      </section>
+        <!-- Demo Links -->
+        <section style="margin-bottom: 100px;">
+            <h2 class="section-title">Try Interactive Demos</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <a href="./demo-workflow-builder.html" style="text-decoration: none;">
+                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">⚡ Workflow Builder</div>
+                        <p style="font-size: 14px; color: #a8a9ad;">Drag tools to build workflows. No code required.</p>
+                    </div>
+                </a>
+                <a href="./demo-execution-simulator.html" style="text-decoration: none;">
+                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">⚙️ Live Execution</div>
+                        <p style="font-size: 14px; color: #a8a9ad;">Watch workflows execute in real-time with metrics.</p>
+                    </div>
+                </a>
+                <a href="./demo-features.html" style="text-decoration: none;">
+                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">🎯 Features</div>
+                        <p style="font-size: 14px; color: #a8a9ad;">Explore security, performance, and monitoring.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
 
-      <!-- Tech Stack -->
-      <section class="tech-stack">
-        <h2 class="section-title">Built With Enterprise Tech</h2>
-        <div class="tech-grid">
-          <div class="tech-item">React Native 0.81</div>
-          <div class="tech-item">Node.js + Express</div>
-          <div class="tech-item">PostgreSQL 14+</div>
-          <div class="tech-item">Redis</div>
-          <div class="tech-item">Prometheus</div>
-          <div class="tech-item">Docker</div>
-          <div class="tech-item">TypeScript 5.9</div>
-          <div class="tech-item">tRPC</div>
-          <div class="tech-item">Nginx</div>
-          <div class="tech-item">OAuth 2.0</div>
-          <div class="tech-item">AES-256-GCM</div>
-          <div class="tech-item">WebSocket</div>
-        </div>
-      </section>
+        <!-- Use Case -->
+        <section class="use-case" id="demo">
+            <h3>Real-World Example</h3>
+            <p>
+                <strong>Scenario:</strong> You're managing a GitHub repository. Every time someone opens an issue, you want to:
+            </p>
+            <p>
+                1. Create a Slack notification in #issues channel<br>
+                2. Add the issue to a Notion database for tracking<br>
+                3. Assign it to the right team member based on labels<br>
+                4. Send them an email with the issue details
+            </p>
+            <p>
+                <strong>Without MCP Hub:</strong> Manual process every single time. Copy issue link, paste in Slack, switch to Notion, create entry, send email. Repeat 50 times a week.
+            </p>
+            <p>
+                <strong>With MCP Hub:</strong> Set it up once. It runs automatically. Forever. You're welcome.
+            </p>
+        </section>
 
-      <!-- Pricing -->
-      <section class="pricing" id="pricing">
-        <h2 class="section-title">Pricing That Makes Sense</h2>
-        <div class="pricing-cards">
-          <div class="pricing-card">
-            <h4>Starter</h4>
-            <div class="price">Free</div>
-            <div class="price-period">Forever</div>
-            <ul class="pricing-features">
-              <li>Up to 5 workflows</li>
-              <li>1 workspace</li>
-              <li>Basic analytics</li>
-              <li>Community support</li>
-              <li>GitHub, Slack, Notion</li>
-            </ul>
-            <button class="btn btn-secondary">Get Started</button>
-          </div>
-          <div class="pricing-card featured">
-            <h4>Professional</h4>
-            <div class="price">$99</div>
-            <div class="price-period">per month</div>
-            <ul class="pricing-features">
-              <li>Unlimited workflows</li>
-              <li>Up to 5 workspaces</li>
-              <li>Advanced analytics</li>
-              <li>Email support</li>
-              <li>20+ integrations</li>
-              <li>Webhook triggers</li>
-              <li>Custom alerts</li>
-            </ul>
-            <button class="btn btn-primary">Start Free Trial</button>
-          </div>
-          <div class="pricing-card">
-            <h4>Enterprise</h4>
-            <div class="price">Custom</div>
-            <div class="price-period">contact us</div>
-            <ul class="pricing-features">
-              <li>Everything in Pro</li>
-              <li>Unlimited workspaces</li>
-              <li>Dedicated support</li>
-              <li>SLA guarantee</li>
-              <li>Custom integrations</li>
-              <li>On-premise deployment</li>
-              <li>Advanced security</li>
-            </ul>
-            <button class="btn btn-secondary">Schedule Demo</button>
-          </div>
-        </div>
-      </section>
+        <!-- Tech Stack -->
+        <section class="tech-stack">
+            <h2 class="section-title">Built With Enterprise Tech</h2>
+            <div class="tech-grid">
+                <div class="tech-item">React Native 0.81</div>
+                <div class="tech-item">Node.js + Express</div>
+                <div class="tech-item">PostgreSQL 14+</div>
+                <div class="tech-item">Redis</div>
+                <div class="tech-item">Prometheus</div>
+                <div class="tech-item">Docker</div>
+                <div class="tech-item">TypeScript 5.9</div>
+                <div class="tech-item">tRPC</div>
+                <div class="tech-item">Nginx</div>
+                <div class="tech-item">OAuth 2.0</div>
+                <div class="tech-item">AES-256-GCM</div>
+                <div class="tech-item">WebSocket</div>
+            </div>
+        </section>
 
-      <!-- Final CTA -->
-      <section class="final-cta">
-        <h2>Ready to Stop Wasting Time?</h2>
-        <p>
-          Join teams that have already automated thousands of hours of repetitive work. No credit
-          card required. No setup fees. No corporate nonsense.
-        </p>
-        <button class="btn btn-primary" onclick="window.location.href = 'https://app.mcphub.io'">
-          Start Automating Now
-        </button>
-      </section>
+        <!-- Pricing -->
+        <section class="pricing" id="pricing">
+            <h2 class="section-title">Pricing That Makes Sense</h2>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h4>Starter</h4>
+                    <div class="price">Free</div>
+                    <div class="price-period">Forever</div>
+                    <ul class="pricing-features">
+                        <li>Up to 5 workflows</li>
+                        <li>1 workspace</li>
+                        <li>Basic analytics</li>
+                        <li>Community support</li>
+                        <li>GitHub, Slack, Notion</li>
+                    </ul>
+                    <button class="btn btn-secondary">Get Started</button>
+                </div>
+                <div class="pricing-card featured">
+                    <h4>Professional</h4>
+                    <div class="price">$99</div>
+                    <div class="price-period">per month</div>
+                    <ul class="pricing-features">
+                        <li>Unlimited workflows</li>
+                        <li>Up to 5 workspaces</li>
+                        <li>Advanced analytics</li>
+                        <li>Email support</li>
+                        <li>20+ integrations</li>
+                        <li>Webhook triggers</li>
+                        <li>Custom alerts</li>
+                    </ul>
+                    <button class="btn btn-primary">Start Free Trial</button>
+                </div>
+                <div class="pricing-card">
+                    <h4>Enterprise</h4>
+                    <div class="price">Custom</div>
+                    <div class="price-period">contact us</div>
+                    <ul class="pricing-features">
+                        <li>Everything in Pro</li>
+                        <li>Unlimited workspaces</li>
+                        <li>Dedicated support</li>
+                        <li>SLA guarantee</li>
+                        <li>Custom integrations</li>
+                        <li>On-premise deployment</li>
+                        <li>Advanced security</li>
+                    </ul>
+                    <button class="btn btn-secondary">Schedule Demo</button>
+                </div>
+            </div>
+        </section>
 
-      <!-- Footer -->
-      <footer>
-        <p>&copy; 2026 MCP Hub. Built by people who hate repetitive work.</p>
-        <p>
-          <a href="./privacy">Privacy</a>
-          <a href="./terms">Terms</a>
-          <a href="./security">Security</a>
-          <a href="https://github.com/manus-ai/mcp-hub">GitHub</a>
-          <a href="mailto:support@mcphub.io">Support</a>
-        </p>
-      </footer>
+        <!-- Final CTA -->
+        <section class="final-cta">
+            <h2>Ready to Stop Wasting Time?</h2>
+            <p>
+                Join teams that have already automated thousands of hours of repetitive work. No credit card required. No setup fees. No corporate nonsense.
+            </p>
+            <button class="btn btn-primary" onclick="window.location.href='https://app.mcphub.io'">Start Automating Now</button>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                &copy; 2026 MCP Hub. Built by people who hate repetitive work.
+            </p>
+            <p>
+                <a href="./privacy">Privacy</a>
+                <a href="./terms">Terms</a>
+                <a href="./security">Security</a>
+                <a href="https://github.com/manus-ai/mcp-hub">GitHub</a>
+                <a href="mailto:support@mcphub.io">Support</a>
+            </p>
+        </footer>
     </div>
 
     <script>
-      // Smooth scroll for navigation
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener('click', function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          if (target) {
-            target.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
-          }
         });
-      });
 
-      // Add scroll animation for elements
-      const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px',
-      };
+        // Add scroll animation for elements
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
 
-      const observer = new IntersectionObserver(function (entries) {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-          }
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .step, .pricing-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
         });
-      }, observerOptions);
-
-      document.querySelectorAll('.feature-card, .step, .pricing-card').forEach((el) => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-        observer.observe(el);
-      });
     </script>
-  </body>
+</body>
 </html>

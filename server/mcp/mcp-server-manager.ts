@@ -24,7 +24,7 @@ export interface MCPServerConfig {
 // Type for internal use with unknown values
 type MCPServerConfigWithUnknownHeaders = Omit<MCPServerConfig, 'headers'> & {
   headers?: Record<string, unknown>;
-};
+}
 
 export interface MCPTool {
   name: string;
@@ -160,7 +160,7 @@ class MCPServerManager {
   async executeTool(
     serverId: string,
     toolName: string,
-    input: Record<string, any>,
+    input: Record<string, any>
   ): Promise<MCPToolResult> {
     const config = this.servers.get(serverId);
     if (!config) {

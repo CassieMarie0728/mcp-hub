@@ -105,14 +105,14 @@ export function usePushNotifications() {
       notificationListener.current = Notifications.addNotificationReceivedListener(
         (notification) => {
           console.log('Notification received:', notification);
-        },
+        }
       );
 
       // Listen for notification responses (user tapped notification)
       responseListener.current = Notifications.addNotificationResponseReceivedListener(
         (response) => {
           handleNotificationResponse(response);
-        },
+        }
       );
 
       setIsInitialized(true);

@@ -236,10 +236,7 @@ export class TrendingAnalyticsEngine {
       return null;
     }
 
-    const successRate =
-      metrics.totalExecutions > 0
-        ? (metrics.successfulExecutions / metrics.totalExecutions) * 100
-        : 0;
+    const successRate = metrics.totalExecutions > 0 ? (metrics.successfulExecutions / metrics.totalExecutions) * 100 : 0;
     const avgRating = this.getAverageRating(metrics);
 
     return {
@@ -271,13 +268,11 @@ export class TrendingAnalyticsEngine {
         : 0;
 
     const allRatings = allMetrics.flatMap((m) => m.ratings.map((r) => r.rating));
-    const avgCommunityRating =
-      allRatings.length > 0 ? allRatings.reduce((a, b) => a + b, 0) / allRatings.length : 0;
+    const avgCommunityRating = allRatings.length > 0 ? allRatings.reduce((a, b) => a + b, 0) / allRatings.length : 0;
 
     const successfulExecutions = allMetrics.reduce((sum, m) => sum + m.successfulExecutions, 0);
     const failedExecutions = allMetrics.reduce((sum, m) => sum + m.failedExecutions, 0);
-    const overallSuccessRate =
-      totalExecutions > 0 ? (successfulExecutions / totalExecutions) * 100 : 0;
+    const overallSuccessRate = totalExecutions > 0 ? (successfulExecutions / totalExecutions) * 100 : 0;
 
     return {
       totalMacros: allMetrics.length,
@@ -385,7 +380,7 @@ export class TrendingAnalyticsEngine {
         insights: this.getCommunityInsights(),
       },
       null,
-      2,
+      2
     );
   }
 }

@@ -71,7 +71,10 @@ class WebhookManager {
    * Create HMAC signature for webhook payload
    */
   static createSignature(payload: string, secret: string): string {
-    return crypto.createHmac('sha256', secret).update(payload).digest('hex');
+    return crypto
+      .createHmac('sha256', secret)
+      .update(payload)
+      .digest('hex');
   }
 
   /**
@@ -79,18 +82,16 @@ class WebhookManager {
    */
   static verifySignature(payload: string, signature: string, secret: string): boolean {
     const expectedSignature = this.createSignature(payload, secret);
-    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    );
   }
 
   /**
    * Create webhook
    */
-  static createWebhook(
-    config: Omit<
-      WebhookConfig,
-      'id' | 'createdAt' | 'updatedAt' | 'executionCount' | 'failureCount'
-    >,
-  ): WebhookConfig {
+  static createWebhook(config: Omit<WebhookConfig, 'id' | 'createdAt' | 'updatedAt' | 'executionCount' | 'failureCount'>): WebhookConfig {
     const webhook: WebhookConfig = {
       ...config,
       id: `wh_${crypto.randomUUID()}`,
@@ -196,7 +197,7 @@ class WebhookManager {
     signature: string,
     secret: string,
     ip: string,
-    webhook: WebhookConfig,
+    webhook: WebhookConfig
   ): { valid: boolean; error?: string } {
     // Verify signature
     try {
@@ -227,7 +228,7 @@ class WebhookManager {
     webhookId: string,
     event: string,
     payload: Record<string, unknown>,
-    status: 'pending' | 'success' | 'failed' | 'retrying' = 'pending',
+    status: 'pending' | 'success' | 'failed' | 'retrying' = 'pending'
   ): WebhookEvent {
     const webhookEvent: WebhookEvent = {
       id: `evt_${crypto.randomUUID()}`,
@@ -273,7 +274,7 @@ class WebhookManager {
     eventId: string,
     status: 'success' | 'failed' | 'retrying',
     response?: { statusCode: number; body: string },
-    error?: string,
+    error?: string
   ): WebhookEvent {
     const instance = new WebhookManager();
     const event = instance.events.get(eventId);
@@ -306,7 +307,9 @@ class WebhookManager {
       throw new Error(`Webhook ${webhookId} not found`);
     }
 
-    const events = Array.from(instance.events.values()).filter((e) => e.webhookId === webhookId);
+    const events = Array.from(instance.events.values()).filter(
+      (e) => e.webhookId === webhookId
+    );
     const successCount = events.filter((e) => e.status === 'success').length;
     const successRate = events.length > 0 ? (successCount / events.length) * 100 : 0;
 

@@ -1,14 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  TextInput,
-  Switch,
-  Alert,
-  FlatList,
-} from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, Switch, Alert, FlatList } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
@@ -69,22 +60,15 @@ export default function MacroSchedulerUIScreen() {
     setSchedules([...schedules, newSchedule]);
     setShowNewSchedule(false);
     Alert.alert('Success', 'Schedule created successfully');
-  }, [
-    scheduleType,
-    cronExpression,
-    intervalMinutes,
-    executeTime,
-    retryOnFailure,
-    maxRetries,
-    notifyOnSuccess,
-    notifyOnFailure,
-  ]);
+  }, [scheduleType, cronExpression, intervalMinutes, executeTime, retryOnFailure, maxRetries, notifyOnSuccess, notifyOnFailure]);
 
   /**
    * Toggle schedule
    */
   const handleToggleSchedule = useCallback((id: string) => {
-    setSchedules((prev) => prev.map((s) => (s.id === id ? { ...s, enabled: !s.enabled } : s)));
+    setSchedules((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, enabled: !s.enabled } : s))
+    );
   }, []);
 
   /**
@@ -178,13 +162,13 @@ export default function MacroSchedulerUIScreen() {
                 onPress={() => setScheduleType(type as any)}
                 className={cn(
                   'flex-1 rounded-lg p-2 active:opacity-80',
-                  scheduleType === type ? 'bg-primary' : 'bg-background border border-border',
+                  scheduleType === type ? 'bg-primary' : 'bg-background border border-border'
                 )}
               >
                 <Text
                   className={cn(
                     'text-center text-xs font-semibold capitalize',
-                    scheduleType === type ? 'text-background' : 'text-foreground',
+                    scheduleType === type ? 'text-background' : 'text-foreground'
                   )}
                 >
                   {type}
@@ -329,9 +313,7 @@ export default function MacroSchedulerUIScreen() {
           {/* Schedules List */}
           {schedules.length > 0 ? (
             <View className="gap-2">
-              <Text className="text-sm font-semibold text-muted">
-                ACTIVE SCHEDULES ({schedules.length})
-              </Text>
+              <Text className="text-sm font-semibold text-muted">ACTIVE SCHEDULES ({schedules.length})</Text>
               <FlatList
                 scrollEnabled={false}
                 data={schedules}

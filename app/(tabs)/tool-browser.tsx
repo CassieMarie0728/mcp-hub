@@ -66,7 +66,7 @@ export default function ToolBrowserScreen() {
       (t) =>
         t.tool.name.toLowerCase().includes(query) ||
         t.tool.description?.toLowerCase().includes(query) ||
-        t.serverName.toLowerCase().includes(query),
+        t.serverName.toLowerCase().includes(query)
     );
   }, [allTools, searchQuery]);
 
@@ -136,7 +136,7 @@ export default function ToolBrowserScreen() {
                   }}
                   className={cn(
                     'bg-surface rounded-lg p-4 border border-border',
-                    selectedTool?.tool.name === item.tool.name && 'border-primary bg-primary/5',
+                    selectedTool?.tool.name === item.tool.name && 'border-primary bg-primary/5'
                   )}
                 >
                   <View className="flex-row items-start justify-between">
@@ -152,9 +152,7 @@ export default function ToolBrowserScreen() {
                       <Text className="text-xs text-muted mt-1">{item.tool.description}</Text>
                     </View>
                     <MaterialIcons
-                      name={
-                        selectedTool?.tool.name === item.tool.name ? 'expand-less' : 'expand-more'
-                      }
+                      name={selectedTool?.tool.name === item.tool.name ? 'expand-less' : 'expand-more'}
                       size={20}
                       color={colors.muted}
                     />
@@ -165,29 +163,27 @@ export default function ToolBrowserScreen() {
                     <View className="gap-3 mt-4 pt-4 border-t border-border">
                       {/* Parameters */}
                       {item.tool.inputSchema?.properties &&
-                        Object.entries(item.tool.inputSchema.properties).map(
-                          ([key, prop]: [string, any]) => (
-                            <View key={key}>
-                              <Text className="text-xs font-semibold text-muted mb-1">
-                                {key}
-                                {item.tool.inputSchema?.required?.includes(key) && (
-                                  <Text className="text-error">*</Text>
-                                )}
-                              </Text>
-                              <View className="bg-background rounded-lg px-3 py-2 border border-border">
-                                <TextInput
-                                  placeholder={prop.description || key}
-                                  placeholderTextColor={colors.muted}
-                                  value={parameters[key] || ''}
-                                  onChangeText={(value) =>
-                                    setParameters({ ...parameters, [key]: value })
-                                  }
-                                  className="text-foreground"
-                                />
-                              </View>
+                        Object.entries(item.tool.inputSchema.properties).map(([key, prop]: [string, any]) => (
+                          <View key={key}>
+                            <Text className="text-xs font-semibold text-muted mb-1">
+                              {key}
+                              {item.tool.inputSchema?.required?.includes(key) && (
+                                <Text className="text-error">*</Text>
+                              )}
+                            </Text>
+                            <View className="bg-background rounded-lg px-3 py-2 border border-border">
+                              <TextInput
+                                placeholder={prop.description || key}
+                                placeholderTextColor={colors.muted}
+                                value={parameters[key] || ''}
+                                onChangeText={(value) =>
+                                  setParameters({ ...parameters, [key]: value })
+                                }
+                                className="text-foreground"
+                              />
                             </View>
-                          ),
-                        )}
+                          </View>
+                        ))}
 
                       {/* Execute Button */}
                       <Pressable
@@ -195,7 +191,7 @@ export default function ToolBrowserScreen() {
                         disabled={isExecuting}
                         className={cn(
                           'py-3 px-4 rounded-lg items-center justify-center',
-                          isExecuting ? 'bg-primary/50' : 'bg-primary',
+                          isExecuting ? 'bg-primary/50' : 'bg-primary'
                         )}
                       >
                         {isExecuting ? (
@@ -214,7 +210,7 @@ export default function ToolBrowserScreen() {
                           <Text
                             className={cn(
                               'text-xs font-mono',
-                              executionResult.success ? 'text-success' : 'text-error',
+                              executionResult.success ? 'text-success' : 'text-error'
                             )}
                           >
                             {executionResult.success

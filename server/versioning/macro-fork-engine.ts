@@ -14,7 +14,7 @@ export class MacroForkEngine {
     userId: string,
     newName: string,
     description?: string,
-    modifications?: Record<string, any>,
+    modifications?: Record<string, any>
   ): MacroFork {
     const forkId = `fork_${originalMacroId}_${userId}_${Date.now()}`;
 
@@ -236,8 +236,7 @@ export class MacroForkEngine {
 
     if (!fork || rating < 1 || rating > 5) return false;
 
-    fork.stats.rating =
-      (fork.stats.rating * fork.stats.reviews + rating) / (fork.stats.reviews + 1);
+    fork.stats.rating = (fork.stats.rating * fork.stats.reviews + rating) / (fork.stats.reviews + 1);
     fork.stats.reviews++;
 
     return true;
@@ -283,8 +282,7 @@ export class MacroForkEngine {
       totalForks: forks.length,
       publicForks: forks.filter((f) => f.isPublic).length,
       totalDescendants: descendants.length,
-      avgRating:
-        forks.length > 0 ? forks.reduce((sum, f) => sum + f.stats.rating, 0) / forks.length : 0,
+      avgRating: forks.length > 0 ? forks.reduce((sum, f) => sum + f.stats.rating, 0) / forks.length : 0,
       totalDownloads: forks.reduce((sum, f) => sum + f.stats.downloads, 0),
       totalUsage: forks.reduce((sum, f) => sum + f.stats.usageCount, 0),
     };
@@ -331,7 +329,7 @@ export class MacroForkEngine {
         f.isPublic &&
         (f.name.toLowerCase().includes(lowerQuery) ||
           f.description?.toLowerCase().includes(lowerQuery) ||
-          f.tags.some((t) => t.toLowerCase().includes(lowerQuery))),
+          f.tags.some((t) => t.toLowerCase().includes(lowerQuery)))
     );
   }
 

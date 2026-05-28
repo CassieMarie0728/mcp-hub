@@ -63,48 +63,52 @@ flowchart TD
 
 The provider registry and OAuth manager do not share token storage. OAuthManager creates and exchanges OAuth tokens, while the adapter classes consume a token that is already available.
 
-_server/mcp/mcp-server-manager.ts_
+*server/mcp/mcp-server-manager.ts*
 
 This is the config shape produced by the provider adapters and consumed by the MCP server manager.
 
-| Property        | Type                     | Description                                              |
-| --------------- | ------------------------ | -------------------------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `id`            | `string`                 | Unique server identifier used as the manager key.        |
-| `name`          | `string`                 | Display name shown in the UI and server lists.           |
-| `url`           | `string`                 | MCP transport URL constructed by the adapter.            |
-| `type`          | `'http' \                | 'websocket' \                                            | 'stdio'`                                                         | Transport type used by the manager.                               |
-| `headers`       | `Record<string, string>` | Adapter-provided headers merged into the manager client. |
-| `auth`          | `{ type: 'bearer' \      | 'api-key' \                                              | 'basic'; token?: string; username?: string; password?: string }` | Auth contract used by the manager when it builds request headers. |
-| `timeout`       | `number`                 | Client timeout in milliseconds.                          |
-| `retryAttempts` | `number`                 | Optional retry count passed through by the config.       |
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Unique server identifier used as the manager key. |
+| `name` | `string` | Display name shown in the UI and server lists. |
+| `url` | `string` | MCP transport URL constructed by the adapter. |
+| `type` | `'http' \ | 'websocket' \ | 'stdio'` | Transport type used by the manager. |
+| `headers` | `Record<string, string>` | Adapter-provided headers merged into the manager client. |
+| `auth` | `{ type: 'bearer' \ | 'api-key' \ | 'basic'; token?: string; username?: string; password?: string }` | Auth contract used by the manager when it builds request headers. |
+| `timeout` | `number` | Client timeout in milliseconds. |
+| `retryAttempts` | `number` | Optional retry count passed through by the config. |
+
 
 #### MCPServerRegistry
 
-_server/mcp/mcp-server-registry.ts_
+*server/mcp/mcp-server-registry.ts*
 
 `MCPServerRegistry` centralizes the provider catalog and dispatches provider-specific adapter logic.
 
 **Properties**
 
-| Property  | Type                                | Description                                               |
-| --------- | ----------------------------------- | --------------------------------------------------------- |
+| Property | Type | Description |
+| --- | --- | --- |
 | `servers` | `Map<ServerType, ServerDefinition>` | Static registry of GitHub, Slack, and Notion definitions. |
+
 
 **Constructor Dependencies**
 
-| Type | Description                                                     |
-| ---- | --------------------------------------------------------------- |
+| Type | Description |
+| --- | --- |
 | None | This class is static and does not accept injected dependencies. |
+
 
 **Public Methods**
 
-| Method                | Description                                                                         |
-| --------------------- | ----------------------------------------------------------------------------------- |
-| `getServerDefinition` | Returns the registry entry for one provider type.                                   |
-| `getAllServers`       | Returns every registered provider definition.                                       |
-| `createServerConfig`  | Instantiates the provider adapter and returns its `MCPServerConfig`.                |
-| `getServerTools`      | Instantiates the provider adapter and returns the static tool manifest.             |
-| `validateToken`       | Instantiates the provider adapter and validates the token against the provider API. |
+| Method | Description |
+| --- | --- |
+| `getServerDefinition` | Returns the registry entry for one provider type. |
+| `getAllServers` | Returns every registered provider definition. |
+| `createServerConfig` | Instantiates the provider adapter and returns its `MCPServerConfig`. |
+| `getServerTools` | Instantiates the provider adapter and returns the static tool manifest. |
+| `validateToken` | Instantiates the provider adapter and validates the token against the provider API. |
+
 
 **ServerType values**
 
@@ -112,25 +116,27 @@ _server/mcp/mcp-server-registry.ts_
 
 #### ServerDefinition
 
-_server/mcp/mcp-server-registry.ts_
+*server/mcp/mcp-server-registry.ts*
 
-| Property         | Type         | Description                      |
-| ---------------- | ------------ | -------------------------------- | --------------------------------------- | ---------------------------------------------- |
-| `id`             | `ServerType` | Registry key for the provider.   |
-| `name`           | `string`     | Display name for the provider.   |
-| `description`    | `string`     | Human-readable provider summary. |
-| `icon`           | `string`     | Icon name used by the client.    |
-| `docs`           | `string`     | Provider documentation URL.      |
-| `requiredScopes` | `string[] \  | undefined`                       | Scopes expected for the provider token. |
-| `authMethod`     | `'bearer' \  | 'api-key' \                      | 'basic'`                                | Authentication method expected by the manager. |
+| Property | Type | Description |
+| --- | --- | --- |
+| `id` | `ServerType` | Registry key for the provider. |
+| `name` | `string` | Display name for the provider. |
+| `description` | `string` | Human-readable provider summary. |
+| `icon` | `string` | Icon name used by the client. |
+| `docs` | `string` | Provider documentation URL. |
+| `requiredScopes` | `string[] \ | undefined` | Scopes expected for the provider token. |
+| `authMethod` | `'bearer' \ | 'api-key' \ | 'basic'` | Authentication method expected by the manager. |
+
 
 **Registry entries**
 
-| Provider | `id`     | `authMethod` | `requiredScopes`                            | `docs`                            |
-| -------- | -------- | ------------ | ------------------------------------------- | --------------------------------- |
-| GitHub   | `github` | `bearer`     | `repo`, `user`, `gist`                      | `https://docs.github.com/en/rest` |
-| Slack    | `slack`  | `bearer`     | `chat:write`, `channels:read`, `users:read` |                                   |
-| Notion   | `notion` | `bearer`     | `[]`                                        |                                   |
+| Provider | `id` | `authMethod` | `requiredScopes` | `docs` |
+| --- | --- | --- | --- | --- |
+| GitHub | `github` | `bearer` | `repo`, `user`, `gist` | `https://docs.github.com/en/rest` |
+| Slack | `slack` | `bearer` | `chat:write`, `channels:read`, `users:read` |  |
+| Notion | `notion` | `bearer` | `[]` |  |
+
 
 ### GitHub Provider Adapter
 
@@ -138,36 +144,40 @@ _server/mcp/mcp-server-registry.ts_
 
 MCPServerRegistry marks Notion with an empty requiredScopes array, while OAuthManager requests read and write scopes for Notion. Scope validation in the registry therefore does not enforce Notion permission requirements.
 
-_server/mcp/servers/github-mcp.ts_
+*server/mcp/servers/github-mcp.ts*
 
-| Property  | Type       | Description                                           |
-| --------- | ---------- | ----------------------------------------------------- | ----------------------------------------- |
-| `token`   | `string`   | Bearer token used for GitHub validation and MCP auth. |
-| `baseUrl` | `string \  | undefined`                                            | Optional API base override; defaults to . |
+| Property | Type | Description |
+| --- | --- | --- |
+| `token` | `string` | Bearer token used for GitHub validation and MCP auth. |
+| `baseUrl` | `string \ | undefined` | Optional API base override; defaults to . |
+
 
 #### GitHubMCPServer
 
-_server/mcp/servers/github-mcp.ts_
+*server/mcp/servers/github-mcp.ts*
 
 **Properties**
 
-| Property | Type           | Description                                                    |
-| -------- | -------------- | -------------------------------------------------------------- |
+| Property | Type | Description |
+| --- | --- | --- |
 | `config` | `GitHubConfig` | Adapter configuration merged with the default GitHub base URL. |
+
 
 **Constructor Dependencies**
 
-| Type           | Description                                               |
-| -------------- | --------------------------------------------------------- |
+| Type | Description |
+| --- | --- |
 | `GitHubConfig` | Provides the bearer token and optional base URL override. |
+
 
 **Public Methods**
 
-| Method              | Description                                              |
-| ------------------- | -------------------------------------------------------- |
-| `getMCPConfig`      | Builds the GitHub MCP transport config and auth headers. |
-| `getAvailableTools` | Returns the GitHub tool manifest used for discovery.     |
-| `validateToken`     | Calls GitHub `/user` to verify the bearer token.         |
+| Method | Description |
+| --- | --- |
+| `getMCPConfig` | Builds the GitHub MCP transport config and auth headers. |
+| `getAvailableTools` | Returns the GitHub tool manifest used for discovery. |
+| `validateToken` | Calls GitHub `/user` to verify the bearer token. |
+
 
 **MCP config output**
 
@@ -182,16 +192,17 @@ _server/mcp/servers/github-mcp.ts_
 
 **Tool manifest**
 
-| Tool                   | Purpose                                                        | Required inputs                           | Optional inputs                       |
-| ---------------------- | -------------------------------------------------------------- | ----------------------------------------- | ------------------------------------- |
-| `list_repositories`    | Lists repositories for the authenticated user or organization. | None                                      | `org`, `per_page`, `page`             |
-| `create_issue`         | Creates a new issue in a repository.                           | `owner`, `repo`, `title`                  | `body`, `labels`, `assignees`         |
-| `create_pull_request`  | Creates a new pull request.                                    | `owner`, `repo`, `title`, `head`, `base`  | `body`                                |
-| `list_issues`          | Lists issues in a repository.                                  | `owner`, `repo`                           | `state`, `per_page`                   |
-| `get_user_profile`     | Returns the authenticated user profile.                        | None                                      | None                                  |
-| `search_repositories`  | Searches repositories.                                         | `query`                                   | `sort`, `per_page`                    |
-| `add_repository_label` | Adds labels to an issue.                                       | `owner`, `repo`, `issue_number`, `labels` | None                                  |
-| `create_repository`    | Creates a repository.                                          | `name`                                    | `description`, `private`, `auto_init` |
+| Tool | Purpose | Required inputs | Optional inputs |
+| --- | --- | --- | --- |
+| `list_repositories` | Lists repositories for the authenticated user or organization. | None | `org`, `per_page`, `page` |
+| `create_issue` | Creates a new issue in a repository. | `owner`, `repo`, `title` | `body`, `labels`, `assignees` |
+| `create_pull_request` | Creates a new pull request. | `owner`, `repo`, `title`, `head`, `base` | `body` |
+| `list_issues` | Lists issues in a repository. | `owner`, `repo` | `state`, `per_page` |
+| `get_user_profile` | Returns the authenticated user profile. | None | None |
+| `search_repositories` | Searches repositories. | `query` | `sort`, `per_page` |
+| `add_repository_label` | Adds labels to an issue. | `owner`, `repo`, `issue_number`, `labels` | None |
+| `create_repository` | Creates a repository. | `name` | `description`, `private`, `auto_init` |
+
 
 **Authentication assumptions**
 
@@ -203,36 +214,40 @@ _server/mcp/servers/github-mcp.ts_
 
 #### SlackConfig
 
-_server/mcp/servers/slack-mcp.ts_
+*server/mcp/servers/slack-mcp.ts*
 
-| Property  | Type       | Description                                          |
-| --------- | ---------- | ---------------------------------------------------- | ---------------------------------------------------------------- |
-| `token`   | `string`   | Bearer token used for Slack validation and MCP auth. |
-| `baseUrl` | `string \  | undefined`                                           | Optional API base override; defaults to `https://slack.com/api`. |
+| Property | Type | Description |
+| --- | --- | --- |
+| `token` | `string` | Bearer token used for Slack validation and MCP auth. |
+| `baseUrl` | `string \ | undefined` | Optional API base override; defaults to `https://slack.com/api`. |
+
 
 #### SlackMCPServer
 
-_server/mcp/servers/slack-mcp.ts_
+*server/mcp/servers/slack-mcp.ts*
 
 **Properties**
 
-| Property | Type          | Description                                                   |
-| -------- | ------------- | ------------------------------------------------------------- |
+| Property | Type | Description |
+| --- | --- | --- |
 | `config` | `SlackConfig` | Adapter configuration merged with the default Slack base URL. |
+
 
 **Constructor Dependencies**
 
-| Type          | Description                                               |
-| ------------- | --------------------------------------------------------- |
+| Type | Description |
+| --- | --- |
 | `SlackConfig` | Provides the bearer token and optional base URL override. |
+
 
 **Public Methods**
 
-| Method              | Description                                             |
-| ------------------- | ------------------------------------------------------- |
-| `getMCPConfig`      | Builds the Slack MCP transport config and auth headers. |
-| `getAvailableTools` | Returns the Slack tool manifest used for discovery.     |
-| `validateToken`     | Calls Slack `auth.test` to verify the bearer token.     |
+| Method | Description |
+| --- | --- |
+| `getMCPConfig` | Builds the Slack MCP transport config and auth headers. |
+| `getAvailableTools` | Returns the Slack tool manifest used for discovery. |
+| `validateToken` | Calls Slack `auth.test` to verify the bearer token. |
+
 
 **MCP config output**
 
@@ -246,59 +261,64 @@ _server/mcp/servers/slack-mcp.ts_
 
 **Tool manifest**
 
-| Tool               | Purpose                                          | Required inputs                | Optional inputs             |
-| ------------------ | ------------------------------------------------ | ------------------------------ | --------------------------- |
-| `send_message`     | Sends a message to a channel.                    | `channel`, `text`              | `thread_ts`, `blocks`       |
-| `list_channels`    | Lists channels in the workspace.                 | None                           | `exclude_archived`, `limit` |
-| `get_channel_info` | Returns channel information.                     | `channel`                      | None                        |
-| `list_users`       | Lists workspace users.                           | None                           | `limit`                     |
-| `get_user_info`    | Returns information about a user.                | `user`                         | None                        |
-| `create_channel`   | Creates a new channel.                           | `name`                         | `is_private`, `description` |
-| `add_reaction`     | Adds an emoji reaction to a message.             | `channel`, `timestamp`, `name` | None                        |
-| `set_topic`        | Updates a channel topic.                         | `channel`, `topic`             | None                        |
-| `invite_users`     | Invites users to a channel.                      | `channel`, `users`             | None                        |
-| `get_auth_test`    | Tests authentication and returns workspace info. | None                           | None                        |
+| Tool | Purpose | Required inputs | Optional inputs |
+| --- | --- | --- | --- |
+| `send_message` | Sends a message to a channel. | `channel`, `text` | `thread_ts`, `blocks` |
+| `list_channels` | Lists channels in the workspace. | None | `exclude_archived`, `limit` |
+| `get_channel_info` | Returns channel information. | `channel` | None |
+| `list_users` | Lists workspace users. | None | `limit` |
+| `get_user_info` | Returns information about a user. | `user` | None |
+| `create_channel` | Creates a new channel. | `name` | `is_private`, `description` |
+| `add_reaction` | Adds an emoji reaction to a message. | `channel`, `timestamp`, `name` | None |
+| `set_topic` | Updates a channel topic. | `channel`, `topic` | None |
+| `invite_users` | Invites users to a channel. | `channel`, `users` | None |
+| `get_auth_test` | Tests authentication and returns workspace info. | None | None |
+
 
 **Authentication assumptions**
 
 - The adapter expects a Slack bearer token.
 - The registry advertises `chat:write`, `channels:read`, and `users:read` scopes.
-- `validateToken` calls and requires the JSON response to contain `ok: true`.
+- `validateToken` calls  and requires the JSON response to contain `ok: true`.
 
 ### Notion Provider Adapter
 
 #### NotionConfig
 
-_server/mcp/servers/notion-mcp.ts_
+*server/mcp/servers/notion-mcp.ts*
 
-| Property  | Type       | Description                                           |
-| --------- | ---------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
-| `token`   | `string`   | Bearer token used for Notion validation and MCP auth. |
-| `baseUrl` | `string \  | undefined`                                            | Optional API base override; defaults to `https://api.notion.com/v1`. |
+| Property | Type | Description |
+| --- | --- | --- |
+| `token` | `string` | Bearer token used for Notion validation and MCP auth. |
+| `baseUrl` | `string \ | undefined` | Optional API base override; defaults to `https://api.notion.com/v1`. |
+
 
 #### NotionMCPServer
 
-_server/mcp/servers/notion-mcp.ts_
+*server/mcp/servers/notion-mcp.ts*
 
 **Properties**
 
-| Property | Type           | Description                                                    |
-| -------- | -------------- | -------------------------------------------------------------- |
+| Property | Type | Description |
+| --- | --- | --- |
 | `config` | `NotionConfig` | Adapter configuration merged with the default Notion base URL. |
+
 
 **Constructor Dependencies**
 
-| Type           | Description                                               |
-| -------------- | --------------------------------------------------------- |
+| Type | Description |
+| --- | --- |
 | `NotionConfig` | Provides the bearer token and optional base URL override. |
+
 
 **Public Methods**
 
-| Method              | Description                                              |
-| ------------------- | -------------------------------------------------------- |
-| `getMCPConfig`      | Builds the Notion MCP transport config and auth headers. |
-| `getAvailableTools` | Returns the Notion tool manifest used for discovery.     |
-| `validateToken`     | Calls Notion `/users/me` to verify the bearer token.     |
+| Method | Description |
+| --- | --- |
+| `getMCPConfig` | Builds the Notion MCP transport config and auth headers. |
+| `getAvailableTools` | Returns the Notion tool manifest used for discovery. |
+| `validateToken` | Calls Notion `/users/me` to verify the bearer token. |
+
 
 **MCP config output**
 
@@ -313,18 +333,19 @@ _server/mcp/servers/notion-mcp.ts_
 
 **Tool manifest**
 
-| Tool                      | Purpose                                   | Required inputs                 | Optional inputs                |
-| ------------------------- | ----------------------------------------- | ------------------------------- | ------------------------------ |
-| `query_database`          | Queries a Notion database.                | `database_id`                   | `filter`, `sorts`, `page_size` |
-| `create_page`             | Creates a new page.                       | `parent`, `properties`          | `children`                     |
-| `update_page`             | Updates a page.                           | `page_id`                       | `properties`, `archived`       |
-| `retrieve_block_children` | Returns child blocks for a block or page. | `block_id`                      | `page_size`                    |
-| `delete_block`            | Deletes a block.                          | `block_id`                      | None                           |
-| `get_page`                | Returns page details.                     | `page_id`                       | None                           |
-| `get_database`            | Returns database schema.                  | `database_id`                   | None                           |
-| `append_block_children`   | Appends blocks to a page.                 | `block_id`, `children`          | None                           |
-| `search`                  | Searches pages and databases.             | `query`                         | `filter`, `sort`               |
-| `create_database`         | Creates a new database.                   | `parent`, `title`, `properties` | None                           |
+| Tool | Purpose | Required inputs | Optional inputs |
+| --- | --- | --- | --- |
+| `query_database` | Queries a Notion database. | `database_id` | `filter`, `sorts`, `page_size` |
+| `create_page` | Creates a new page. | `parent`, `properties` | `children` |
+| `update_page` | Updates a page. | `page_id` | `properties`, `archived` |
+| `retrieve_block_children` | Returns child blocks for a block or page. | `block_id` | `page_size` |
+| `delete_block` | Deletes a block. | `block_id` | None |
+| `get_page` | Returns page details. | `page_id` | None |
+| `get_database` | Returns database schema. | `database_id` | None |
+| `append_block_children` | Appends blocks to a page. | `block_id`, `children` | None |
+| `search` | Searches pages and databases. | `query` | `filter`, `sort` |
+| `create_database` | Creates a new database. | `parent`, `title`, `properties` | None |
+
 
 **Authentication assumptions**
 
@@ -336,62 +357,67 @@ _server/mcp/servers/notion-mcp.ts_
 
 #### OAuthConfig
 
-_server/auth/oauth-manager.ts_
+*server/auth/oauth-manager.ts*
 
-| Property       | Type       | Description                                                       |
-| -------------- | ---------- | ----------------------------------------------------------------- |
-| `clientId`     | `string`   | OAuth client identifier used in authorization and token exchange. |
-| `clientSecret` | `string`   | OAuth client secret used in token exchange and refresh.           |
-| `redirectUri`  | `string`   | Callback URL registered with the provider.                        |
-| `scopes`       | `string[]` | Provider scopes requested during authorization.                   |
+| Property | Type | Description |
+| --- | --- | --- |
+| `clientId` | `string` | OAuth client identifier used in authorization and token exchange. |
+| `clientSecret` | `string` | OAuth client secret used in token exchange and refresh. |
+| `redirectUri` | `string` | Callback URL registered with the provider. |
+| `scopes` | `string[]` | Provider scopes requested during authorization. |
+
 
 #### OAuthState
 
-_server/auth/oauth-manager.ts_
+*server/auth/oauth-manager.ts*
 
-| Property     | Type     | Description                                   |
-| ------------ | -------- | --------------------------------------------- |
-| `state`      | `string` | Random CSRF protection token.                 |
-| `serverId`   | `string` | Server identifier tied to the OAuth flow.     |
+| Property | Type | Description |
+| --- | --- | --- |
+| `state` | `string` | Random CSRF protection token. |
+| `serverId` | `string` | Server identifier tied to the OAuth flow. |
 | `serverType` | `string` | Provider name associated with the OAuth flow. |
-| `createdAt`  | `Date`   | Creation time for the state record.           |
-| `expiresAt`  | `Date`   | Expiration time for the state record.         |
+| `createdAt` | `Date` | Creation time for the state record. |
+| `expiresAt` | `Date` | Expiration time for the state record. |
+
 
 #### OAuthToken
 
-_server/auth/oauth-manager.ts_
+*server/auth/oauth-manager.ts*
 
-| Property       | Type       | Description                                                   |
-| -------------- | ---------- | ------------------------------------------------------------- | ----------------------------------------------------- |
-| `accessToken`  | `string`   | Access token returned by the provider.                        |
-| `refreshToken` | `string \  | undefined`                                                    | Refresh token returned by the provider, if supported. |
-| `expiresIn`    | `number \  | undefined`                                                    | Token lifetime in seconds.                            |
-| `expiresAt`    | `Date \    | undefined`                                                    | Derived expiration timestamp.                         |
-| `tokenType`    | `string`   | Token type returned by the provider or defaulted to `bearer`. |
+| Property | Type | Description |
+| --- | --- | --- |
+| `accessToken` | `string` | Access token returned by the provider. |
+| `refreshToken` | `string \ | undefined` | Refresh token returned by the provider, if supported. |
+| `expiresIn` | `number \ | undefined` | Token lifetime in seconds. |
+| `expiresAt` | `Date \ | undefined` | Derived expiration timestamp. |
+| `tokenType` | `string` | Token type returned by the provider or defaulted to `bearer`. |
+
 
 #### OAuthManager
 
-_server/auth/oauth-manager.ts_
+*server/auth/oauth-manager.ts*
 
 **Public Methods**
 
-| Method                     | Description                                                       |
-| -------------------------- | ----------------------------------------------------------------- |
+| Method | Description |
+| --- | --- |
 | `generateAuthorizationUrl` | Builds the provider authorization URL and stores the OAuth state. |
-| `verifyState`              | Looks up a stored state token and checks expiration.              |
-| `exchangeCodeForToken`     | Exchanges an authorization code for an OAuth token.               |
-| `refreshAccessToken`       | Refreshes an OAuth token for providers that support refresh.      |
-| `revokeToken`              | Revokes an access token through the provider.                     |
-| `isTokenExpired`           | Returns whether a token is expired.                               |
-| `shouldRefreshToken`       | Returns whether a token is inside the refresh window.             |
+| `verifyState` | Looks up a stored state token and checks expiration. |
+| `exchangeCodeForToken` | Exchanges an authorization code for an OAuth token. |
+| `refreshAccessToken` | Refreshes an OAuth token for providers that support refresh. |
+| `revokeToken` | Revokes an access token through the provider. |
+| `isTokenExpired` | Returns whether a token is expired. |
+| `shouldRefreshToken` | Returns whether a token is inside the refresh window. |
+
 
 **Provider configuration expectations**
 
-| Provider | Env vars                                                                            | Default redirect URI                          | Requested scopes                            | Scope separator | Refresh supported |
-| -------- | ----------------------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------- | --------------- | ----------------- |
-| GitHub   | `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET`, `GITHUB_OAUTH_REDIRECT_URI` | `http://localhost:3000/oauth/github/callback` | `repo`, `user`, `gist`                      | Space           | No                |
-| Slack    | `SLACK_OAUTH_CLIENT_ID`, `SLACK_OAUTH_CLIENT_SECRET`, `SLACK_OAUTH_REDIRECT_URI`    | `http://localhost:3000/oauth/slack/callback`  | `chat:write`, `channels:read`, `users:read` | Comma           | Yes               |
-| Notion   | `NOTION_OAUTH_CLIENT_ID`, `NOTION_OAUTH_CLIENT_SECRET`, `NOTION_OAUTH_REDIRECT_URI` | `http://localhost:3000/oauth/notion/callback` | `read`, `write`                             | Comma           | Yes               |
+| Provider | Env vars | Default redirect URI | Requested scopes | Scope separator | Refresh supported |
+| --- | --- | --- | --- | --- | --- |
+| GitHub | `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET`, `GITHUB_OAUTH_REDIRECT_URI` | `http://localhost:3000/oauth/github/callback` | `repo`, `user`, `gist` | Space | No |
+| Slack | `SLACK_OAUTH_CLIENT_ID`, `SLACK_OAUTH_CLIENT_SECRET`, `SLACK_OAUTH_REDIRECT_URI` | `http://localhost:3000/oauth/slack/callback` | `chat:write`, `channels:read`, `users:read` | Comma | Yes |
+| Notion | `NOTION_OAUTH_CLIENT_ID`, `NOTION_OAUTH_CLIENT_SECRET`, `NOTION_OAUTH_REDIRECT_URI` | `http://localhost:3000/oauth/notion/callback` | `read`, `write` | Comma | Yes |
+
 
 **OAuth state behavior**
 
@@ -1083,10 +1109,10 @@ The provider adapters and OAuth manager call external provider APIs directly. Th
 
 ## Key Classes Reference
 
-| Class                    | Responsibility                                                                             |
-| ------------------------ | ------------------------------------------------------------------------------------------ |
+| Class | Responsibility |
+| --- | --- |
 | `mcp-server-registry.ts` | Registry for provider definitions, adapter dispatch, token validation, and tool discovery. |
-| `github-mcp.ts`          | GitHub-specific MCP config, tool manifest, and token validation.                           |
-| `slack-mcp.ts`           | Slack-specific MCP config, tool manifest, and token validation.                            |
-| `notion-mcp.ts`          | Notion-specific MCP config, tool manifest, and token validation.                           |
-| `oauth-manager.ts`       | OAuth state generation, code exchange, refresh, revocation, and token freshness checks.    |
+| `github-mcp.ts` | GitHub-specific MCP config, tool manifest, and token validation. |
+| `slack-mcp.ts` | Slack-specific MCP config, tool manifest, and token validation. |
+| `notion-mcp.ts` | Notion-specific MCP config, tool manifest, and token validation. |
+| `oauth-manager.ts` | OAuth state generation, code exchange, refresh, revocation, and token freshness checks. |

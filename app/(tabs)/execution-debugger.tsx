@@ -1,7 +1,7 @@
-import { ScrollView, Text, View, Pressable } from 'react-native';
-import { ScreenContainer } from '@/components/screen-container';
-import { useColors } from '@/hooks/use-colors';
-import { useState } from 'react';
+import { ScrollView, Text, View, Pressable } from "react-native";
+import { ScreenContainer } from "@/components/screen-container";
+import { useColors } from "@/hooks/use-colors";
+import { useState } from "react";
 
 export default function ExecutionDebuggerScreen() {
   const colors = useColors();
@@ -9,36 +9,36 @@ export default function ExecutionDebuggerScreen() {
   const [showVariables, setShowVariables] = useState(false);
 
   const execution = {
-    id: 'exec-123',
-    workflow: 'GitHub → Slack',
-    status: 'completed',
+    id: "exec-123",
+    workflow: "GitHub → Slack",
+    status: "completed",
     steps: [
       {
-        id: 'step-1',
-        name: 'Fetch GitHub Issues',
+        id: "step-1",
+        name: "Fetch GitHub Issues",
         duration: 245,
-        status: 'completed',
-        input: { repo: 'user/repo' },
+        status: "completed",
+        input: { repo: "user/repo" },
         output: { issues: 5 },
-        variables: { issues: [{ id: 1, title: 'Bug' }] },
+        variables: { issues: [{ id: 1, title: "Bug" }] },
       },
       {
-        id: 'step-2',
-        name: 'Filter Issues',
+        id: "step-2",
+        name: "Filter Issues",
         duration: 120,
-        status: 'completed',
+        status: "completed",
         input: { issues: 5 },
         output: { filtered: 2 },
-        variables: { filtered: [{ id: 1, title: 'Bug' }] },
+        variables: { filtered: [{ id: 1, title: "Bug" }] },
       },
       {
-        id: 'step-3',
-        name: 'Send Slack Message',
+        id: "step-3",
+        name: "Send Slack Message",
         duration: 450,
-        status: 'completed',
-        input: { message: 'Found 2 issues' },
-        output: { messageId: 'msg-123' },
-        variables: { messageId: 'msg-123' },
+        status: "completed",
+        input: { message: "Found 2 issues" },
+        output: { messageId: "msg-123" },
+        variables: { messageId: "msg-123" },
       },
     ],
   };
@@ -51,7 +51,9 @@ export default function ExecutionDebuggerScreen() {
         <View className="flex-1 gap-6">
           {/* Header */}
           <View className="gap-2">
-            <Text className="text-2xl font-bold text-foreground">Execution Debugger</Text>
+            <Text className="text-2xl font-bold text-foreground">
+              Execution Debugger
+            </Text>
             <Text className="text-sm text-muted">{execution.workflow}</Text>
           </View>
 
@@ -70,20 +72,14 @@ export default function ExecutionDebuggerScreen() {
                 className="p-4 rounded-xl flex-row items-center justify-between"
               >
                 <View className="flex-1">
-                  <Text
-                    className={`font-semibold ${index === currentStep ? 'text-background' : 'text-foreground'}`}
-                  >
+                  <Text className={`font-semibold ${index === currentStep ? "text-background" : "text-foreground"}`}>
                     {s.name}
                   </Text>
-                  <Text
-                    className={`text-xs mt-1 ${index === currentStep ? 'text-background/70' : 'text-muted'}`}
-                  >
+                  <Text className={`text-xs mt-1 ${index === currentStep ? "text-background/70" : "text-muted"}`}>
                     {s.duration}ms
                   </Text>
                 </View>
-                <Text
-                  className={`text-lg ${index === currentStep ? 'text-background' : 'text-success'}`}
-                >
+                <Text className={`text-lg ${index === currentStep ? "text-background" : "text-success"}`}>
                   ✓
                 </Text>
               </Pressable>
@@ -116,8 +112,10 @@ export default function ExecutionDebuggerScreen() {
               onPress={() => setShowVariables(!showVariables)}
               className="py-2 px-3 bg-background rounded-lg flex-row items-center justify-between"
             >
-              <Text className="text-sm font-semibold text-foreground">Variables</Text>
-              <Text className="text-primary">{showVariables ? '▼' : '▶'}</Text>
+              <Text className="text-sm font-semibold text-foreground">
+                Variables
+              </Text>
+              <Text className="text-primary">{showVariables ? "▼" : "▶"}</Text>
             </Pressable>
 
             {showVariables && (
@@ -139,9 +137,7 @@ export default function ExecutionDebuggerScreen() {
             </Pressable>
 
             <Pressable
-              onPress={() =>
-                currentStep < execution.steps.length - 1 && setCurrentStep(currentStep + 1)
-              }
+              onPress={() => currentStep < execution.steps.length - 1 && setCurrentStep(currentStep + 1)}
               style={{ backgroundColor: colors.primary }}
               className="flex-1 py-3 rounded-full items-center"
             >

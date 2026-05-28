@@ -111,11 +111,7 @@ describe('ResultDisplayFormatter', () => {
   describe('toDownloadable', () => {
     it('should create downloadable JSON format', () => {
       const data = { test: 'data' };
-      const downloadable = ResultDisplayFormatter.toDownloadable(
-        data,
-        ResultType.JSON,
-        'test.json',
-      );
+      const downloadable = ResultDisplayFormatter.toDownloadable(data, ResultType.JSON, 'test.json');
       expect(downloadable.filename).toBe('test.json');
       expect(downloadable.mimeType).toBe('application/json');
       expect(downloadable.uri).toContain('data:application/json');
@@ -123,11 +119,7 @@ describe('ResultDisplayFormatter', () => {
 
     it('should create downloadable HTML format', () => {
       const html = '<html><body>Test</body></html>';
-      const downloadable = ResultDisplayFormatter.toDownloadable(
-        html,
-        ResultType.HTML,
-        'test.html',
-      );
+      const downloadable = ResultDisplayFormatter.toDownloadable(html, ResultType.HTML, 'test.html');
       expect(downloadable.filename).toBe('test.html');
       expect(downloadable.mimeType).toBe('text/html');
     });

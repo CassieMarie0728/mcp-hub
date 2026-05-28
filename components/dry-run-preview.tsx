@@ -54,25 +54,22 @@ export function DryRunPreview({
     }
   }, []);
 
-  const getStatusColor = useCallback(
-    (status: DryRunStep['status']) => {
-      switch (status) {
-        case 'pending':
-          return colors.muted;
-        case 'running':
-          return colors.warning;
-        case 'success':
-          return colors.success;
-        case 'skipped':
-          return colors.muted;
-        case 'error':
-          return colors.error;
-        default:
-          return colors.foreground;
-      }
-    },
-    [colors],
-  );
+  const getStatusColor = useCallback((status: DryRunStep['status']) => {
+    switch (status) {
+      case 'pending':
+        return colors.muted;
+      case 'running':
+        return colors.warning;
+      case 'success':
+        return colors.success;
+      case 'skipped':
+        return colors.muted;
+      case 'error':
+        return colors.error;
+      default:
+        return colors.foreground;
+    }
+  }, [colors]);
 
   const getTypeIcon = useCallback((type: DryRunStep['type']) => {
     switch (type) {
@@ -96,7 +93,10 @@ export function DryRunPreview({
       {/* Header */}
       <View className="flex-row items-center justify-between border-b border-border p-4">
         <Text className="text-lg font-bold text-foreground">Dry-Run Preview</Text>
-        <Pressable onPress={onClose} style={({ pressed }) => [pressed && { opacity: 0.7 }]}>
+        <Pressable
+          onPress={onClose}
+          style={({ pressed }) => [pressed && { opacity: 0.7 }]}
+        >
           <MaterialIcons name="close" size={24} color={colors.foreground} />
         </Pressable>
       </View>
@@ -113,7 +113,9 @@ export function DryRunPreview({
               size={16}
               color={isRunning ? colors.warning : colors.success}
             />
-            <Text className="text-sm text-muted">{totalDuration}ms</Text>
+            <Text className="text-sm text-muted">
+              {totalDuration}ms
+            </Text>
           </View>
         </View>
         <Text className="text-xs text-muted">
@@ -126,7 +128,11 @@ export function DryRunPreview({
         {steps.map((step, index) => (
           <Pressable
             key={step.id}
-            onPress={() => setExpandedStepId(expandedStepId === step.id ? null : step.id)}
+            onPress={() =>
+              setExpandedStepId(
+                expandedStepId === step.id ? null : step.id
+              )
+            }
             style={({ pressed }) => [pressed && { opacity: 0.7 }]}
           >
             <View className="border-b border-border p-4">
@@ -156,7 +162,11 @@ export function DryRunPreview({
                 </View>
 
                 <MaterialIcons
-                  name={expandedStepId === step.id ? 'expand-less' : 'expand-more'}
+                  name={
+                    expandedStepId === step.id
+                      ? 'expand-less'
+                      : 'expand-more'
+                  }
                   size={20}
                   color={colors.muted}
                 />
@@ -168,11 +178,19 @@ export function DryRunPreview({
                   {/* Variables */}
                   {step.variables && Object.keys(step.variables).length > 0 && (
                     <View>
-                      <Text className="text-xs font-semibold text-muted mb-2">Variables</Text>
+                      <Text className="text-xs font-semibold text-muted mb-2">
+                        Variables
+                      </Text>
                       {Object.entries(step.variables).map(([key, value]) => (
-                        <View key={key} className="bg-background rounded p-2 mb-1">
+                        <View
+                          key={key}
+                          className="bg-background rounded p-2 mb-1"
+                        >
                           <Text className="text-xs font-mono text-foreground">
-                            {key}: <Text className="text-primary">{JSON.stringify(value)}</Text>
+                            {key}:{' '}
+                            <Text className="text-primary">
+                              {JSON.stringify(value)}
+                            </Text>
                           </Text>
                         </View>
                       ))}
@@ -182,7 +200,9 @@ export function DryRunPreview({
                   {/* Result */}
                   {step.result && (
                     <View>
-                      <Text className="text-xs font-semibold text-muted mb-2">Result</Text>
+                      <Text className="text-xs font-semibold text-muted mb-2">
+                        Result
+                      </Text>
                       <View className="bg-background rounded p-2">
                         <Text className="text-xs font-mono text-success">
                           {JSON.stringify(step.result, null, 2)}
@@ -194,9 +214,13 @@ export function DryRunPreview({
                   {/* Error */}
                   {step.error && (
                     <View>
-                      <Text className="text-xs font-semibold text-error mb-2">Error</Text>
+                      <Text className="text-xs font-semibold text-error mb-2">
+                        Error
+                      </Text>
                       <View className="bg-background rounded p-2 border border-error">
-                        <Text className="text-xs font-mono text-error">{step.error}</Text>
+                        <Text className="text-xs font-mono text-error">
+                          {step.error}
+                        </Text>
                       </View>
                     </View>
                   )}
@@ -204,7 +228,9 @@ export function DryRunPreview({
                   {/* Loop Info */}
                   {step.iterations !== undefined && (
                     <View className="bg-background rounded p-2">
-                      <Text className="text-xs text-muted">Loop iterations: {step.iterations}</Text>
+                      <Text className="text-xs text-muted">
+                        Loop iterations: {step.iterations}
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -220,7 +246,9 @@ export function DryRunPreview({
           className="bg-primary rounded-lg p-3 items-center"
           style={({ pressed }) => [pressed && { opacity: 0.8 }]}
         >
-          <Text className="text-background font-semibold">Execute Workflow</Text>
+          <Text className="text-background font-semibold">
+            Execute Workflow
+          </Text>
         </Pressable>
         <Pressable
           className="bg-surface rounded-lg p-3 items-center border border-border"

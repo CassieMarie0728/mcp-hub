@@ -31,15 +31,12 @@ const ENCRYPTION_ALGORITHM = 'aes-256-gcm';
 const ENCRYPTION_KEY = process.env.TOKEN_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
 
 // In-memory token store (would be replaced with database)
-const tokenStore = new Map<
-  string,
-  {
-    encrypted: string;
-    iv: string;
-    authTag: string;
-    metadata: TokenMetadata;
-  }
->();
+const tokenStore = new Map<string, {
+  encrypted: string;
+  iv: string;
+  authTag: string;
+  metadata: TokenMetadata;
+}>();
 
 export class TokenManager {
   /**
@@ -50,7 +47,7 @@ export class TokenManager {
     const cipher = crypto.createCipheriv(
       ENCRYPTION_ALGORITHM,
       Buffer.from(ENCRYPTION_KEY, 'hex'),
-      iv,
+      iv
     );
 
     let encrypted = cipher.update(token, 'utf8', 'hex');
@@ -68,11 +65,15 @@ export class TokenManager {
   /**
    * Decrypt a stored token
    */
-  private static decryptToken(encrypted: string, iv: string, authTag: string): string {
+  private static decryptToken(
+    encrypted: string,
+    iv: string,
+    authTag: string
+  ): string {
     const decipher = crypto.createDecipheriv(
       ENCRYPTION_ALGORITHM,
       Buffer.from(ENCRYPTION_KEY, 'hex'),
-      Buffer.from(iv, 'hex'),
+      Buffer.from(iv, 'hex')
     );
 
     decipher.setAuthTag(Buffer.from(authTag, 'hex'));

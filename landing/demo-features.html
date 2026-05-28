@@ -1,610 +1,584 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Features Demo – MCP Hub</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        background-color: #0b0f0f;
-        color: #a8a9ad;
-        font-family: 'JetBrains Mono', monospace;
-        line-height: 1.6;
-        padding: 20px;
-      }
-
-      .demo-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background-color: rgba(152, 21, 24, 0.05);
-        border: 2px solid #981518;
-        border-radius: 8px;
-        padding: 30px;
-      }
-
-      h1 {
-        font-family: 'Special Elite', serif;
-        font-size: 36px;
-        color: #981518;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-      }
-
-      .subtitle {
-        font-size: 14px;
-        color: #a8a9ad;
-        margin-bottom: 30px;
-      }
-
-      .feature-tabs {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 30px;
-        flex-wrap: wrap;
-        border-bottom: 2px solid #981518;
-        padding-bottom: 15px;
-      }
-
-      .tab-btn {
-        padding: 10px 20px;
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border: 2px solid #981518;
-        background-color: transparent;
-        color: #981518;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: all 0.3s ease;
-        font-family: 'JetBrains Mono', monospace;
-      }
-
-      .tab-btn.active {
-        background-color: #981518;
-        color: #0b0f0f;
-      }
-
-      .tab-btn:hover {
-        background-color: #981518;
-        color: #0b0f0f;
-      }
-
-      .feature-content {
-        display: none;
-        animation: fadeIn 0.3s ease-out;
-      }
-
-      .feature-content.active {
-        display: block;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+
+        body {
+            background-color: #0b0f0f;
+            color: #a8a9ad;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            padding: 20px;
         }
-      }
 
-      .content-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        align-items: start;
-      }
-
-      .content-text h2 {
-        font-family: 'Special Elite', serif;
-        font-size: 24px;
-        color: #981518;
-        margin-bottom: 15px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .content-text p {
-        font-size: 14px;
-        color: #a8a9ad;
-        margin-bottom: 15px;
-        line-height: 1.8;
-      }
-
-      .feature-list {
-        list-style: none;
-        margin: 20px 0;
-      }
-
-      .feature-list li {
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(152, 21, 24, 0.2);
-        font-size: 13px;
-        color: #a8a9ad;
-      }
-
-      .feature-list li:before {
-        content: '✓ ';
-        color: #981518;
-        font-weight: bold;
-        margin-right: 10px;
-      }
-
-      .demo-box {
-        border: 2px solid #981518;
-        padding: 20px;
-        background-color: rgba(152, 21, 24, 0.08);
-        border-radius: 4px;
-        min-height: 300px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
-
-      .demo-interactive {
-        width: 100%;
-      }
-
-      /* Security Demo */
-      .token-display {
-        background-color: rgba(11, 15, 15, 0.8);
-        padding: 15px;
-        border-radius: 4px;
-        margin: 15px 0;
-        font-family: 'Courier New', monospace;
-        font-size: 12px;
-        word-break: break-all;
-        border: 1px solid #981518;
-      }
-
-      .token-encrypted {
-        color: #22c55e;
-        font-weight: bold;
-      }
-
-      .token-decrypted {
-        color: #ef4444;
-        text-decoration: line-through;
-      }
-
-      .security-toggle {
-        display: flex;
-        gap: 10px;
-        margin: 15px 0;
-        justify-content: center;
-      }
-
-      .toggle-btn {
-        padding: 8px 16px;
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border: 2px solid #981518;
-        background-color: transparent;
-        color: #981518;
-        cursor: pointer;
-        border-radius: 3px;
-        transition: all 0.2s ease;
-      }
-
-      .toggle-btn.active {
-        background-color: #981518;
-        color: #0b0f0f;
-      }
-
-      /* Performance Demo */
-      .performance-chart {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-around;
-        height: 200px;
-        gap: 10px;
-        margin: 20px 0;
-      }
-
-      .bar {
-        flex: 1;
-        background-color: #981518;
-        border-radius: 4px 4px 0 0;
-        position: relative;
-        min-height: 20px;
-        animation: growUp 0.6s ease-out;
-      }
-
-      @keyframes growUp {
-        from {
-          height: 0;
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(152, 21, 24, 0.05);
+            border: 2px solid #981518;
+            border-radius: 8px;
+            padding: 30px;
         }
-      }
 
-      .bar-label {
-        position: absolute;
-        bottom: -25px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        font-size: 11px;
-        color: #a8a9ad;
-      }
-
-      .bar-value {
-        position: absolute;
-        top: -25px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        font-size: 12px;
-        color: #981518;
-        font-weight: bold;
-      }
-
-      /* Workflow Demo */
-      .workflow-step {
-        background-color: #981518;
-        color: #0b0f0f;
-        padding: 12px 15px;
-        margin: 8px 0;
-        border-radius: 4px;
-        font-size: 13px;
-        font-weight: 600;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .workflow-step.completed {
-        background-color: #22c55e;
-      }
-
-      .step-status {
-        font-size: 12px;
-        opacity: 0.8;
-      }
-
-      /* Monitoring Demo */
-      .metric-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin: 15px 0;
-      }
-
-      .metric-card {
-        background-color: rgba(152, 21, 24, 0.1);
-        border: 1px solid #981518;
-        padding: 15px;
-        border-radius: 4px;
-        text-align: center;
-      }
-
-      .metric-value {
-        font-size: 24px;
-        color: #981518;
-        font-weight: bold;
-      }
-
-      .metric-label {
-        font-size: 11px;
-        color: #a8a9ad;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-top: 5px;
-      }
-
-      .status-indicator {
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 8px;
-      }
-
-      .status-indicator.healthy {
-        background-color: #22c55e;
-        animation: pulse 2s ease-in-out infinite;
-      }
-
-      .status-indicator.warning {
-        background-color: #f39c12;
-        animation: pulse 1s ease-in-out infinite;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
+        h1 {
+            font-family: 'Special Elite', serif;
+            font-size: 36px;
+            color: #981518;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        50% {
-          opacity: 0.5;
-        }
-      }
 
-      @media (max-width: 768px) {
-        .content-grid {
-          grid-template-columns: 1fr;
+        .subtitle {
+            font-size: 14px;
+            color: #a8a9ad;
+            margin-bottom: 30px;
         }
 
         .feature-tabs {
-          flex-direction: column;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #981518;
+            padding-bottom: 15px;
         }
-      }
+
+        .tab-btn {
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid #981518;
+            background-color: transparent;
+            color: #981518;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tab-btn.active {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        .tab-btn:hover {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        .feature-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .feature-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .content-text h2 {
+            font-family: 'Special Elite', serif;
+            font-size: 24px;
+            color: #981518;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content-text p {
+            font-size: 14px;
+            color: #a8a9ad;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(152, 21, 24, 0.2);
+            font-size: 13px;
+            color: #a8a9ad;
+        }
+
+        .feature-list li:before {
+            content: '✓ ';
+            color: #981518;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .demo-box {
+            border: 2px solid #981518;
+            padding: 20px;
+            background-color: rgba(152, 21, 24, 0.08);
+            border-radius: 4px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .demo-interactive {
+            width: 100%;
+        }
+
+        /* Security Demo */
+        .token-display {
+            background-color: rgba(11, 15, 15, 0.8);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            border: 1px solid #981518;
+        }
+
+        .token-encrypted {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .token-decrypted {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        .security-toggle {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 2px solid #981518;
+            background-color: transparent;
+            color: #981518;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn.active {
+            background-color: #981518;
+            color: #0b0f0f;
+        }
+
+        /* Performance Demo */
+        .performance-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 200px;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .bar {
+            flex: 1;
+            background-color: #981518;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 20px;
+            animation: growUp 0.6s ease-out;
+        }
+
+        @keyframes growUp {
+            from {
+                height: 0;
+            }
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 11px;
+            color: #a8a9ad;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: #981518;
+            font-weight: bold;
+        }
+
+        /* Workflow Demo */
+        .workflow-step {
+            background-color: #981518;
+            color: #0b0f0f;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .workflow-step.completed {
+            background-color: #22c55e;
+        }
+
+        .step-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Monitoring Demo */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .metric-card {
+            background-color: rgba(152, 21, 24, 0.1);
+            border: 1px solid #981518;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            color: #981518;
+            font-weight: bold;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #a8a9ad;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.healthy {
+            background-color: #22c55e;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-indicator.warning {
+            background-color: #f39c12;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-tabs {
+                flex-direction: column;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="demo-container">
-      <h1>🎯 Interactive Features</h1>
-      <p class="subtitle">
-        Explore MCP Hub's powerful capabilities with interactive demonstrations.
-      </p>
+        <h1>🎯 Interactive Features</h1>
+        <p class="subtitle">Explore MCP Hub's powerful capabilities with interactive demonstrations.</p>
 
-      <!-- Feature Tabs -->
-      <div class="feature-tabs">
-        <button class="tab-btn active" onclick="switchTab('security')">🔐 Security</button>
-        <button class="tab-btn" onclick="switchTab('performance')">⚡ Performance</button>
-        <button class="tab-btn" onclick="switchTab('workflows')">🔄 Workflows</button>
-        <button class="tab-btn" onclick="switchTab('monitoring')">📊 Monitoring</button>
-      </div>
-
-      <!-- Security Feature -->
-      <div class="feature-content active" id="security">
-        <div class="content-grid">
-          <div class="content-text">
-            <h2>Enterprise-Grade Security</h2>
-            <p>
-              Your credentials are encrypted with AES-256-GCM. We never store plaintext tokens.
-              OAuth tokens are automatically refreshed and managed securely.
-            </p>
-            <ul class="feature-list">
-              <li>AES-256-GCM encryption for all credentials</li>
-              <li>OAuth 2.0 with automatic token refresh</li>
-              <li>Secure key derivation (PBKDF2)</li>
-              <li>Audit logging for all access</li>
-              <li>Role-based access control (RBAC)</li>
-              <li>Workspace isolation</li>
-            </ul>
-          </div>
-          <div class="demo-box demo-interactive">
-            <div style="width: 100%">
-              <div style="margin-bottom: 15px; text-align: left">
-                <strong style="color: #981518">Token Storage Demo:</strong>
-              </div>
-              <div class="token-display">
-                <div style="margin-bottom: 10px">
-                  <span style="color: #a8a9ad">Encrypted Token:</span><br />
-                  <span class="token-encrypted"
-                    >aes256gcm:8f3a2b1c9e7d4f6a5b8c2e1d9f3a7b4c:9e2f1a3b5c7d8e9f1a2b3c4d5e6f7a8b</span
-                  >
-                </div>
-                <div>
-                  <span style="color: #a8a9ad">Plaintext:</span><br />
-                  <span class="token-decrypted" id="plaintextToken" style="display: none"
-                    >github_pat_11ABC123XYZ789...</span
-                  >
-                  <span id="tokenHidden" style="color: #a8a9ad">••••••••••••••••••••</span>
-                </div>
-              </div>
-              <div class="security-toggle">
-                <button class="toggle-btn active" onclick="toggleTokenVisibility(true)">
-                  Encrypted
-                </button>
-                <button class="toggle-btn" onclick="toggleTokenVisibility(false)">Decrypt</button>
-              </div>
-              <p style="font-size: 12px; color: #a8a9ad; margin-top: 15px">
-                ✓ Tokens are never logged, never cached, never exposed
-              </p>
-            </div>
-          </div>
+        <!-- Feature Tabs -->
+        <div class="feature-tabs">
+            <button class="tab-btn active" onclick="switchTab('security')">🔐 Security</button>
+            <button class="tab-btn" onclick="switchTab('performance')">⚡ Performance</button>
+            <button class="tab-btn" onclick="switchTab('workflows')">🔄 Workflows</button>
+            <button class="tab-btn" onclick="switchTab('monitoring')">📊 Monitoring</button>
         </div>
-      </div>
 
-      <!-- Performance Feature -->
-      <div class="feature-content" id="performance">
-        <div class="content-grid">
-          <div class="content-text">
-            <h2>Lightning-Fast Execution</h2>
-            <p>
-              Optimized for speed. Our execution engine processes workflows in milliseconds with
-              horizontal scaling support.
-            </p>
-            <ul class="feature-list">
-              <li>P95 API response time: 287ms</li>
-              <li>Database query optimization with indexes</li>
-              <li>Connection pooling (max 50 concurrent)</li>
-              <li>Redis caching for frequently accessed data</li>
-              <li>Parallel step execution</li>
-              <li>Automatic retry with exponential backoff</li>
-            </ul>
-          </div>
-          <div class="demo-box demo-interactive">
-            <div style="width: 100%">
-              <div style="margin-bottom: 15px; text-align: left">
-                <strong style="color: #981518">Response Time Distribution:</strong>
-              </div>
-              <div class="performance-chart" id="performanceChart">
-                <div class="bar" style="height: 45%; animation-delay: 0s">
-                  <div class="bar-value">120ms</div>
-                  <div class="bar-label">P50</div>
+        <!-- Security Feature -->
+        <div class="feature-content active" id="security">
+            <div class="content-grid">
+                <div class="content-text">
+                    <h2>Enterprise-Grade Security</h2>
+                    <p>Your credentials are encrypted with AES-256-GCM. We never store plaintext tokens. OAuth tokens are automatically refreshed and managed securely.</p>
+                    <ul class="feature-list">
+                        <li>AES-256-GCM encryption for all credentials</li>
+                        <li>OAuth 2.0 with automatic token refresh</li>
+                        <li>Secure key derivation (PBKDF2)</li>
+                        <li>Audit logging for all access</li>
+                        <li>Role-based access control (RBAC)</li>
+                        <li>Workspace isolation</li>
+                    </ul>
                 </div>
-                <div class="bar" style="height: 75%; animation-delay: 0.1s">
-                  <div class="bar-value">210ms</div>
-                  <div class="bar-label">P90</div>
+                <div class="demo-box demo-interactive">
+                    <div style="width: 100%;">
+                        <div style="margin-bottom: 15px; text-align: left;">
+                            <strong style="color: #981518;">Token Storage Demo:</strong>
+                        </div>
+                        <div class="token-display">
+                            <div style="margin-bottom: 10px;">
+                                <span style="color: #a8a9ad;">Encrypted Token:</span><br>
+                                <span class="token-encrypted">aes256gcm:8f3a2b1c9e7d4f6a5b8c2e1d9f3a7b4c:9e2f1a3b5c7d8e9f1a2b3c4d5e6f7a8b</span>
+                            </div>
+                            <div>
+                                <span style="color: #a8a9ad;">Plaintext:</span><br>
+                                <span class="token-decrypted" id="plaintextToken" style="display: none;">github_pat_11ABC123XYZ789...</span>
+                                <span id="tokenHidden" style="color: #a8a9ad;">••••••••••••••••••••</span>
+                            </div>
+                        </div>
+                        <div class="security-toggle">
+                            <button class="toggle-btn active" onclick="toggleTokenVisibility(true)">Encrypted</button>
+                            <button class="toggle-btn" onclick="toggleTokenVisibility(false)">Decrypt</button>
+                        </div>
+                        <p style="font-size: 12px; color: #a8a9ad; margin-top: 15px;">
+                            ✓ Tokens are never logged, never cached, never exposed
+                        </p>
+                    </div>
                 </div>
-                <div class="bar" style="height: 95%; animation-delay: 0.2s">
-                  <div class="bar-value">287ms</div>
-                  <div class="bar-label">P95</div>
-                </div>
-                <div class="bar" style="height: 100%; animation-delay: 0.3s">
-                  <div class="bar-value">450ms</div>
-                  <div class="bar-label">P99</div>
-                </div>
-              </div>
-              <p style="font-size: 12px; color: #a8a9ad; margin-top: 30px">
-                ✓ 99.9% uptime SLA | Auto-scaling enabled
-              </p>
             </div>
-          </div>
         </div>
-      </div>
 
-      <!-- Workflows Feature -->
-      <div class="feature-content" id="workflows">
-        <div class="content-grid">
-          <div class="content-text">
-            <h2>Advanced Workflow Builder</h2>
-            <p>
-              Build complex automations with conditional logic, loops, and error handling. No coding
-              required.
-            </p>
-            <ul class="feature-list">
-              <li>Drag-and-drop interface</li>
-              <li>Conditional branching (if/then/else)</li>
-              <li>Loops and iterations</li>
-              <li>Error handling with retry logic</li>
-              <li>Variable mapping and transformation</li>
-              <li>Dry-run testing before deployment</li>
-            </ul>
-          </div>
-          <div class="demo-box demo-interactive">
-            <div style="width: 100%">
-              <div style="margin-bottom: 15px; text-align: left">
-                <strong style="color: #981518">Sample Workflow Execution:</strong>
-              </div>
-              <div class="workflow-step">
-                <span>1. Fetch GitHub Issue</span>
-                <span class="step-status">✓ 450ms</span>
-              </div>
-              <div class="workflow-step completed">
-                <span>2. Parse Issue Data</span>
-                <span class="step-status">✓ 200ms</span>
-              </div>
-              <div class="workflow-step completed">
-                <span>3. Send Slack Notification</span>
-                <span class="step-status">✓ 380ms</span>
-              </div>
-              <div class="workflow-step completed">
-                <span>4. Create Notion Entry</span>
-                <span class="step-status">✓ 520ms</span>
-              </div>
-              <div class="workflow-step completed">
-                <span>5. Assign to Team Member</span>
-                <span class="step-status">✓ 250ms</span>
-              </div>
-              <p style="font-size: 12px; color: #a8a9ad; margin-top: 15px">
-                ✓ Total execution: 1,800ms | Success rate: 100%
-              </p>
+        <!-- Performance Feature -->
+        <div class="feature-content" id="performance">
+            <div class="content-grid">
+                <div class="content-text">
+                    <h2>Lightning-Fast Execution</h2>
+                    <p>Optimized for speed. Our execution engine processes workflows in milliseconds with horizontal scaling support.</p>
+                    <ul class="feature-list">
+                        <li>P95 API response time: 287ms</li>
+                        <li>Database query optimization with indexes</li>
+                        <li>Connection pooling (max 50 concurrent)</li>
+                        <li>Redis caching for frequently accessed data</li>
+                        <li>Parallel step execution</li>
+                        <li>Automatic retry with exponential backoff</li>
+                    </ul>
+                </div>
+                <div class="demo-box demo-interactive">
+                    <div style="width: 100%;">
+                        <div style="margin-bottom: 15px; text-align: left;">
+                            <strong style="color: #981518;">Response Time Distribution:</strong>
+                        </div>
+                        <div class="performance-chart" id="performanceChart">
+                            <div class="bar" style="height: 45%; animation-delay: 0s;">
+                                <div class="bar-value">120ms</div>
+                                <div class="bar-label">P50</div>
+                            </div>
+                            <div class="bar" style="height: 75%; animation-delay: 0.1s;">
+                                <div class="bar-value">210ms</div>
+                                <div class="bar-label">P90</div>
+                            </div>
+                            <div class="bar" style="height: 95%; animation-delay: 0.2s;">
+                                <div class="bar-value">287ms</div>
+                                <div class="bar-label">P95</div>
+                            </div>
+                            <div class="bar" style="height: 100%; animation-delay: 0.3s;">
+                                <div class="bar-value">450ms</div>
+                                <div class="bar-label">P99</div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #a8a9ad; margin-top: 30px;">
+                            ✓ 99.9% uptime SLA | Auto-scaling enabled
+                        </p>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
 
-      <!-- Monitoring Feature -->
-      <div class="feature-content" id="monitoring">
-        <div class="content-grid">
-          <div class="content-text">
-            <h2>Real-Time Monitoring & Alerts</h2>
-            <p>
-              Full visibility into your workflows with real-time metrics, error tracking, and
-              intelligent alerting.
-            </p>
-            <ul class="feature-list">
-              <li>Prometheus metrics collection</li>
-              <li>Real-time execution dashboards</li>
-              <li>Error rate tracking and analysis</li>
-              <li>Token usage monitoring</li>
-              <li>System health checks</li>
-              <li>Slack/Email/Webhook alerts</li>
-            </ul>
-          </div>
-          <div class="demo-box demo-interactive">
-            <div style="width: 100%">
-              <div style="margin-bottom: 15px; text-align: left">
-                <strong style="color: #981518">Live System Metrics:</strong>
-              </div>
-              <div class="metric-grid">
-                <div class="metric-card">
-                  <div class="metric-value">
-                    <span class="status-indicator healthy"></span>99.9%
-                  </div>
-                  <div class="metric-label">Uptime</div>
+        <!-- Workflows Feature -->
+        <div class="feature-content" id="workflows">
+            <div class="content-grid">
+                <div class="content-text">
+                    <h2>Advanced Workflow Builder</h2>
+                    <p>Build complex automations with conditional logic, loops, and error handling. No coding required.</p>
+                    <ul class="feature-list">
+                        <li>Drag-and-drop interface</li>
+                        <li>Conditional branching (if/then/else)</li>
+                        <li>Loops and iterations</li>
+                        <li>Error handling with retry logic</li>
+                        <li>Variable mapping and transformation</li>
+                        <li>Dry-run testing before deployment</li>
+                    </ul>
                 </div>
-                <div class="metric-card">
-                  <div class="metric-value">
-                    <span class="status-indicator healthy"></span>94.96%
-                  </div>
-                  <div class="metric-label">Success Rate</div>
+                <div class="demo-box demo-interactive">
+                    <div style="width: 100%;">
+                        <div style="margin-bottom: 15px; text-align: left;">
+                            <strong style="color: #981518;">Sample Workflow Execution:</strong>
+                        </div>
+                        <div class="workflow-step">
+                            <span>1. Fetch GitHub Issue</span>
+                            <span class="step-status">✓ 450ms</span>
+                        </div>
+                        <div class="workflow-step completed">
+                            <span>2. Parse Issue Data</span>
+                            <span class="step-status">✓ 200ms</span>
+                        </div>
+                        <div class="workflow-step completed">
+                            <span>3. Send Slack Notification</span>
+                            <span class="step-status">✓ 380ms</span>
+                        </div>
+                        <div class="workflow-step completed">
+                            <span>4. Create Notion Entry</span>
+                            <span class="step-status">✓ 520ms</span>
+                        </div>
+                        <div class="workflow-step completed">
+                            <span>5. Assign to Team Member</span>
+                            <span class="step-status">✓ 250ms</span>
+                        </div>
+                        <p style="font-size: 12px; color: #a8a9ad; margin-top: 15px;">
+                            ✓ Total execution: 1,800ms | Success rate: 100%
+                        </p>
+                    </div>
                 </div>
-                <div class="metric-card">
-                  <div class="metric-value">287ms</div>
-                  <div class="metric-label">API Response (P95)</div>
-                </div>
-                <div class="metric-card">
-                  <div class="metric-value"><span class="status-indicator warning"></span>2</div>
-                  <div class="metric-label">Active Alerts</div>
-                </div>
-              </div>
-              <p style="font-size: 12px; color: #a8a9ad; margin-top: 15px">
-                ✓ Metrics updated every 30 seconds | Alerts delivered instantly
-              </p>
             </div>
-          </div>
         </div>
-      </div>
+
+        <!-- Monitoring Feature -->
+        <div class="feature-content" id="monitoring">
+            <div class="content-grid">
+                <div class="content-text">
+                    <h2>Real-Time Monitoring & Alerts</h2>
+                    <p>Full visibility into your workflows with real-time metrics, error tracking, and intelligent alerting.</p>
+                    <ul class="feature-list">
+                        <li>Prometheus metrics collection</li>
+                        <li>Real-time execution dashboards</li>
+                        <li>Error rate tracking and analysis</li>
+                        <li>Token usage monitoring</li>
+                        <li>System health checks</li>
+                        <li>Slack/Email/Webhook alerts</li>
+                    </ul>
+                </div>
+                <div class="demo-box demo-interactive">
+                    <div style="width: 100%;">
+                        <div style="margin-bottom: 15px; text-align: left;">
+                            <strong style="color: #981518;">Live System Metrics:</strong>
+                        </div>
+                        <div class="metric-grid">
+                            <div class="metric-card">
+                                <div class="metric-value">
+                                    <span class="status-indicator healthy"></span>99.9%
+                                </div>
+                                <div class="metric-label">Uptime</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">
+                                    <span class="status-indicator healthy"></span>94.96%
+                                </div>
+                                <div class="metric-label">Success Rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">287ms</div>
+                                <div class="metric-label">API Response (P95)</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">
+                                    <span class="status-indicator warning"></span>2
+                                </div>
+                                <div class="metric-label">Active Alerts</div>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #a8a9ad; margin-top: 15px;">
+                            ✓ Metrics updated every 30 seconds | Alerts delivered instantly
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-      function switchTab(tabName) {
-        // Hide all content
-        document.querySelectorAll('.feature-content').forEach((el) => {
-          el.classList.remove('active');
-        });
+        function switchTab(tabName) {
+            // Hide all content
+            document.querySelectorAll('.feature-content').forEach(el => {
+                el.classList.remove('active');
+            });
 
-        // Deactivate all buttons
-        document.querySelectorAll('.tab-btn').forEach((btn) => {
-          btn.classList.remove('active');
-        });
+            // Deactivate all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
 
-        // Show selected content
-        document.getElementById(tabName).classList.add('active');
+            // Show selected content
+            document.getElementById(tabName).classList.add('active');
 
-        // Activate selected button
-        event.target.classList.add('active');
-      }
-
-      function toggleTokenVisibility(encrypted) {
-        const plaintextEl = document.getElementById('plaintextToken');
-        const hiddenEl = document.getElementById('tokenHidden');
-        const buttons = document.querySelectorAll('.toggle-btn');
-
-        buttons.forEach((btn) => btn.classList.remove('active'));
-
-        if (encrypted) {
-          plaintextEl.style.display = 'none';
-          hiddenEl.style.display = 'inline';
-          buttons[0].classList.add('active');
-        } else {
-          plaintextEl.style.display = 'inline';
-          hiddenEl.style.display = 'none';
-          buttons[1].classList.add('active');
+            // Activate selected button
+            event.target.classList.add('active');
         }
-      }
+
+        function toggleTokenVisibility(encrypted) {
+            const plaintextEl = document.getElementById('plaintextToken');
+            const hiddenEl = document.getElementById('tokenHidden');
+            const buttons = document.querySelectorAll('.toggle-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (encrypted) {
+                plaintextEl.style.display = 'none';
+                hiddenEl.style.display = 'inline';
+                buttons[0].classList.add('active');
+            } else {
+                plaintextEl.style.display = 'inline';
+                hiddenEl.style.display = 'none';
+                buttons[1].classList.add('active');
+            }
+        }
     </script>
-  </body>
+</body>
 </html>

@@ -76,7 +76,7 @@ export default function ResultsScreen() {
       const downloadable = ResultDisplayFormatter.toDownloadable(
         selectedResult.result,
         selectedFormat,
-        `result_${Date.now()}`,
+        `result_${Date.now()}`
       );
       Alert.alert('Download', 'File ready for download: ' + downloadable.filename);
     } catch (err) {
@@ -87,20 +87,17 @@ export default function ResultsScreen() {
   /**
    * Handle save as macro
    */
-  const handleSaveAsMacro = useCallback(
-    async (name: string, description?: string) => {
-      if (!selectedResult) return;
+  const handleSaveAsMacro = useCallback(async (name: string, description?: string) => {
+    if (!selectedResult) return;
 
-      try {
-        await createFromExecutionHistory([selectedResult.id], name, description);
-        setShowSaveAsMacroModal(false);
-        Alert.alert('Success', 'Macro saved successfully');
-      } catch (err) {
-        throw err;
-      }
-    },
-    [selectedResult, createFromExecutionHistory],
-  );
+    try {
+      await createFromExecutionHistory([selectedResult.id], name, description);
+      setShowSaveAsMacroModal(false);
+      Alert.alert('Success', 'Macro saved successfully');
+    } catch (err) {
+      throw err;
+    }
+  }, [selectedResult, createFromExecutionHistory]);
 
   /**
    * Render format selector
@@ -122,15 +119,13 @@ export default function ResultsScreen() {
               onPress={() => setSelectedFormat(item)}
               className={cn(
                 'py-2 px-4 rounded-full border-2 mr-2',
-                selectedFormat === item
-                  ? 'border-primary bg-primary/10'
-                  : 'border-border bg-surface',
+                selectedFormat === item ? 'border-primary bg-primary/10' : 'border-border bg-surface'
               )}
             >
               <Text
                 className={cn(
                   'text-sm font-semibold',
-                  selectedFormat === item ? 'text-primary' : 'text-foreground',
+                  selectedFormat === item ? 'text-primary' : 'text-foreground'
                 )}
               >
                 {item}
@@ -247,7 +242,7 @@ export default function ResultsScreen() {
             <Text
               className={cn(
                 'text-sm font-semibold',
-                selectedResult.success ? 'text-success' : 'text-error',
+                selectedResult.success ? 'text-success' : 'text-error'
               )}
             >
               {selectedResult.success ? 'Success' : 'Failed'}
@@ -263,9 +258,7 @@ export default function ResultsScreen() {
 
           <View className="flex-row justify-between">
             <Text className="text-sm text-muted">Result Type</Text>
-            <Text className="text-sm font-semibold text-foreground">
-              {selectedResult.resultType}
-            </Text>
+            <Text className="text-sm font-semibold text-foreground">{selectedResult.resultType}</Text>
           </View>
 
           <View className="flex-row justify-between">
@@ -278,9 +271,7 @@ export default function ResultsScreen() {
 
         {selectedResult.error && (
           <View className="mt-4 p-3 bg-error/10 rounded border border-error">
-            <Text className="text-xs font-semibold text-error mb-1">
-              {selectedResult.error.code}
-            </Text>
+            <Text className="text-xs font-semibold text-error mb-1">{selectedResult.error.code}</Text>
             <Text className="text-xs text-error">{selectedResult.error.message}</Text>
             {selectedResult.error.details && (
               <Text className="text-xs text-error/80 mt-2">{selectedResult.error.details}</Text>
@@ -304,13 +295,13 @@ export default function ResultsScreen() {
           onPress={() => setShowRawJson(!showRawJson)}
           className={cn(
             'w-12 h-7 rounded-full flex items-center justify-start p-1',
-            showRawJson ? 'bg-primary' : 'bg-border',
+            showRawJson ? 'bg-primary' : 'bg-border'
           )}
         >
           <View
             className={cn(
               'w-5 h-5 rounded-full bg-background transition-all',
-              showRawJson ? 'translate-x-5' : 'translate-x-0',
+              showRawJson ? 'translate-x-5' : 'translate-x-0'
             )}
           />
         </Pressable>

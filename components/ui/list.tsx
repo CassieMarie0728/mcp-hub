@@ -38,7 +38,7 @@ export function ListItem({
         className={cn(
           'flex-row items-center gap-3 px-4 py-3 min-h-[56px]',
           selected ? 'bg-primary/10' : 'active:bg-foreground/5',
-          disabled ? 'opacity-50' : '',
+          disabled ? 'opacity-50' : ''
         )}
       >
         {icon && (
@@ -53,7 +53,7 @@ export function ListItem({
           <Text
             className={cn(
               'text-base',
-              selected ? 'text-primary font-semibold' : 'text-foreground font-semibold',
+              selected ? 'text-primary font-semibold' : 'text-foreground font-semibold'
             )}
           >
             {title}
@@ -106,9 +106,13 @@ interface ListSectionProps {
 export function ListSection({ title, children, footer }: ListSectionProps) {
   return (
     <View className="gap-2 mb-4">
-      {title && <Text className="text-xs font-semibold text-muted uppercase px-4">{title}</Text>}
+      {title && (
+        <Text className="text-xs font-semibold text-muted uppercase px-4">{title}</Text>
+      )}
 
-      <View className="bg-surface rounded-lg border border-border overflow-hidden">{children}</View>
+      <View className="bg-surface rounded-lg border border-border overflow-hidden">
+        {children}
+      </View>
 
       {footer && <Text className="text-xs text-muted px-4">{footer}</Text>}
     </View>
@@ -188,19 +192,17 @@ export function Badge({ variant = 'status', children, color = 'primary' }: Badge
     category: cn(
       'border',
       color === 'primary' ? 'border-primary text-primary' : `border-${color} text-${color}`,
-      'rounded px-2 py-1',
+      'rounded px-2 py-1'
     ),
-    count: cn(
-      colorMap[color].bg,
-      colorMap[color].text,
-      'rounded-full w-6 h-6 items-center justify-center',
-    ),
+    count: cn(colorMap[color].bg, colorMap[color].text, 'rounded-full w-6 h-6 items-center justify-center'),
     secondary: cn('bg-surface border border-border text-foreground rounded px-2 py-1'),
   };
 
   return (
     <View className={variantStyles[variant]}>
-      <Text className={cn('text-xs font-semibold', colorMap[color].text)}>{children}</Text>
+      <Text className={cn('text-xs font-semibold', colorMap[color].text)}>
+        {children}
+      </Text>
     </View>
   );
 }

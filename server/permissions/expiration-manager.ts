@@ -28,12 +28,9 @@ export class ExpirationManager {
       callback,
       scheduled: true,
       executed: false,
-      timeout: setTimeout(
-        () => {
-          this.executeExpiration(taskId);
-        },
-        Math.max(0, timeUntilExpiry),
-      ) as unknown as NodeJS.Timeout,
+      timeout: setTimeout(() => {
+        this.executeExpiration(taskId);
+      }, Math.max(0, timeUntilExpiry)) as unknown as NodeJS.Timeout,
     };
 
     this.expirationTasks.set(taskId, task);
@@ -68,10 +65,7 @@ export class ExpirationManager {
   /**
    * Get expiring permissions
    */
-  getExpiringPermissions(
-    permissions: MacroPermission[],
-    withinHours: number = 24,
-  ): MacroPermission[] {
+  getExpiringPermissions(permissions: MacroPermission[], withinHours: number = 24): MacroPermission[] {
     const now = new Date();
     const threshold = new Date(now.getTime() + withinHours * 60 * 60 * 1000);
 
@@ -84,11 +78,7 @@ export class ExpirationManager {
   /**
    * Renew permission
    */
-  renewPermission(
-    permission: MacroPermission,
-    newExpiryDate: Date,
-    renewedBy: string,
-  ): RenewalResult {
+  renewPermission(permission: MacroPermission, newExpiryDate: Date, renewedBy: string): RenewalResult {
     if (!permission.expiresAt) {
       return {
         success: false,
@@ -125,11 +115,7 @@ export class ExpirationManager {
   /**
    * Revoke permission
    */
-  revokePermission(
-    permission: MacroPermission,
-    revokedBy: string,
-    reason?: string,
-  ): RevocationResult {
+  revokePermission(permission: MacroPermission, revokedBy: string, reason?: string): RevocationResult {
     if (permission.revokedAt) {
       return {
         success: false,
@@ -162,7 +148,7 @@ export class ExpirationManager {
     permissions: MacroPermission[],
     userId: string,
     revokedBy: string,
-    reason?: string,
+    reason?: string
   ): number {
     let count = 0;
 
@@ -183,7 +169,7 @@ export class ExpirationManager {
     permissions: MacroPermission[],
     macroId: string,
     revokedBy: string,
-    reason?: string,
+    reason?: string
   ): number {
     let count = 0;
 
@@ -259,7 +245,7 @@ export class ExpirationManager {
    */
   autoRenewPermissions(
     permissions: MacroPermission[],
-    renewalPeriodDays: number = 30,
+    renewalPeriodDays: number = 30
   ): AutoRenewalResult {
     const renewalDate = new Date();
     renewalDate.setDate(renewalDate.getDate() + renewalPeriodDays);

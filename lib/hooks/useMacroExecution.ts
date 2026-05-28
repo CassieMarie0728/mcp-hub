@@ -38,11 +38,7 @@ export function useMacroExecution() {
   const createFromHistory = useCallback(
     async (executionIds: string[], name: string, description?: string) => {
       try {
-        const macro = await MacroManager.createFromExecutionHistory(
-          executionIds,
-          name,
-          description,
-        );
+        const macro = await MacroManager.createFromExecutionHistory(executionIds, name, description);
         setState((prev) => ({
           ...prev,
           macros: [...prev.macros, macro],
@@ -55,72 +51,72 @@ export function useMacroExecution() {
         throw error;
       }
     },
-    [],
+    []
   );
 
   // Create macro from template
-  const createFromTemplate = useCallback(
-    async (templateKey: string, overrides?: Partial<Macro>) => {
-      try {
-        const macro = await MacroManager.createFromTemplate(templateKey, overrides);
-        setState((prev) => ({
-          ...prev,
-          macros: [...prev.macros, macro],
-          error: null,
-        }));
-        return macro;
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to create macro';
-        setState((prev) => ({ ...prev, error: errorMessage }));
-        throw error;
-      }
-    },
-    [],
-  );
-
-  // Execute macro
-  const executeMacro = useCallback(async (macro: Macro, variables?: Record<string, any>) => {
+  const createFromTemplate = useCallback(async (templateKey: string, overrides?: Partial<Macro>) => {
     try {
+      const macro = await MacroManager.createFromTemplate(templateKey, overrides);
       setState((prev) => ({
         ...prev,
-        isExecuting: true,
+        macros: [...prev.macros, macro],
         error: null,
-        progress: 0,
       }));
-
-      const execution = await engineRef.current.executeMacro(macro, {
-        variables,
-        stopOnError: false,
-        retryFailedSteps: true,
-        onProgress: (progress) => {
-          setState((prev) => ({ ...prev, progress }));
-        },
-        onStepError: (stepIndex, error) => {
-          console.error(`Step ${stepIndex} error: ${error}`);
-        },
-      });
-
-      // Record execution
-      await MacroManager.recordExecution(execution);
-
-      setState((prev) => ({
-        ...prev,
-        currentExecution: execution,
-        isExecuting: false,
-        progress: 100,
-      }));
-
-      return execution;
+      return macro;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Execution failed';
-      setState((prev) => ({
-        ...prev,
-        isExecuting: false,
-        error: errorMessage,
-      }));
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create macro';
+      setState((prev) => ({ ...prev, error: errorMessage }));
       throw error;
     }
   }, []);
+
+  // Execute macro
+  const executeMacro = useCallback(
+    async (macro: Macro, variables?: Record<string, any>) => {
+      try {
+        setState((prev) => ({
+          ...prev,
+          isExecuting: true,
+          error: null,
+          progress: 0,
+        }));
+
+        const execution = await engineRef.current.executeMacro(macro, {
+          variables,
+          stopOnError: false,
+          retryFailedSteps: true,
+          onProgress: (progress) => {
+            setState((prev) => ({ ...prev, progress }));
+          },
+          onStepError: (stepIndex, error) => {
+            console.error(`Step ${stepIndex} error: ${error}`);
+          },
+        });
+
+        // Record execution
+        await MacroManager.recordExecution(execution);
+
+        setState((prev) => ({
+          ...prev,
+          currentExecution: execution,
+          isExecuting: false,
+          progress: 100,
+        }));
+
+        return execution;
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Execution failed';
+        setState((prev) => ({
+          ...prev,
+          isExecuting: false,
+          error: errorMessage,
+        }));
+        throw error;
+      }
+    },
+    []
+  );
 
   // Pause execution
   const pauseExecution = useCallback(() => {

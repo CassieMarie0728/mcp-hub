@@ -40,7 +40,7 @@ export function Skeleton({
           duration: 1000,
           useNativeDriver: true,
         }),
-      ]),
+      ])
     );
 
     animation.start();

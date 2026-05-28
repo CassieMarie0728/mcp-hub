@@ -3,7 +3,6 @@
 ## 1. Color Palette
 
 ### Brand Colors
-
 ```
 Primary: #0A7EA4 (Teal Blue)
   - Light: #4DA6C7
@@ -15,7 +14,6 @@ Secondary: #FF6B6B (Coral Red)
 ```
 
 ### Semantic Colors
-
 ```
 Success: #22C55E (Green)
   - Light: #86EFAC
@@ -35,7 +33,6 @@ Info: #3B82F6 (Blue)
 ```
 
 ### Neutral Colors
-
 ```
 Background: #FFFFFF (Light) / #0F172A (Dark)
 Surface: #F8FAFC (Light) / #1E293B (Dark)
@@ -45,7 +42,6 @@ Text (Muted): #64748B (Light) / #94A3B8 (Dark)
 ```
 
 ### Usage Guidelines
-
 - **Primary**: Main CTAs, active states, brand moments
 - **Secondary**: Destructive actions, alerts
 - **Success**: Positive feedback, confirmations
@@ -59,7 +55,6 @@ Text (Muted): #64748B (Light) / #94A3B8 (Dark)
 ## 2. Typography
 
 ### Type Scale
-
 ```
 H1: 32px, Weight 700, Line Height 1.2
 H2: 28px, Weight 700, Line Height 1.2
@@ -77,21 +72,18 @@ Overline: 11px, Weight 600, Line Height 1.4, Letter Spacing +0.5px
 ```
 
 ### Font Families
-
 ```
 Primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif
 Monospace: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace
 ```
 
 ### Font Weight Usage
-
 - **700 (Bold)**: Headings, strong emphasis
 - **600 (Semibold)**: Subheadings, labels, strong body text
 - **500 (Medium)**: Buttons, badges, captions
 - **400 (Regular)**: Body text, descriptions
 
 ### Text Color Hierarchy
-
 1. **Primary Text**: Foreground color (high contrast)
 2. **Secondary Text**: Muted color (medium contrast)
 3. **Tertiary Text**: Muted color at 60% opacity (low contrast)
@@ -101,7 +93,6 @@ Monospace: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospac
 ## 3. Spacing & Layout
 
 ### Spacing Scale (8pt Grid)
-
 ```
 xs: 4px
 sm: 8px
@@ -114,7 +105,6 @@ xl: 24px
 ```
 
 ### Safe Area Padding
-
 ```
 Mobile Portrait: 16px horizontal, 12px top, 8px bottom
 Tab Bar: Always reserve 56px + safe area bottom
@@ -122,7 +112,6 @@ Notch/Dynamic Island: Handled by SafeAreaView
 ```
 
 ### Component Spacing
-
 ```
 Card Padding: 16px
 Button Padding: 12px horizontal, 10px vertical
@@ -132,7 +121,6 @@ Modal Padding: 20px
 ```
 
 ### Layout Grid
-
 ```
 Columns: 4-column grid for mobile
 Gutter: 8px between columns
@@ -148,7 +136,6 @@ Breakpoints:
 ## 4. Component Library
 
 ### Button Component
-
 ```
 Variants:
   - Primary: Solid primary color, white text
@@ -170,7 +157,6 @@ States:
 ```
 
 ### Card Component
-
 ```
 Variants:
   - Elevated: Shadow + border
@@ -189,7 +175,6 @@ States:
 ```
 
 ### Input Component
-
 ```
 Variants:
   - Text: Standard text input
@@ -212,7 +197,6 @@ States:
 ```
 
 ### List Component
-
 ```
 Item Height: 56px (with icon + text)
 Item Padding: 12px vertical, 16px horizontal
@@ -228,7 +212,6 @@ States:
 ```
 
 ### Badge Component
-
 ```
 Variants:
   - Status: Colored background, white text
@@ -241,7 +224,6 @@ Font: Overline (11px, 600 weight)
 ```
 
 ### Modal Component
-
 ```
 Overlay: Transparent black 50% opacity
 Content: White/dark background, rounded corners
@@ -262,7 +244,6 @@ Animation: Slide up from bottom
 ## 5. Interaction & Animation
 
 ### Press Feedback
-
 ```
 Primary Buttons:
   - Scale: 0.97
@@ -281,7 +262,6 @@ Cards/Lists:
 ```
 
 ### Loading States
-
 ```
 Spinner: Rotating primary color icon
 Duration: 1 second per rotation
@@ -292,7 +272,6 @@ Duration: 1.5 second pulse
 ```
 
 ### Transitions
-
 ```
 Page Navigation: Slide right (back), slide left (forward)
 Duration: 300ms
@@ -308,7 +287,6 @@ Timing: EaseOut
 ```
 
 ### Haptic Feedback
-
 ```
 Light Tap: ImpactFeedbackStyle.Light
   - Button press
@@ -332,7 +310,6 @@ Error: NotificationFeedbackType.Error
 ## 6. Accessibility
 
 ### Touch Targets
-
 ```
 Minimum: 44pt × 44pt (WCAG AAA)
 Recommended: 48pt × 48pt
@@ -340,7 +317,6 @@ Spacing: 8pt minimum between targets
 ```
 
 ### Color Contrast
-
 ```
 Normal Text: 4.5:1 (WCAG AA)
 Large Text: 3:1 (WCAG AA)
@@ -348,7 +324,6 @@ UI Components: 3:1 (WCAG AA)
 ```
 
 ### Focus States
-
 ```
 Keyboard Focus: 2px primary color outline
 Focus Ring: 4px offset from element
@@ -356,7 +331,6 @@ Visible: Always visible, high contrast
 ```
 
 ### Icons
-
 ```
 Size: Minimum 24px × 24px
 Label: Always paired with text or aria-label
@@ -368,7 +342,6 @@ Color: Inherit from text color or semantic color
 ## 7. Dark Mode
 
 ### Implementation
-
 ```
 CSS Variables: Use CSS custom properties
 Automatic: Respect system preference
@@ -382,7 +355,6 @@ Color Mapping:
 ```
 
 ### Testing
-
 - Test all screens in both light and dark modes
 - Verify contrast ratios in both modes
 - Check for color-dependent information
@@ -392,7 +364,6 @@ Color Mapping:
 ## 8. Responsive Design
 
 ### Mobile First
-
 ```
 Design for mobile 375px width first
 Then adapt for tablet and desktop
@@ -400,7 +371,6 @@ Use CSS media queries for breakpoints
 ```
 
 ### Breakpoints
-
 ```
 Mobile: 0-599px (1 column)
 Tablet: 600-1199px (2 columns)
@@ -408,7 +378,6 @@ Desktop: 1200px+ (4 columns)
 ```
 
 ### Orientation
-
 ```
 Portrait: 9:16 aspect ratio (primary)
 Landscape: 16:9 aspect ratio (secondary)
@@ -420,15 +389,15 @@ Handle notch/safe area in both
 ## 9. Component Usage Examples
 
 ### Button
-
 ```tsx
 <Pressable className="bg-primary rounded-lg p-3">
-  <Text className="text-center font-semibold text-background">Primary Action</Text>
+  <Text className="text-center font-semibold text-background">
+    Primary Action
+  </Text>
 </Pressable>
 ```
 
 ### Card
-
 ```tsx
 <View className="bg-surface rounded-lg p-4 border border-border">
   <Text className="text-lg font-semibold text-foreground">Title</Text>
@@ -437,7 +406,6 @@ Handle notch/safe area in both
 ```
 
 ### Input
-
 ```tsx
 <TextInput
   placeholder="Enter text"
@@ -447,7 +415,6 @@ Handle notch/safe area in both
 ```
 
 ### List Item
-
 ```tsx
 <Pressable className="flex-row items-center p-3 border-b border-border">
   <Text className="flex-1 text-foreground font-semibold">Item</Text>

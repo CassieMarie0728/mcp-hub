@@ -29,7 +29,6 @@ flowchart TB
 ### Business Layer
 
 #### **Marketplace Router** (`server/routes/marketplace.ts`)
-
 - Purpose: Defines HTTP endpoints for macro marketplace operations.
 - Key Endpoints:
   - `GET /macros`
@@ -43,7 +42,6 @@ flowchart TB
 ### Data Access Layer
 
 #### **getDb** (`server/db.ts`)
-
 - Purpose: Provides a connection to the database.
 - Status: Not yet used in this router (mock implementation).
 
@@ -51,31 +49,31 @@ flowchart TB
 
 ### Macro
 
-| Property    | Type   | Description             |
-| ----------- | ------ | ----------------------- |
-| id          | string | Unique macro identifier |
-| name        | string | Macro name              |
-| description | string | Brief macro description |
-| category    | string | Macro category          |
-| downloads   | number | Total download count    |
+| Property    | Type   | Description                    |
+|-------------|--------|--------------------------------|
+| id          | string | Unique macro identifier        |
+| name        | string | Macro name                     |
+| description | string | Brief macro description        |
+| category    | string | Macro category                 |
+| downloads   | number | Total download count           |
 
 ### MacroReview
 
-| Property | Type   | Description                      |
-| -------- | ------ | -------------------------------- |
-| id       | string | Unique review identifier         |
-| macroId  | string | Identifier of the reviewed macro |
-| rating   | number | Rating given (1–5)               |
-| comment  | string | User’s review comment            |
+| Property | Type   | Description                       |
+|----------|--------|-----------------------------------|
+| id       | string | Unique review identifier          |
+| macroId  | string | Identifier of the reviewed macro  |
+| rating   | number | Rating given (1–5)                |
+| comment  | string | User’s review comment             |
 
 ### MacroDownload
 
-| Property     | Type   | Description                        |
-| ------------ | ------ | ---------------------------------- |
-| id           | string | Unique download event identifier   |
-| macroId      | string | Identifier of the downloaded macro |
-| userId       | string | Identifier of the user             |
-| downloadedAt | Date   | Timestamp of the download          |
+| Property     | Type   | Description                          |
+|--------------|--------|--------------------------------------|
+| id           | string | Unique download event identifier     |
+| macroId      | string | Identifier of the downloaded macro   |
+| userId       | string | Identifier of the user               |
+| downloadedAt | Date   | Timestamp of the download            |
 
 ## API Integration
 
@@ -288,13 +286,13 @@ res.status(500).json({ success: false, error: 'Failed to fetch macros' });
 
 ## Key Classes Reference
 
-| Class/Type    | Location                     | Responsibility                            |
-| ------------- | ---------------------------- | ----------------------------------------- |
-| Router        | server/routes/marketplace.ts | Defines marketplace API endpoints         |
-| Macro         | server/routes/marketplace.ts | Data model for macro metadata             |
-| MacroReview   | server/routes/marketplace.ts | Data model for macro reviews              |
-| MacroDownload | server/routes/marketplace.ts | Data model for download events            |
-| getDb         | server/db.ts                 | Database connector for future integration |
+| Class/Type     | Location                     | Responsibility                             |
+|----------------|------------------------------|--------------------------------------------|
+| Router         | server/routes/marketplace.ts | Defines marketplace API endpoints          |
+| Macro          | server/routes/marketplace.ts | Data model for macro metadata              |
+| MacroReview    | server/routes/marketplace.ts | Data model for macro reviews               |
+| MacroDownload  | server/routes/marketplace.ts | Data model for download events             |
+| getDb          | server/db.ts                 | Database connector for future integration  |
 
 ## Dependencies
 

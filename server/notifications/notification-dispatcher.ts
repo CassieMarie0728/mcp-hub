@@ -14,7 +14,7 @@ export class NotificationDispatcher {
     userId: string,
     collaboratorName: string,
     action: string,
-    macroName: string,
+    macroName: string
   ): void {
     this.notificationEngine.createNotification(
       userId,
@@ -27,18 +27,14 @@ export class NotificationDispatcher {
         macroName,
         actionType: 'collaboration',
       },
-      'normal',
+      'normal'
     );
   }
 
   /**
    * Dispatch schedule trigger notification
    */
-  dispatchScheduleTrigger(
-    userId: string,
-    macroName: string,
-    status: 'started' | 'completed' | 'failed',
-  ): void {
+  dispatchScheduleTrigger(userId: string, macroName: string, status: 'started' | 'completed' | 'failed'): void {
     const titles: Record<string, string> = {
       started: `${macroName} started`,
       completed: `${macroName} completed`,
@@ -63,7 +59,7 @@ export class NotificationDispatcher {
         status,
         actionType: 'schedule',
       },
-      priority,
+      priority
     );
   }
 
@@ -75,10 +71,9 @@ export class NotificationDispatcher {
     macroName: string,
     status: 'success' | 'failure',
     duration: number,
-    errorMessage?: string,
+    errorMessage?: string
   ): void {
-    const title =
-      status === 'success' ? `${macroName} executed successfully` : `${macroName} execution failed`;
+    const title = status === 'success' ? `${macroName} executed successfully` : `${macroName} execution failed`;
 
     const message =
       status === 'success'
@@ -99,19 +94,14 @@ export class NotificationDispatcher {
         errorMessage,
         actionType: 'execution',
       },
-      priority,
+      priority
     );
   }
 
   /**
    * Dispatch fork notification
    */
-  dispatchForkNotification(
-    userId: string,
-    forkerName: string,
-    macroName: string,
-    forkName: string,
-  ): void {
+  dispatchForkNotification(userId: string, forkerName: string, macroName: string, forkName: string): void {
     this.notificationEngine.createNotification(
       userId,
       'fork_notification',
@@ -123,19 +113,14 @@ export class NotificationDispatcher {
         forkName,
         actionType: 'fork',
       },
-      'normal',
+      'normal'
     );
   }
 
   /**
    * Dispatch version update notification
    */
-  dispatchVersionUpdate(
-    userId: string,
-    macroName: string,
-    versionNumber: number,
-    changeDescription: string,
-  ): void {
+  dispatchVersionUpdate(userId: string, macroName: string, versionNumber: number, changeDescription: string): void {
     this.notificationEngine.createNotification(
       userId,
       'version_update',
@@ -147,19 +132,14 @@ export class NotificationDispatcher {
         changeDescription,
         actionType: 'version',
       },
-      'normal',
+      'normal'
     );
   }
 
   /**
    * Dispatch anomaly alert
    */
-  dispatchAnomalyAlert(
-    userId: string,
-    anomalyType: string,
-    macroName: string,
-    details: string,
-  ): void {
+  dispatchAnomalyAlert(userId: string, anomalyType: string, macroName: string, details: string): void {
     const titles: Record<string, string> = {
       high_failure_rate: `High failure rate detected`,
       high_duration: `Slow execution detected`,
@@ -177,19 +157,14 @@ export class NotificationDispatcher {
         details,
         actionType: 'anomaly',
       },
-      'high',
+      'high'
     );
   }
 
   /**
    * Dispatch system alert
    */
-  dispatchSystemAlert(
-    userId: string,
-    title: string,
-    message: string,
-    severity: 'info' | 'warning' | 'critical' = 'info',
-  ): void {
+  dispatchSystemAlert(userId: string, title: string, message: string, severity: 'info' | 'warning' | 'critical' = 'info'): void {
     const priorityMap: Record<string, 'low' | 'normal' | 'high'> = {
       info: 'low',
       warning: 'normal',
@@ -205,19 +180,14 @@ export class NotificationDispatcher {
         severity,
         actionType: 'system',
       },
-      priorityMap[severity],
+      priorityMap[severity]
     );
   }
 
   /**
    * Dispatch user mention notification
    */
-  dispatchUserMention(
-    userId: string,
-    mentionerName: string,
-    context: string,
-    contextType: 'comment' | 'review',
-  ): void {
+  dispatchUserMention(userId: string, mentionerName: string, context: string, contextType: 'comment' | 'review'): void {
     this.notificationEngine.createNotification(
       userId,
       'user_mention',
@@ -229,19 +199,14 @@ export class NotificationDispatcher {
         contextType,
         actionType: 'mention',
       },
-      'normal',
+      'normal'
     );
   }
 
   /**
    * Dispatch macro comment notification
    */
-  dispatchMacroComment(
-    userId: string,
-    commenterName: string,
-    macroName: string,
-    comment: string,
-  ): void {
+  dispatchMacroComment(userId: string, commenterName: string, macroName: string, comment: string): void {
     this.notificationEngine.createNotification(
       userId,
       'macro_comment',
@@ -253,7 +218,7 @@ export class NotificationDispatcher {
         comment,
         actionType: 'comment',
       },
-      'normal',
+      'normal'
     );
   }
 
@@ -271,7 +236,7 @@ export class NotificationDispatcher {
         fileName,
         actionType: 'download',
       },
-      'low',
+      'low'
     );
   }
 
@@ -286,7 +251,7 @@ export class NotificationDispatcher {
             notif.userId,
             notif.data.collaboratorName,
             notif.data.action,
-            notif.data.macroName,
+            notif.data.macroName
           );
           break;
 
@@ -300,7 +265,7 @@ export class NotificationDispatcher {
             notif.data.macroName,
             notif.data.status,
             notif.data.duration,
-            notif.data.errorMessage,
+            notif.data.errorMessage
           );
           break;
 
@@ -309,7 +274,7 @@ export class NotificationDispatcher {
             notif.userId,
             notif.data.forkerName,
             notif.data.originalMacroName,
-            notif.data.forkName,
+            notif.data.forkName
           );
           break;
 
@@ -318,7 +283,7 @@ export class NotificationDispatcher {
             notif.userId,
             notif.data.macroName,
             notif.data.versionNumber,
-            notif.data.changeDescription,
+            notif.data.changeDescription
           );
           break;
 
@@ -327,17 +292,12 @@ export class NotificationDispatcher {
             notif.userId,
             notif.data.anomalyType,
             notif.data.macroName,
-            notif.data.details,
+            notif.data.details
           );
           break;
 
         case 'system_alert':
-          this.dispatchSystemAlert(
-            notif.userId,
-            notif.data.title,
-            notif.data.message,
-            notif.data.severity,
-          );
+          this.dispatchSystemAlert(notif.userId, notif.data.title, notif.data.message, notif.data.severity);
           break;
 
         case 'user_mention':
@@ -345,7 +305,7 @@ export class NotificationDispatcher {
             notif.userId,
             notif.data.mentionerName,
             notif.data.context,
-            notif.data.contextType,
+            notif.data.contextType
           );
           break;
 
@@ -354,7 +314,7 @@ export class NotificationDispatcher {
             notif.userId,
             notif.data.commenterName,
             notif.data.macroName,
-            notif.data.comment,
+            notif.data.comment
           );
           break;
 

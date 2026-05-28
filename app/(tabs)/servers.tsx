@@ -13,7 +13,7 @@ export default function ServersScreen() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredServers = servers.filter((server) =>
-    server.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    server.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleDeleteServer = (serverId: string, serverName: string) => {
@@ -29,11 +29,11 @@ export default function ServersScreen() {
             await deleteServer(serverId);
           },
         },
-      ],
+      ]
     );
   };
 
-  const renderServerCard = ({ item: server }: { item: (typeof servers)[0] }) => (
+  const renderServerCard = ({ item: server }: { item: typeof servers[0] }) => (
     <TouchableOpacity
       onPress={() => router.push(`/(tabs)/server-detail?id=${server.id}` as any)}
       className="bg-surface rounded-xl p-4 border border-border mb-3 active:opacity-70"

@@ -155,7 +155,10 @@ export default function ToolExecutionUpdatedScreen() {
             </View>
 
             {/* Advanced Options */}
-            <Pressable onPress={() => setShowAdvanced(!showAdvanced)} className="mb-4">
+            <Pressable
+              onPress={() => setShowAdvanced(!showAdvanced)}
+              className="mb-4"
+            >
               <Text className="text-sm font-medium text-primary">
                 {showAdvanced ? '▼ Hide Advanced' : '▶ Show Advanced'}
               </Text>
@@ -190,7 +193,7 @@ export default function ToolExecutionUpdatedScreen() {
             'p-4 rounded-lg items-center justify-center mb-6',
             isExecuting || !isReady || !formData.serverId || !formData.toolName
               ? 'bg-muted'
-              : 'bg-primary',
+              : 'bg-primary'
           )}
         >
           {isExecuting ? (

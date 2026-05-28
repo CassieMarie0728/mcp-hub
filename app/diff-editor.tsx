@@ -97,7 +97,9 @@ export default function DiffEditorScreen() {
    * Apply suggestion
    */
   const applySuggestion = (id: string) => {
-    setSuggestions(suggestions.map((s) => (s.id === id ? { ...s, applied: true } : s)));
+    setSuggestions(
+      suggestions.map((s) => (s.id === id ? { ...s, applied: true } : s))
+    );
 
     Alert.alert('Success', 'Suggestion applied successfully');
   };
@@ -113,12 +115,16 @@ export default function DiffEditorScreen() {
    * Auto-apply safe suggestions
    */
   const autoApplySafe = () => {
-    const safeSuggestions = suggestions.filter((s) => s.confidence > 0.9 && s.impact === 'high');
+    const safeSuggestions = suggestions.filter(
+      (s) => s.confidence > 0.9 && s.impact === 'high'
+    );
 
     setSuggestions(
       suggestions.map((s) =>
-        safeSuggestions.find((safe) => safe.id === s.id) ? { ...s, applied: true } : s,
-      ),
+        safeSuggestions.find((safe) => safe.id === s.id)
+          ? { ...s, applied: true }
+          : s
+      )
     );
 
     Alert.alert('Success', `Applied ${safeSuggestions.length} safe suggestions`);
@@ -141,7 +147,7 @@ export default function DiffEditorScreen() {
       className={cn(
         'rounded-xl p-4 mb-3 border',
         getImpactColor(item.impact),
-        item.applied && 'opacity-60',
+        item.applied && 'opacity-60'
       )}
     >
       <View className="gap-3">
@@ -168,9 +174,7 @@ export default function DiffEditorScreen() {
           <View className="flex-row items-center gap-1">
             <Text className="text-xs text-muted">Confidence:</Text>
             <View className="bg-primary/20 rounded px-2 py-1">
-              <Text className="text-xs font-bold text-primary">
-                {(item.confidence * 100).toFixed(0)}%
-              </Text>
+              <Text className="text-xs font-bold text-primary">{(item.confidence * 100).toFixed(0)}%</Text>
             </View>
           </View>
 
@@ -183,7 +187,7 @@ export default function DiffEditorScreen() {
                   ? 'bg-error/20'
                   : item.impact === 'medium'
                     ? 'bg-warning/20'
-                    : 'bg-success/20',
+                    : 'bg-success/20'
               )}
             >
               <Text
@@ -193,7 +197,7 @@ export default function DiffEditorScreen() {
                     ? 'text-error'
                     : item.impact === 'medium'
                       ? 'text-warning'
-                      : 'text-success',
+                      : 'text-success'
                 )}
               >
                 {item.impact}
@@ -270,13 +274,13 @@ export default function DiffEditorScreen() {
               onPress={() => setShowAppliedOnly(!showAppliedOnly)}
               className={cn(
                 'flex-1 rounded-lg p-3 active:opacity-80 border',
-                showAppliedOnly ? 'bg-primary border-primary' : 'bg-surface border-border',
+                showAppliedOnly ? 'bg-primary border-primary' : 'bg-surface border-border'
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold',
-                  showAppliedOnly ? 'text-background' : 'text-foreground',
+                  showAppliedOnly ? 'text-background' : 'text-foreground'
                 )}
               >
                 Applied Only
@@ -290,13 +294,13 @@ export default function DiffEditorScreen() {
               onPress={() => setFilterType(null)}
               className={cn(
                 'px-4 py-2 rounded-full border',
-                filterType === null ? 'bg-primary border-primary' : 'bg-surface border-border',
+                filterType === null ? 'bg-primary border-primary' : 'bg-surface border-border'
               )}
             >
               <Text
                 className={cn(
                   'font-semibold text-sm',
-                  filterType === null ? 'text-background' : 'text-foreground',
+                  filterType === null ? 'text-background' : 'text-foreground'
                 )}
               >
                 All
@@ -309,13 +313,13 @@ export default function DiffEditorScreen() {
                 onPress={() => setFilterType(filterType === type ? null : type)}
                 className={cn(
                   'px-4 py-2 rounded-full border',
-                  filterType === type ? 'bg-primary border-primary' : 'bg-surface border-border',
+                  filterType === type ? 'bg-primary border-primary' : 'bg-surface border-border'
                 )}
               >
                 <Text
                   className={cn(
                     'font-semibold text-sm',
-                    filterType === type ? 'text-background' : 'text-foreground',
+                    filterType === type ? 'text-background' : 'text-foreground'
                   )}
                 >
                   {type.charAt(0).toUpperCase() + type.slice(1)}

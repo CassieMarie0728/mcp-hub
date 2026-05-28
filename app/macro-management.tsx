@@ -78,7 +78,7 @@ export default function MacroManagementScreen() {
         newMacroDescription.trim() || '',
         'user_defined',
         [],
-        [],
+        []
       );
       setNewMacroName('');
       setNewMacroDescription('');
@@ -131,7 +131,9 @@ export default function MacroManagementScreen() {
         {/* Macro Info */}
         <View className="flex-1 gap-2">
           <Text className="text-lg font-bold text-foreground">{item.name}</Text>
-          {item.description && <Text className="text-sm text-muted">{item.description}</Text>}
+          {item.description && (
+            <Text className="text-sm text-muted">{item.description}</Text>
+          )}
           <View className="flex-row items-center gap-2">
             <Badge variant="status" color="info">{`${item.actions.length} actions`}</Badge>
             <Text className="text-xs text-muted">{formatDate(item.createdAt)}</Text>
@@ -156,9 +158,7 @@ export default function MacroManagementScreen() {
         <View className="flex-row items-center justify-between mb-4">
           <View className="flex-1">
             <Text className="text-4xl font-bold text-background">Macro Management</Text>
-            <Text className="text-sm text-background/80 mt-2">
-              Create and manage automation sequences
-            </Text>
+            <Text className="text-sm text-background/80 mt-2">Create and manage automation sequences</Text>
           </View>
           <TouchableOpacity onPress={() => router.back()} className="p-2">
             <Ionicons name="close" size={28} color={colors.background} />
@@ -184,7 +184,12 @@ export default function MacroManagementScreen() {
         </Card>
 
         {/* Create Button */}
-        <Button variant="primary" size="large" onPress={() => setShowModal(true)} className="mb-6">
+        <Button
+          variant="primary"
+          size="large"
+          onPress={() => setShowModal(true)}
+          className="mb-6"
+        >
           <Ionicons name="add" size={20} color={colors.background} />
           <Text className="text-background font-semibold ml-2">Create New Macro</Text>
         </Button>

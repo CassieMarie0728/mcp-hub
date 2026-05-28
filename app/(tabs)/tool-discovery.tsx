@@ -66,10 +66,9 @@ export default function ToolDiscoveryUpdatedScreen() {
   }, [selectedServerId, isReady, discoverTools, setError]);
 
   // Filter tools by search query
-  const filteredTools = tools.filter(
-    (tool) =>
-      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.description?.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredTools = tools.filter((tool) =>
+    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tool.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Render tool card
@@ -127,7 +126,7 @@ export default function ToolDiscoveryUpdatedScreen() {
             disabled={isDiscovering || !isReady || !selectedServerId}
             className={cn(
               'p-4 rounded-lg items-center justify-center',
-              isDiscovering || !isReady || !selectedServerId ? 'bg-muted' : 'bg-primary',
+              isDiscovering || !isReady || !selectedServerId ? 'bg-muted' : 'bg-primary'
             )}
           >
             {isDiscovering ? (

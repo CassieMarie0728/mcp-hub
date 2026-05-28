@@ -125,14 +125,14 @@ export default function EditServerScreen() {
 
   const handleImportJSON = async () => {
     try {
-      const result = (await DocumentPicker.getDocumentAsync({
+      const result = await DocumentPicker.getDocumentAsync({
         type: 'application/json',
         copyToCacheDirectory: true,
-      })) as any;
+      }) as any;
 
       if (result.type === 'success') {
         const fileUri = result.uri;
-        const fileContent = await fetch(fileUri).then((r) => r.text());
+        const fileContent = await fetch(fileUri).then(r => r.text());
         const config = JSON.parse(fileContent);
 
         if (!config.name || !config.connectionType) {
@@ -175,7 +175,7 @@ export default function EditServerScreen() {
             id: `${index}`,
             key,
             value,
-          }),
+          })
         );
         setHeaders(headerArray);
       }
@@ -206,7 +206,11 @@ export default function EditServerScreen() {
   };
 
   const handleUpdateHeader = (id: string, field: 'key' | 'value', value: string) => {
-    setHeaders(headers.map((h) => (h.id === id ? { ...h, [field]: value } : h)));
+    setHeaders(
+      headers.map((h) =>
+        h.id === id ? { ...h, [field]: value } : h
+      )
+    );
   };
 
   const handleSaveServer = async () => {
@@ -268,7 +272,7 @@ export default function EditServerScreen() {
               text: 'OK',
               onPress: () => router.push('/(tabs)/servers' as any),
             },
-          ],
+          ]
         );
       }
     } catch (error) {
@@ -367,7 +371,9 @@ export default function EditServerScreen() {
               >
                 <View
                   className={`w-5 h-5 rounded-full border-2 items-center justify-center ${
-                    connectionType === type ? 'bg-primary border-primary' : 'border-border'
+                    connectionType === type
+                      ? 'bg-primary border-primary'
+                      : 'border-border'
                   }`}
                 >
                   {connectionType === type && (
@@ -417,7 +423,9 @@ export default function EditServerScreen() {
               autoCapitalize="none"
               editable={!isLoading}
             />
-            <Text className="text-xs text-muted mt-2">The URL of your remote MCP server</Text>
+            <Text className="text-xs text-muted mt-2">
+              The URL of your remote MCP server
+            </Text>
           </View>
         )}
 
