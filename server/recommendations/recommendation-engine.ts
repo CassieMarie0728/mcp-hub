@@ -46,7 +46,8 @@ export class MacroRecommendationEngine {
 
     // Calculate average rating
     const ratings = Array.from(profile.ratedMacros.values());
-    profile.avgRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
+    profile.avgRating =
+      ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
 
     // Determine preferred complexity
     const executionCount = profile.executedMacros.size;
@@ -93,7 +94,7 @@ export class MacroRecommendationEngine {
   getRecommendations(
     userId: string,
     limit: number = 10,
-    strategy: 'collaborative' | 'content' | 'hybrid' = 'hybrid'
+    strategy: 'collaborative' | 'content' | 'hybrid' = 'hybrid',
   ): RecommendationResult[] {
     const cacheKey = `${userId}:${strategy}`;
     const cached = this.recommendationCache.get(cacheKey);
@@ -234,7 +235,7 @@ export class MacroRecommendationEngine {
    */
   private findSimilarUsers(
     userId: string,
-    limit: number
+    limit: number,
   ): Array<{ userId: string; similarity: number }> {
     const userProfile = this.userProfiles.get(userId);
     if (!userProfile) {

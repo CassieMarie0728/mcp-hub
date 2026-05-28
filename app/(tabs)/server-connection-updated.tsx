@@ -121,7 +121,7 @@ export default function ServerConnectionUpdatedScreen() {
         Alert.alert('Disconnect Error', errorMsg);
       }
     },
-    [disconnectServer]
+    [disconnectServer],
   );
 
   // Check if bridge is ready
@@ -146,10 +146,7 @@ export default function ServerConnectionUpdatedScreen() {
         {error && (
           <View className="mb-4 p-3 bg-error rounded-lg">
             <Text className="text-sm text-background font-semibold">{error}</Text>
-            <Pressable
-              onPress={() => setError(null)}
-              className="mt-2"
-            >
+            <Pressable onPress={() => setError(null)} className="mt-2">
               <Text className="text-xs text-background underline">Dismiss</Text>
             </Pressable>
           </View>
@@ -222,13 +219,13 @@ export default function ServerConnectionUpdatedScreen() {
                     'px-3 py-2 rounded-lg border',
                     formData.transport === t
                       ? 'bg-primary border-primary'
-                      : 'bg-background border-border'
+                      : 'bg-background border-border',
                   )}
                 >
                   <Text
                     className={cn(
                       'text-xs font-medium',
-                      formData.transport === t ? 'text-background' : 'text-foreground'
+                      formData.transport === t ? 'text-background' : 'text-foreground',
                     )}
                   >
                     {t.toUpperCase()}
@@ -239,10 +236,7 @@ export default function ServerConnectionUpdatedScreen() {
           </View>
 
           {/* Advanced Options */}
-          <Pressable
-            onPress={() => setShowAdvanced(!showAdvanced)}
-            className="mb-4"
-          >
+          <Pressable onPress={() => setShowAdvanced(!showAdvanced)} className="mb-4">
             <Text className="text-sm font-medium text-primary">
               {showAdvanced ? '▼ Hide Advanced' : '▶ Show Advanced'}
             </Text>
@@ -252,7 +246,9 @@ export default function ServerConnectionUpdatedScreen() {
             <>
               {/* Auth Token */}
               <View className="mb-4">
-                <Text className="text-sm font-medium text-foreground mb-2">Auth Token (Optional)</Text>
+                <Text className="text-sm font-medium text-foreground mb-2">
+                  Auth Token (Optional)
+                </Text>
                 <TextInput
                   placeholder="Bearer token"
                   placeholderTextColor={colors.muted}
@@ -288,7 +284,7 @@ export default function ServerConnectionUpdatedScreen() {
             disabled={isConnecting || !isReady}
             className={cn(
               'p-4 rounded-lg items-center justify-center',
-              isConnecting || !isReady ? 'bg-muted' : 'bg-primary'
+              isConnecting || !isReady ? 'bg-muted' : 'bg-primary',
             )}
           >
             {isConnecting ? (

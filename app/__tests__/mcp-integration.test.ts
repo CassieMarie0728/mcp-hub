@@ -129,16 +129,10 @@ describe('MCP Server Integration', () => {
         { name: 'list_files', description: 'List directory contents' },
       ];
 
-      const searchResults = tools.filter((t) =>
-        t.name.toLowerCase().includes('file')
-      );
+      const searchResults = tools.filter((t) => t.name.toLowerCase().includes('file'));
 
       expect(searchResults).toHaveLength(3);
-      expect(searchResults.map((t) => t.name)).toEqual([
-        'read_file',
-        'write_file',
-        'list_files',
-      ]);
+      expect(searchResults.map((t) => t.name)).toEqual(['read_file', 'write_file', 'list_files']);
     });
   });
 

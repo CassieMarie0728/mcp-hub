@@ -75,11 +75,9 @@ describe('Workflow Templates System', () => {
       });
 
       expect(results.length).toBeGreaterThan(0);
-      expect(
-        results.every((t) =>
-          ['github', 'slack'].some((tag) => t.tags.includes(tag))
-        )
-      ).toBe(true);
+      expect(results.every((t) => ['github', 'slack'].some((tag) => t.tags.includes(tag)))).toBe(
+        true,
+      );
     });
 
     it('should search by text', () => {
@@ -93,8 +91,8 @@ describe('Workflow Templates System', () => {
           (t) =>
             t.name.toLowerCase().includes('github') ||
             t.description.toLowerCase().includes('github') ||
-            t.tags.some((tag) => tag.toLowerCase().includes('github'))
-        )
+            t.tags.some((tag) => tag.toLowerCase().includes('github')),
+        ),
       ).toBe(true);
     });
 
@@ -182,9 +180,7 @@ describe('Workflow Templates System', () => {
 
     it('should have rating between 0 and 5', () => {
       const templates = WorkflowTemplateManager.getAllTemplates();
-      expect(
-        templates.every((t) => t.rating >= 0 && t.rating <= 5)
-      ).toBe(true);
+      expect(templates.every((t) => t.rating >= 0 && t.rating <= 5)).toBe(true);
     });
 
     it('should have creation and update dates', () => {
@@ -200,9 +196,7 @@ describe('Workflow Templates System', () => {
   describe('Featured Templates', () => {
     it('should get featured templates sorted by rating', () => {
       const allTemplates = WorkflowTemplateManager.getAllTemplates();
-      const featured = allTemplates
-        .sort((a, b) => b.rating - a.rating)
-        .slice(0, 5);
+      const featured = allTemplates.sort((a, b) => b.rating - a.rating).slice(0, 5);
 
       expect(featured.length).toBeGreaterThan(0);
       expect(featured.length).toBeLessThanOrEqual(5);

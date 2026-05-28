@@ -15,33 +15,19 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": [
-        "introduction",
-        "quickstart",
-        "installation"
-      ]
+      "pages": ["introduction", "quickstart", "installation"]
     },
     {
       "group": "Core Concepts",
-      "pages": [
-        "how-it-works",
-        "mcp-protocol"
-      ]
+      "pages": ["how-it-works", "mcp-protocol"]
     },
     {
       "group": "Configuration & Features",
-      "pages": [
-        "connecting-servers",
-        "mobile-interface",
-        "environment-variables"
-      ]
+      "pages": ["connecting-servers", "mobile-interface", "environment-variables"]
     },
     {
       "group": "Deployment & Guides",
-      "pages": [
-        "expo-deployment",
-        "troubleshooting"
-      ]
+      "pages": ["expo-deployment", "troubleshooting"]
     }
   ],
   "footerSocials": {

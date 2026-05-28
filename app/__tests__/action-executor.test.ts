@@ -225,7 +225,10 @@ describe('Action Executor', () => {
 
     it('should create fallback actions', () => {
       const originalAction = { type: 'tap', parameters: { x: '100', y: '200' } };
-      const fallback = { type: 'tap_by_text', parameters: { ...originalAction.parameters, fallback: 'true' } };
+      const fallback = {
+        type: 'tap_by_text',
+        parameters: { ...originalAction.parameters, fallback: 'true' },
+      };
       expect(fallback.type).not.toBe(originalAction.type);
     });
 

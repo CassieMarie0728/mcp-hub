@@ -27,7 +27,7 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
         { action: 'tap', retry: 3 },
-        'diff1'
+        'diff1',
       );
 
       const result = diffEditor.applySuggestion('diff1', suggestions[0].id);
@@ -38,7 +38,7 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
         { action: 'tap', retry: 3 },
-        'diff1'
+        'diff1',
       );
 
       const result = diffEditor.rejectSuggestion('diff1', suggestions[0].id);
@@ -49,7 +49,7 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
         { action: 'tap', retry: 3 },
-        'diff1'
+        'diff1',
       );
 
       diffEditor.applySuggestion('diff1', suggestions[0].id);
@@ -63,7 +63,7 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
         { action: 'tap', retry: 3 },
-        'diff1'
+        'diff1',
       );
 
       const stats = diffEditor.getSuggestionStats('diff1');
@@ -74,7 +74,7 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap' },
         { action: 'tap', retry: 3 },
-        'diff1'
+        'diff1',
       );
 
       const applied = diffEditor.autoApplySafeSuggestions('diff1');
@@ -101,9 +101,13 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
 
     it('should update notification type preference', () => {
       notificationPrefs.createDefaultPreferences('user1');
-      const result = notificationPrefs.updateNotificationTypePreference('user1', 'macro_execution', {
-        enabled: false,
-      });
+      const result = notificationPrefs.updateNotificationTypePreference(
+        'user1',
+        'macro_execution',
+        {
+          enabled: false,
+        },
+      );
 
       expect(result).toBe(true);
       const prefs = notificationPrefs.getUserPreferences('user1');
@@ -127,7 +131,7 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
       const shouldDeliver = notificationPrefs.shouldDeliverNotification(
         'user1',
         'macro_execution',
-        'inApp'
+        'inApp',
       );
 
       expect(shouldDeliver).toBe(true);
@@ -329,7 +333,7 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
       const suggestions = diffEditor.generateSuggestions(
         { action: 'tap', delay: 100 },
         { action: 'tap', delay: 200, retry: 3 },
-        'diff1'
+        'diff1',
       );
 
       expect(suggestions.length).toBeGreaterThan(0);
@@ -350,7 +354,7 @@ describe('User Features: Diff Editor, Notifications, Analytics', () => {
       const shouldDeliver = notificationPrefs.shouldDeliverNotification(
         'user1',
         'macro_execution',
-        'inApp'
+        'inApp',
       );
 
       expect(shouldDeliver).toBe(false);

@@ -1,11 +1,4 @@
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-  RefreshControl,
-} from 'react-native';
+import { ScrollView, Text, View, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
 import { useState, useLayoutEffect, useEffect } from 'react';
@@ -68,9 +61,10 @@ export default function AuditLogScreen() {
     return date.toLocaleDateString();
   };
 
-  const filteredLog = auditLog.filter((entry) =>
-    entry.toolName.toLowerCase().includes(searchText.toLowerCase()) ||
-    entry.userId?.toLowerCase().includes(searchText.toLowerCase())
+  const filteredLog = auditLog.filter(
+    (entry) =>
+      entry.toolName.toLowerCase().includes(searchText.toLowerCase()) ||
+      entry.userId?.toLowerCase().includes(searchText.toLowerCase()),
   );
 
   const successCount = auditLog.filter((e) => e.status === 'success').length;
@@ -134,9 +128,7 @@ export default function AuditLogScreen() {
                   key={f}
                   onPress={() => setFilter(f)}
                   className={`flex-1 py-2 px-3 rounded-lg border ${
-                    filter === f
-                      ? 'bg-primary border-primary'
-                      : 'bg-surface border-border'
+                    filter === f ? 'bg-primary border-primary' : 'bg-surface border-border'
                   }`}
                 >
                   <Text
@@ -177,7 +169,9 @@ export default function AuditLogScreen() {
           <Card variant="outlined" className="items-center py-12">
             <Ionicons name="document-text-outline" size={40} color={colors.muted} />
             <Text className="text-foreground font-semibold mt-3 mb-1">No Entries</Text>
-            <Text className="text-sm text-muted text-center">No audit log entries match your filter</Text>
+            <Text className="text-sm text-muted text-center">
+              No audit log entries match your filter
+            </Text>
           </Card>
         ) : (
           <View className="gap-3 pb-8">

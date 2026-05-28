@@ -198,7 +198,7 @@ describe('Macro Ecosystem', () => {
     });
 
     it('should handle nested conditions', () => {
-      const result = (5 > 3) && (10 < 20);
+      const result = 5 > 3 && 10 < 20;
       expect(result).toBe(true);
     });
 

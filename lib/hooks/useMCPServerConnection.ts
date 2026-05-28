@@ -70,7 +70,7 @@ export function useMCPServerConnection() {
         'MCPConnectionStatusChanged',
         (event) => {
           handleConnectionStatusChanged(event.serverId, event.status);
-        }
+        },
       );
 
       return () => {
@@ -82,87 +82,81 @@ export function useMCPServerConnection() {
   /**
    * Handle connection status change from native layer
    */
-  const handleConnectionStatusChanged = useCallback(
-    (serverId: string, status: string) => {
-      setConnections((prev) => {
-        const updated = new Map(prev);
-        const existing = updated.get(serverId);
-        if (existing) {
-          updated.set(serverId, {
-            ...existing,
-            status: status as ConnectionStatus,
-            isConnected: status === ConnectionStatus.CONNECTED,
-            lastConnectedAt:
-              status === ConnectionStatus.CONNECTED ? Date.now() : existing.lastConnectedAt,
-          });
-        }
-        return updated;
-      });
-    },
-    []
-  );
+  const handleConnectionStatusChanged = useCallback((serverId: string, status: string) => {
+    setConnections((prev) => {
+      const updated = new Map(prev);
+      const existing = updated.get(serverId);
+      if (existing) {
+        updated.set(serverId, {
+          ...existing,
+          status: status as ConnectionStatus,
+          isConnected: status === ConnectionStatus.CONNECTED,
+          lastConnectedAt:
+            status === ConnectionStatus.CONNECTED ? Date.now() : existing.lastConnectedAt,
+        });
+      }
+      return updated;
+    });
+  }, []);
 
   /**
    * Connect to a server
    */
-  const connectToServer = useCallback(
-    async (config: ServerConnectionConfig): Promise<boolean> => {
-      setIsLoading(true);
-      setError(null);
+  const connectToServer = useCallback(async (config: ServerConnectionConfig): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const result = await MCPServerBridgeExtended.connectToServer({
+    try {
+      const result = await MCPServerBridgeExtended.connectToServer({
+        id: config.id,
+        name: config.name,
+        host: config.host,
+        port: config.port,
+        transport: config.transport,
+        isSecure: config.isSecure ?? false,
+        authToken: config.authToken,
+        connectionTimeoutMs: config.connectionTimeoutMs ?? 30000,
+        readTimeoutMs: config.readTimeoutMs ?? 60000,
+      });
+
+      // Update connection state
+      setConnections((prev) => {
+        const updated = new Map(prev);
+        updated.set(config.id, {
           id: config.id,
           name: config.name,
-          host: config.host,
-          port: config.port,
-          transport: config.transport,
-          isSecure: config.isSecure ?? false,
-          authToken: config.authToken,
-          connectionTimeoutMs: config.connectionTimeoutMs ?? 30000,
-          readTimeoutMs: config.readTimeoutMs ?? 60000,
+          status: ConnectionStatus.CONNECTED,
+          isConnected: true,
+          lastConnectedAt: Date.now(),
+          connectionAttempts: (updated.get(config.id)?.connectionAttempts ?? 0) + 1,
         });
+        return updated;
+      });
 
-        // Update connection state
-        setConnections((prev) => {
-          const updated = new Map(prev);
-          updated.set(config.id, {
-            id: config.id,
-            name: config.name,
-            status: ConnectionStatus.CONNECTED,
-            isConnected: true,
-            lastConnectedAt: Date.now(),
-            connectionAttempts: (updated.get(config.id)?.connectionAttempts ?? 0) + 1,
-          });
-          return updated;
+      return true;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Connection failed';
+      setError(errorMessage);
+
+      // Update connection state with error
+      setConnections((prev) => {
+        const updated = new Map(prev);
+        updated.set(config.id, {
+          id: config.id,
+          name: config.name,
+          status: ConnectionStatus.ERROR,
+          isConnected: false,
+          error: errorMessage,
+          connectionAttempts: (updated.get(config.id)?.connectionAttempts ?? 0) + 1,
         });
+        return updated;
+      });
 
-        return true;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Connection failed';
-        setError(errorMessage);
-
-        // Update connection state with error
-        setConnections((prev) => {
-          const updated = new Map(prev);
-          updated.set(config.id, {
-            id: config.id,
-            name: config.name,
-            status: ConnectionStatus.ERROR,
-            isConnected: false,
-            error: errorMessage,
-            connectionAttempts: (updated.get(config.id)?.connectionAttempts ?? 0) + 1,
-          });
-          return updated;
-        });
-
-        return false;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   /**
    * Disconnect from a server
@@ -268,7 +262,7 @@ export function useMCPServerConnection() {
         setIsLoading(false);
       }
     },
-    []
+    [],
   );
 
   /**
@@ -298,7 +292,7 @@ export function useMCPServerConnection() {
     (serverId: string): boolean => {
       return connections.get(serverId)?.isConnected ?? false;
     },
-    [connections]
+    [connections],
   );
 
   return {

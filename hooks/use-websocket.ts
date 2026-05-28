@@ -33,9 +33,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   } = options;
 
   const socketRef = useRef<Socket | null>(null);
-  const listenersRef = useRef<Map<string, Set<(data: WebSocketUpdate) => void>>>(
-    new Map()
-  );
+  const listenersRef = useRef<Map<string, Set<(data: WebSocketUpdate) => void>>>(new Map());
 
   /**
    * Initialize WebSocket connection
@@ -81,7 +79,14 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     socketRef.current.on('error', (error: any) => {
       console.error('[WebSocket] Error:', error);
     });
-  }, [url, autoConnect, reconnection, reconnectionDelay, reconnectionDelayMax, reconnectionAttempts]);
+  }, [
+    url,
+    autoConnect,
+    reconnection,
+    reconnectionDelay,
+    reconnectionDelayMax,
+    reconnectionAttempts,
+  ]);
 
   /**
    * Subscribe to updates for a specific room
@@ -109,7 +114,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         }
       };
     },
-    [connect]
+    [connect],
   );
 
   /**
@@ -119,7 +124,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     (callback: (data: WebSocketUpdate) => void) => {
       return subscribe('tokens', callback);
     },
-    [subscribe]
+    [subscribe],
   );
 
   /**
@@ -129,7 +134,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     (callback: (data: WebSocketUpdate) => void) => {
       return subscribe('workflows', callback);
     },
-    [subscribe]
+    [subscribe],
   );
 
   /**
@@ -139,7 +144,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     (workflowId: string, callback: (data: WebSocketUpdate) => void) => {
       return subscribe(`workflow:${workflowId}`, callback);
     },
-    [subscribe]
+    [subscribe],
   );
 
   /**
@@ -149,7 +154,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
     (callback: (data: WebSocketUpdate) => void) => {
       return subscribe('analytics', callback);
     },
-    [subscribe]
+    [subscribe],
   );
 
   /**

@@ -84,9 +84,7 @@ export default function MCPServersScreen() {
           {/* Header */}
           <View className="gap-2">
             <Text className="text-3xl font-bold text-foreground">MCP Servers</Text>
-            <Text className="text-sm text-muted">
-              Connect to GitHub, Slack, Notion, and more
-            </Text>
+            <Text className="text-sm text-muted">Connect to GitHub, Slack, Notion, and more</Text>
           </View>
 
           {/* Tab Navigation */}
@@ -95,13 +93,13 @@ export default function MCPServersScreen() {
               onPress={() => setActiveTab('available')}
               className={cn(
                 'flex-1 py-2 px-3 rounded-md items-center justify-center',
-                activeTab === 'available' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'available' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'font-semibold text-sm',
-                  activeTab === 'available' ? 'text-background' : 'text-foreground'
+                  activeTab === 'available' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Available
@@ -111,13 +109,13 @@ export default function MCPServersScreen() {
               onPress={() => setActiveTab('registered')}
               className={cn(
                 'flex-1 py-2 px-3 rounded-md items-center justify-center',
-                activeTab === 'registered' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'registered' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'font-semibold text-sm',
-                  activeTab === 'registered' ? 'text-background' : 'text-foreground'
+                  activeTab === 'registered' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Registered ({registeredServersQuery.data?.length || 0})
@@ -134,10 +132,12 @@ export default function MCPServersScreen() {
                 availableServersQuery.data?.map((server) => (
                   <Pressable
                     key={server.id}
-                    onPress={() => setSelectedServer(selectedServer === server.id ? null : server.id)}
+                    onPress={() =>
+                      setSelectedServer(selectedServer === server.id ? null : server.id)
+                    }
                     className={cn(
                       'bg-surface rounded-lg p-4 border border-border',
-                      selectedServer === server.id && 'border-primary bg-primary/5'
+                      selectedServer === server.id && 'border-primary bg-primary/5',
                     )}
                   >
                     <View className="flex-row items-center justify-between mb-2">
@@ -198,9 +198,7 @@ export default function MCPServersScreen() {
                             disabled={!token || isRegistering}
                             className={cn(
                               'flex-1 py-3 px-4 rounded-lg items-center justify-center',
-                              token && !isRegistering
-                                ? 'bg-primary'
-                                : 'bg-primary/50'
+                              token && !isRegistering ? 'bg-primary' : 'bg-primary/50',
                             )}
                           >
                             {isRegistering ? (
@@ -249,7 +247,7 @@ export default function MCPServersScreen() {
                         <View
                           className={cn(
                             'w-3 h-3 rounded-full',
-                            server.status === 'connected' ? 'bg-success' : 'bg-warning'
+                            server.status === 'connected' ? 'bg-success' : 'bg-warning',
                           )}
                         />
                         <View className="flex-1">
@@ -258,10 +256,7 @@ export default function MCPServersScreen() {
                         </View>
                       </View>
                       <View className="flex-row gap-2">
-                        <Pressable
-                          onPress={() => handleTestConnection(server.id)}
-                          className="p-2"
-                        >
+                        <Pressable onPress={() => handleTestConnection(server.id)} className="p-2">
                           <MaterialIcons name="refresh" size={20} color={colors.primary} />
                         </Pressable>
                         <Pressable
@@ -294,9 +289,7 @@ export default function MCPServersScreen() {
                       onPress={() => handleDiscoverTools(server.id)}
                       className="bg-primary/10 rounded-lg py-2 px-3 items-center justify-center"
                     >
-                      <Text className="text-sm font-semibold text-primary">
-                        Discover Tools
-                      </Text>
+                      <Text className="text-sm font-semibold text-primary">Discover Tools</Text>
                     </Pressable>
                   </View>
                 ))

@@ -23,10 +23,7 @@ export class MacroExecutionEngine {
   /**
    * Execute a macro
    */
-  async executeMacro(
-    macro: Macro,
-    options: MacroExecutionOptions = {}
-  ): Promise<MacroExecution> {
+  async executeMacro(macro: Macro, options: MacroExecutionOptions = {}): Promise<MacroExecution> {
     const execution: MacroExecution = {
       id: `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       macroId: macro.id,
@@ -60,7 +57,11 @@ export class MacroExecutionEngine {
         execution.currentStepIndex = i;
 
         try {
-          const stepResult = await this.executeStep(step, execution.variables || {}, options.timeout);
+          const stepResult = await this.executeStep(
+            step,
+            execution.variables || {},
+            options.timeout,
+          );
           const duration = stepResult.duration;
 
           execution.results.push({
@@ -100,7 +101,11 @@ export class MacroExecutionEngine {
             let retried = false;
             for (let retry = 0; retry < step.maxRetries; retry++) {
               try {
-                const retryResult = await this.executeStep(step, execution.variables || {}, options.timeout);
+                const retryResult = await this.executeStep(
+                  step,
+                  execution.variables || {},
+                  options.timeout,
+                );
                 execution.results[execution.results.length - 1] = {
                   ...execution.results[execution.results.length - 1],
                   result: retryResult.result,
@@ -147,7 +152,7 @@ export class MacroExecutionEngine {
   private async executeStep(
     step: MacroStep,
     variables: Record<string, any>,
-    timeout?: number
+    timeout?: number,
   ): Promise<{ result: any; duration: number }> {
     const startTime = performance.now();
 
@@ -169,7 +174,10 @@ export class MacroExecutionEngine {
   /**
    * Substitute variables in parameters
    */
-  private substituteVariables(params: Record<string, any>, variables: Record<string, any>): Record<string, any> {
+  private substituteVariables(
+    params: Record<string, any>,
+    variables: Record<string, any>,
+  ): Record<string, any> {
     const substituted: Record<string, any> = {};
 
     for (const [key, value] of Object.entries(params)) {
@@ -194,7 +202,7 @@ export class MacroExecutionEngine {
   private async simulateToolExecution(
     toolName: string,
     parameters: Record<string, any>,
-    timeout?: number
+    timeout?: number,
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       const timeoutHandle = timeout

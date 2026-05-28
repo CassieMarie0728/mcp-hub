@@ -18,15 +18,15 @@ A dedicated private security mailbox is not currently documented in this reposit
 
 Provide enough detail for maintainers to reproduce and assess the issue safely.
 
-| Field | What to include |
-|---|---|
-| Summary | Short description of the issue and affected area |
-| Impact | What an attacker could do or access |
-| Affected components | Files, routes, screens, services, or deployment surfaces involved |
-| Reproduction steps | Minimal, safe sequence to reproduce the problem |
-| Environment | Branch, commit, runtime, container/Kubernetes context, and configuration notes |
-| Evidence | Logs, screenshots, or proof-of-concept details that do not expose secrets |
-| Suggested mitigation | Optional guidance if you already identified a likely fix |
+| Field                | What to include                                                                |
+| -------------------- | ------------------------------------------------------------------------------ |
+| Summary              | Short description of the issue and affected area                               |
+| Impact               | What an attacker could do or access                                            |
+| Affected components  | Files, routes, screens, services, or deployment surfaces involved              |
+| Reproduction steps   | Minimal, safe sequence to reproduce the problem                                |
+| Environment          | Branch, commit, runtime, container/Kubernetes context, and configuration notes |
+| Evidence             | Logs, screenshots, or proof-of-concept details that do not expose secrets      |
+| Suggested mitigation | Optional guidance if you already identified a likely fix                       |
 
 ## Response expectations
 

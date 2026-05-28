@@ -39,7 +39,7 @@ constructor(config: GitHubConfig)
 
 ![](chrome-extension://annlhfjgbkfmbbejkbdpgbmpbcjnehbb/images/saveicon.png)
 
- Save
+Save
 
 - Merges provided config with defaults (`baseUrl = 'https://api.github.com'`).
 
@@ -49,7 +49,7 @@ getMCPConfig(): MCPServerConfig
 
 ![](chrome-extension://annlhfjgbkfmbbejkbdpgbmpbcjnehbb/images/saveicon.png)
 
- Save
+Save
 
 - Builds `{ id, name, url, type, auth, headers, timeout }` for MCPServerManager registration.
 
@@ -59,7 +59,7 @@ getAvailableTools(): MCPTool[]
 
 ![](chrome-extension://annlhfjgbkfmbbejkbdpgbmpbcjnehbb/images/saveicon.png)
 
- Save
+Save
 
 - Returns an array of tool objects: `{ name, description, inputSchema }`.
 
@@ -69,7 +69,7 @@ async validateToken(): Promise<boolean>
 
 ![](chrome-extension://annlhfjgbkfmbbejkbdpgbmpbcjnehbb/images/saveicon.png)
 
- Save
+Save
 
 - Performs `GET https://api.github.com/user` with bearer token; returns `true` if response is OK.
 
@@ -113,7 +113,7 @@ async validateToken(): Promise<boolean>
 
 ![](chrome-extension://annlhfjgbkfmbbejkbdpgbmpbcjnehbb/images/saveicon.png)
 
- Save
+Save
 
 sequenceDiagram
 
@@ -143,7 +143,7 @@ M-->>R: acknowledgment
 
 ![](chrome-extension://annlhfjgbkfmbbejkbdpgbmpbcjnehbb/images/saveicon.png)
 
- Save
+Save
 
 sequenceDiagram
 
@@ -169,7 +169,7 @@ M-->>Client: tool list
 
 ![](chrome-extension://annlhfjgbkfmbbejkbdpgbmpbcjnehbb/images/saveicon.png)
 
- Save
+Save
 
 sequenceDiagram
 

@@ -4,10 +4,10 @@
 
 The **Marketplace API** powers the macro marketplace in MCP Hub. It offers endpoints to:
 
-- Browse macros with pagination, search, category filtering, and sorting.  
-- Retrieve detailed macro information including user reviews.  
-- Record macro download events.  
-- Submit user reviews for macros.  
+- Browse macros with pagination, search, category filtering, and sorting.
+- Retrieve detailed macro information including user reviews.
+- Record macro download events.
+- Submit user reviews for macros.
 
 By centralizing these operations, the API supports future integration with a real database (via `getDb`) and ensures a consistent interface for front-end clients.
 
@@ -29,12 +29,13 @@ flowchart TB
 ### Business Layer
 
 #### **Marketplace Router** (`server/routes/marketplace.ts`)
-- Purpose: Defines HTTP endpoints for macro marketplace operations.  
+
+- Purpose: Defines HTTP endpoints for macro marketplace operations.
 - Key Endpoints:
-  - `GET /macros`  
-  - `GET /macros/:id`  
-  - `POST /macros/:id/download`  
-  - `POST /macros/:id/reviews`  
+  - `GET /macros`
+  - `GET /macros/:id`
+  - `POST /macros/:id/download`
+  - `POST /macros/:id/reviews`
 
 > [!NOTE]  
 > The `getDb` import is reserved for future database integration; current logic uses mock data.
@@ -42,38 +43,39 @@ flowchart TB
 ### Data Access Layer
 
 #### **getDb** (`server/db.ts`)
-- Purpose: Provides a connection to the database.  
+
+- Purpose: Provides a connection to the database.
 - Status: Not yet used in this router (mock implementation).
 
 ## Data Models
 
 ### Macro
 
-| Property    | Type   | Description                    |
-|-------------|--------|--------------------------------|
-| id          | string | Unique macro identifier        |
-| name        | string | Macro name                     |
-| description | string | Brief macro description        |
-| category    | string | Macro category                 |
-| downloads   | number | Total download count           |
+| Property    | Type   | Description             |
+| ----------- | ------ | ----------------------- |
+| id          | string | Unique macro identifier |
+| name        | string | Macro name              |
+| description | string | Brief macro description |
+| category    | string | Macro category          |
+| downloads   | number | Total download count    |
 
 ### MacroReview
 
-| Property | Type   | Description                       |
-|----------|--------|-----------------------------------|
-| id       | string | Unique review identifier          |
-| macroId  | string | Identifier of the reviewed macro  |
-| rating   | number | Rating given (1–5)                |
-| comment  | string | User’s review comment             |
+| Property | Type   | Description                      |
+| -------- | ------ | -------------------------------- |
+| id       | string | Unique review identifier         |
+| macroId  | string | Identifier of the reviewed macro |
+| rating   | number | Rating given (1–5)               |
+| comment  | string | User’s review comment            |
 
 ### MacroDownload
 
-| Property     | Type   | Description                          |
-|--------------|--------|--------------------------------------|
-| id           | string | Unique download event identifier     |
-| macroId      | string | Identifier of the downloaded macro   |
-| userId       | string | Identifier of the user               |
-| downloadedAt | Date   | Timestamp of the download            |
+| Property     | Type   | Description                        |
+| ------------ | ------ | ---------------------------------- |
+| id           | string | Unique download event identifier   |
+| macroId      | string | Identifier of the downloaded macro |
+| userId       | string | Identifier of the user             |
+| downloadedAt | Date   | Timestamp of the download          |
 
 ## API Integration
 
@@ -281,32 +283,32 @@ res.status(500).json({ success: false, error: 'Failed to fetch macros' });
 
 ## Integration Points
 
-- Mounted in the main Express application (`server/_core/index.ts`).  
+- Mounted in the main Express application (`server/_core/index.ts`).
 - Prepares for Drizzle ORM or other database integration via **getDb**.
 
 ## Key Classes Reference
 
-| Class/Type     | Location                     | Responsibility                             |
-|----------------|------------------------------|--------------------------------------------|
-| Router         | server/routes/marketplace.ts | Defines marketplace API endpoints          |
-| Macro          | server/routes/marketplace.ts | Data model for macro metadata              |
-| MacroReview    | server/routes/marketplace.ts | Data model for macro reviews               |
-| MacroDownload  | server/routes/marketplace.ts | Data model for download events             |
-| getDb          | server/db.ts                 | Database connector for future integration  |
+| Class/Type    | Location                     | Responsibility                            |
+| ------------- | ---------------------------- | ----------------------------------------- |
+| Router        | server/routes/marketplace.ts | Defines marketplace API endpoints         |
+| Macro         | server/routes/marketplace.ts | Data model for macro metadata             |
+| MacroReview   | server/routes/marketplace.ts | Data model for macro reviews              |
+| MacroDownload | server/routes/marketplace.ts | Data model for download events            |
+| getDb         | server/db.ts                 | Database connector for future integration |
 
 ## Dependencies
 
-- **express**: Routing and HTTP handling  
+- **express**: Routing and HTTP handling
 - **getDb**: Database connector (unused in mock)
 
 ## Testing Considerations
 
-- Pagination logic (`page`, `limit`)  
-- Search and category filtering  
-- Download-based sorting  
-- Detail retrieval with reviews  
-- Download endpoint success and default `anonymous` behavior  
-- Review submission and response format  
+- Pagination logic (`page`, `limit`)
+- Search and category filtering
+- Download-based sorting
+- Detail retrieval with reviews
+- Download endpoint success and default `anonymous` behavior
+- Review submission and response format
 - Error responses (simulate exceptions)
 
 ## Caching Strategy

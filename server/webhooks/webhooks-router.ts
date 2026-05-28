@@ -22,7 +22,7 @@ export const webhooksRouter = router({
           maxRetries: z.number().default(3),
           backoffMs: z.number().default(1000),
         }),
-      })
+      }),
     )
     .mutation(({ input }) => {
       const secret = WebhookManager.generateSecret();
@@ -47,15 +47,13 @@ export const webhooksRouter = router({
   /**
    * Get webhook
    */
-  getWebhook: publicProcedure
-    .input(z.object({ webhookId: z.string() }))
-    .query(({ input }) => {
-      const webhook = WebhookManager.getWebhook(input.webhookId);
-      if (!webhook) {
-        throw new Error(`Webhook ${input.webhookId} not found`);
-      }
-      return webhook;
-    }),
+  getWebhook: publicProcedure.input(z.object({ webhookId: z.string() })).query(({ input }) => {
+    const webhook = WebhookManager.getWebhook(input.webhookId);
+    if (!webhook) {
+      throw new Error(`Webhook ${input.webhookId} not found`);
+    }
+    return webhook;
+  }),
 
   /**
    * List webhooks
@@ -77,7 +75,7 @@ export const webhooksRouter = router({
         rateLimit: z.number().optional(),
         ipWhitelist: z.array(z.string()).optional(),
         ipBlacklist: z.array(z.string()).optional(),
-      })
+      }),
     )
     .mutation(({ input }) => {
       const { webhookId, ...updates } = input;
@@ -106,11 +104,9 @@ export const webhooksRouter = router({
   /**
    * Get webhook statistics
    */
-  getWebhookStats: publicProcedure
-    .input(z.object({ webhookId: z.string() }))
-    .query(({ input }) => {
-      return WebhookManager.getWebhookStats(input.webhookId);
-    }),
+  getWebhookStats: publicProcedure.input(z.object({ webhookId: z.string() })).query(({ input }) => {
+    return WebhookManager.getWebhookStats(input.webhookId);
+  }),
 
   /**
    * Test webhook
@@ -121,7 +117,7 @@ export const webhooksRouter = router({
         webhookId: z.string(),
         event: z.string(),
         payload: z.record(z.string(), z.any()),
-      })
+      }),
     )
     .mutation(({ input }) => {
       const webhook = WebhookManager.getWebhook(input.webhookId);
@@ -133,42 +129,37 @@ export const webhooksRouter = router({
         input.webhookId,
         input.event,
         input.payload,
-        'pending'
+        'pending',
       );
 
       return {
         event,
         webhook,
         testUrl: webhook.url,
-        signature: WebhookManager.createSignature(
-          JSON.stringify(input.payload),
-          webhook.secret
-        ),
+        signature: WebhookManager.createSignature(JSON.stringify(input.payload), webhook.secret),
       };
     }),
 
   /**
    * Rotate webhook secret
    */
-  rotateSecret: publicProcedure
-    .input(z.object({ webhookId: z.string() }))
-    .mutation(({ input }) => {
-      const webhook = WebhookManager.getWebhook(input.webhookId);
-      if (!webhook) {
-        throw new Error(`Webhook ${input.webhookId} not found`);
-      }
+  rotateSecret: publicProcedure.input(z.object({ webhookId: z.string() })).mutation(({ input }) => {
+    const webhook = WebhookManager.getWebhook(input.webhookId);
+    if (!webhook) {
+      throw new Error(`Webhook ${input.webhookId} not found`);
+    }
 
-      const newSecret = WebhookManager.generateSecret();
-      const updated = WebhookManager.updateWebhook(input.webhookId, {
-        secret: newSecret,
-      });
+    const newSecret = WebhookManager.generateSecret();
+    const updated = WebhookManager.updateWebhook(input.webhookId, {
+      secret: newSecret,
+    });
 
-      return {
-        webhookId: updated.id,
-        newSecret,
-        message: 'Secret rotated successfully. Update your webhook consumer with the new secret.',
-      };
-    }),
+    return {
+      webhookId: updated.id,
+      newSecret,
+      message: 'Secret rotated successfully. Update your webhook consumer with the new secret.',
+    };
+  }),
 
   /**
    * Verify webhook signature
@@ -179,7 +170,7 @@ export const webhooksRouter = router({
         webhookId: z.string(),
         payload: z.string(),
         signature: z.string(),
-      })
+      }),
     )
     .query(({ input }) => {
       const webhook = WebhookManager.getWebhook(input.webhookId);
@@ -190,7 +181,7 @@ export const webhooksRouter = router({
       const isValid = WebhookManager.verifySignature(
         input.payload,
         input.signature,
-        webhook.secret
+        webhook.secret,
       );
 
       return { valid: isValid };

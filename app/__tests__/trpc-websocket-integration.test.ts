@@ -65,10 +65,7 @@ describe('Real tRPC Procedures & WebSocket Integration', () => {
         token: 'old_token_value',
       });
 
-      const rotated = await TokenManager.rotateToken(
-        original.id,
-        'new_token_value'
-      );
+      const rotated = await TokenManager.rotateToken(original.id, 'new_token_value');
 
       expect(rotated).toBeDefined();
       expect(rotated?.name).toContain('rotated');
@@ -350,10 +347,7 @@ describe('Real tRPC Procedures & WebSocket Integration', () => {
       expect(retrieved?.name).toBe('Integration Test Token');
 
       // Rotate token
-      const rotated = await TokenManager.rotateToken(
-        token.id,
-        'new_test_token_value'
-      );
+      const rotated = await TokenManager.rotateToken(token.id, 'new_test_token_value');
 
       expect(rotated).toBeDefined();
       expect(rotated?.maskedToken).toBe('••••alue');

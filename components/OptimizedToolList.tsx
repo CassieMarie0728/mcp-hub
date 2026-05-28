@@ -24,15 +24,7 @@ interface ToolListProps {
  * Prevents unnecessary re-renders
  */
 const ToolItem = memo(
-  ({
-    tool,
-    onPress,
-    colors,
-  }: {
-    tool: Tool;
-    onPress: (tool: Tool) => void;
-    colors: any;
-  }) => (
+  ({ tool, onPress, colors }: { tool: Tool; onPress: (tool: Tool) => void; colors: any }) => (
     <Pressable
       onPress={() => onPress(tool)}
       style={({ pressed }) => [
@@ -73,7 +65,7 @@ const ToolItem = memo(
       prevProps.tool.description === nextProps.tool.description &&
       JSON.stringify(prevProps.tool.tags) === JSON.stringify(nextProps.tool.tags)
     );
-  }
+  },
 );
 
 ToolItem.displayName = 'ToolItem';
@@ -104,14 +96,14 @@ export const OptimizedToolList = React.memo(
         (tool) =>
           tool.name.toLowerCase().includes(query) ||
           (tool.description && tool.description.toLowerCase().includes(query)) ||
-          (tool.tags && tool.tags.some((tag) => tag.toLowerCase().includes(query)))
+          (tool.tags && tool.tags.some((tag) => tag.toLowerCase().includes(query))),
       );
     }, [tools, searchQuery]);
 
     // Memoize render function
     const renderItem = useCallback(
       ({ item }: { item: Tool }) => <ToolItem tool={item} onPress={onSelectTool} colors={colors} />,
-      [onSelectTool, colors]
+      [onSelectTool, colors],
     );
 
     // Memoize key extractor
@@ -159,7 +151,7 @@ export const OptimizedToolList = React.memo(
         }
       />
     );
-  }
+  },
 );
 
 OptimizedToolList.displayName = 'OptimizedToolList';

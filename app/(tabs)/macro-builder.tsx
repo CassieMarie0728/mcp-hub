@@ -57,7 +57,7 @@ export default function MacroBuilderScreen() {
   const { mutate: createWorkflow, loading: createLoading } = useCreateWorkflow();
   const { mutate: saveWorkflow, loading: saveLoading } = useSaveWorkflow();
   const { mutate: executeWorkflow, loading: executeLoading } = useExecuteWorkflow();
-  
+
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
   const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
@@ -66,7 +66,7 @@ export default function MacroBuilderScreen() {
   const [newWorkflowDesc, setNewWorkflowDesc] = useState('');
   const [showStepPicker, setShowStepPicker] = useState(false);
   const [selectedStepType, setSelectedStepType] = useState<string | null>(null);
-  
+
   useEffect(() => {
     if (fetchedWorkflows) {
       setWorkflows(fetchedWorkflows as Workflow[]);
@@ -121,9 +121,7 @@ export default function MacroBuilderScreen() {
     };
 
     setSelectedWorkflow(updatedWorkflow);
-    setWorkflows(
-      workflows.map((w) => (w.id === updatedWorkflow.id ? updatedWorkflow : w))
-    );
+    setWorkflows(workflows.map((w) => (w.id === updatedWorkflow.id ? updatedWorkflow : w)));
     setShowStepPicker(false);
   };
 
@@ -137,9 +135,7 @@ export default function MacroBuilderScreen() {
     };
 
     setSelectedWorkflow(updatedWorkflow);
-    setWorkflows(
-      workflows.map((w) => (w.id === updatedWorkflow.id ? updatedWorkflow : w))
-    );
+    setWorkflows(workflows.map((w) => (w.id === updatedWorkflow.id ? updatedWorkflow : w)));
   };
 
   const handleSaveWorkflow = async () => {
@@ -182,13 +178,13 @@ export default function MacroBuilderScreen() {
           onPress={() => setActiveTab('list')}
           className={cn(
             'flex-1 py-3 px-4 border-b-2',
-            activeTab === 'list' ? 'border-primary' : 'border-transparent'
+            activeTab === 'list' ? 'border-primary' : 'border-transparent',
           )}
         >
           <Text
             className={cn(
               'text-center font-semibold',
-              activeTab === 'list' ? 'text-primary' : 'text-muted'
+              activeTab === 'list' ? 'text-primary' : 'text-muted',
             )}
           >
             My Workflows
@@ -200,13 +196,13 @@ export default function MacroBuilderScreen() {
             onPress={() => setActiveTab('editor')}
             className={cn(
               'flex-1 py-3 px-4 border-b-2',
-              activeTab === 'editor' ? 'border-primary' : 'border-transparent'
+              activeTab === 'editor' ? 'border-primary' : 'border-transparent',
             )}
           >
             <Text
               className={cn(
                 'text-center font-semibold',
-                activeTab === 'editor' ? 'text-primary' : 'text-muted'
+                activeTab === 'editor' ? 'text-primary' : 'text-muted',
               )}
             >
               Editor
@@ -220,7 +216,7 @@ export default function MacroBuilderScreen() {
           <View className="flex-1">
             {workflows.length === 0 ? (
               <View className="flex-1 items-center justify-center py-8">
-                <MaterialIcons name={"build" as any} size={48} color={colors.muted} />
+                <MaterialIcons name={'build' as any} size={48} color={colors.muted} />
                 <Text className="text-foreground font-semibold mt-4">No Workflows Yet</Text>
                 <Text className="text-muted text-center mt-2 px-4">
                   Create your first workflow to automate tasks
@@ -277,7 +273,9 @@ export default function MacroBuilderScreen() {
           <View className="flex-1">
             {/* Workflow Editor */}
             <View className="mb-4">
-              <Text className="text-foreground font-bold text-lg mb-2">{selectedWorkflow?.name}</Text>
+              <Text className="text-foreground font-bold text-lg mb-2">
+                {selectedWorkflow?.name}
+              </Text>
               {selectedWorkflow?.description && (
                 <Text className="text-muted text-sm">{selectedWorkflow.description}</Text>
               )}
@@ -316,7 +314,9 @@ export default function MacroBuilderScreen() {
                           <View className="flex-row items-center flex-1 gap-3">
                             <View
                               className="w-8 h-8 rounded-full items-center justify-center"
-                              style={{ backgroundColor: (stepInfo?.color || colors.primary) + '20' }}
+                              style={{
+                                backgroundColor: (stepInfo?.color || colors.primary) + '20',
+                              }}
                             >
                               <MaterialIcons
                                 name={stepInfo?.icon as any}
@@ -445,11 +445,7 @@ export default function MacroBuilderScreen() {
                     className="w-10 h-10 rounded-full items-center justify-center"
                     style={{ backgroundColor: stepType.color + '20' }}
                   >
-                    <MaterialIcons
-                      name={stepType.icon as any}
-                      size={20}
-                      color={stepType.color}
-                    />
+                    <MaterialIcons name={stepType.icon as any} size={20} color={stepType.color} />
                   </View>
                   <View className="flex-1">
                     <Text className="text-foreground font-semibold">{stepType.name}</Text>
@@ -457,10 +453,10 @@ export default function MacroBuilderScreen() {
                       {stepType.id === 'tool'
                         ? 'Execute a tool'
                         : stepType.id === 'condition'
-                        ? 'Branch based on condition'
-                        : stepType.id === 'loop'
-                        ? 'Repeat steps'
-                        : 'Run steps in parallel'}
+                          ? 'Branch based on condition'
+                          : stepType.id === 'loop'
+                            ? 'Repeat steps'
+                            : 'Run steps in parallel'}
                     </Text>
                   </View>
                   <MaterialIcons name="arrow-forward" size={20} color={colors.muted} />

@@ -23,7 +23,7 @@ export interface UseQueryResult<T> {
  */
 export function useQuery<T>(
   queryFn: () => Promise<T>,
-  options: UseQueryOptions = {}
+  options: UseQueryOptions = {},
 ): UseQueryResult<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,7 +67,7 @@ export function useTokens() {
       // return trpc.token.listAllTokens.query();
       return [];
     },
-    { refetchInterval: 30000 } // Refetch every 30 seconds
+    { refetchInterval: 30000 }, // Refetch every 30 seconds
   );
 }
 
@@ -78,7 +78,7 @@ export function useServerTokens(serverId: string) {
       // return trpc.token.listServerTokens.query({ serverId });
       return [];
     },
-    { enabled: !!serverId }
+    { enabled: !!serverId },
   );
 }
 
@@ -87,12 +87,7 @@ export function useStoreToken() {
   const [error, setError] = useState<string | null>(null);
 
   const mutate = useCallback(
-    async (input: {
-      serverId: string;
-      serverType: string;
-      name: string;
-      token: string;
-    }) => {
+    async (input: { serverId: string; serverType: string; name: string; token: string }) => {
       setLoading(true);
       setError(null);
       try {
@@ -106,7 +101,7 @@ export function useStoreToken() {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   return { mutate, loading, error };
@@ -138,23 +133,20 @@ export function useRotateToken() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const mutate = useCallback(
-    async (input: { tokenId: string; newToken: string }) => {
-      setLoading(true);
-      setError(null);
-      try {
-        // TODO: Replace with actual tRPC call
-        // const result = await trpc.token.rotateToken.mutate(input);
-        return { id: `token-${Date.now()}`, ...input };
-      } catch (err: any) {
-        setError(err.message || 'Failed to rotate token');
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const mutate = useCallback(async (input: { tokenId: string; newToken: string }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // TODO: Replace with actual tRPC call
+      // const result = await trpc.token.rotateToken.mutate(input);
+      return { id: `token-${Date.now()}`, ...input };
+    } catch (err: any) {
+      setError(err.message || 'Failed to rotate token');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   return { mutate, loading, error };
 }
@@ -169,7 +161,7 @@ export function useWorkflows() {
       // return trpc.workflow.listWorkflows.query();
       return [];
     },
-    { refetchInterval: 60000 } // Refetch every 60 seconds
+    { refetchInterval: 60000 }, // Refetch every 60 seconds
   );
 }
 
@@ -177,23 +169,20 @@ export function useCreateWorkflow() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const mutate = useCallback(
-    async (input: { name: string; description?: string }) => {
-      setLoading(true);
-      setError(null);
-      try {
-        // TODO: Replace with actual tRPC call
-        // const result = await trpc.workflow.createWorkflow.mutate(input);
-        return { id: `workflow-${Date.now()}`, ...input, steps: [] };
-      } catch (err: any) {
-        setError(err.message || 'Failed to create workflow');
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const mutate = useCallback(async (input: { name: string; description?: string }) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // TODO: Replace with actual tRPC call
+      // const result = await trpc.workflow.createWorkflow.mutate(input);
+      return { id: `workflow-${Date.now()}`, ...input, steps: [] };
+    } catch (err: any) {
+      setError(err.message || 'Failed to create workflow');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   return { mutate, loading, error };
 }
@@ -203,12 +192,7 @@ export function useSaveWorkflow() {
   const [error, setError] = useState<string | null>(null);
 
   const mutate = useCallback(
-    async (input: {
-      id?: string;
-      name: string;
-      description?: string;
-      steps: any[];
-    }) => {
+    async (input: { id?: string; name: string; description?: string; steps: any[] }) => {
       setLoading(true);
       setError(null);
       try {
@@ -222,7 +206,7 @@ export function useSaveWorkflow() {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   return { mutate, loading, error };
@@ -232,23 +216,20 @@ export function useExecuteWorkflow() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const mutate = useCallback(
-    async (workflowId: string) => {
-      setLoading(true);
-      setError(null);
-      try {
-        // TODO: Replace with actual tRPC call
-        // const result = await trpc.workflow.executeWorkflow.mutate({ workflowId });
-        return { status: 'success', executionId: `exec-${Date.now()}` };
-      } catch (err: any) {
-        setError(err.message || 'Failed to execute workflow');
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const mutate = useCallback(async (workflowId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // TODO: Replace with actual tRPC call
+      // const result = await trpc.workflow.executeWorkflow.mutate({ workflowId });
+      return { status: 'success', executionId: `exec-${Date.now()}` };
+    } catch (err: any) {
+      setError(err.message || 'Failed to execute workflow');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   return { mutate, loading, error };
 }
@@ -275,7 +256,7 @@ export function useAnalyticsReport(startDate: Date, endDate: Date) {
         performanceTrends: [],
       };
     },
-    { refetchInterval: 60000 } // Refetch every 60 seconds
+    { refetchInterval: 60000 }, // Refetch every 60 seconds
   );
 }
 
@@ -286,7 +267,7 @@ export function useToolStats(toolName?: string) {
       // return trpc.analytics.getToolStats.query({ toolName });
       return [];
     },
-    { enabled: true, refetchInterval: 30000 }
+    { enabled: true, refetchInterval: 30000 },
   );
 }
 
@@ -297,7 +278,7 @@ export function useServerStats(serverId?: string) {
       // return trpc.analytics.getServerStats.query({ serverId });
       return [];
     },
-    { enabled: true, refetchInterval: 30000 }
+    { enabled: true, refetchInterval: 30000 },
   );
 }
 
@@ -328,7 +309,7 @@ export function useRecordExecution() {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   return { mutate, loading, error };
@@ -341,7 +322,7 @@ export function useErrorTrends(startDate: Date, endDate: Date) {
       // return trpc.analytics.getErrorTrends.query({ startDate, endDate });
       return [];
     },
-    { refetchInterval: 60000 }
+    { refetchInterval: 60000 },
   );
 }
 
@@ -352,7 +333,7 @@ export function usePerformanceTrends(startDate: Date, endDate: Date) {
       // return trpc.analytics.getPerformanceTrends.query({ startDate, endDate });
       return [];
     },
-    { refetchInterval: 60000 }
+    { refetchInterval: 60000 },
   );
 }
 

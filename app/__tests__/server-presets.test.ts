@@ -175,7 +175,7 @@ describe('Server Preset Model', () => {
       const filtered = presets.filter(
         (p) =>
           p.name.toLowerCase().includes(search.toLowerCase()) ||
-          p.host.toLowerCase().includes(search.toLowerCase())
+          p.host.toLowerCase().includes(search.toLowerCase()),
       );
 
       expect(filtered).toHaveLength(1);

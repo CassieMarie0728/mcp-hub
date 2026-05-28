@@ -158,7 +158,9 @@ export default function TrendingDashboardScreen() {
           {/* Header */}
           <View className="gap-2">
             <Text className="text-3xl font-bold text-foreground">Trending</Text>
-            <Text className="text-base text-muted">Discover what&apos;s popular in the community</Text>
+            <Text className="text-base text-muted">
+              Discover what&apos;s popular in the community
+            </Text>
           </View>
 
           {/* Tab Navigation */}
@@ -167,13 +169,13 @@ export default function TrendingDashboardScreen() {
               onPress={() => setActiveTab('trending')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'trending' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'trending' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'trending' ? 'text-background' : 'text-foreground'
+                  activeTab === 'trending' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Trending
@@ -184,13 +186,13 @@ export default function TrendingDashboardScreen() {
               onPress={() => setActiveTab('popular')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'popular' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'popular' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'popular' ? 'text-background' : 'text-foreground'
+                  activeTab === 'popular' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Popular
@@ -201,13 +203,13 @@ export default function TrendingDashboardScreen() {
               onPress={() => setActiveTab('insights')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'insights' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'insights' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'insights' ? 'text-background' : 'text-foreground'
+                  activeTab === 'insights' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Insights

@@ -20,7 +20,10 @@ export interface ExecutionRetry {
 export class Scheduler {
   private jobs = new Map<string, cronType.ScheduledTask>();
 
-  static async scheduleWorkflow(workflowId: string, cronExpression: string): Promise<ScheduledWorkflow> {
+  static async scheduleWorkflow(
+    workflowId: string,
+    cronExpression: string,
+  ): Promise<ScheduledWorkflow> {
     return {
       id: `schedule-${workflowId}`,
       workflowId,
@@ -50,7 +53,7 @@ export class Scheduler {
       } catch (error) {
         if (attempt === maxAttempts) throw error;
         const delay = this.calculateBackoffDelay(attempt);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
         attempt++;
       }
     }

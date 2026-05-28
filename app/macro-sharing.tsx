@@ -20,18 +20,49 @@ export default function MacroSharingScreen() {
 
   // Mock data
   const permissions = [
-    { id: '1', user: 'john@example.com', level: 'view', expiresAt: '2026-04-30', granted: '2026-03-30' },
-    { id: '2', user: 'jane@example.com', level: 'edit', expiresAt: '2026-05-15', granted: '2026-03-20' },
+    {
+      id: '1',
+      user: 'john@example.com',
+      level: 'view',
+      expiresAt: '2026-04-30',
+      granted: '2026-03-30',
+    },
+    {
+      id: '2',
+      user: 'jane@example.com',
+      level: 'edit',
+      expiresAt: '2026-05-15',
+      granted: '2026-03-20',
+    },
   ];
 
   const invitations = [
-    { id: '1', email: 'bob@example.com', level: 'execute', status: 'pending', sentAt: '2026-03-28' },
-    { id: '2', email: 'alice@example.com', level: 'view', status: 'accepted', acceptedAt: '2026-03-29' },
+    {
+      id: '1',
+      email: 'bob@example.com',
+      level: 'execute',
+      status: 'pending',
+      sentAt: '2026-03-28',
+    },
+    {
+      id: '2',
+      email: 'alice@example.com',
+      level: 'view',
+      status: 'accepted',
+      acceptedAt: '2026-03-29',
+    },
   ];
 
   const shareLinks = [
     { id: '1', token: 'ABC123XYZ', level: 'view', created: '2026-03-25', uses: 5, maxUses: 10 },
-    { id: '2', token: 'DEF456UVW', level: 'execute', created: '2026-03-28', uses: 0, maxUses: null },
+    {
+      id: '2',
+      token: 'DEF456UVW',
+      level: 'execute',
+      created: '2026-03-28',
+      uses: 0,
+      maxUses: null,
+    },
   ];
 
   /**
@@ -86,13 +117,13 @@ export default function MacroSharingScreen() {
                 onPress={() => setTab(t)}
                 className={cn(
                   'flex-1 rounded-md p-3 active:opacity-80',
-                  tab === t ? 'bg-primary' : 'bg-transparent'
+                  tab === t ? 'bg-primary' : 'bg-transparent',
                 )}
               >
                 <Text
                   className={cn(
                     'text-center font-semibold text-xs',
-                    tab === t ? 'text-background' : 'text-foreground'
+                    tab === t ? 'text-background' : 'text-foreground',
                   )}
                 >
                   {t === 'permissions' && '🔐 Active'}
@@ -131,13 +162,13 @@ export default function MacroSharingScreen() {
                           'flex-1 rounded-lg p-2 active:opacity-80',
                           selectedPermission === level
                             ? 'bg-primary'
-                            : 'bg-background border border-border'
+                            : 'bg-background border border-border',
                         )}
                       >
                         <Text
                           className={cn(
                             'text-center font-semibold text-xs',
-                            selectedPermission === level ? 'text-background' : 'text-foreground'
+                            selectedPermission === level ? 'text-background' : 'text-foreground',
                           )}
                         >
                           {level === 'view' && '👁️ View'}
@@ -219,7 +250,7 @@ export default function MacroSharingScreen() {
                           'text-xs font-semibold px-2 py-1 rounded',
                           inv.status === 'pending'
                             ? 'bg-warning/20 text-warning'
-                            : 'bg-success/20 text-success'
+                            : 'bg-success/20 text-success',
                         )}
                       >
                         {inv.status.toUpperCase()}
@@ -235,7 +266,9 @@ export default function MacroSharingScreen() {
           {tab === 'links' && (
             <View className="gap-4">
               <Pressable className="bg-primary rounded-lg p-4 active:opacity-80">
-                <Text className="text-center font-semibold text-background">+ Create Share Link</Text>
+                <Text className="text-center font-semibold text-background">
+                  + Create Share Link
+                </Text>
               </Pressable>
 
               <View className="gap-2">
@@ -246,7 +279,9 @@ export default function MacroSharingScreen() {
                     className="bg-surface rounded-lg p-3 border border-border gap-2"
                   >
                     <View className="flex-row items-center justify-between">
-                      <Text className="font-mono text-xs font-semibold text-primary">{link.token}</Text>
+                      <Text className="font-mono text-xs font-semibold text-primary">
+                        {link.token}
+                      </Text>
                       <Text className="text-xs bg-primary/20 text-primary px-2 py-1 rounded font-semibold">
                         {link.level.toUpperCase()}
                       </Text>

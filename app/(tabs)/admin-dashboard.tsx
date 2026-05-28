@@ -81,7 +81,9 @@ export default function AdminDashboardScreen() {
                 className="px-3 py-1 rounded"
               >
                 <Text
-                  className={timeRange === range ? 'text-background font-semibold' : 'text-foreground'}
+                  className={
+                    timeRange === range ? 'text-background font-semibold' : 'text-foreground'
+                  }
                 >
                   {range.charAt(0).toUpperCase() + range.slice(1)}
                 </Text>
@@ -254,7 +256,9 @@ export default function AdminDashboardScreen() {
 
             {/* Error Trend */}
             <View className="bg-surface rounded-lg p-4 border border-border">
-              <Text className="text-lg font-semibold text-foreground mb-3">Error Trend (Last 24h)</Text>
+              <Text className="text-lg font-semibold text-foreground mb-3">
+                Error Trend (Last 24h)
+              </Text>
               {metrics.errorMetrics.errorTrend.map((trend, index) => (
                 <View key={index} className="flex-row items-center justify-between mb-2">
                   <Text className="text-muted text-xs w-24">
@@ -303,7 +307,11 @@ interface HealthCardProps {
 
 function HealthCard({ health, colors }: HealthCardProps) {
   const statusColor =
-    health.status === 'healthy' ? colors.success : health.status === 'degraded' ? colors.warning : colors.error;
+    health.status === 'healthy'
+      ? colors.success
+      : health.status === 'degraded'
+        ? colors.warning
+        : colors.error;
 
   return (
     <View className="bg-surface rounded-lg p-4 border border-border">
@@ -323,7 +331,11 @@ function HealthCard({ health, colors }: HealthCardProps) {
           connected={health.memoryUsage < 80}
           colors={colors}
         />
-        <HealthRow label={`API Response: ${health.apiResponseTime}ms`} connected={true} colors={colors} />
+        <HealthRow
+          label={`API Response: ${health.apiResponseTime}ms`}
+          connected={true}
+          colors={colors}
+        />
       </View>
     </View>
   );
@@ -339,7 +351,10 @@ function HealthRow({ label, connected, colors }: HealthRowProps) {
   return (
     <View className="flex-row items-center justify-between">
       <Text className="text-foreground">{label}</Text>
-      <View className="w-3 h-3 rounded-full" style={{ backgroundColor: connected ? colors.success : colors.error }} />
+      <View
+        className="w-3 h-3 rounded-full"
+        style={{ backgroundColor: connected ? colors.success : colors.error }}
+      />
     </View>
   );
 }

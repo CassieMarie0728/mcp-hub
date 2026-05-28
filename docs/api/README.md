@@ -18,6 +18,7 @@ Authorization: Bearer <jwt_token>
 ## Available Routers
 
 ### Tokens Router
+
 Manage secure credential storage and lifecycle.
 
 - `tokens.list()` — List all stored tokens
@@ -27,6 +28,7 @@ Manage secure credential storage and lifecycle.
 - `tokens.getByServer()` — Get tokens for specific server
 
 ### Workflows Router
+
 Create and execute automation workflows.
 
 - `workflows.list()` — List all workflows
@@ -37,6 +39,7 @@ Create and execute automation workflows.
 - `workflows.getById()` — Get workflow details
 
 ### Webhooks Router
+
 Manage webhook triggers and executions.
 
 - `webhooks.create()` — Create webhook
@@ -50,6 +53,7 @@ Manage webhook triggers and executions.
 - `webhooks.events()` — Get webhook events
 
 ### Analytics Router
+
 Track execution metrics and performance.
 
 - `analytics.generateReport()` — Generate execution report
@@ -59,6 +63,7 @@ Track execution metrics and performance.
 - `analytics.getErrorTrends()` — Get error trends
 
 ### MCP Router
+
 Discover and execute MCP tools.
 
 - `mcp.discoverTools()` — Discover available tools
@@ -66,6 +71,7 @@ Discover and execute MCP tools.
 - `mcp.getServerStatus()` — Get server status
 
 ### Auth Router
+
 Handle OAuth flows and authentication.
 
 - `auth.initiateOAuth()` — Start OAuth flow
@@ -102,10 +108,7 @@ Webhooks are signed using HMAC-SHA256. Verify the signature using the webhook se
 
 ```javascript
 const crypto = require('crypto');
-const signature = crypto
-  .createHmac('sha256', webhookSecret)
-  .update(requestBody)
-  .digest('hex');
+const signature = crypto.createHmac('sha256', webhookSecret).update(requestBody).digest('hex');
 
 if (signature !== request.headers['x-webhook-signature']) {
   throw new Error('Invalid signature');

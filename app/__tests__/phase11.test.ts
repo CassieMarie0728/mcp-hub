@@ -8,7 +8,7 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
         connectionType: 'sse',
         url: 'https://api.example.com',
         description: 'Test description',
-        headers: { 'Authorization': 'Bearer token' },
+        headers: { Authorization: 'Bearer token' },
       };
 
       const json = JSON.stringify(validConfig);
@@ -61,7 +61,7 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
         connectionType: 'sse',
         url: 'https://api.example.com',
         headers: {
-          'Authorization': 'Bearer xyz',
+          Authorization: 'Bearer xyz',
           'X-API-Key': 'secret123',
           'Content-Type': 'application/json',
         },
@@ -161,7 +161,7 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
 
       const searchTerm = 'google';
       const results = apps.filter((a) =>
-        a.appName.toLowerCase().includes(searchTerm.toLowerCase())
+        a.appName.toLowerCase().includes(searchTerm.toLowerCase()),
       );
 
       expect(results).toHaveLength(2);
@@ -242,7 +242,8 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
     });
 
     it('should handle visual chips as base64 strings', () => {
-      const visualChip = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      const visualChip =
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
       expect(typeof visualChip).toBe('string');
       expect(visualChip.length).toBeGreaterThan(0);
@@ -346,7 +347,11 @@ describe('Phase 11: Dashboard Screens and JSON Config', () => {
     });
 
     it('should validate required config fields', () => {
-      const config = { description: 'Missing required fields', name: undefined, connectionType: undefined };
+      const config = {
+        description: 'Missing required fields',
+        name: undefined,
+        connectionType: undefined,
+      };
 
       const isValid = config.name && config.connectionType;
       expect(isValid).toBeFalsy();

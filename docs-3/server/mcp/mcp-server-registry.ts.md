@@ -52,25 +52,24 @@ export type ServerType = 'github' | 'slack' | 'notion';
 
 Encapsulates metadata for each server type.
 
-| Property | Type | Description |  |  |
-| --- | --- | --- | --- | --- |
-| `id` | `ServerType` | Unique server identifier |  |  |
-| `name` | `string` | Display name |  |  |
-| `description` | `string` | Brief summary of capabilities |  |  |
-| `icon` | `string` | UI icon identifier |  |  |
-| `docs` | `string` | Link to official documentation |  |  |
-| `requiredScopes` | `string[]`  | OAuth scopes needed for full access |  |  |
-| `authMethod` | `'bearer' | 'api-key' | 'basic'` | Supported authentication scheme |
-
+| Property         | Type         | Description                         |          |                                 |
+| ---------------- | ------------ | ----------------------------------- | -------- | ------------------------------- |
+| `id`             | `ServerType` | Unique server identifier            |          |                                 |
+| `name`           | `string`     | Display name                        |          |                                 |
+| `description`    | `string`     | Brief summary of capabilities       |          |                                 |
+| `icon`           | `string`     | UI icon identifier                  |          |                                 |
+| `docs`           | `string`     | Link to official documentation      |          |                                 |
+| `requiredScopes` | `string[]`   | OAuth scopes needed for full access |          |                                 |
+| `authMethod`     | `'bearer'    | 'api-key'                           | 'basic'` | Supported authentication scheme |
 
 Example Definition{
-  id: 'github',
-  name: 'GitHub',
-  description: 'Access GitHub repositories, issues, pull requests, and more',
-  icon: 'github',
-  docs: 'https://docs.github.com/en/rest',
-  authMethod: 'bearer',
-  requiredScopes: ['repo', 'user', 'gist'],
+id: 'github',
+name: 'GitHub',
+description: 'Access GitHub repositories, issues, pull requests, and more',
+icon: 'github',
+docs: 'https://docs.github.com/en/rest',
+authMethod: 'bearer',
+requiredScopes: ['repo', 'user', 'gist'],
 }
 
 ### 2. MCPServerRegistry ()
@@ -89,21 +88,19 @@ The `MCPServerRegistry` class serves as the central registry for server metadata
 
 #### Static Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
+| Property  | Type                                | Description                             |
+| --------- | ----------------------------------- | --------------------------------------- |
 | `servers` | `Map<ServerType, ServerDefinition>` | Stores metadata for each supported type |
-
 
 #### Static Methods
 
-| Method | Description | Returns |  |
-| --- | --- | --- | --- |
-| `getServerDefinition` | Retrieve a server’s metadata by type | `ServerDefinition \ | null` |
-| `getAllServers` | List all supported server definitions | `ServerDefinition[]` |  |
-| `createServerConfig` | Instantiate and obtain a `MCPServerConfig` for a given type and token | `MCPServerConfig \ | null` |
-| `getServerTools` | Fetch available tool metadata without a live connection | `any[]` |  |
-| `validateToken` | Verify if an auth token is valid for the specified server type | `Promise<boolean>` |  |
-
+| Method                | Description                                                           | Returns              |       |
+| --------------------- | --------------------------------------------------------------------- | -------------------- | ----- |
+| `getServerDefinition` | Retrieve a server’s metadata by type                                  | `ServerDefinition \  | null` |
+| `getAllServers`       | List all supported server definitions                                 | `ServerDefinition[]` |       |
+| `createServerConfig`  | Instantiate and obtain a `MCPServerConfig` for a given type and token | `MCPServerConfig \   | null` |
+| `getServerTools`      | Fetch available tool metadata without a live connection               | `any[]`              |       |
+| `validateToken`       | Verify if an auth token is valid for the specified server type        | `Promise<boolean>`   |       |
 
 #### Method Details
 
@@ -199,12 +196,11 @@ sequenceDiagram
 
 ## Key Classes Reference
 
-| Class / Type | Location | Responsibility |
-| --- | --- | --- |
-| `ServerType` |  | Supported MCP server identifiers |
-| `ServerDefinition` |  | Metadata for each MCP server type |
-| `MCPServerRegistry` |  | Central registry for server definitions and factory methods |
-
+| Class / Type        | Location | Responsibility                                              |
+| ------------------- | -------- | ----------------------------------------------------------- |
+| `ServerType`        |          | Supported MCP server identifiers                            |
+| `ServerDefinition`  |          | Metadata for each MCP server type                           |
+| `MCPServerRegistry` |          | Central registry for server definitions and factory methods |
 
 ## Error Handling
 
@@ -220,7 +216,7 @@ Errors thrown by underlying server implementations bubble up through registry me
 - **Server Classes**:- `GitHubMCPServer`, `GitHubConfig`
 - `SlackMCPServer`, `SlackConfig`
 - `NotionMCPServer`, `NotionConfig`
-- **Configuration Interface**:- `MCPServerConfig` from 
+- **Configuration Interface**:- `MCPServerConfig` from
 
 ## Testing Considerations
 

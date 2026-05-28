@@ -151,13 +151,7 @@ describe('Advanced Features: Recommendations, Comments, Performance', () => {
 
     it('should add reply to comment', () => {
       const comment = commentsEngine.addComment('macro1', 5, 'user1', 'Original comment');
-      const reply = commentsEngine.addComment(
-        'macro1',
-        5,
-        'user2',
-        'Reply to comment',
-        comment.id
-      );
+      const reply = commentsEngine.addComment('macro1', 5, 'user2', 'Reply to comment', comment.id);
 
       expect(reply.parentCommentId).toBe(comment.id);
 
@@ -212,7 +206,7 @@ describe('Advanced Features: Recommendations, Comments, Performance', () => {
         'macro1',
         5,
         'user1',
-        '@john Please review this @jane'
+        '@john Please review this @jane',
       );
 
       expect(comment.mentions).toContain('john');
@@ -385,13 +379,7 @@ describe('Advanced Features: Recommendations, Comments, Performance', () => {
 
     it('should handle complete comments workflow', () => {
       const comment = commentsEngine.addComment('macro1', 5, 'user1', 'Issue found');
-      const reply = commentsEngine.addComment(
-        'macro1',
-        5,
-        'user2',
-        'I can fix this',
-        comment.id
-      );
+      const reply = commentsEngine.addComment('macro1', 5, 'user2', 'I can fix this', comment.id);
 
       commentsEngine.addReaction(reply.id, 'user1', '👍');
       commentsEngine.resolveThread(comment.id);

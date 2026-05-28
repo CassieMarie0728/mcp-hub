@@ -89,7 +89,7 @@ export class MacroSchedulingEngine {
     macroId: string,
     frequency: ScheduleFrequency,
     scheduledTime: string,
-    options?: Partial<MacroSchedule>
+    options?: Partial<MacroSchedule>,
   ): Promise<MacroSchedule> {
     const schedule: MacroSchedule = {
       id: `schedule_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -137,7 +137,10 @@ export class MacroSchedulingEngine {
   /**
    * Update a schedule
    */
-  static async updateSchedule(scheduleId: string, updates: Partial<MacroSchedule>): Promise<MacroSchedule> {
+  static async updateSchedule(
+    scheduleId: string,
+    updates: Partial<MacroSchedule>,
+  ): Promise<MacroSchedule> {
     const schedules = await this.getSchedules();
     const index = schedules.findIndex((s) => s.id === scheduleId);
 
@@ -274,7 +277,7 @@ export class MacroSchedulingEngine {
             ...schedule.daysOfWeek.map((day) => {
               const diff = (day - next.getDay() + 7) % 7;
               return diff === 0 && next > now ? 0 : diff || 7;
-            })
+            }),
           );
           next.setDate(next.getDate() + daysUntilNext);
         }
@@ -355,6 +358,8 @@ export class MacroSchedulingEngine {
   private static isNewMonth(timestamp: number): boolean {
     const lastDate = new Date(timestamp);
     const today = new Date();
-    return lastDate.getMonth() !== today.getMonth() || lastDate.getFullYear() !== today.getFullYear();
+    return (
+      lastDate.getMonth() !== today.getMonth() || lastDate.getFullYear() !== today.getFullYear()
+    );
   }
 }

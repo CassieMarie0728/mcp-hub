@@ -20,12 +20,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
-import {
-  useTokens,
-  useStoreToken,
-  useRevokeToken,
-  useRotateToken,
-} from '@/hooks/use-api';
+import { useTokens, useStoreToken, useRevokeToken, useRotateToken } from '@/hooks/use-api';
 
 interface Token {
   id: string;
@@ -78,7 +73,7 @@ export default function TokenManagementScreen() {
   const { mutate: storeToken, loading: storeLoading } = useStoreToken();
   const { mutate: revokeToken, loading: revokeLoading } = useRevokeToken();
   const { mutate: rotateToken, loading: rotateLoading } = useRotateToken();
-  
+
   const [activeTab, setActiveTab] = useState<'register' | 'manage'>('manage');
   const [tokens, setTokens] = useState<Token[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -95,7 +90,6 @@ export default function TokenManagementScreen() {
   }, []);
 
   const loadTokens = async () => {
-    
     try {
       // TODO: Call tRPC listServerTokens for each server
       // For now, using mock data
@@ -124,7 +118,6 @@ export default function TokenManagementScreen() {
     } catch (error) {
       Alert.alert('Error', 'Failed to load tokens');
     } finally {
-      
     }
   };
 
@@ -183,7 +176,7 @@ export default function TokenManagementScreen() {
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -193,7 +186,6 @@ export default function TokenManagementScreen() {
       return;
     }
 
-    
     try {
       // TODO: Call tRPC rotateToken
       Alert.alert('Success', `Token "${selectedToken.name}" rotated successfully`);
@@ -204,7 +196,6 @@ export default function TokenManagementScreen() {
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to rotate token');
     } finally {
-      
     }
   };
 
@@ -242,13 +233,13 @@ export default function TokenManagementScreen() {
           onPress={() => setActiveTab('manage')}
           className={cn(
             'flex-1 py-3 px-4 border-b-2',
-            activeTab === 'manage' ? 'border-primary' : 'border-transparent'
+            activeTab === 'manage' ? 'border-primary' : 'border-transparent',
           )}
         >
           <Text
             className={cn(
               'text-center font-semibold',
-              activeTab === 'manage' ? 'text-primary' : 'text-muted'
+              activeTab === 'manage' ? 'text-primary' : 'text-muted',
             )}
           >
             My Tokens
@@ -259,13 +250,13 @@ export default function TokenManagementScreen() {
           onPress={() => setActiveTab('register')}
           className={cn(
             'flex-1 py-3 px-4 border-b-2',
-            activeTab === 'register' ? 'border-primary' : 'border-transparent'
+            activeTab === 'register' ? 'border-primary' : 'border-transparent',
           )}
         >
           <Text
             className={cn(
               'text-center font-semibold',
-              activeTab === 'register' ? 'text-primary' : 'text-muted'
+              activeTab === 'register' ? 'text-primary' : 'text-muted',
             )}
           >
             Register Token
@@ -282,7 +273,7 @@ export default function TokenManagementScreen() {
               </View>
             ) : tokens.length === 0 ? (
               <View className="flex-1 items-center justify-center py-8">
-                    <MaterialIcons name={"security" as any} size={48} color={colors.muted} />
+                <MaterialIcons name={'security' as any} size={48} color={colors.muted} />
                 <Text className="text-foreground font-semibold mt-4">No Tokens Yet</Text>
                 <Text className="text-muted text-center mt-2 px-4">
                   Register your first API token to get started
@@ -346,15 +337,15 @@ export default function TokenManagementScreen() {
 
                     {token.isActive && (
                       <View className="flex-row gap-2 mt-3 pt-3 border-t border-border">
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedToken(token);
-                      setShowRotateModal(true);
-                    }}
-                    className="flex-1 bg-primary/10 rounded py-2 items-center"
-                  >
-                    <Text className="text-primary font-semibold text-sm">Rotate</Text>
-                  </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setSelectedToken(token);
+                            setShowRotateModal(true);
+                          }}
+                          className="flex-1 bg-primary/10 rounded py-2 items-center"
+                        >
+                          <Text className="text-primary font-semibold text-sm">Rotate</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity
                           onPress={() => handleRevokeToken(token)}
                           className="flex-1 bg-error/10 rounded py-2 items-center"
@@ -385,27 +376,27 @@ export default function TokenManagementScreen() {
                     'border rounded-lg p-4 flex-row items-center justify-between',
                     selectedServer?.id === server.id
                       ? 'bg-primary/10 border-primary'
-                      : 'bg-surface border-border'
+                      : 'bg-surface border-border',
                   )}
                 >
                   <View className="flex-row items-center gap-3">
-                      <View
-                        className="w-10 h-10 rounded-full items-center justify-center"
-                        style={{ backgroundColor: getServerColor(server.id) + '20' }}
-                      >
-                        <MaterialIcons
-                          name={getServerIcon(server.id) as any}
-                          size={20}
-                          color={getServerColor(server.id)}
-                        />
-                      </View>
+                    <View
+                      className="w-10 h-10 rounded-full items-center justify-center"
+                      style={{ backgroundColor: getServerColor(server.id) + '20' }}
+                    >
+                      <MaterialIcons
+                        name={getServerIcon(server.id) as any}
+                        size={20}
+                        color={getServerColor(server.id)}
+                      />
+                    </View>
                     <View>
                       <Text className="text-foreground font-semibold">{server.name}</Text>
                       <Text className="text-muted text-xs">{server.authMethod}</Text>
                     </View>
                   </View>
                   {selectedServer?.id === server.id && (
-                        <MaterialIcons name={"check-circle" as any} size={24} color={colors.primary} />
+                    <MaterialIcons name={'check-circle' as any} size={24} color={colors.primary} />
                   )}
                 </TouchableOpacity>
               ))}
@@ -414,7 +405,9 @@ export default function TokenManagementScreen() {
             {/* Token Input Form */}
             {showTokenInput && selectedServer && (
               <View className="bg-surface rounded-lg p-4 gap-3 mb-4">
-                <Text className="text-foreground font-semibold">Register {selectedServer.name} Token</Text>
+                <Text className="text-foreground font-semibold">
+                  Register {selectedServer.name} Token
+                </Text>
 
                 <View>
                   <Text className="text-muted text-xs mb-1">Token Name</Text>
@@ -441,7 +434,8 @@ export default function TokenManagementScreen() {
 
                 <View className="bg-yellow-100 border border-yellow-300 rounded p-3">
                   <Text className="text-yellow-800 text-xs">
-                    ⚠️ Your token will be encrypted and stored securely. Never share your token with anyone.
+                    ⚠️ Your token will be encrypted and stored securely. Never share your token with
+                    anyone.
                   </Text>
                 </View>
 

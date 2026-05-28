@@ -40,16 +40,19 @@ const WorkflowResponse = z.object({
 });
 
 // In-memory workflow store (would be replaced with database)
-const workflowStore = new Map<string, {
-  id: string;
-  name: string;
-  description?: string;
-  steps: any[];
-  createdAt: Date;
-  lastModified: Date;
-  lastExecuted?: Date;
-  executionCount: number;
-}>();
+const workflowStore = new Map<
+  string,
+  {
+    id: string;
+    name: string;
+    description?: string;
+    steps: any[];
+    createdAt: Date;
+    lastModified: Date;
+    lastExecuted?: Date;
+    executionCount: number;
+  }
+>();
 
 export const workflowsProcedures = router({
   /**
@@ -178,15 +181,15 @@ export const workflowsProcedures = router({
         }
 
         const engine = new WorkflowEngine();
-        
+
         // Register all steps
         for (const step of workflow.steps) {
           engine.registerStep(step);
         }
-        
+
         // Execute workflow
         const result = await engine.executeWorkflow(workflow.steps[0]?.id || '');
-        
+
         // Get execution history
         const executionHistory = engine.getExecutionHistory();
 

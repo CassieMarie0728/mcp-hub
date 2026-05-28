@@ -3,8 +3,9 @@
 ## Overview
 
 The **MCP Hub API** provides a production-grade RESTful interface to manage connections to Model Context Protocol (MCP) servers. It acts as:
-- An **MCP client/host runtime**: opening transports (stdio, streamable HTTP), negotiating JSON-RPC protocols, managing lifecycle.  
-- A **wrapper API** for front-end/admin UIs: exposing high-level endpoints for connections, auth flows, tools, resources, prompts, completions, logging, events, requests, and client roots.  
+
+- An **MCP client/host runtime**: opening transports (stdio, streamable HTTP), negotiating JSON-RPC protocols, managing lifecycle.
+- A **wrapper API** for front-end/admin UIs: exposing high-level endpoints for connections, auth flows, tools, resources, prompts, completions, logging, events, requests, and client roots.
 - A **persistence & observability layer**: recording requests, responses, events, logs, and supporting live streams via SSE/WebSocket.
 
 This API enables developers to programmatically provision and interact with MCP servers, record execution metrics, and integrate with custom dashboards or automation workflows.
@@ -16,7 +17,7 @@ This API enables developers to programmatically provision and interact with MCP 
 ```mermaid
 flowchart TB
   subgraph PresentationLayer [Clients]
-    UI[Web /Admin UI] 
+    UI[Web /Admin UI]
     CLI[CLI or Scripts]
   end
 
@@ -50,18 +51,18 @@ flowchart TB
 
 ### Available Modules
 
-| Module       | Description                                           |
-|--------------|-------------------------------------------------------|
-| **Connections** | Manage MCP connection lifecycle and transports.    |
-| **Auth**        | Initiate and track OAuth2/bearer authentication.   |
-| **Tools**       | Discover and invoke MCP server tools.             |
-| **Resources**   | List, read, and subscribe to resources.           |
-| **Prompts**     | List and retrieve prompts with arguments.         |
-| **Completions** | Execute completions on prompts or references.     |
+| Module          | Description                                      |
+| --------------- | ------------------------------------------------ |
+| **Connections** | Manage MCP connection lifecycle and transports.  |
+| **Auth**        | Initiate and track OAuth2/bearer authentication. |
+| **Tools**       | Discover and invoke MCP server tools.            |
+| **Resources**   | List, read, and subscribe to resources.          |
+| **Prompts**     | List and retrieve prompts with arguments.        |
+| **Completions** | Execute completions on prompts or references.    |
 | **Logging**     | Configure log level and query persisted logs.    |
-| **Events**      | Query event history and live-stream events.       |
-| **Requests**    | Inspect and cancel in-flight JSON-RPC requests.   |
-| **Roots**       | Manage client roots exposed to MCP servers.       |
+| **Events**      | Query event history and live-stream events.      |
+| **Requests**    | Inspect and cancel in-flight JSON-RPC requests.  |
+| **Roots**       | Manage client roots exposed to MCP servers.      |
 
 ---
 
@@ -178,12 +179,13 @@ Manage the full lifecycle of MCP connections: creation, transport handshake, ini
 
 > [!NOTE]
 > The Connections module also exposes endpoints for:
-> - **connect** (`POST /connections/{connectionId}/connect`)  
-> - **initialize** (`POST /connections/{connectionId}/initialize`)  
-> - **disconnect** (`POST /connections/{connectionId}/disconnect`)  
-> - **ping** (`POST /connections/{connectionId}/ping`)  
-> - **status** (`GET /connections/{connectionId}/status`)  
-> - **capabilities** (`GET /connections/{connectionId}/capabilities`)  
+>
+> - **connect** (`POST /connections/{connectionId}/connect`)
+> - **initialize** (`POST /connections/{connectionId}/initialize`)
+> - **disconnect** (`POST /connections/{connectionId}/disconnect`)
+> - **ping** (`POST /connections/{connectionId}/ping`)
+> - **status** (`GET /connections/{connectionId}/status`)
+> - **capabilities** (`GET /connections/{connectionId}/capabilities`)
 > - **server-info** (`GET /connections/{connectionId}/server-info`)
 
 ---
@@ -298,59 +300,60 @@ Discover and invoke MCP server tools.
 
 ### ErrorEnvelope
 
-| Field    | Type   | Description                       |
-|----------|--------|-----------------------------------|
-| code     | string | Error code identifier             |
-| message  | string | Human-readable error message      |
-| details  | object | Optional additional error details |
+| Field   | Type   | Description                       |
+| ------- | ------ | --------------------------------- |
+| code    | string | Error code identifier             |
+| message | string | Human-readable error message      |
+| details | object | Optional additional error details |
 
 ### ConnectionSummary
 
-| Field         | Type    | Description                                      |
-|---------------|---------|--------------------------------------------------|
-| id            | string  | Connection UUID                                  |
-| serverId      | string  | MCP server UUID                                  |
-| status        | string  | disconnected | connecting | connected …           |
-| transportType | string  | stdio | streamable_http                            |
-| lastSeenAt    | string  | ISO-8601 timestamp of last heartbeat             |
+| Field         | Type   | Description                          |
+| ------------- | ------ | ------------------------------------ | --------------- | ----------- |
+| id            | string | Connection UUID                      |
+| serverId      | string | MCP server UUID                      |
+| status        | string | disconnected                         | connecting      | connected … |
+| transportType | string | stdio                                | streamable_http |
+| lastSeenAt    | string | ISO-8601 timestamp of last heartbeat |
 
 ### Connection
 
 All `ConnectionSummary` fields plus:
 
-| Field                       | Type    | Description                                  |
-|-----------------------------|---------|----------------------------------------------|
-| ownerId                     | string  | Owner UUID                                  |
-| workspaceId                 | string  | Workspace UUID                              |
-| lifecycleState              | string  | created | connected | initialized …          |
-| authState                   | string  | unauthenticated | authenticating …      |
-| desiredProtocolVersion      | string  | Requested protocol version                  |
-| negotiatedProtocolVersion   | string  | Agreed protocol version                     |
-| sessionId                   | string  | Session identifier                          |
-| processId                   | integer | Subprocess PID (stdio transport)            |
-| lastErrorCode               | string  | Nullable error code                         |
-| lastErrorMessage            | string  | Nullable error message                      |
-| serverInfo                  | object  | Normalized server info JSON                 |
-| clientCapabilities          | object  | JSON of client capabilities                  |
-| serverCapabilities          | object  | JSON of server capabilities                  |
-| createdAt                   | string  | ISO-8601 creation timestamp                  |
-| updatedAt                   | string  | ISO-8601 last update timestamp               |
+| Field                     | Type    | Description                      |
+| ------------------------- | ------- | -------------------------------- | ---------------- | ------------- |
+| ownerId                   | string  | Owner UUID                       |
+| workspaceId               | string  | Workspace UUID                   |
+| lifecycleState            | string  | created                          | connected        | initialized … |
+| authState                 | string  | unauthenticated                  | authenticating … |
+| desiredProtocolVersion    | string  | Requested protocol version       |
+| negotiatedProtocolVersion | string  | Agreed protocol version          |
+| sessionId                 | string  | Session identifier               |
+| processId                 | integer | Subprocess PID (stdio transport) |
+| lastErrorCode             | string  | Nullable error code              |
+| lastErrorMessage          | string  | Nullable error message           |
+| serverInfo                | object  | Normalized server info JSON      |
+| clientCapabilities        | object  | JSON of client capabilities      |
+| serverCapabilities        | object  | JSON of server capabilities      |
+| createdAt                 | string  | ISO-8601 creation timestamp      |
+| updatedAt                 | string  | ISO-8601 last update timestamp   |
 
 ---
 
 ## Error Handling
 
 All error responses use the `ErrorEnvelope` schema and appropriate HTTP status codes:
-- **400 Bad Request**  
-- **401 Unauthorized**  
-- **404 Not Found**  
+
+- **400 Bad Request**
+- **401 Unauthorized**
+- **404 Not Found**
 
 ---
 
 ## Dependencies
 
-- **Authorization**: Bearer JWT in `Authorization` header.  
-- **Transports**: `stdio` subprocess or HTTP(S) POST with optional SSE/WebSocket.  
+- **Authorization**: Bearer JWT in `Authorization` header.
+- **Transports**: `stdio` subprocess or HTTP(S) POST with optional SSE/WebSocket.
 - **Persistence**: SQL database for connections, requests, events; log store for persisted logs.
 
 ---
@@ -362,32 +365,32 @@ All error responses use the `ErrorEnvelope` schema and appropriate HTTP status c
 
 ## Key Classes Reference
 
-| Module Controller            | Responsibility                                         |
-|------------------------------|--------------------------------------------------------|
-| `ConnectionsController`      | CRUD and lifecycle operations for MCP connections.     |
-| `AuthController`             | Authentication initiation, status, refresh, removal.   |
-| `ToolsController`            | Discovery and invocation of MCP tools.                |
-| `ResourcesController`        | Resource listing, reading, subscription management.   |
-| `PromptsController`          | Prompt listing and retrieval with arguments.          |
-| `CompletionsController`      | Execute completions for prompts and references.       |
-| `LoggingController`          | Set log levels and query persisted logs.             |
-| `EventsController`           | Retrieve historical events and open live streams.    |
-| `RequestsController`         | Inspect and cancel JSON-RPC request records.         |
-| `RootsController`            | Manage client root URIs exposed to servers.          |
+| Module Controller       | Responsibility                                       |
+| ----------------------- | ---------------------------------------------------- |
+| `ConnectionsController` | CRUD and lifecycle operations for MCP connections.   |
+| `AuthController`        | Authentication initiation, status, refresh, removal. |
+| `ToolsController`       | Discovery and invocation of MCP tools.               |
+| `ResourcesController`   | Resource listing, reading, subscription management.  |
+| `PromptsController`     | Prompt listing and retrieval with arguments.         |
+| `CompletionsController` | Execute completions for prompts and references.      |
+| `LoggingController`     | Set log levels and query persisted logs.             |
+| `EventsController`      | Retrieve historical events and open live streams.    |
+| `RequestsController`    | Inspect and cancel JSON-RPC request records.         |
+| `RootsController`       | Manage client root URIs exposed to servers.          |
 
 ---
 
 ## Caching Strategy
 
-- **Tools & Resources**: Cached per connection; use `?refresh=true` to invalidate.  
-- **Prompts**: Cached per connection; no explicit refresh endpoint.  
+- **Tools & Resources**: Cached per connection; use `?refresh=true` to invalidate.
+- **Prompts**: Cached per connection; no explicit refresh endpoint.
 - **Request Records**: Persisted; query parameters filter on time ranges.
 
 ---
 
 ## Testing Considerations
 
-- Validate all endpoints with both valid and invalid UUIDs.  
-- Test auth flows end-to-end (OAuth2 redirect, bearer token).  
-- Simulate transport failures (stdio crash, HTTP timeouts) and verify error states.  
+- Validate all endpoints with both valid and invalid UUIDs.
+- Test auth flows end-to-end (OAuth2 redirect, bearer token).
+- Simulate transport failures (stdio crash, HTTP timeouts) and verify error states.
 - Exercise SSE/WebSocket live event streaming under load.

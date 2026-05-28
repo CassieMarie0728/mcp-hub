@@ -1,8 +1,8 @@
-import { Platform } from "react-native";
+import { Platform } from 'react-native';
 
-import themeConfig from "@/theme.config";
+import themeConfig from '@/theme.config';
 
-export type ColorScheme = "light" | "dark";
+export type ColorScheme = 'light' | 'dark';
 
 export const ThemeColors = themeConfig.themeColors;
 
@@ -13,8 +13,8 @@ type SchemePaletteItem = SchemePalette[ColorScheme];
 
 function buildSchemePalette(colors: ThemeColorTokens): SchemePalette {
   const palette: SchemePalette = {
-    light: {} as SchemePalette["light"],
-    dark: {} as SchemePalette["dark"],
+    light: {} as SchemePalette['light'],
+    dark: {} as SchemePalette['dark'],
   };
 
   (Object.keys(colors) as ThemeColorName[]).forEach((name) => {
@@ -53,8 +53,8 @@ function buildRuntimePalette(scheme: ColorScheme): RuntimePalette {
 }
 
 export const Colors = {
-  light: buildRuntimePalette("light"),
-  dark: buildRuntimePalette("dark"),
+  light: buildRuntimePalette('light'),
+  dark: buildRuntimePalette('dark'),
 } satisfies Record<ColorScheme, RuntimePalette>;
 
 export type ThemeColorPalette = (typeof Colors)[ColorScheme];
@@ -62,19 +62,19 @@ export type ThemeColorPalette = (typeof Colors)[ColorScheme];
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: "system-ui",
+    sans: 'system-ui',
     /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: "ui-serif",
+    serif: 'ui-serif',
     /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: "ui-rounded",
+    rounded: 'ui-rounded',
     /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: "ui-monospace",
+    mono: 'ui-monospace',
   },
   default: {
-    sans: "normal",
-    serif: "serif",
-    rounded: "normal",
-    mono: "monospace",
+    sans: 'normal',
+    serif: 'serif',
+    rounded: 'normal',
+    mono: 'monospace',
   },
   web: {
     sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",

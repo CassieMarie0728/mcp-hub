@@ -94,10 +94,7 @@ export default function HomeScreen() {
               <Text className="text-sm text-muted text-center mb-6 px-4">
                 Add your first MCP server to unlock the power of unified tool management
               </Text>
-              <Button
-                variant="primary"
-                onPress={() => router.push('/(tabs)/add-server' as any)}
-              >
+              <Button variant="primary" onPress={() => router.push('/(tabs)/add-server' as any)}>
                 Add Your First Server
               </Button>
             </Card>
@@ -144,10 +141,7 @@ export default function HomeScreen() {
               ))}
 
               {servers.length > 3 && (
-                <Button
-                  variant="secondary"
-                  onPress={() => router.push('/(tabs)/servers' as any)}
-                >
+                <Button variant="secondary" onPress={() => router.push('/(tabs)/servers' as any)}>
                   View All {servers.length} Servers
                 </Button>
               )}
@@ -172,18 +166,13 @@ export default function HomeScreen() {
                   }`}
                 >
                   <View className="flex-1 gap-1">
-                    <Text className="text-sm font-semibold text-foreground">
-                      {result.toolName}
-                    </Text>
+                    <Text className="text-sm font-semibold text-foreground">{result.toolName}</Text>
                     <Text className="text-xs text-muted">
                       {new Date(result.executedAt).toLocaleTimeString()}
                     </Text>
                   </View>
 
-                  <Badge
-                    variant="status"
-                    color={result.isError ? 'error' : 'success'}
-                  >
+                  <Badge variant="status" color={result.isError ? 'error' : 'success'}>
                     {result.isError ? 'Error' : 'Success'}
                   </Badge>
                 </View>
@@ -202,7 +191,8 @@ export default function HomeScreen() {
               Ready to Get Started?
             </Text>
             <Text className="text-base text-muted text-center mb-8">
-              Connect your MCP servers to explore and execute tools directly from your mobile device.
+              Connect your MCP servers to explore and execute tools directly from your mobile
+              device.
             </Text>
             <Button
               variant="primary"

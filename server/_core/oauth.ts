@@ -1,12 +1,12 @@
-import { COOKIE_NAME, ONE_YEAR_MS } from "../../shared/const.js";
-import type { Express, Request, Response } from "express";
-import { getUserByOpenId, upsertUser } from "../db";
-import { getSessionCookieOptions } from "./cookies";
-import { sdk } from "./sdk";
+import { COOKIE_NAME, ONE_YEAR_MS } from '../../shared/const.js';
+import type { Express, Request, Response } from 'express';
+import { getUserByOpenId, upsertUser } from '../db';
+import { getSessionCookieOptions } from './cookies';
+import { sdk } from './sdk';
 
 function getQueryParam(req: Request, key: string): string | undefined {
   const value = req.query[key];
-  return typeof value === "string" ? value : undefined;
+  return typeof value === 'string' ? value : undefined;
 }
 
 async function syncUser(userInfo: {
@@ -17,7 +17,7 @@ async function syncUser(userInfo: {
   platform?: string | null;
 }) {
   if (!userInfo.openId) {
-    throw new Error("openId missing from user info");
+    throw new Error('openId missing from user info');
   }
 
   const lastSignedIn = new Date();
@@ -62,12 +62,12 @@ function buildUserResponse(
 }
 
 export function registerOAuthRoutes(app: Express) {
-  app.get("/api/oauth/callback", async (req: Request, res: Response) => {
-    const code = getQueryParam(req, "code");
-    const state = getQueryParam(req, "state");
+  app.get('/api/oauth/callback', async (req: Request, res: Response) => {
+    const code = getQueryParam(req, 'code');
+    const state = getQueryParam(req, 'state');
 
     if (!code || !state) {
-      res.status(400).json({ error: "code and state are required" });
+      res.status(400).json({ error: 'code and state are required' });
       return;
     }
 
@@ -76,7 +76,7 @@ export function registerOAuthRoutes(app: Express) {
       const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
       await syncUser(userInfo);
       const sessionToken = await sdk.createSessionToken(userInfo.openId!, {
-        name: userInfo.name || "",
+        name: userInfo.name || '',
         expiresInMs: ONE_YEAR_MS,
       });
 
@@ -88,20 +88,20 @@ export function registerOAuthRoutes(app: Express) {
       const frontendUrl =
         process.env.EXPO_WEB_PREVIEW_URL ||
         process.env.EXPO_PACKAGER_PROXY_URL ||
-        "http://localhost:8081";
+        'http://localhost:8081';
       res.redirect(302, frontendUrl);
     } catch (error) {
-      console.error("[OAuth] Callback failed", error);
-      res.status(500).json({ error: "OAuth callback failed" });
+      console.error('[OAuth] Callback failed', error);
+      res.status(500).json({ error: 'OAuth callback failed' });
     }
   });
 
-  app.get("/api/oauth/mobile", async (req: Request, res: Response) => {
-    const code = getQueryParam(req, "code");
-    const state = getQueryParam(req, "state");
+  app.get('/api/oauth/mobile', async (req: Request, res: Response) => {
+    const code = getQueryParam(req, 'code');
+    const state = getQueryParam(req, 'state');
 
     if (!code || !state) {
-      res.status(400).json({ error: "code and state are required" });
+      res.status(400).json({ error: 'code and state are required' });
       return;
     }
 
@@ -111,7 +111,7 @@ export function registerOAuthRoutes(app: Express) {
       const user = await syncUser(userInfo);
 
       const sessionToken = await sdk.createSessionToken(userInfo.openId!, {
-        name: userInfo.name || "",
+        name: userInfo.name || '',
         expiresInMs: ONE_YEAR_MS,
       });
 
@@ -123,43 +123,43 @@ export function registerOAuthRoutes(app: Express) {
         user: buildUserResponse(user),
       });
     } catch (error) {
-      console.error("[OAuth] Mobile exchange failed", error);
-      res.status(500).json({ error: "OAuth mobile exchange failed" });
+      console.error('[OAuth] Mobile exchange failed', error);
+      res.status(500).json({ error: 'OAuth mobile exchange failed' });
     }
   });
 
-  app.post("/api/auth/logout", (req: Request, res: Response) => {
+  app.post('/api/auth/logout', (req: Request, res: Response) => {
     const cookieOptions = getSessionCookieOptions(req);
     res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
     res.json({ success: true });
   });
 
   // Get current authenticated user - works with both cookie (web) and Bearer token (mobile)
-  app.get("/api/auth/me", async (req: Request, res: Response) => {
+  app.get('/api/auth/me', async (req: Request, res: Response) => {
     try {
       const user = await sdk.authenticateRequest(req);
       res.json({ user: buildUserResponse(user) });
     } catch (error) {
-      console.error("[Auth] /api/auth/me failed:", error);
-      res.status(401).json({ error: "Not authenticated", user: null });
+      console.error('[Auth] /api/auth/me failed:', error);
+      res.status(401).json({ error: 'Not authenticated', user: null });
     }
   });
 
   // Establish session cookie from Bearer token
   // Used by iframe preview: frontend receives token via postMessage, then calls this endpoint
   // to get a proper Set-Cookie response from the backend (3000-xxx domain)
-  app.post("/api/auth/session", async (req: Request, res: Response) => {
+  app.post('/api/auth/session', async (req: Request, res: Response) => {
     try {
       // Authenticate using Bearer token from Authorization header
       const user = await sdk.authenticateRequest(req);
 
       // Get the token from the Authorization header to set as cookie
       const authHeader = req.headers.authorization || req.headers.Authorization;
-      if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
-        res.status(400).json({ error: "Bearer token required" });
+      if (typeof authHeader !== 'string' || !authHeader.startsWith('Bearer ')) {
+        res.status(400).json({ error: 'Bearer token required' });
         return;
       }
-      const token = authHeader.slice("Bearer ".length).trim();
+      const token = authHeader.slice('Bearer '.length).trim();
 
       // Set cookie for this domain (3000-xxx)
       const cookieOptions = getSessionCookieOptions(req);
@@ -167,8 +167,8 @@ export function registerOAuthRoutes(app: Express) {
 
       res.json({ success: true, user: buildUserResponse(user) });
     } catch (error) {
-      console.error("[Auth] /api/auth/session failed:", error);
-      res.status(401).json({ error: "Invalid token" });
+      console.error('[Auth] /api/auth/session failed:', error);
+      res.status(401).json({ error: 'Invalid token' });
     }
   });
 }

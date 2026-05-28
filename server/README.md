@@ -6,14 +6,14 @@ This guide covers server-side features including authentication, database, tRPC 
 
 ## When Do You Need Backend?
 
-| Scenario | Backend Needed? | User Auth Required? | Solution |
-|----------|-----------------|---------------------|----------|
-| Data stays on device only | No | No | Use `AsyncStorage` |
-| Data syncs across devices | Yes | Yes | Database + tRPC |
-| User accounts / login | Yes | Yes | Manus OAuth |
-| AI-powered features | Yes | **Optional** | LLM Integration |
-| User uploads files | Yes | **Optional** | S3 Storage |
-| Server-side validation | Yes | **Optional** | tRPC procedures |
+| Scenario                  | Backend Needed? | User Auth Required? | Solution           |
+| ------------------------- | --------------- | ------------------- | ------------------ |
+| Data stays on device only | No              | No                  | Use `AsyncStorage` |
+| Data syncs across devices | Yes             | Yes                 | Database + tRPC    |
+| User accounts / login     | Yes             | Yes                 | Manus OAuth        |
+| AI-powered features       | Yes             | **Optional**        | LLM Integration    |
+| User uploads files        | Yes             | **Optional**        | S3 Storage         |
+| Server-side validation    | Yes             | **Optional**        | tRPC procedures    |
 
 > **Note:** Backend ≠ User Auth. You can run a backend with LLM/Storage/ImageGen capabilities without requiring user login — just use `publicProcedure` instead of `protectedProcedure`. User auth is only mandatory when you need to identify users or sync user-specific data.
 
@@ -54,21 +54,21 @@ Only touch the files with "←" markers. Anything under `_core/` directories is 
 
 The template uses **Manus OAuth** for user authentication. It works differently on native and web:
 
-| Platform | Auth Method | Token Storage |
-|----------|-------------|---------------|
-| iOS/Android | Bearer token | expo-secure-store |
-| Web | HTTP-only cookie | Browser cookie |
+| Platform    | Auth Method      | Token Storage     |
+| ----------- | ---------------- | ----------------- |
+| iOS/Android | Bearer token     | expo-secure-store |
+| Web         | HTTP-only cookie | Browser cookie    |
 
 ### Using the Auth Hook
 
 ```tsx
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from '@/hooks/use-auth';
 
 function MyScreen() {
   const { user, isAuthenticated, loading, logout } = useAuth();
 
   if (loading) return <ActivityIndicator />;
-  
+
   if (!isAuthenticated) {
     return <LoginButton />;
   }
@@ -89,11 +89,11 @@ The `user` object contains:
 ```tsx
 interface User {
   id: number;
-  openId: string;        // Manus OAuth ID
+  openId: string; // Manus OAuth ID
   name: string | null;
   email: string | null;
   loginMethod: string;
-  role: "user" | "admin";
+  role: 'user' | 'admin';
   lastSignedIn: Date;
 }
 ```
@@ -123,7 +123,7 @@ Use `protectedProcedure` in tRPC to require authentication:
 
 ```tsx
 // server/routers.ts
-import { protectedProcedure } from "./_core/trpc";
+import { protectedProcedure } from './_core/trpc';
 
 export const appRouter = router({
   myFeature: router({
@@ -133,10 +133,12 @@ export const appRouter = router({
     }),
   }),
 });
-
 ```
+
 ### Frontend: Handling Auth Errors
+
 protectedProcedure MUST HANDLE UNAUTHORIZED when user is not logged in. Always handle this in the frontend:
+
 ```tsx
 try {
   await trpc.someProtectedEndpoint.mutate(data);
@@ -158,27 +160,27 @@ try {
 Define your tables in `drizzle/schema.ts`:
 
 ```tsx
-import { int, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
 
 // Users table (already exists)
-export const users = mysqlTable("users", {
-  id: int("id").autoincrement().primaryKey(),
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
-  name: text("name"),
-  email: varchar("email", { length: 320 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+export const users = mysqlTable('users', {
+  id: int('id').autoincrement().primaryKey(),
+  openId: varchar('openId', { length: 64 }).notNull().unique(),
+  name: text('name'),
+  email: varchar('email', { length: 320 }),
+  role: mysqlEnum('role', ['user', 'admin']).default('user').notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
 });
 
 // Add your tables
-export const items = mysqlTable("items", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull(),
-  title: varchar("title", { length: 255 }).notNull(),
-  description: text("description"),
-  completed: boolean("completed").default(false).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+export const items = mysqlTable('items', {
+  id: int('id').autoincrement().primaryKey(),
+  userId: int('userId').notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  completed: boolean('completed').default(false).notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
 });
 
 // Export types
@@ -202,36 +204,36 @@ This runs `drizzle-kit generate` and `drizzle-kit migrate`.
 Add database queries in `server/db.ts`:
 
 ```tsx
-import { eq } from "drizzle-orm";
-import { getDb } from "./_core/db";
-import { items, InsertItem } from "../drizzle/schema";
+import { eq } from 'drizzle-orm';
+import { getDb } from './_core/db';
+import { items, InsertItem } from '../drizzle/schema';
 
 export async function getUserItems(userId: number) {
   const db = await getDb();
   if (!db) return [];
-  
+
   return db.select().from(items).where(eq(items.userId, userId));
 }
 
 export async function createItem(data: InsertItem) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
+  if (!db) throw new Error('Database not available');
+
   const result = await db.insert(items).values(data);
   return result.insertId;
 }
 
 export async function updateItem(id: number, data: Partial<InsertItem>) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
+  if (!db) throw new Error('Database not available');
+
   await db.update(items).set(data).where(eq(items.id, id));
 }
 
 export async function deleteItem(id: number) {
   const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  
+  if (!db) throw new Error('Database not available');
+
   await db.delete(items).where(eq(items.id, id));
 }
 ```
@@ -245,13 +247,13 @@ export async function deleteItem(id: number) {
 Define API routes in `server/routers.ts`:
 
 ```tsx
-import { z } from "zod";
-import { router, protectedProcedure, publicProcedure } from "./_core/trpc";
-import * as db from "./db";
+import { z } from 'zod';
+import { router, protectedProcedure, publicProcedure } from './_core/trpc';
+import * as db from './db';
 
 export const appRouter = router({
   // Public route (no auth required)
-  health: publicProcedure.query(() => ({ status: "ok" })),
+  health: publicProcedure.query(() => ({ status: 'ok' })),
 
   // Protected routes (auth required)
   items: router({
@@ -260,10 +262,12 @@ export const appRouter = router({
     }),
 
     create: protectedProcedure
-      .input(z.object({
-        title: z.string().min(1).max(255),
-        description: z.string().optional(),
-      }))
+      .input(
+        z.object({
+          title: z.string().min(1).max(255),
+          description: z.string().optional(),
+        }),
+      )
       .mutation(({ ctx, input }) => {
         return db.createItem({
           userId: ctx.user.id,
@@ -273,20 +277,20 @@ export const appRouter = router({
       }),
 
     update: protectedProcedure
-      .input(z.object({
-        id: z.number(),
-        title: z.string().min(1).max(255).optional(),
-        completed: z.boolean().optional(),
-      }))
+      .input(
+        z.object({
+          id: z.number(),
+          title: z.string().min(1).max(255).optional(),
+          completed: z.boolean().optional(),
+        }),
+      )
       .mutation(({ input }) => {
         return db.updateItem(input.id, input);
       }),
 
-    delete: protectedProcedure
-      .input(z.object({ id: z.number() }))
-      .mutation(({ input }) => {
-        return db.deleteItem(input.id);
-      }),
+    delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(({ input }) => {
+      return db.deleteItem(input.id);
+    }),
   }),
 });
 
@@ -298,7 +302,7 @@ export type AppRouter = typeof appRouter;
 Use tRPC hooks in your components:
 
 ```tsx
-import { trpc } from "@/lib/trpc";
+import { trpc } from '@/lib/trpc';
 
 function ItemList() {
   // Query
@@ -311,8 +315,8 @@ function ItemList() {
 
   const handleCreate = async () => {
     await createMutation.mutateAsync({
-      title: "New Item",
-      description: "Description here",
+      title: 'New Item',
+      description: 'Description here',
     });
   };
 
@@ -357,7 +361,7 @@ create: protectedProcedure
 Use the preconfigured LLM helpers. Credentials are injected from the platform (no manual setup required).
 
 ```ts
-import { invokeLLM } from "./server/_core/llm";
+import { invokeLLM } from './server/_core/llm';
 
 /**
  * Simple chat completion
@@ -398,13 +402,14 @@ import { invokeLLM } from "./server/_core/llm";
  */
 const response = await invokeLLM({
   messages: [
-    { role: "system", content: "You are a helpful assistant." },
-    { role: "user", content: "Hello, world!" },
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'Hello, world!' },
   ],
 });
 ```
 
 Tips
+
 - Always call llm functions from server-side code (e.g., inside tRPC procedures), to avoid exposing your API key.
 - You don't need to manually set the model; the helper uses a sensible default.
 - LLM responses often contain markdown. Use `<Streamdown>{content}</Streamdown>` (imported from `streamdown`) to render markdown content with proper formatting and streaming support.
@@ -415,25 +420,29 @@ Tips
 Ask the model to return structured JSON via `response_format`:
 
 ```ts
-import { invokeLLM } from "./server/_core/llm";
+import { invokeLLM } from './server/_core/llm';
 
 const structured = await invokeLLM({
   messages: [
-    { role: "system", content: "You are a helpful assistant designed to output JSON." },
-    { role: "user", content: "Extract the name and age from the following text: \"My name is Alice and I am 30 years old.\"" },
+    { role: 'system', content: 'You are a helpful assistant designed to output JSON.' },
+    {
+      role: 'user',
+      content:
+        'Extract the name and age from the following text: "My name is Alice and I am 30 years old."',
+    },
   ],
   response_format: {
-    type: "json_schema",
+    type: 'json_schema',
     json_schema: {
-      name: "person_info",
+      name: 'person_info',
       strict: true,
       schema: {
-        type: "object",
+        type: 'object',
         properties: {
-          name: { type: "string", description: "The name of the person" },
-          age: { type: "integer", description: "The age of the person" },
+          name: { type: 'string', description: 'The name of the person' },
+          age: { type: 'integer', description: 'The age of the person' },
         },
-        required: ["name", "age"],
+        required: ['name', 'age'],
         additionalProperties: false,
       },
     },
@@ -443,29 +452,31 @@ const structured = await invokeLLM({
 // The model responds with JSON content matching the schema.
 // Access via `structured.choices[0].message.content` and JSON.parse if needed.
 ```
+
 The helpers mirror the Python SDK semantics but produce JavaScript-first code, keeping credentials inside the server and ensuring every environment has access to the same token.
 
 **CRITICAL Note:** `json_schema` works for flat structures. For nested arrays/objects, use `json_object` instead.
+
 ```ts
 const response = await invokeLLM({
   messages: [
     {
-      role: "system",
+      role: 'system',
       content: `Analyze the food image. Return JSON:
 {
   "foods": [{ "name": "string", "calories": number }],
   "totalCalories": number
-}`
+}`,
     },
     {
-      role: "user",
+      role: 'user',
       content: [
-        { type: "text", text: "What food is this?" },
-        { type: "image_url", image_url: { url: imageUrl } }
-      ]
-    }
+        { type: 'text', text: 'What food is this?' },
+        { type: 'image_url', image_url: { url: imageUrl } },
+      ],
+    },
   ],
-  response_format: { type: "json_object" }
+  response_format: { type: 'json_object' },
 });
 const data = JSON.parse(response.choices[0].message.content);
 ```
@@ -477,13 +488,14 @@ const data = JSON.parse(response.choices[0].message.content);
 Use the preconfigured voice transcription helper that converts speech to text using Whisper API, no manual setup required.
 
 Example usage:
+
 ```ts
-import { transcribeAudio } from "./server/_core/voiceTranscription";
+import { transcribeAudio } from './server/_core/voiceTranscription';
 
 const result = await transcribeAudio({
-  audioUrl: "https://storage.example.com/audio/recording.mp3",
-  language: "en", // Optional: helps improve accuracy
-  prompt: "Transcribe meeting notes" // Optional: context hint
+  audioUrl: 'https://storage.example.com/audio/recording.mp3',
+  language: 'en', // Optional: helps improve accuracy
+  prompt: 'Transcribe meeting notes', // Optional: context hint
 });
 
 // Returns native Whisper API response
@@ -493,6 +505,7 @@ const result = await transcribeAudio({
 ```
 
 Tips
+
 - Accepts URL to pre-uploaded audio file
 - 16MB file size limit enforced during transcription, size flag to be set by frontend
 - Supported formats: webm, mp3, wav, ogg, m4a
@@ -506,23 +519,27 @@ Tips
 Use the preconfigured image generation helper that connects to the internal ImageService, no manual setup required.
 
 Example usage:
+
 ```ts
-import { generateImage } from "./server/_core/imageGeneration.ts";
+import { generateImage } from './server/_core/imageGeneration.ts';
 
 const { url: imageUrl } = await generateImage({
-  prompt: "A serene landscape with mountains"
+  prompt: 'A serene landscape with mountains',
 });
 // For editing:
 const { url: imageUrl } = await generateImage({
-  prompt: "Add a rainbow to this landscape",
-  originalImages: [{
-    url: "https://example.com/original.jpg",
-    mimeType: "image/jpeg"
-  }]
+  prompt: 'Add a rainbow to this landscape',
+  originalImages: [
+    {
+      url: 'https://example.com/original.jpg',
+      mimeType: 'image/jpeg',
+    },
+  ],
 });
 ```
 
 Tips
+
 - Always call from server-side code (e.g., inside tRPC procedures) to avoid exposing API keys
 - Image generation can take 5-20 seconds, implement proper loading states
 - Implement proper error handling as image generation can fail
@@ -534,20 +551,21 @@ Tips
 Use the preconfigured S3 helpers in `server/storage.ts`. Credentials are injected from the platform (no manual setup required).
 
 ```ts
-import { storagePut } from "./server/storage";
+import { storagePut } from './server/storage';
 
 // Upload bytes to S3 with non-enumerable path
 // The S3 bucket is public, so returned URLs work without additional signing process
 // Add random suffixes to file keys to prevent enumeration
-const fileKey = `${userId}-files/${fileName}-${randomSuffix()}.png`
+const fileKey = `${userId}-files/${fileName}-${randomSuffix()}.png`;
 const { url } = await storagePut(
   fileKey,
   fileBuffer, // Buffer | Uint8Array | string
-  "image/png"
+  'image/png',
 );
 ```
 
 Tips
+
 - Save metadata (path/URL/ACL/owner/mime/size) in your database; use S3 for the actual file bytes. This applies to all files including images, documents, and media.
 - For file uploads, have the client POST to your server, then call `storagePut` from your backend.
 
@@ -574,24 +592,24 @@ Keep this channel for owner-facing alerts; end-user messaging should flow throug
 
 Available environment variables:
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | MySQL/TiDB connection string |
-| `JWT_SECRET` | Session signing secret |
-| `VITE_APP_ID` | Manus OAuth app ID |
-| `OAUTH_SERVER_URL` | Manus OAuth backend URL |
-| `VITE_OAUTH_PORTAL_URL` | Manus login portal URL |
-| `OWNER_OPEN_ID` | Owner's Manus ID |
-| `OWNER_NAME` | Owner's display name |
-| `BUILT_IN_FORGE_API_URL` | Manus API endpoint |
-| `BUILT_IN_FORGE_API_KEY` | Manus API key |
+| Variable                 | Description                  |
+| ------------------------ | ---------------------------- |
+| `DATABASE_URL`           | MySQL/TiDB connection string |
+| `JWT_SECRET`             | Session signing secret       |
+| `VITE_APP_ID`            | Manus OAuth app ID           |
+| `OAUTH_SERVER_URL`       | Manus OAuth backend URL      |
+| `VITE_OAUTH_PORTAL_URL`  | Manus login portal URL       |
+| `OWNER_OPEN_ID`          | Owner's Manus ID             |
+| `OWNER_NAME`             | Owner's display name         |
+| `BUILT_IN_FORGE_API_URL` | Manus API endpoint           |
+| `BUILT_IN_FORGE_API_KEY` | Manus API key                |
 
 Expo runtime variables (prefixed with `EXPO_PUBLIC_`):
 
-| Variable | Description |
-|----------|-------------|
-| `EXPO_PUBLIC_APP_ID` | App ID for OAuth |
-| `EXPO_PUBLIC_API_BASE_URL` | API server URL |
+| Variable                       | Description      |
+| ------------------------------ | ---------------- |
+| `EXPO_PUBLIC_APP_ID`           | App ID for OAuth |
+| `EXPO_PUBLIC_API_BASE_URL`     | API server URL   |
 | `EXPO_PUBLIC_OAUTH_PORTAL_URL` | Login portal URL |
 
 ---
@@ -602,17 +620,17 @@ Write tests in `tests/` using Vitest:
 
 ```tsx
 // tests/items.test.ts
-import { describe, expect, it } from "vitest";
-import { appRouter } from "../server/routers";
+import { describe, expect, it } from 'vitest';
+import { appRouter } from '../server/routers';
 
-describe("items", () => {
-  it("creates an item", async () => {
+describe('items', () => {
+  it('creates an item', async () => {
     const ctx = createMockContext({ userId: 1 });
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.items.create({
-      title: "Test Item",
-      description: "Test description",
+      title: 'Test Item',
+      description: 'Test description',
     });
 
     expect(result).toBeDefined();
@@ -633,29 +651,30 @@ pnpm test
 ## Core File References
 
 `drizzle/schema.ts`
+
 ```ts
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
 
 /**
  * Core user table backing auth flow.
  * Extend this file with additional tables as your product grows.
  * Columns use camelCase to match both database fields and generated types.
  */
-export const users = mysqlTable("users", {
+export const users = mysqlTable('users', {
   /**
    * Surrogate primary key. Auto-incremented numeric value managed by the database.
    * Use this for relations between tables.
    */
-  id: int("id").autoincrement().primaryKey(),
+  id: int('id').autoincrement().primaryKey(),
   /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
-  name: text("name"),
-  email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  openId: varchar('openId', { length: 64 }).notNull().unique(),
+  name: text('name'),
+  email: varchar('email', { length: 320 }),
+  loginMethod: varchar('loginMethod', { length: 64 }),
+  role: mysqlEnum('role', ['user', 'admin']).default('user').notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
+  lastSignedIn: timestamp('lastSignedIn').defaultNow().notNull(),
 });
 
 export type User = typeof users.$inferSelect;
@@ -665,11 +684,12 @@ export type InsertUser = typeof users.$inferInsert;
 ```
 
 `server/db.ts`
+
 ```ts
-import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
-import { ENV } from "./_core/env";
+import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/mysql2';
+import { InsertUser, users } from '../drizzle/schema';
+import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -679,7 +699,7 @@ export async function getDb() {
     try {
       _db = drizzle(process.env.DATABASE_URL);
     } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
+      console.warn('[Database] Failed to connect:', error);
       _db = null;
     }
   }
@@ -688,12 +708,12 @@ export async function getDb() {
 
 export async function upsertUser(user: InsertUser): Promise<void> {
   if (!user.openId) {
-    throw new Error("User openId is required for upsert");
+    throw new Error('User openId is required for upsert');
   }
 
   const db = await getDb();
   if (!db) {
-    console.warn("[Database] Cannot upsert user: database not available");
+    console.warn('[Database] Cannot upsert user: database not available');
     return;
   }
 
@@ -703,7 +723,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     };
     const updateSet: Record<string, unknown> = {};
 
-    const textFields = ["name", "email", "loginMethod"] as const;
+    const textFields = ['name', 'email', 'loginMethod'] as const;
     type TextField = (typeof textFields)[number];
 
     const assignNullable = (field: TextField) => {
@@ -724,8 +744,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = "admin";
-      updateSet.role = "admin";
+      values.role = 'admin';
+      updateSet.role = 'admin';
     }
 
     if (!values.lastSignedIn) {
@@ -740,7 +760,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       set: updateSet,
     });
   } catch (error) {
-    console.error("[Database] Failed to upsert user:", error);
+    console.error('[Database] Failed to upsert user:', error);
     throw error;
   }
 }
@@ -748,7 +768,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
   if (!db) {
-    console.warn("[Database] Cannot get user: database not available");
+    console.warn('[Database] Cannot get user: database not available');
     return undefined;
   }
 
@@ -761,11 +781,12 @@ export async function getUserByOpenId(openId: string) {
 ```
 
 `server/routers.ts`
+
 ```ts
-import { COOKIE_NAME } from "../shared/const.js";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { COOKIE_NAME } from '../shared/const.js';
+import { getSessionCookieOptions } from './_core/cookies';
+import { systemRouter } from './_core/systemRouter';
+import { publicProcedure, router } from './_core/trpc';
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -793,11 +814,12 @@ export type AppRouter = typeof appRouter;
 ```
 
 `server/storage.ts`
+
 ```ts
 // Preconfigured storage helpers for Manus WebDev templates
 // Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
 
-import { ENV } from "./_core/env";
+import { ENV } from './_core/env';
 
 type StorageConfig = { baseUrl: string; apiKey: string };
 
@@ -807,35 +829,35 @@ function getStorageConfig(): StorageConfig {
 
   if (!baseUrl || !apiKey) {
     throw new Error(
-      "Storage proxy credentials missing: set BUILT_IN_FORGE_API_URL and BUILT_IN_FORGE_API_KEY",
+      'Storage proxy credentials missing: set BUILT_IN_FORGE_API_URL and BUILT_IN_FORGE_API_KEY',
     );
   }
 
-  return { baseUrl: baseUrl.replace(/\/+$/, ""), apiKey };
+  return { baseUrl: baseUrl.replace(/\/+$/, ''), apiKey };
 }
 
 function buildUploadUrl(baseUrl: string, relKey: string): URL {
-  const url = new URL("v1/storage/upload", ensureTrailingSlash(baseUrl));
-  url.searchParams.set("path", normalizeKey(relKey));
+  const url = new URL('v1/storage/upload', ensureTrailingSlash(baseUrl));
+  url.searchParams.set('path', normalizeKey(relKey));
   return url;
 }
 
 async function buildDownloadUrl(baseUrl: string, relKey: string, apiKey: string): Promise<string> {
-  const downloadApiUrl = new URL("v1/storage/downloadUrl", ensureTrailingSlash(baseUrl));
-  downloadApiUrl.searchParams.set("path", normalizeKey(relKey));
+  const downloadApiUrl = new URL('v1/storage/downloadUrl', ensureTrailingSlash(baseUrl));
+  downloadApiUrl.searchParams.set('path', normalizeKey(relKey));
   const response = await fetch(downloadApiUrl, {
-    method: "GET",
+    method: 'GET',
     headers: buildAuthHeaders(apiKey),
   });
   return (await response.json()).url;
 }
 
 function ensureTrailingSlash(value: string): string {
-  return value.endsWith("/") ? value : `${value}/`;
+  return value.endsWith('/') ? value : `${value}/`;
 }
 
 function normalizeKey(relKey: string): string {
-  return relKey.replace(/^\/+/, "");
+  return relKey.replace(/^\/+/, '');
 }
 
 function toFormData(
@@ -844,11 +866,11 @@ function toFormData(
   fileName: string,
 ): FormData {
   const blob =
-    typeof data === "string"
+    typeof data === 'string'
       ? new Blob([data], { type: contentType })
       : new Blob([data as any], { type: contentType });
   const form = new FormData();
-  form.append("file", blob, fileName || "file");
+  form.append('file', blob, fileName || 'file');
   return form;
 }
 
@@ -859,14 +881,14 @@ function buildAuthHeaders(apiKey: string): HeadersInit {
 export async function storagePut(
   relKey: string,
   data: Buffer | Uint8Array | string,
-  contentType = "application/octet-stream",
+  contentType = 'application/octet-stream',
 ): Promise<{ key: string; url: string }> {
   const { baseUrl, apiKey } = getStorageConfig();
   const key = normalizeKey(relKey);
   const uploadUrl = buildUploadUrl(baseUrl, key);
-  const formData = toFormData(data, contentType, key.split("/").pop() ?? key);
+  const formData = toFormData(data, contentType, key.split('/').pop() ?? key);
   const response = await fetch(uploadUrl, {
-    method: "POST",
+    method: 'POST',
     headers: buildAuthHeaders(apiKey),
     body: formData,
   });
@@ -892,13 +914,14 @@ export async function storageGet(relKey: string): Promise<{ key: string; url: st
 ```
 
 `lib/trpc.ts`
+
 ```ts
-import { createTRPCReact } from "@trpc/react-query";
-import { httpBatchLink } from "@trpc/client";
-import superjson from "superjson";
-import type { AppRouter } from "@/server/routers";
-import { getApiBaseUrl } from "@/constants/oauth";
-import * as Auth from "@/lib/_core/auth";
+import { createTRPCReact } from '@trpc/react-query';
+import { httpBatchLink } from '@trpc/client';
+import superjson from 'superjson';
+import type { AppRouter } from '@/server/routers';
+import { getApiBaseUrl } from '@/constants/oauth';
+import * as Auth from '@/lib/_core/auth';
 
 /**
  * tRPC React client for type-safe API calls.
@@ -928,7 +951,7 @@ export function createTRPCClient() {
         fetch(url, options) {
           return fetch(url, {
             ...options,
-            credentials: "include",
+            credentials: 'include',
           });
         },
       }),
@@ -938,11 +961,12 @@ export function createTRPCClient() {
 ```
 
 `hooks/use-auth.ts`
+
 ```ts
-import * as Api from "@/lib/_core/api";
-import * as Auth from "@/lib/_core/auth";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Platform } from "react-native";
+import * as Api from '@/lib/_core/api';
+import * as Auth from '@/lib/_core/auth';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Platform } from 'react-native';
 
 type UseAuthOptions = {
   autoFetch?: boolean;
@@ -955,16 +979,16 @@ export function useAuth(options?: UseAuthOptions) {
   const [error, setError] = useState<Error | null>(null);
 
   const fetchUser = useCallback(async () => {
-    console.log("[useAuth] fetchUser called");
+    console.log('[useAuth] fetchUser called');
     try {
       setLoading(true);
       setError(null);
 
       // Web platform: use cookie-based auth, fetch user from API
-      if (Platform.OS === "web") {
-        console.log("[useAuth] Web platform: fetching user from API...");
+      if (Platform.OS === 'web') {
+        console.log('[useAuth] Web platform: fetching user from API...');
         const apiUser = await Api.getMe();
-        console.log("[useAuth] API user response:", apiUser);
+        console.log('[useAuth] API user response:', apiUser);
 
         if (apiUser) {
           const userInfo: Auth.User = {
@@ -978,9 +1002,9 @@ export function useAuth(options?: UseAuthOptions) {
           setUser(userInfo);
           // Cache user info in localStorage for faster subsequent loads
           await Auth.setUserInfo(userInfo);
-          console.log("[useAuth] Web user set from API:", userInfo);
+          console.log('[useAuth] Web user set from API:', userInfo);
         } else {
-          console.log("[useAuth] Web: No authenticated user from API");
+          console.log('[useAuth] Web: No authenticated user from API');
           setUser(null);
           await Auth.clearUserInfo();
         }
@@ -988,36 +1012,36 @@ export function useAuth(options?: UseAuthOptions) {
       }
 
       // Native platform: use token-based auth
-      console.log("[useAuth] Native platform: checking for session token...");
+      console.log('[useAuth] Native platform: checking for session token...');
       const sessionToken = await Auth.getSessionToken();
       console.log(
-        "[useAuth] Session token:",
-        sessionToken ? `present (${sessionToken.substring(0, 20)}...)` : "missing",
+        '[useAuth] Session token:',
+        sessionToken ? `present (${sessionToken.substring(0, 20)}...)` : 'missing',
       );
       if (!sessionToken) {
-        console.log("[useAuth] No session token, setting user to null");
+        console.log('[useAuth] No session token, setting user to null');
         setUser(null);
         return;
       }
 
       // Use cached user info for native (token validates the session)
       const cachedUser = await Auth.getUserInfo();
-      console.log("[useAuth] Cached user:", cachedUser);
+      console.log('[useAuth] Cached user:', cachedUser);
       if (cachedUser) {
-        console.log("[useAuth] Using cached user info");
+        console.log('[useAuth] Using cached user info');
         setUser(cachedUser);
       } else {
-        console.log("[useAuth] No cached user, setting user to null");
+        console.log('[useAuth] No cached user, setting user to null');
         setUser(null);
       }
     } catch (err) {
-      const error = err instanceof Error ? err : new Error("Failed to fetch user");
-      console.error("[useAuth] fetchUser error:", error);
+      const error = err instanceof Error ? err : new Error('Failed to fetch user');
+      console.error('[useAuth] fetchUser error:', error);
       setError(error);
       setUser(null);
     } finally {
       setLoading(false);
-      console.log("[useAuth] fetchUser completed, loading:", false);
+      console.log('[useAuth] fetchUser completed, loading:', false);
     }
   }, []);
 
@@ -1025,7 +1049,7 @@ export function useAuth(options?: UseAuthOptions) {
     try {
       await Api.logout();
     } catch (err) {
-      console.error("[Auth] Logout API call failed:", err);
+      console.error('[Auth] Logout API call failed:', err);
       // Continue with logout even if API call fails
     } finally {
       await Auth.removeSessionToken();
@@ -1038,18 +1062,18 @@ export function useAuth(options?: UseAuthOptions) {
   const isAuthenticated = useMemo(() => Boolean(user), [user]);
 
   useEffect(() => {
-    console.log("[useAuth] useEffect triggered, autoFetch:", autoFetch, "platform:", Platform.OS);
+    console.log('[useAuth] useEffect triggered, autoFetch:', autoFetch, 'platform:', Platform.OS);
     if (autoFetch) {
-      if (Platform.OS === "web") {
+      if (Platform.OS === 'web') {
         // Web: fetch user from API directly (user will login manually if needed)
-        console.log("[useAuth] Web: fetching user from API...");
+        console.log('[useAuth] Web: fetching user from API...');
         fetchUser();
       } else {
         // Native: check for cached user info first for faster initial load
         Auth.getUserInfo().then((cachedUser) => {
-          console.log("[useAuth] Native cached user check:", cachedUser);
+          console.log('[useAuth] Native cached user check:', cachedUser);
           if (cachedUser) {
-            console.log("[useAuth] Native: setting cached user immediately");
+            console.log('[useAuth] Native: setting cached user immediately');
             setUser(cachedUser);
             setLoading(false);
           } else {
@@ -1059,13 +1083,13 @@ export function useAuth(options?: UseAuthOptions) {
         });
       }
     } else {
-      console.log("[useAuth] autoFetch disabled, setting loading to false");
+      console.log('[useAuth] autoFetch disabled, setting loading to false');
       setLoading(false);
     }
   }, [autoFetch, fetchUser]);
 
   useEffect(() => {
-    console.log("[useAuth] State updated:", {
+    console.log('[useAuth] State updated:', {
       hasUser: !!user,
       loading,
       isAuthenticated,
@@ -1085,53 +1109,54 @@ export function useAuth(options?: UseAuthOptions) {
 ```
 
 `tests/auth.logout.test.ts`
+
 ```ts
-import { describe, expect, it } from "vitest";
-import { appRouter } from "../server/routers";
-import { COOKIE_NAME } from "../shared/const";
-import type { TrpcContext } from "../server/_core/context";
+import { describe, expect, it } from 'vitest';
+import { appRouter } from '../server/routers';
+import { COOKIE_NAME } from '../shared/const';
+import type { TrpcContext } from '../server/_core/context';
 
 type CookieCall = {
   name: string;
   options: Record<string, unknown>;
 };
 
-type AuthenticatedUser = NonNullable<TrpcContext["user"]>;
+type AuthenticatedUser = NonNullable<TrpcContext['user']>;
 
 function createAuthContext(): { ctx: TrpcContext; clearedCookies: CookieCall[] } {
   const clearedCookies: CookieCall[] = [];
-  
+
   const user: AuthenticatedUser = {
     id: 1,
-    openId: "sample-user",
-    email: "sample@example.com",
-    name: "Sample User",
-    loginMethod: "manus",
-    role: "user",
+    openId: 'sample-user',
+    email: 'sample@example.com',
+    name: 'Sample User',
+    loginMethod: 'manus',
+    role: 'user',
     createdAt: new Date(),
     updatedAt: new Date(),
     lastSignedIn: new Date(),
   };
-  
+
   const ctx: TrpcContext = {
     user,
     req: {
-      protocol: "https",
+      protocol: 'https',
       headers: {},
-    } as TrpcContext["req"],
+    } as TrpcContext['req'],
     res: {
       clearCookie: (name: string, options: Record<string, unknown>) => {
         clearedCookies.push({ name, options });
       },
-    } as TrpcContext["res"],
+    } as TrpcContext['res'],
   };
-  
+
   return { ctx, clearedCookies };
 }
 
 // TODO: Remove `.skip` below once you implement user authentication
-describe.skip("auth.logout", () => {
-  it("clears the session cookie and reports success", async () => {
+describe.skip('auth.logout', () => {
+  it('clears the session cookie and reports success', async () => {
     const { ctx, clearedCookies } = createAuthContext();
     const caller = appRouter.createCaller(ctx);
 
@@ -1143,9 +1168,9 @@ describe.skip("auth.logout", () => {
     expect(clearedCookies[0]?.options).toMatchObject({
       maxAge: -1,
       secure: true,
-      sameSite: "none",
+      sameSite: 'none',
       httpOnly: true,
-      path: "/",
+      path: '/',
     });
   });
 });
@@ -1164,19 +1189,15 @@ const toggleComplete = trpc.items.update.useMutation({
   onMutate: async (input) => {
     // Cancel outgoing queries
     await utils.items.list.cancel();
-    
+
     // Snapshot previous value
     const previous = utils.items.list.getData();
-    
+
     // Optimistically update
     utils.items.list.setData(undefined, (old) =>
-      old?.map((item) =>
-        item.id === input.id
-          ? { ...item, completed: input.completed }
-          : item
-      )
+      old?.map((item) => (item.id === input.id ? { ...item, completed: input.completed } : item)),
     );
-    
+
     return { previous };
   },
   onError: (err, input, context) => {
@@ -1205,13 +1226,13 @@ list: protectedProcedure
       limit: input.limit + 1,
       cursor: input.cursor,
     });
-    
+
     let nextCursor: number | undefined;
     if (items.length > input.limit) {
       const next = items.pop();
       nextCursor = next?.id;
     }
-    
+
     return { items, nextCursor };
   }),
 
@@ -1226,10 +1247,10 @@ const { data, fetchNextPage, hasNextPage } = trpc.items.list.useInfiniteQuery(
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| "Database not available" | Check `DATABASE_URL` is set |
-| Auth not working | Verify OAuth callback URL matches |
-| tRPC type errors | Run `pnpm check` to verify types |
-| Mutations fail silently | Check browser console for errors |
-| Session expired | User needs to login again |
+| Issue                    | Solution                          |
+| ------------------------ | --------------------------------- |
+| "Database not available" | Check `DATABASE_URL` is set       |
+| Auth not working         | Verify OAuth callback URL matches |
+| tRPC type errors         | Run `pnpm check` to verify types  |
+| Mutations fail silently  | Check browser console for errors  |
+| Session expired          | User needs to login again         |

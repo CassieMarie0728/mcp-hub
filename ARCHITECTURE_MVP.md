@@ -201,6 +201,7 @@ UI updates with connection result
 ```
 
 **Error Handling:**
+
 - Network unreachable → Show "Check your internet connection"
 - Connection timeout → Show "Server not responding (30s timeout)"
 - Invalid host → Show "Invalid hostname or IP address"
@@ -232,6 +233,7 @@ UI displays tool list with search/filter
 ```
 
 **Error Handling:**
+
 - Server disconnected → Attempt reconnect, show "Reconnecting..."
 - Invalid response → Show "Server returned invalid tool list"
 - No tools found → Show "No tools available on this server"
@@ -270,6 +272,7 @@ UI renders result in selected format
 ```
 
 **Error Handling:**
+
 - Invalid parameters → Show validation errors, prevent submission
 - Timeout during execution → Show "Tool execution timeout (60s)"
 - Server error → Show error message from server
@@ -313,12 +316,14 @@ User can:
 ### 4.1 MCPClientManager.kt (Connection Pooling)
 
 **Responsibilities:**
+
 - Maintain connection pool for each server
 - Handle connection lifecycle (create, reuse, close)
 - Implement connection timeout & retry logic
 - Emit connection status events to React Native
 
 **Key Methods:**
+
 ```kotlin
 fun getOrCreateConnection(config: MCPServerConnection): MCPClient
 fun closeConnection(serverId: String)
@@ -330,12 +335,14 @@ fun reconnect(serverId: String)
 ### 4.2 ToolDiscoveryEngine.kt
 
 **Responsibilities:**
+
 - Send tools/list request to server
 - Parse and validate tool schemas
 - Cache schemas locally
 - Handle schema versioning
 
 **Key Methods:**
+
 ```kotlin
 suspend fun discoverTools(serverId: String): List<ToolSchema>
 fun getCachedTools(serverId: String): List<ToolSchema>?
@@ -346,6 +353,7 @@ fun clearCache(serverId: String)
 ### 4.3 ToolExecutionEngine.kt
 
 **Responsibilities:**
+
 - Validate parameters against schema
 - Send tools/call request
 - Handle streaming responses
@@ -353,6 +361,7 @@ fun clearCache(serverId: String)
 - Implement timeout protection
 
 **Key Methods:**
+
 ```kotlin
 suspend fun executeToolWithValidation(
     request: ToolExecutionRequest
@@ -369,12 +378,14 @@ private fun inferResultType(result: Any?): ResultType
 ### 4.4 ErrorRecoveryManager.kt
 
 **Responsibilities:**
+
 - Implement retry logic with exponential backoff
 - Handle specific error types
 - Suggest recovery actions
 - Track error metrics
 
 **Key Methods:**
+
 ```kotlin
 suspend fun <T> executeWithRetry(
     operation: suspend () -> T,
@@ -392,12 +403,14 @@ fun shouldRetry(error: Throwable): Boolean
 ### 5.1 useMCPServerConnection.ts Hook
 
 **Responsibilities:**
+
 - Manage server connection state
 - Handle connection lifecycle
 - Emit connection status updates
 - Provide connection methods to UI
 
 **Key Methods:**
+
 ```typescript
 const {
   servers,
@@ -407,72 +420,58 @@ const {
   disconnectServer,
   reconnectServer,
   isLoading,
-  error
-} = useMCPServerConnection()
+  error,
+} = useMCPServerConnection();
 ```
 
 ### 5.2 useToolDiscovery.ts Hook
 
 **Responsibilities:**
+
 - Fetch tools from connected server
 - Cache tools locally
 - Provide search/filter
 - Handle discovery errors
 
 **Key Methods:**
+
 ```typescript
-const {
-  tools,
-  filteredTools,
-  searchQuery,
-  setSearchQuery,
-  refetchTools,
-  isLoading,
-  error
-} = useToolDiscovery(serverId)
+const { tools, filteredTools, searchQuery, setSearchQuery, refetchTools, isLoading, error } =
+  useToolDiscovery(serverId);
 ```
 
 ### 5.3 useToolExecution.ts Hook
 
 **Responsibilities:**
+
 - Manage tool execution state
 - Validate parameters
 - Execute tools
 - Track execution history
 
 **Key Methods:**
+
 ```typescript
-const {
-  execute,
-  result,
-  isExecuting,
-  error,
-  executionTime,
-  history
-} = useToolExecution()
+const { execute, result, isExecuting, error, executionTime, history } = useToolExecution();
 ```
 
 ### 5.4 ResultDisplayFormatter.ts
 
 **Responsibilities:**
+
 - Detect result type
 - Format result for display
 - Handle all display formats
 - Provide copy/download functionality
 
 **Key Methods:**
+
 ```typescript
-function formatResult(
-  result: any,
-  format: ResultDisplayFormat
-): FormattedResult
+function formatResult(result: any, format: ResultDisplayFormat): FormattedResult;
 
-function detectResultType(result: any): ResultType
+function detectResultType(result: any): ResultType;
 
-function renderResult(
-  result: any,
-  format: ResultDisplayFormat
-): ReactNode
+function renderResult(result: any, format: ResultDisplayFormat): ReactNode;
 ```
 
 ---
@@ -481,15 +480,15 @@ function renderResult(
 
 ### 6.1 Error Categories
 
-| Error Type | Cause | User Message | Recovery |
-|-----------|-------|--------------|----------|
-| UNREACHABLE | Network down, host not found | "Server not reachable. Check your internet connection." | Retry, check network |
-| TIMEOUT | Server slow or unresponsive | "Request timed out (60s). Server may be slow." | Retry, increase timeout |
-| INVALID_PARAMS | User provided bad parameters | "Invalid parameter: {field}. {validation error}" | Fix parameters, retry |
-| AUTH_FAILED | Invalid token or credentials | "Authentication failed. Check your token." | Update token, reconnect |
-| INVALID_RESPONSE | Server returned malformed data | "Server returned invalid response." | Reconnect, contact server admin |
-| TOOL_ERROR | Tool execution failed | "Tool error: {server error message}" | Check parameters, retry |
-| PARTIAL_RESULT | Some data received before timeout | "Partial result received (timeout after 60s)." | View partial result, retry |
+| Error Type       | Cause                             | User Message                                            | Recovery                        |
+| ---------------- | --------------------------------- | ------------------------------------------------------- | ------------------------------- |
+| UNREACHABLE      | Network down, host not found      | "Server not reachable. Check your internet connection." | Retry, check network            |
+| TIMEOUT          | Server slow or unresponsive       | "Request timed out (60s). Server may be slow."          | Retry, increase timeout         |
+| INVALID_PARAMS   | User provided bad parameters      | "Invalid parameter: {field}. {validation error}"        | Fix parameters, retry           |
+| AUTH_FAILED      | Invalid token or credentials      | "Authentication failed. Check your token."              | Update token, reconnect         |
+| INVALID_RESPONSE | Server returned malformed data    | "Server returned invalid response."                     | Reconnect, contact server admin |
+| TOOL_ERROR       | Tool execution failed             | "Tool error: {server error message}"                    | Check parameters, retry         |
+| PARTIAL_RESULT   | Some data received before timeout | "Partial result received (timeout after 60s)."          | View partial result, retry      |
 
 ### 6.2 Retry Strategy
 

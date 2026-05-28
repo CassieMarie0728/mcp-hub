@@ -1,5 +1,5 @@
-import { NativeModules } from "react-native";
-import { useState, useCallback } from "react";
+import { NativeModules } from 'react-native';
+import { useState, useCallback } from 'react';
 
 const { MCPMacroBridge } = NativeModules;
 
@@ -22,7 +22,7 @@ export interface MacroExecutionResult {
   startTime: number;
   endTime: number;
   duration: number;
-  status: "SUCCESS" | "FAILED" | "CANCELLED" | "TIMEOUT";
+  status: 'SUCCESS' | 'FAILED' | 'CANCELLED' | 'TIMEOUT';
   error?: string;
   output?: string;
 }
@@ -47,7 +47,7 @@ export function useMacros() {
       description: string,
       intent: string,
       parameters: any[] = [],
-      actions: any[] = []
+      actions: any[] = [],
     ) => {
       setLoading(true);
       setError(null);
@@ -57,19 +57,19 @@ export function useMacros() {
           description,
           intent,
           parameters,
-          actions
+          actions,
         );
         setMacros((prev) => [...prev, result]);
         return result;
       } catch (err: any) {
-        const errorMsg = err.message || "Failed to create macro";
+        const errorMsg = err.message || 'Failed to create macro';
         setError(errorMsg);
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   const getMacro = useCallback(async (id: string) => {
@@ -78,7 +78,7 @@ export function useMacros() {
     try {
       return await MCPMacroBridge.getMacro(id);
     } catch (err: any) {
-      const errorMsg = err.message || "Failed to get macro";
+      const errorMsg = err.message || 'Failed to get macro';
       setError(errorMsg);
       throw err;
     } finally {
@@ -94,7 +94,7 @@ export function useMacros() {
       setMacros(result || []);
       return result;
     } catch (err: any) {
-      const errorMsg = err.message || "Failed to get macros";
+      const errorMsg = err.message || 'Failed to get macros';
       setError(errorMsg);
       throw err;
     } finally {
@@ -107,12 +107,10 @@ export function useMacros() {
     setError(null);
     try {
       const result = await MCPMacroBridge.updateMacro(JSON.stringify(macro));
-      setMacros((prev) =>
-        prev.map((m) => (m.id === macro.id ? result : m))
-      );
+      setMacros((prev) => prev.map((m) => (m.id === macro.id ? result : m)));
       return result;
     } catch (err: any) {
-      const errorMsg = err.message || "Failed to update macro";
+      const errorMsg = err.message || 'Failed to update macro';
       setError(errorMsg);
       throw err;
     } finally {
@@ -127,7 +125,7 @@ export function useMacros() {
       await MCPMacroBridge.deleteMacro(id);
       setMacros((prev) => prev.filter((m) => m.id !== id));
     } catch (err: any) {
-      const errorMsg = err.message || "Failed to delete macro";
+      const errorMsg = err.message || 'Failed to delete macro';
       setError(errorMsg);
       throw err;
     } finally {
@@ -138,42 +136,36 @@ export function useMacros() {
   const executeMacro = useCallback(
     async (
       macroId: string,
-      parameters: Record<string, string> = {}
+      parameters: Record<string, string> = {},
     ): Promise<MacroExecutionResult> => {
       setLoading(true);
       setError(null);
       try {
-        return await MCPMacroBridge.executeMacro(
-          macroId,
-          JSON.stringify(parameters)
-        );
+        return await MCPMacroBridge.executeMacro(macroId, JSON.stringify(parameters));
       } catch (err: any) {
-        const errorMsg = err.message || "Failed to execute macro";
+        const errorMsg = err.message || 'Failed to execute macro';
         setError(errorMsg);
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
-  const parseIntent = useCallback(
-    async (intentString: string) => {
-      setLoading(true);
-      setError(null);
-      try {
-        return await MCPMacroBridge.parseIntent(intentString);
-      } catch (err: any) {
-        const errorMsg = err.message || "Failed to parse intent";
-        setError(errorMsg);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const parseIntent = useCallback(async (intentString: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      return await MCPMacroBridge.parseIntent(intentString);
+    } catch (err: any) {
+      const errorMsg = err.message || 'Failed to parse intent';
+      setError(errorMsg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const searchMacros = useCallback(async (query: string) => {
     setLoading(true);
@@ -181,7 +173,7 @@ export function useMacros() {
     try {
       return await MCPMacroBridge.searchMacros(query);
     } catch (err: any) {
-      const errorMsg = err.message || "Failed to search macros";
+      const errorMsg = err.message || 'Failed to search macros';
       setError(errorMsg);
       throw err;
     } finally {
@@ -189,22 +181,19 @@ export function useMacros() {
     }
   }, []);
 
-  const getStatistics = useCallback(
-    async (): Promise<MacroStatistics> => {
-      setLoading(true);
-      setError(null);
-      try {
-        return await MCPMacroBridge.getStatistics();
-      } catch (err: any) {
-        const errorMsg = err.message || "Failed to get statistics";
-        setError(errorMsg);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const getStatistics = useCallback(async (): Promise<MacroStatistics> => {
+    setLoading(true);
+    setError(null);
+    try {
+      return await MCPMacroBridge.getStatistics();
+    } catch (err: any) {
+      const errorMsg = err.message || 'Failed to get statistics';
+      setError(errorMsg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const exportMacros = useCallback(async () => {
     setLoading(true);
@@ -212,7 +201,7 @@ export function useMacros() {
     try {
       return await MCPMacroBridge.exportMacros();
     } catch (err: any) {
-      const errorMsg = err.message || "Failed to export macros";
+      const errorMsg = err.message || 'Failed to export macros';
       setError(errorMsg);
       throw err;
     } finally {
@@ -220,21 +209,24 @@ export function useMacros() {
     }
   }, []);
 
-  const importMacros = useCallback(async (json: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const count = await MCPMacroBridge.importMacros(json);
-      await getAllMacros();
-      return count;
-    } catch (err: any) {
-      const errorMsg = err.message || "Failed to import macros";
-      setError(errorMsg);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [getAllMacros]);
+  const importMacros = useCallback(
+    async (json: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const count = await MCPMacroBridge.importMacros(json);
+        await getAllMacros();
+        return count;
+      } catch (err: any) {
+        const errorMsg = err.message || 'Failed to import macros';
+        setError(errorMsg);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [getAllMacros],
+  );
 
   return {
     macros,

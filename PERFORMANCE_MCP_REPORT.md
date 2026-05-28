@@ -21,13 +21,13 @@ The **PerformanceProfiler** utility provides real-time measurement and analysis 
 
 ### Key Capabilities
 
-| Capability | Description | Use Case |
-|-----------|-------------|----------|
-| **Execution Timing** | Measures duration of macro steps and workflows | Identify slow operations |
-| **Memory Tracking** | Captures memory usage for state and history | Detect memory leaks |
-| **Statistics Calculation** | Computes count, average, min, max, last measurement | Performance trending |
-| **Concurrent Measurement** | Handles parallel operations safely | Multi-threaded analysis |
-| **Metrics Export** | JSON export for external analysis | Integration with monitoring tools |
+| Capability                 | Description                                         | Use Case                          |
+| -------------------------- | --------------------------------------------------- | --------------------------------- |
+| **Execution Timing**       | Measures duration of macro steps and workflows      | Identify slow operations          |
+| **Memory Tracking**        | Captures memory usage for state and history         | Detect memory leaks               |
+| **Statistics Calculation** | Computes count, average, min, max, last measurement | Performance trending              |
+| **Concurrent Measurement** | Handles parallel operations safely                  | Multi-threaded analysis           |
+| **Metrics Export**         | JSON export for external analysis                   | Integration with monitoring tools |
 
 ### Performance Metrics Captured
 
@@ -45,18 +45,21 @@ The profiler tracks the following metrics for each operation:
 The performance profiling test suite includes 16 comprehensive tests covering:
 
 **Macro Execution Performance:**
+
 - Single macro execution: < 100ms
 - Sequential steps: Measured individually with < 10ms per step
 - Parallel execution: 5 concurrent macros tracked independently
 - Variable substitution: < 10ms for complex templates
 
 **Tool Discovery Performance:**
+
 - Single server (50 tools): < 50ms discovery time
 - Multiple servers (5 servers × 30 tools): Measured per-server performance
 - Tool filtering and search: Efficient O(n) filtering on 200+ tools
 - Tool caching: Eliminates redundant API calls
 
 **Memory Usage Patterns:**
+
 - Macro state (100 macros): Approximately 500KB
 - Execution history (500 executions): Approximately 2MB
 - Tool cache (150 tools): Approximately 1.5MB
@@ -99,20 +102,21 @@ The MCP integration consists of three core components:
 
 The MCPServerManager is a singleton that handles all MCP server interactions:
 
-| Method | Purpose | Parameters |
-|--------|---------|-----------|
-| `registerServer()` | Register new MCP server | Config with URL, auth, headers |
-| `discoverTools()` | Fetch tools from server | Server ID |
-| `executeTool()` | Run tool on server | Server ID, tool name, parameters |
-| `getServerStatus()` | Check connection status | Server ID |
-| `testConnection()` | Verify server is reachable | Server ID |
-| `clearToolCache()` | Invalidate cached tools | Server ID |
+| Method              | Purpose                    | Parameters                       |
+| ------------------- | -------------------------- | -------------------------------- |
+| `registerServer()`  | Register new MCP server    | Config with URL, auth, headers   |
+| `discoverTools()`   | Fetch tools from server    | Server ID                        |
+| `executeTool()`     | Run tool on server         | Server ID, tool name, parameters |
+| `getServerStatus()` | Check connection status    | Server ID                        |
+| `testConnection()`  | Verify server is reachable | Server ID                        |
+| `clearToolCache()`  | Invalidate cached tools    | Server ID                        |
 
 ### Authentication Support
 
 The system supports three authentication methods:
 
 **Bearer Token Authentication:**
+
 ```typescript
 auth: {
   type: 'bearer',
@@ -121,6 +125,7 @@ auth: {
 ```
 
 **API Key Authentication:**
+
 ```typescript
 auth: {
   type: 'api-key',
@@ -129,6 +134,7 @@ auth: {
 ```
 
 **Basic Authentication:**
+
 ```typescript
 auth: {
   type: 'basic',
@@ -160,30 +166,36 @@ All procedures are protected with authentication, ensuring only authorized users
 The integration test suite (24 tests) validates:
 
 **Server Registration (3 tests):**
+
 - Basic configuration registration
 - Authentication with various methods
 - Custom headers support
 
 **Tool Discovery (3 tests):**
+
 - Tool discovery from single server
 - Tool caching behavior
 - Tool filtering and search
 
 **Tool Execution (3 tests):**
+
 - Tool execution with parameters
 - Error handling and recovery
 - Complex parameter support
 
 **Status Management (2 tests):**
+
 - Connection status tracking
 - Error state handling
 
 **Macro Integration (2 tests):**
+
 - Recording macros with MCP tools
 - Executing macros across multiple servers
 - Partial failure handling
 
 **Performance (2 tests):**
+
 - Tool discovery performance
 - Concurrent execution performance
 
@@ -212,8 +224,8 @@ await mcp.registerServer({
   type: 'http',
   auth: {
     type: 'bearer',
-    token: process.env.GITHUB_TOKEN
-  }
+    token: process.env.GITHUB_TOKEN,
+  },
 });
 
 // Discover available tools
@@ -224,7 +236,7 @@ const tools = await mcp.discoverTools('github-server');
 const result = await mcp.executeTool('github-server', 'create_issue', {
   repo: 'user/project',
   title: 'Bug: Login fails',
-  body: 'Users cannot login with OAuth'
+  body: 'Users cannot login with OAuth',
 });
 ```
 
@@ -238,15 +250,15 @@ const macro = {
       type: 'tool_call',
       serverId: 'github-server',
       toolName: 'create_issue',
-      parameters: { repo: 'user/project', title: 'New Feature' }
+      parameters: { repo: 'user/project', title: 'New Feature' },
     },
     {
       type: 'tool_call',
       serverId: 'slack-server',
       toolName: 'send_message',
-      parameters: { channel: '#dev', text: 'Issue created' }
-    }
-  ]
+      parameters: { channel: '#dev', text: 'Issue created' },
+    },
+  ],
 };
 
 // Execute macro - both tools run in sequence

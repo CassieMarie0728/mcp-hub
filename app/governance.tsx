@@ -1,11 +1,4 @@
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-  RefreshControl,
-} from 'react-native';
+import { ScrollView, Text, View, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
 import { useState, useLayoutEffect, useEffect } from 'react';
@@ -83,14 +76,11 @@ export default function GovernanceScreen() {
 
       setApps((prevApps) =>
         prevApps.map((app) =>
-          app.packageName === packageName ? { ...app, status: newStatus } : app
-        )
+          app.packageName === packageName ? { ...app, status: newStatus } : app,
+        ),
       );
 
-      Alert.alert(
-        'Success',
-        `App ${newStatus === 'allowed' ? 'allowed' : 'blocked'} successfully`
-      );
+      Alert.alert('Success', `App ${newStatus === 'allowed' ? 'allowed' : 'blocked'} successfully`);
     } catch (error) {
       console.error('Failed to update app status:', error);
       Alert.alert('Error', 'Failed to update app status');
@@ -99,8 +89,7 @@ export default function GovernanceScreen() {
 
   const filteredApps = apps.filter(
     (app) =>
-      app.status === activeTab &&
-      app.appName.toLowerCase().includes(searchTerm.toLowerCase())
+      app.status === activeTab && app.appName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const allowedCount = apps.filter((a) => a.status === 'allowed').length;
@@ -113,7 +102,9 @@ export default function GovernanceScreen() {
         <View className="flex-row items-center justify-between mb-4">
           <View className="flex-1">
             <Text className="text-4xl font-bold text-background">Governance</Text>
-            <Text className="text-sm text-background/80 mt-2">Control app access & permissions</Text>
+            <Text className="text-sm text-background/80 mt-2">
+              Control app access & permissions
+            </Text>
           </View>
           <TouchableOpacity onPress={() => router.back()} className="p-2">
             <Ionicons name="close" size={28} color={colors.background} />
@@ -167,9 +158,7 @@ export default function GovernanceScreen() {
               key={tab}
               onPress={() => setActiveTab(tab)}
               className={`flex-1 py-3 px-4 rounded-lg border ${
-                activeTab === tab
-                  ? 'bg-primary border-primary'
-                  : 'bg-surface border-border'
+                activeTab === tab ? 'bg-primary border-primary' : 'bg-surface border-border'
               }`}
             >
               <Text
@@ -219,9 +208,7 @@ export default function GovernanceScreen() {
                   <TouchableOpacity
                     onPress={() => handleToggleApp(app.packageName, app.status)}
                     className={`w-12 h-12 rounded-lg items-center justify-center ${
-                      app.status === 'allowed'
-                        ? 'bg-success/20'
-                        : 'bg-error/20'
+                      app.status === 'allowed' ? 'bg-success/20' : 'bg-error/20'
                     }`}
                   >
                     <Ionicons
