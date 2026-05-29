@@ -2,9 +2,9 @@
 
 ## Overview
 
-The **MCP Router** exposes a set of tRPC procedures that allow clients to manage and interact with Model Context Protocol (MCP) servers. Developers can register new servers, discover and execute tools exposed by those servers, check connectivity and status, and manage in-memory caches of tool listings.  
+The **MCP Router** exposes a set of tRPC procedures that allow clients to manage and interact with Model Context Protocol (MCP) servers. Developers can register new servers, discover and execute tools exposed by those servers, check connectivity and status, and manage in-memory caches of tool listings.
 
-At runtime, the router delegates business logic to `MCPServerManager`, which handles HTTP/WebSocket/Stdio transport, JSON-RPC communication, and caching. This separation ensures a clean API surface while encapsulating transport and protocol details. 
+At runtime, the router delegates business logic to `MCPServerManager`, which handles HTTP/WebSocket/Stdio transport, JSON-RPC communication, and caching. This separation ensures a clean API surface while encapsulating transport and protocol details.
 
 ## Architecture Overview
 
@@ -89,7 +89,7 @@ flowchart TB
 
 ### 4. Data Models
 
-#### **MCPServerConfig**  
+#### **MCPServerConfig**
 Defines server connection parameters .
 
 | Property       | Type                                         | Description                             |
@@ -103,7 +103,7 @@ Defines server connection parameters .
 | `timeout?`     | `number`                                     | Request timeout (ms)                    |
 | `retryAttempts?` | `number`                                   | Number of retry attempts                |
 
-#### **ServerStatus**  
+#### **ServerStatus**
 Tracks runtime status of each server .
 
 | Property         | Type                                             | Description                           |
@@ -460,14 +460,14 @@ sequenceDiagram
 
 ## State Management
 
-- **connected**: Server is reachable and ready.  
-- **disconnected**: No active connection.  
-- **error**: Last operation failed.  
-- **unknown**: Server not found or uninitialized.  
+- **connected**: Server is reachable and ready.
+- **disconnected**: No active connection.
+- **error**: Last operation failed.
+- **unknown**: Server not found or uninitialized.
 
 ## Integration Points
 
-- Mounted under `mcp` in `AppRouter` (`server/routers.ts`), alongside `mcpServers` for extended procedures .  
+- Mounted under `mcp` in `AppRouter` (`server/routers.ts`), alongside `mcpServers` for extended procedures .
 - Uses `protectedProcedure` from the core to enforce authentication on all endpoints.
 
 ## Key Classes Reference
@@ -497,20 +497,20 @@ try {
 
 ## Caching Strategy
 
-- Tool listings cached per server in `MCPServerManager.toolCache`.  
-- Clear specific cache via `clearToolCache`.  
-- Clear all caches via `clearAllCaches`.  
+- Tool listings cached per server in `MCPServerManager.toolCache`.
+- Clear specific cache via `clearToolCache`.
+- Clear all caches via `clearAllCaches`.
 
 ## Dependencies
 
-- **zod** for schema validation   
-- **tRPC** (`router`, `protectedProcedure`) for RPC definitions   
-- **axios** for HTTP transport in `MCPServerManager`   
+- **zod** for schema validation
+- **tRPC** (`router`, `protectedProcedure`) for RPC definitions
+- **axios** for HTTP transport in `MCPServerManager`
 
 ## Testing Considerations
 
-- Register server with valid/invalid configs.  
-- Discover tools on both cached and uncached scenarios.  
-- Execute tools with correct and incorrect parameters.  
-- Verify status endpoints reflect real connection changes.  
+- Register server with valid/invalid configs.
+- Discover tools on both cached and uncached scenarios.
+- Execute tools with correct and incorrect parameters.
+- Verify status endpoints reflect real connection changes.
 - Validate cache invalidation via clear procedures.

@@ -168,7 +168,7 @@ pm2 logs mcp-hub
 SELECT datname, count(*) FROM pg_stat_activity GROUP BY datname;
 
 -- Check slow queries
-SELECT query, calls, mean_exec_time FROM pg_stat_statements 
+SELECT query, calls, mean_exec_time FROM pg_stat_statements
 ORDER BY mean_exec_time DESC LIMIT 10;
 ```
 

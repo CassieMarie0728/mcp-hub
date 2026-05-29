@@ -75,7 +75,7 @@ The repo docs are explicit that `_core/` directories are framework-level, and th
 
 ## Client Runtime
 
-### 
+###
 
 *File path: `lib/trpc.ts`*
 
@@ -91,7 +91,7 @@ The runtime split is explicit:
 - native auth uses `Auth.getSessionToken()` and a bearer `Authorization` header.
 - web auth relies on cookies, with `credentials: "include"` in the custom `fetch`.
 
-### 
+###
 
 *File path: `lib/theme-provider.tsx`*
 
@@ -114,7 +114,7 @@ Behaviorally, `applyScheme` does three platform-specific things:
 - calls `Appearance.setColorScheme?.(scheme)` on native,
 - mutates `document.documentElement` on web by setting `data-theme`, toggling `dark`, and writing CSS custom properties from `SchemeColors`.
 
-### 
+###
 
 *File path: `hooks/use-auth.ts`*
 
@@ -141,7 +141,7 @@ The client flow is split by platform:
 - **Native**: `fetchUser()` checks `Auth.getSessionToken()` first, then reads cached user data from `Auth.getUserInfo()`.
 - **Logout**: `Api.logout()` is attempted first, but the client always clears token and cached user info in `finally`.
 
-### 
+###
 
 *File path: `lib/app-context.tsx`*
 
@@ -189,7 +189,7 @@ The reducer keeps the state transitions explicit:
 
 `ADD_EXECUTION_RESULT` keeps the latest 100 entries, which makes the execution history bounded at the context layer.
 
-### 
+###
 
 *File path: `components/themed-view.tsx`*
 
@@ -202,7 +202,7 @@ The reducer keeps the state transitions explicit:
 
 It is pure presentation glue: `bg-background` is always applied first, and the component forwards all other `ViewProps`.
 
-### 
+###
 
 *File path: `lib/models/ExecutionHistory.ts`*
 
@@ -283,7 +283,7 @@ This file is the client-side execution history store used by the execution histo
 | `importFromJson` | Merges JSON data while deduplicating by `id`. |
 
 
-### 
+###
 
 *File path: `lib/models/ServerPreset.ts`*
 
@@ -358,7 +358,7 @@ This file is the client-side server preset store used by the server presets scre
 
 ## Backend Runtime
 
-### 
+###
 
 *File path: `server/routers.ts`*
 
@@ -391,7 +391,7 @@ The `auth.logout` handler is intentionally `publicProcedure`. It does not need a
 |  | Extended MCP server integration procedures |
 
 
-### 
+###
 
 *File path: `server/db.ts`*
 
@@ -411,7 +411,7 @@ The `auth.logout` handler is intentionally `publicProcedure`. It does not need a
 - it sets `lastSignedIn` if missing,
 - it assigns `role = "admin"` when `user.openId === ENV.ownerOpenId`.
 
-### 
+###
 
 *File path: `server/storage.ts`*
 
@@ -432,7 +432,7 @@ The `auth.logout` handler is intentionally `publicProcedure`. It does not need a
 | `normalizeKey` | Removes leading slashes from keys. |
 
 
-### 
+###
 
 *File path: `server/routes/marketplace.ts`*
 
@@ -534,7 +534,7 @@ The marketplace route is the only direct Express REST surface visible in the pro
 
 ## Shared Contracts and Data Layer
 
-### 
+###
 
 *File path: `shared/types.ts`*
 
@@ -573,7 +573,7 @@ The user table example in the repository docs shows the data model pattern that 
 
 ### Real Time Collaboration Engine
 
-#### 
+####
 
 *File path: `server/websocket/collaboration-engine.ts`*
 
@@ -681,7 +681,7 @@ sequenceDiagram
 
 ### Webhook Infrastructure
 
-#### 
+####
 
 The collaboration engine is in-memory. Session state, locks, updates, and comments live on the CollaborationEngine instance, so the process hosting the WebSocketServer owns the active collaboration state.
 
@@ -755,7 +755,7 @@ The collaboration engine is in-memory. Session state, locks, updates, and commen
 | `getWebhookStats` | Returns execution summary metrics. |
 
 
-#### 
+####
 
 WebhookManager stores its state in instance fields, but every public method creates new WebhookManager(). Because webhooks, events, and rateLimitMap are not static, data written by one call is not visible to later calls through a different instance.
 
@@ -814,7 +814,7 @@ sequenceDiagram
 
 ### Analytics and Telemetry
 
-#### 
+####
 
 *File path: `server/analytics/execution-analytics.ts`*
 
@@ -913,7 +913,7 @@ sequenceDiagram
 
 ### Workflow Engine and Templates
 
-#### 
+####
 
 getErrorTrends() sorts trend.topErrors and calls .slice(0, 5), but the sliced array is not assigned back. The returned trend objects keep the full topErrors list instead of a capped list.
 
@@ -1009,7 +1009,7 @@ getErrorTrends() sorts trend.topErrors and calls .slice(0, 5), but the sliced ar
 | `reset` | Resets the context and all runtime maps. |
 
 
-#### 
+####
 
 pauseWorkflow() and resumeWorkflow() only toggle isPaused. The loop in executeWorkflow() checks currentStepId and isRunning, but never isPaused, so pause state does not affect execution once a run starts. [!NOTE] executeCondition() writes the chosen branch into this.context.currentStepId, but executeWorkflow() overwrites currentStepId after each step with step.nextStepId || ''. That means conditional branching is only preserved if the step definition also carries the same branch in nextStepId.
 
@@ -1086,7 +1086,7 @@ pauseWorkflow() and resumeWorkflow() only toggle isPaused. The loop in executeWo
 
 ### MCP Provider Bridges
 
-#### 
+####
 
 *File path: `server/mcp/servers/notion-mcp.ts`*
 
@@ -1107,7 +1107,7 @@ pauseWorkflow() and resumeWorkflow() only toggle isPaused. The loop in executeWo
 | `validateToken` | Checks token validity against `/users/me`. |
 
 
-#### 
+####
 
 *File path: `server/mcp/servers/slack-mcp.ts`*
 
@@ -1268,8 +1268,8 @@ The client and server both handle failures close to the boundary that produced t
 
 ### Shared contract layer
 
-- 
-- 
+-
+-
 - generated migrations under `drizzle/`
 
 ## Testing Considerations

@@ -25,7 +25,7 @@ flowchart TB
 
 ### SlackConfig (Data Model)
 
-**Location:** 
+**Location:**
 
 Defines the credentials and optional endpoint for Slack integration.
 
@@ -37,7 +37,7 @@ Defines the credentials and optional endpoint for Slack integration.
 
 ### SlackMCPServer (Integration Class)
 
-**Location:** 
+**Location:**
 
 Wraps Slack API as an MCP server. Responsible for generating MCP config, exposing tool schemas, and validating tokens.
 

@@ -3,8 +3,8 @@
 ## Overview
 
 The **MCP Hub API** provides a production-grade RESTful interface to manage connections to Model Context Protocol (MCP) servers. It acts as:
-- An **MCP client/host runtime**: opening transports (stdio, streamable HTTP), negotiating JSON-RPC protocols, managing lifecycle.  
-- A **wrapper API** for front-end/admin UIs: exposing high-level endpoints for connections, auth flows, tools, resources, prompts, completions, logging, events, requests, and client roots.  
+- An **MCP client/host runtime**: opening transports (stdio, streamable HTTP), negotiating JSON-RPC protocols, managing lifecycle.
+- A **wrapper API** for front-end/admin UIs: exposing high-level endpoints for connections, auth flows, tools, resources, prompts, completions, logging, events, requests, and client roots.
 - A **persistence & observability layer**: recording requests, responses, events, logs, and supporting live streams via SSE/WebSocket.
 
 This API enables developers to programmatically provision and interact with MCP servers, record execution metrics, and integrate with custom dashboards or automation workflows.
@@ -16,7 +16,7 @@ This API enables developers to programmatically provision and interact with MCP 
 ```mermaid
 flowchart TB
   subgraph PresentationLayer [Clients]
-    UI[Web /Admin UI] 
+    UI[Web /Admin UI]
     CLI[CLI or Scripts]
   end
 
@@ -178,12 +178,12 @@ Manage the full lifecycle of MCP connections: creation, transport handshake, ini
 
 > [!NOTE]
 > The Connections module also exposes endpoints for:
-> - **connect** (`POST /connections/{connectionId}/connect`)  
-> - **initialize** (`POST /connections/{connectionId}/initialize`)  
-> - **disconnect** (`POST /connections/{connectionId}/disconnect`)  
-> - **ping** (`POST /connections/{connectionId}/ping`)  
-> - **status** (`GET /connections/{connectionId}/status`)  
-> - **capabilities** (`GET /connections/{connectionId}/capabilities`)  
+> - **connect** (`POST /connections/{connectionId}/connect`)
+> - **initialize** (`POST /connections/{connectionId}/initialize`)
+> - **disconnect** (`POST /connections/{connectionId}/disconnect`)
+> - **ping** (`POST /connections/{connectionId}/ping`)
+> - **status** (`GET /connections/{connectionId}/status`)
+> - **capabilities** (`GET /connections/{connectionId}/capabilities`)
 > - **server-info** (`GET /connections/{connectionId}/server-info`)
 
 ---
@@ -341,16 +341,16 @@ All `ConnectionSummary` fields plus:
 ## Error Handling
 
 All error responses use the `ErrorEnvelope` schema and appropriate HTTP status codes:
-- **400 Bad Request**  
-- **401 Unauthorized**  
-- **404 Not Found**  
+- **400 Bad Request**
+- **401 Unauthorized**
+- **404 Not Found**
 
 ---
 
 ## Dependencies
 
-- **Authorization**: Bearer JWT in `Authorization` header.  
-- **Transports**: `stdio` subprocess or HTTP(S) POST with optional SSE/WebSocket.  
+- **Authorization**: Bearer JWT in `Authorization` header.
+- **Transports**: `stdio` subprocess or HTTP(S) POST with optional SSE/WebSocket.
 - **Persistence**: SQL database for connections, requests, events; log store for persisted logs.
 
 ---
@@ -379,15 +379,15 @@ All error responses use the `ErrorEnvelope` schema and appropriate HTTP status c
 
 ## Caching Strategy
 
-- **Tools & Resources**: Cached per connection; use `?refresh=true` to invalidate.  
-- **Prompts**: Cached per connection; no explicit refresh endpoint.  
+- **Tools & Resources**: Cached per connection; use `?refresh=true` to invalidate.
+- **Prompts**: Cached per connection; no explicit refresh endpoint.
 - **Request Records**: Persisted; query parameters filter on time ranges.
 
 ---
 
 ## Testing Considerations
 
-- Validate all endpoints with both valid and invalid UUIDs.  
-- Test auth flows end-to-end (OAuth2 redirect, bearer token).  
-- Simulate transport failures (stdio crash, HTTP timeouts) and verify error states.  
+- Validate all endpoints with both valid and invalid UUIDs.
+- Test auth flows end-to-end (OAuth2 redirect, bearer token).
+- Simulate transport failures (stdio crash, HTTP timeouts) and verify error states.
 - Exercise SSE/WebSocket live event streaming under load.

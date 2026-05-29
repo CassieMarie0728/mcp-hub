@@ -23,7 +23,7 @@ export function useMCPService() {
         // Create MCP client
       const { settings } = useApp();
       const timeout = timeoutOverride ?? (settings.executionTimeoutEnabled ? settings.executionTimeout : undefined);
-      
+
       const client = mcpClientManager.createClient({
         serverId: server.id,
         connectionType: server.connectionType,

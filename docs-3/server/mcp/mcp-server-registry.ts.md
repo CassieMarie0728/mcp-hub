@@ -220,7 +220,7 @@ Errors thrown by underlying server implementations bubble up through registry me
 - **Server Classes**:- `GitHubMCPServer`, `GitHubConfig`
 - `SlackMCPServer`, `SlackConfig`
 - `NotionMCPServer`, `NotionConfig`
-- **Configuration Interface**:- `MCPServerConfig` from 
+- **Configuration Interface**:- `MCPServerConfig` from
 
 ## Testing Considerations
 

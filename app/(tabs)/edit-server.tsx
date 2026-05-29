@@ -145,7 +145,7 @@ export default function EditServerScreen() {
         setConnectionType(config.connectionType || 'stdio');
         setCommand(config.command || '');
         setUrl(config.url || '');
-        
+
         const headerPairs = Object.entries(config.headers || {}).map(([key, value]: any, idx) => ({
           id: `${Date.now()}-${idx}`,
           key,

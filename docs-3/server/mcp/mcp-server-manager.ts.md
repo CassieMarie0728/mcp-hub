@@ -32,13 +32,13 @@ flowchart TB
 - **Purpose**  
   Manages MCP server lifecycles, tool discovery, execution, caching, and status tracking.
 
-- **Key Properties**  
+- **Key Properties**
   - `servers: Map<string, MCPServerConfigWithUnknownHeaders>`  
-    Stores registered server configurations.  
+    Stores registered server configurations.
   - `clients: Map<string, AxiosInstance>`  
-    Axios instances keyed by server ID.  
+    Axios instances keyed by server ID.
   - `toolCache: Map<string, MCPTool[]>`  
-    Cached tool lists per server.  
+    Cached tool lists per server.
   - `serverStatus: Map<string, ServerStatus>`  
     Tracks connection status and metadata.
 
@@ -223,15 +223,15 @@ sequenceDiagram
 
 ## Error Handling
 
-- On **discovery** failure, updates `ServerStatus.status` to **error** and records `lastError`.  
-- On **execution** failure, similarly flags the server status and returns `success: false`.  
+- On **discovery** failure, updates `ServerStatus.status` to **error** and records `lastError`.
+- On **execution** failure, similarly flags the server status and returns `success: false`.
 - Throws clear errors when a server or client instance is missing.
 
 ## Caching Strategy 🔄
 
-- **Tool Cache**: Uses `toolCache` map to store `MCPTool[]` after first fetch.  
+- **Tool Cache**: Uses `toolCache` map to store `MCPTool[]` after first fetch.
 - **Invalidation**:
-  - `clearToolCache(serverId)`: Clears cache for one server.  
+  - `clearToolCache(serverId)`: Clears cache for one server.
   - `clearAllCaches()`: Clears all cached entries.
 
 > [!TIP]
@@ -246,7 +246,7 @@ sequenceDiagram
 
 ## Dependencies
 
-- **axios**: HTTP client for all server communications.  
+- **axios**: HTTP client for all server communications.
 - **btoa**: Browser API used for Basic authentication header encoding.
 
 ## Key Classes Reference
@@ -257,10 +257,10 @@ sequenceDiagram
 
 ## Testing Considerations
 
-- **Registration**: Validate creation of Axios client and initial status entry.  
-- **Health Check**: `testConnection` should return `true` for a healthy `/health` and `false` on error.  
-- **Discovery**: Confirm caching behavior and error propagation.  
-- **Execution**: Verify correct `MCPToolResult` on success and error scenarios.  
-- **Status Tracking**: Ensure `serverStatus` updates for `connected`, `disconnected`, and `error`.  
-- **Cache Management**: Test `clearToolCache` and `clearAllCaches` remove entries.  
+- **Registration**: Validate creation of Axios client and initial status entry.
+- **Health Check**: `testConnection` should return `true` for a healthy `/health` and `false` on error.
+- **Discovery**: Confirm caching behavior and error propagation.
+- **Execution**: Verify correct `MCPToolResult` on success and error scenarios.
+- **Status Tracking**: Ensure `serverStatus` updates for `connected`, `disconnected`, and `error`.
+- **Cache Management**: Test `clearToolCache` and `clearAllCaches` remove entries.
 - **Removal**: Confirm `removeServer` cleans up all internal maps without leaks.

@@ -65,7 +65,7 @@ flowchart TB
 
 ### 1. API Boundary
 
-#### 
+####
 
  only lists mcp.discoverTools(), mcp.executeTool(), and mcp.getServerStatus(), but  also mounts mcp.registerServer(), cache operations, lifecycle operations, and the full mcpServers router surface.
 
@@ -79,7 +79,7 @@ flowchart TB
 | `mcpServers` | `mcpExtendedRouter` | Registry discovery, provider validation, and real MCP server onboarding |
 
 
-#### 
+####
 
 *server/mcp/mcp-router.ts*
 
@@ -100,7 +100,7 @@ flowchart TB
 | `getServer` | Returns a single registered server configuration |
 
 
-#### 
+####
 
 *server/mcp/mcp-router-extended.ts*
 
@@ -120,7 +120,7 @@ flowchart TB
 | `unregisterServer` | Removes a server from the manager |
 
 
-#### 
+####
 
 *docs/api/README.md*
 
@@ -137,7 +137,7 @@ This document defines the shared API contract for the backend. It establishes th
 
 ### 2. Business Layer
 
-#### 
+####
 
 The API documentation names mcp.discoverTools(), mcp.executeTool(), and mcp.getServerStatus(), while  exposes a wider MCP surface through mcp and mcpServers.
 
@@ -168,7 +168,7 @@ The API documentation names mcp.discoverTools(), mcp.executeTool(), and mcp.getS
 | `getServer` | Returns one stored server config |
 
 
-#### 
+####
 
 *server/mcp/mcp-server-registry.ts*
 
@@ -188,7 +188,7 @@ The API documentation names mcp.discoverTools(), mcp.executeTool(), and mcp.getS
 | `validateToken` | Validates a provider token through the provider adapter |
 
 
-#### 
+####
 
 *server/mcp/servers/github-mcp.ts*
 
@@ -211,7 +211,7 @@ The API documentation names mcp.discoverTools(), mcp.executeTool(), and mcp.getS
 | `validateToken` | Calls GitHub and returns whether the token is accepted |
 
 
-#### 
+####
 
 *server/mcp/servers/slack-mcp.ts*
 
@@ -234,7 +234,7 @@ The API documentation names mcp.discoverTools(), mcp.executeTool(), and mcp.getS
 | `validateToken` | Calls Slack and returns whether the token is accepted |
 
 
-#### 
+####
 
 *server/mcp/servers/notion-mcp.ts*
 

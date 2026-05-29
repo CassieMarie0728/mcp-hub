@@ -178,15 +178,15 @@ export const workflowsProcedures = router({
         }
 
         const engine = new WorkflowEngine();
-        
+
         // Register all steps
         for (const step of workflow.steps) {
           engine.registerStep(step);
         }
-        
+
         // Execute workflow
         const result = await engine.executeWorkflow(workflow.steps[0]?.id || '');
-        
+
         // Get execution history
         const executionHistory = engine.getExecutionHistory();
 

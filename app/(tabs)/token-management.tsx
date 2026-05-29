@@ -78,7 +78,7 @@ export default function TokenManagementScreen() {
   const { mutate: storeToken, loading: storeLoading } = useStoreToken();
   const { mutate: revokeToken, loading: revokeLoading } = useRevokeToken();
   const { mutate: rotateToken, loading: rotateLoading } = useRotateToken();
-  
+
   const [activeTab, setActiveTab] = useState<'register' | 'manage'>('manage');
   const [tokens, setTokens] = useState<Token[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -95,7 +95,7 @@ export default function TokenManagementScreen() {
   }, []);
 
   const loadTokens = async () => {
-    
+
     try {
       // TODO: Call tRPC listServerTokens for each server
       // For now, using mock data
@@ -124,7 +124,7 @@ export default function TokenManagementScreen() {
     } catch (error) {
       Alert.alert('Error', 'Failed to load tokens');
     } finally {
-      
+
     }
   };
 
@@ -193,7 +193,7 @@ export default function TokenManagementScreen() {
       return;
     }
 
-    
+
     try {
       // TODO: Call tRPC rotateToken
       Alert.alert('Success', `Token "${selectedToken.name}" rotated successfully`);
@@ -204,7 +204,7 @@ export default function TokenManagementScreen() {
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to rotate token');
     } finally {
-      
+
     }
   };
 

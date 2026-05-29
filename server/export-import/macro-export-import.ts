@@ -336,7 +336,7 @@ export class MacroExportImportEngine {
       const vars2 = Array.isArray(macro2.variables) ? macro2.variables : [];
       const tags1 = Array.isArray(macro1.tags) ? macro1.tags : [];
       const tags2 = Array.isArray(macro2.tags) ? macro2.tags : [];
-      
+
       return {
         id: `macro_${Date.now()}`,
         name: `${macro1.name} + ${macro2.name}`,

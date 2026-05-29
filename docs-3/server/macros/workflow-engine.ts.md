@@ -4,10 +4,10 @@
 
 The **Workflow Engine** provides advanced control flow capabilities for macro automation. It supports:
 
-- **Conditional execution** (if/else branches)  
-- **Loops** over iterable variables  
-- **Parallel task execution**  
-- **Delays** and error recovery  
+- **Conditional execution** (if/else branches)
+- **Loops** over iterable variables
+- **Parallel task execution**
+- **Delays** and error recovery
 
 By defining a graph of steps (tool calls, conditions, loops, etc.), this engine enables complex automation flows beyond simple linear macros. It integrates with existing macro systems to orchestrate multi-step workflows in a reusable, data-driven manner.
 
@@ -26,9 +26,9 @@ flowchart TB
     WE --> STP
     WE --> CON
     WE --> LOOP
-    note right of CTX  
-      Tracks runtime variables,  
-      history & errors  
+    note right of CTX
+      Tracks runtime variables,
+      history & errors
     end
 ```
 
@@ -128,13 +128,13 @@ flowchart TB
 
 #### Private Helpers
 
-- **evaluateCondition** `(condition: WorkflowCondition): boolean`  
-- **executeTool** `(step: WorkflowStep): Promise<any>`  
-- **executeCondition** `(step: WorkflowStep): Promise<any>`  
-- **executeLoop** `(step: WorkflowStep): Promise<any>`  
-- **executeParallel** `(step: WorkflowStep): Promise<any>`  
-- **executeDelay** `(step: WorkflowStep): Promise<any>`  
-- **substituteVariables** `(config: Record<string, any>): Record<string, any>`  
+- **evaluateCondition** `(condition: WorkflowCondition): boolean`
+- **executeTool** `(step: WorkflowStep): Promise<any>`
+- **executeCondition** `(step: WorkflowStep): Promise<any>`
+- **executeLoop** `(step: WorkflowStep): Promise<any>`
+- **executeParallel** `(step: WorkflowStep): Promise<any>`
+- **executeDelay** `(step: WorkflowStep): Promise<any>`
+- **substituteVariables** `(config: Record<string, any>): Record<string, any>`
 
 > [!IMPORTANT]  
 > The engine simulates tool calls via `console.log`. Implement real integrations in `executeTool`.
@@ -154,25 +154,25 @@ sequenceDiagram
     participant S as executeStep
     participant H as Context & History
 
-    C-->>W: executeWorkflow(startStepId)  
-    W-->>H: set isRunning, currentStepId  
+    C-->>W: executeWorkflow(startStepId)
+    W-->>H: set isRunning, currentStepId
     loop for each step
-        W-->>S: executeStep(currentStepId)  
+        W-->>S: executeStep(currentStepId)
         alt tool step
-            S-->>S: substituteVariables  
-            S-->>S: executeTool  
+            S-->>S: substituteVariables
+            S-->>S: executeTool
         else condition step
-            S-->>S: evaluateCondition  
+            S-->>S: evaluateCondition
         else loop step
-            S-->>S: iterate & recursive executeStep  
+            S-->>S: iterate & recursive executeStep
         else parallel step
-            S-->>S: Promise.allSettled on stepIds  
+            S-->>S: Promise.allSettled on stepIds
         else delay step
-            S-->>S: setTimeout  
+            S-->>S: setTimeout
         end
-        S-->>H: record result & update currentStepId  
+        S-->>H: record result & update currentStepId
     end
-    W-->>C: return WorkflowContext  
+    W-->>C: return WorkflowContext
 ```
 
 ---
@@ -196,8 +196,8 @@ try {
 
 ## Integration Points
 
-- Complements **MacroExecutionEngine** by adding control flow constructs around tool calls.  
-- Can be embedded within **MacroChainingEngine** or scheduling mechanisms to orchestrate multi-macro scenarios.  
+- Complements **MacroExecutionEngine** by adding control flow constructs around tool calls.
+- Can be embedded within **MacroChainingEngine** or scheduling mechanisms to orchestrate multi-macro scenarios.
 
 ---
 
@@ -205,10 +205,10 @@ try {
 
 The engine exposes a live `WorkflowContext`:
 
-- **variables**: dynamic key/value store  
-- **executionHistory**: detailed record of each step  
-- **errors**: list of encountered issues  
-- **isRunning/isPaused**: control flags  
+- **variables**: dynamic key/value store
+- **executionHistory**: detailed record of each step
+- **errors**: list of encountered issues
+- **isRunning/isPaused**: control flags
 
 Use `getContext()`, `getExecutionHistory()` and `getErrors()` to inspect runtime state.
 
@@ -216,15 +216,15 @@ Use `getContext()`, `getExecutionHistory()` and `getErrors()` to inspect runtime
 
 ## Dependencies
 
-- No external packages; uses built-in `Map`, `Promise`, and `setTimeout`.  
-- Logging via `console.log`.  
+- No external packages; uses built-in `Map`, `Promise`, and `setTimeout`.
+- Logging via `console.log`.
 
 ---
 
 ## Testing Considerations
 
-- Validate **variable substitution** for different data types.  
-- Test **conditional branches** with all operators.  
-- Ensure **loop** handles empty and non-array iterables.  
-- Verify **parallel execution** aggregates successful and failed outcomes.  
+- Validate **variable substitution** for different data types.
+- Test **conditional branches** with all operators.
+- Ensure **loop** handles empty and non-array iterables.
+- Verify **parallel execution** aggregates successful and failed outcomes.
 - Confirm **pause/resume/stop** correctly alters `isRunning` and `isPaused`.

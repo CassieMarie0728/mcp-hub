@@ -1146,11 +1146,11 @@ MCPClient.sendViaHttp throws when config.url is missing, so sse and websocket tr
 
 ### Project Modules
 
-- `useApp` from 
-- `MCPClient` and `mcpClientManager` from 
+- `useApp` from
+- `MCPClient` and `mcpClientManager` from
 - `MCPServerBridgeExtended`, `MCPServerBridge`, and `MCPBridge` native modules
 - `ResultDisplayFormatter` for result rendering
-- `ResultType` from 
+- `ResultType` from
 
 ## Testing Considerations
 

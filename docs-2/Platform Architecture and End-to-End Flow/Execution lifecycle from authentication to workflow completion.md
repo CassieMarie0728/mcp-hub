@@ -1165,10 +1165,10 @@ The architecture docs describe Socket.io for real-time sync, while the visible W
 
 ### Documented System References
 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
 
 ## Testing Considerations
 

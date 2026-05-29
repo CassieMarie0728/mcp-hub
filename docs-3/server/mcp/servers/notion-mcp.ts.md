@@ -42,15 +42,15 @@ constructor(config: NotionConfig)
 
 #### Methods
 
-- **getMCPConfig()** 
+- **getMCPConfig()**
 
 Returns an `MCPServerConfig` object with endpoint URL, HTTP type, bearer auth and headers.
 
-- **getAvailableTools()** 
+- **getAvailableTools()**
 
 Returns an array of tool definitions (name, description, JSON schema) for common Notion operations.
 
-- **validateToken()** 
+- **validateToken()**
 
 Sends `GET /users/me` to verify token validity. Returns `true` if response is OK.
 
