@@ -1,3 +1,6 @@
+// This is a `package.json` file which is used in Node.js projects to define various properties of the
+// project such as its name, version, dependencies, scripts, and more. Here's a breakdown of what each
+// section represents:
 {
   "name": "app-template",
   "version": "1.0.0",
