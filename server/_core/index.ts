@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import path from "path";
 import { fileURLToPath } from "url";
+import { globalLimiter, apiLimiter } from "./rate-limiter";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,6 +57,9 @@ async function startServer() {
     next();
   });
 
+  // Apply global rate limiter to all requests
+  app.use(globalLimiter);
+
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
@@ -72,6 +76,9 @@ async function startServer() {
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true, timestamp: Date.now(), version: "1.0.0" });
   });
+
+  // Apply API rate limiter to tRPC endpoint
+  app.use("/api/trpc", apiLimiter);
 
   app.use(
     "/api/trpc",
@@ -92,6 +99,7 @@ async function startServer() {
     console.log(`[api] server listening on port ${port}`);
     console.log(`[landing] available at http://localhost:${port}`);
     console.log(`[demos] available at http://localhost:${port}/demo-*.html`);
+    console.log(`[rate-limiting] Global: 1000 req/15min | API: 100 req/1min`);
   });
 }
 
