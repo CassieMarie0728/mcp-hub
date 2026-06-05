@@ -10,12 +10,16 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ListItem } from '@/components/ui/list';
 import { Badge } from '@/components/ui/list';
 import { Text } from 'react-native';
+import { AIChatModal } from '@/components/ai-chat-modal';
+import { AIAssistantButton } from '@/components/ai-assistant-button';
+import { useAIAssistant } from '@/hooks/use-ai-assistant';
 
 export default function HomeScreen() {
   const { servers, executionHistory, isLoading } = useApp();
   const router = useRouter();
   const colors = useColors();
   const [refreshing, setRefreshing] = useState(false);
+  const { isOpen, closeAssistant } = useAIAssistant();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -26,21 +30,25 @@ export default function HomeScreen() {
   const totalTools = servers.reduce((sum, s) => sum + s.toolCount, 0);
 
   return (
-    <ScreenContainer className="p-0">
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
-        {/* Hero Header */}
-        <View className="bg-gradient-to-b from-primary to-primary/80 px-6 pt-8 pb-12">
-          <Text className="text-5xl font-bold text-background mb-2">MCP Hub</Text>
+    <>
+      <ScreenContainer className="p-0">
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        >
+          {/* Hero Header */}
+          <View className="bg-gradient-to-b from-primary to-primary/80 px-6 pt-8 pb-12 flex-row items-start justify-between">
+            <View className="flex-1">
+              <Text className="text-5xl font-bold text-background mb-2">MCP Hub</Text>
           <Text className="text-base text-background/90 font-medium">
             Unified MCP Server Manager
           </Text>
-          <Text className="text-sm text-background/70 mt-2">
-            Connect, manage, and execute tools across all your MCP servers
-          </Text>
-        </View>
+              <Text className="text-sm text-background/70 mt-2">
+                Connect, manage, and execute tools across all your MCP servers
+              </Text>
+            </View>
+            <AIAssistantButton variant="header" />
+          </View>
 
         {/* Quick Stats Cards */}
         <View className="px-6 -mt-6 mb-8 gap-3">
@@ -231,7 +239,9 @@ export default function HomeScreen() {
             Chat
           </Button>
         </View>
-      </ScrollView>
-    </ScreenContainer>
+        </ScrollView>
+        <AIChatModal visible={isOpen} onClose={closeAssistant} />
+      </ScreenContainer>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { createContext } from "./context";
 import path from "path";
 import { fileURLToPath } from "url";
 import { globalLimiter, apiLimiter } from "./rate-limiter";
+import { setupAIRoutes } from "./ai-routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -89,6 +90,7 @@ async function startServer() {
   app.use(express.static(path.join(__dirname, "../../landing")));
 
   registerOAuthRoutes(app);
+  setupAIRoutes(app);
 
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true, timestamp: Date.now(), version: "1.0.0" });
