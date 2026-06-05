@@ -125,7 +125,7 @@ Modal Padding: 20px
 Columns: 4-column grid for mobile
 Gutter: 8px between columns
 Max Width: Full screen width
-Breakpoints: 
+Breakpoints:
   - Mobile: 0-599px (1 column)
   - Tablet: 600-1199px (2 columns)
   - Desktop: 1200px+ (4 columns)

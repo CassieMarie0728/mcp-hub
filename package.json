@@ -1,3 +1,6 @@
+// This is a `package.json` file which is used in Node.js projects to define various properties of the
+// project such as its name, version, dependencies, scripts, and more. Here's a breakdown of what each
+// section represents:
 {
   "name": "app-template",
   "version": "1.0.0",
@@ -31,7 +34,7 @@
     "@trpc/client": "11.7.2",
     "@trpc/react-query": "11.7.2",
     "@trpc/server": "11.16.0",
-    "axios": "^1.15.0",
+    "axios": "^1.16.1",
     "clsx": "^2.1.1",
     "cookie": "^1.1.1",
     "dotenv": "^16.6.1",
@@ -93,7 +96,7 @@
     "concurrently": "^9.2.1",
     "cross-env": "^7.0.3",
     "drizzle-kit": "^0.31.8",
-    "esbuild": "^0.27.0",
+    "esbuild": "^0.27.3",
     "eslint": "^9.39.2",
     "eslint-config-expo": "~10.0.0",
     "prettier": "^3.7.4",

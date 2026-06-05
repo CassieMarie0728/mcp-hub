@@ -1,0 +1,2589 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MCP Hub API",
+    "description": "Production-minded MCP Hub API and runtime for connecting to standards-compliant Model Context Protocol (MCP) servers over stdio and Streamable HTTP transports.\nActs as an MCP client/host runtime, wrapper API for frontend/admin UI, and persistence/observability layer.\n",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Base path for MCP Hub API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Connections",
+      "description": "Manage MCP connections and lifecycle"
+    },
+    {
+      "name": "Auth",
+      "description": "Authentication flows and token management"
+    },
+    {
+      "name": "Tools",
+      "description": "Tool listing and invocation"
+    },
+    {
+      "name": "Resources",
+      "description": "Resource management and subscriptions"
+    },
+    {
+      "name": "Prompts",
+      "description": "Prompt listing and retrieval"
+    },
+    {
+      "name": "Completions",
+      "description": "Completion operations"
+    },
+    {
+      "name": "Logging",
+      "description": "Logging level and log retrieval"
+    },
+    {
+      "name": "Events",
+      "description": "Event history and live streaming"
+    },
+    {
+      "name": "Requests",
+      "description": "Request inspection and cancellation"
+    },
+    {
+      "name": "Roots",
+      "description": "Client roots management"
+    }
+  ],
+  "paths": {
+    "/connections": {
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "List all MCP connections",
+        "operationId": "listConnections",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of connections to return",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Offset for pagination",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of MCP connections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConnectionSummary"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Create a new MCP connection",
+        "operationId": "createConnection",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectionCreateRequest"
+              },
+              "examples": {
+                "example": {
+                  "value": {
+                    "serverId": "uuid-server-1234",
+                    "transportConfig": {
+                      "type": "stdio",
+                      "stdioCommand": "/usr/local/bin/mcp-server",
+                      "stdioArgs": [
+                        "--flag"
+                      ]
+                    },
+                    "authMode": "secret_env",
+                    "metadata": {
+                      "workspaceId": "uuid-workspace-5678"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Connection created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Connection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}": {
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Get details of a specific MCP connection",
+        "operationId": "getConnection",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MCP connection details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Connection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Delete or archive an MCP connection",
+        "operationId": "deleteConnection",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Connection deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/connect": {
+      "post": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Open transport and start handshake for MCP connection",
+        "operationId": "connectConnection",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection opened and handshake started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/initialize": {
+      "post": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Run MCP initialize lifecycle step",
+        "operationId": "initializeConnection",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Initialization result with negotiated protocol version and capabilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitializationResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/disconnect": {
+      "post": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Gracefully disconnect MCP connection",
+        "operationId": "disconnectConnection",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Disconnect confirmation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/ping": {
+      "post": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Send MCP ping to connection",
+        "operationId": "pingConnection",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ping latency and status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/status": {
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Get transport, lifecycle, auth, and protocol status of connection",
+        "operationId": "getConnectionStatus",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection status object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/capabilities": {
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Get negotiated protocol version and capabilities",
+        "operationId": "getConnectionCapabilities",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Capabilities object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Capabilities"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/server-info": {
+      "get": {
+        "tags": [
+          "Connections"
+        ],
+        "summary": "Get normalized server info and instructions",
+        "operationId": "getServerInfo",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server info object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/auth/start": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Start OAuth2 or bearer token authentication flow",
+        "operationId": "startAuthFlow",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/auth_start_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Auth flow initiation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthFlowResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/auth/status": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get current authentication state",
+        "operationId": "getAuthStatus",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Auth status object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh authentication tokens",
+        "operationId": "refreshAuth",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated auth status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/auth": {
+      "delete": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Remove stored authentication state",
+        "operationId": "removeAuth",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Auth state removed successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/secrets": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Attach secret references and environment variables for stdio startup",
+        "operationId": "attachSecrets",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/connectionId_secrets_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Secrets attached successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_2"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/tools": {
+      "get": {
+        "tags": [
+          "Tools"
+        ],
+        "summary": "List tools with optional pagination and refresh",
+        "operationId": "listTools",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Cursor for pagination",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "refresh",
+            "in": "query",
+            "description": "Force refresh of tools list",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of tool metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ToolMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/tools/{toolName}/call": {
+      "post": {
+        "tags": [
+          "Tools"
+        ],
+        "summary": "Call a tool with arguments and options",
+        "operationId": "callTool",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "toolName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/toolName_call_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Tool call result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_3"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/tools/{toolName}": {
+      "get": {
+        "tags": [
+          "Tools"
+        ],
+        "summary": "Get cached tool metadata and schema",
+        "operationId": "getToolMetadata",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "toolName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tool metadata object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolMetadata"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/resources": {
+      "get": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "List resources with optional pagination and refresh",
+        "operationId": "listResources",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Cursor for pagination",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "refresh",
+            "in": "query",
+            "description": "Force refresh of resources list",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of resource metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/resources/read": {
+      "post": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Read resource content by URI",
+        "operationId": "readResource",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resources_read_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Resource content and metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_4"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/resource-templates": {
+      "get": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "List resource templates",
+        "operationId": "listResourceTemplates",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of resource templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceTemplate"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/resources/subscribe": {
+      "post": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Subscribe to resource updates",
+        "operationId": "subscribeResource",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resources_subscribe_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Subscription confirmation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_5"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/resources/unsubscribe": {
+      "post": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Unsubscribe from resource updates",
+        "operationId": "unsubscribeResource",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resources_unsubscribe_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Unsubscription confirmation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_6"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/resources/cache": {
+      "get": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Return cached resource metadata",
+        "operationId": "getResourceCache",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cached resource metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/prompts": {
+      "get": {
+        "tags": [
+          "Prompts"
+        ],
+        "summary": "List prompts with optional pagination",
+        "operationId": "listPrompts",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Cursor for pagination",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of prompt metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromptMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/prompts/{promptName}/get": {
+      "post": {
+        "tags": [
+          "Prompts"
+        ],
+        "summary": "Get prompt details with arguments",
+        "operationId": "getPrompt",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "promptName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/promptName_get_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Prompt object with resolved details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_7"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/completions": {
+      "post": {
+        "tags": [
+          "Completions"
+        ],
+        "summary": "Complete prompt or reference with arguments",
+        "operationId": "createCompletion",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/connectionId_completions_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Completion result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_8"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/logging/level": {
+      "post": {
+        "tags": [
+          "Logging"
+        ],
+        "summary": "Set logging level for connection",
+        "operationId": "setLogLevel",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/logging_level_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Logging level set confirmation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_9"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/logs": {
+      "get": {
+        "tags": [
+          "Logging"
+        ],
+        "summary": "Query persisted logs for connection",
+        "operationId": "getLogs",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "description": "Filter logs by level",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "debug",
+                "info",
+                "warn",
+                "error",
+                "fatal"
+              ]
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Filter logs since this timestamp",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "description": "Filter logs until this timestamp",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of log entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LogEntry"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/events": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Query event history for connection",
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "eventType",
+            "in": "query",
+            "description": "Filter events by type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Filter events since this timestamp",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "description": "Filter events until this timestamp",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of event records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventRecord"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/stream": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Live event stream via SSE or WebSocket",
+        "operationId": "streamEvents",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Live event stream (SSE or WebSocket)",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string",
+                  "description": "Server-Sent Events stream"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/requests/{requestId}": {
+      "get": {
+        "tags": [
+          "Requests"
+        ],
+        "summary": "Inspect request, response, and error record",
+        "operationId": "getRequest",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "MCP request UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request record details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestRecord"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/requests/{requestId}/cancel": {
+      "post": {
+        "tags": [
+          "Requests"
+        ],
+        "summary": "Cancel an in-flight request",
+        "operationId": "cancelRequest",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "description": "MCP request UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cancellation confirmation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_10"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/connections/{connectionId}/roots": {
+      "get": {
+        "tags": [
+          "Roots"
+        ],
+        "summary": "Get client roots exposed to server",
+        "operationId": "getRoots",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of root objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Root"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Roots"
+        ],
+        "summary": "Replace allowed roots for connection",
+        "operationId": "replaceRoots",
+        "parameters": [
+          {
+            "name": "connectionId",
+            "in": "path",
+            "description": "MCP connection UUID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Root"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Roots replaced confirmation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_11"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorEnvelope": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code identifier",
+            "example": "AUTH_REQUIRED"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Authentication is required"
+          },
+          "details": {
+            "type": "object",
+            "description": "Optional additional error details",
+            "nullable": true
+          }
+        }
+      },
+      "ConnectionCreateRequest": {
+        "required": [
+          "authMode",
+          "serverId",
+          "transportConfig"
+        ],
+        "type": "object",
+        "properties": {
+          "serverId": {
+            "type": "string",
+            "description": "MCP server UUID to connect to",
+            "format": "uuid"
+          },
+          "transportConfig": {
+            "$ref": "#/components/schemas/ConnectionCreateRequest_transportConfig"
+          },
+          "authMode": {
+            "type": "string",
+            "description": "Authentication mode for the connection",
+            "enum": [
+              "none",
+              "oauth2",
+              "bearer",
+              "secret_env"
+            ]
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Optional metadata such as workspace or owner info"
+          }
+        }
+      },
+      "ConnectionSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "serverId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "disconnected",
+              "connecting",
+              "connected",
+              "initialized",
+              "error"
+            ]
+          },
+          "transportType": {
+            "type": "string",
+            "enum": [
+              "stdio",
+              "streamable_http"
+            ]
+          },
+          "lastSeenAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Connection": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ConnectionSummary"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "ownerId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "workspaceId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "lifecycleState": {
+                "type": "string",
+                "enum": [
+                  "created",
+                  "connected",
+                  "initialized",
+                  "disconnected"
+                ]
+              },
+              "authState": {
+                "type": "string",
+                "enum": [
+                  "unauthenticated",
+                  "authenticating",
+                  "authenticated",
+                  "failed"
+                ]
+              },
+              "desiredProtocolVersion": {
+                "type": "string"
+              },
+              "negotiatedProtocolVersion": {
+                "type": "string"
+              },
+              "sessionId": {
+                "type": "string"
+              },
+              "processId": {
+                "type": "integer"
+              },
+              "lastErrorCode": {
+                "type": "string",
+                "nullable": true
+              },
+              "lastErrorMessage": {
+                "type": "string",
+                "nullable": true
+              },
+              "serverInfo": {
+                "type": "object",
+                "description": "Normalized server info JSON"
+              },
+              "clientCapabilities": {
+                "type": "object",
+                "description": "Client capabilities JSON"
+              },
+              "serverCapabilities": {
+                "type": "object",
+                "description": "Server capabilities JSON"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        ]
+      },
+      "ConnectionStatus": {
+        "type": "object",
+        "properties": {
+          "transportState": {
+            "type": "string",
+            "enum": [
+              "disconnected",
+              "connecting",
+              "connected",
+              "error"
+            ]
+          },
+          "lifecycleState": {
+            "type": "string",
+            "enum": [
+              "created",
+              "connected",
+              "initialized",
+              "disconnected"
+            ]
+          },
+          "authState": {
+            "type": "string",
+            "enum": [
+              "unauthenticated",
+              "authenticating",
+              "authenticated",
+              "failed"
+            ]
+          },
+          "protocolVersion": {
+            "type": "string"
+          },
+          "lastError": {
+            "type": "object",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ConnectionStatus_lastError"
+              }
+            ]
+          }
+        }
+      },
+      "InitializationResult": {
+        "type": "object",
+        "properties": {
+          "negotiatedProtocolVersion": {
+            "type": "string"
+          },
+          "serverInfo": {
+            "type": "object"
+          },
+          "serverCapabilities": {
+            "type": "object"
+          },
+          "clientCapabilities": {
+            "type": "object"
+          }
+        }
+      },
+      "Capabilities": {
+        "type": "object",
+        "properties": {
+          "protocolVersion": {
+            "type": "string"
+          },
+          "capabilities": {
+            "type": "object"
+          }
+        },
+        "description": "Negotiated protocol version and capabilities"
+      },
+      "ServerInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "documentationUrl": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "description": "Normalized server information and instructions"
+      },
+      "AuthFlowResult": {
+        "type": "object",
+        "properties": {
+          "authUrl": {
+            "type": "string",
+            "description": "URL to redirect user for OAuth2 authentication",
+            "format": "uri"
+          },
+          "state": {
+            "type": "string",
+            "description": "State token for auth flow"
+          }
+        }
+      },
+      "AuthStatus": {
+        "type": "object",
+        "properties": {
+          "authenticated": {
+            "type": "boolean"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ToolMetadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "object",
+            "description": "JSON schema for tool arguments and results"
+          },
+          "lastDiscoveredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ResourceMetadata": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "lastDiscoveredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ResourceTemplate": {
+        "type": "object",
+        "properties": {
+          "templateId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "PromptMetadata": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "lastDiscoveredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Prompt": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "object"
+          }
+        }
+      },
+      "LogEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "debug",
+              "info",
+              "warn",
+              "error",
+              "fatal"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true
+          }
+        }
+      },
+      "EventRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "eventPayload": {
+            "type": "object"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RequestRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "connectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "jsonrpcId": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "requestPayload": {
+            "type": "object"
+          },
+          "responsePayload": {
+            "type": "object",
+            "nullable": true
+          },
+          "errorPayload": {
+            "type": "object",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          },
+          "progressToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "durationMs": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "Root": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rootUri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "rootName": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Disconnected successfully"
+          }
+        }
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "latencyMs": {
+            "type": "integer",
+            "example": 123
+          },
+          "status": {
+            "type": "string",
+            "example": "ok"
+          }
+        }
+      },
+      "auth_start_body": {
+        "required": [
+          "strategy"
+        ],
+        "type": "object",
+        "properties": {
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "oauth2",
+              "bearer",
+              "none"
+            ]
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resourceUri": {
+            "type": "string"
+          }
+        }
+      },
+      "connectionId_secrets_body": {
+        "type": "object",
+        "properties": {
+          "secretRefs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "envVars": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "inline_response_200_2": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Secrets attached"
+          }
+        }
+      },
+      "toolName_call_body": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "description": "Arguments for the tool call"
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "description": "Timeout in milliseconds"
+          },
+          "progressToken": {
+            "type": "string",
+            "description": "Token for progress notifications"
+          }
+        }
+      },
+      "inline_response_200_3": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "result": {
+            "type": "object"
+          }
+        }
+      },
+      "resources_read_body": {
+        "type": "object",
+        "properties": {
+          "resourceUri": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "inline_response_200_4": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "contents": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "resources_subscribe_body": {
+        "type": "object",
+        "properties": {
+          "resourceUri": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "inline_response_200_5": {
+        "type": "object",
+        "properties": {
+          "subscriptionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "example": "subscribed"
+          }
+        }
+      },
+      "resources_unsubscribe_body": {
+        "type": "object",
+        "properties": {
+          "resourceUri": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "inline_response_200_6": {
+        "type": "object",
+        "properties": {
+          "subscriptionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "example": "unsubscribed"
+          }
+        }
+      },
+      "promptName_get_body": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object"
+          }
+        }
+      },
+      "inline_response_200_7": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "prompt": {
+            "$ref": "#/components/schemas/Prompt"
+          }
+        }
+      },
+      "connectionId_completions_body": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "args": {
+            "type": "object"
+          }
+        }
+      },
+      "inline_response_200_8": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "completion": {
+            "type": "object"
+          }
+        }
+      },
+      "logging_level_body": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "debug",
+              "info",
+              "warn",
+              "error",
+              "fatal",
+              "false"
+            ]
+          }
+        }
+      },
+      "inline_response_200_9": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Logging level set to info"
+          }
+        }
+      },
+      "inline_response_200_10": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Request cancelled"
+          }
+        }
+      },
+      "inline_response_200_11": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Roots replaced successfully"
+          }
+        }
+      },
+      "ConnectionCreateRequest_transportConfig": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "stdio",
+              "streamable_http"
+            ]
+          },
+          "stdioCommand": {
+            "type": "string",
+            "description": "Command to launch stdio subprocess"
+          },
+          "stdioArgs": {
+            "type": "array",
+            "description": "Arguments for stdio command",
+            "items": {
+              "type": "string"
+            }
+          },
+          "httpEndpoint": {
+            "type": "string",
+            "description": "HTTP endpoint URL for streamable HTTP transport",
+            "format": "uri"
+          }
+        },
+        "description": "Transport configuration details"
+      },
+      "ConnectionStatus_lastError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request due to invalid input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Authentication required or failed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -54,17 +54,17 @@ psql -h $DATABASE_HOST -U $DATABASE_USER -d $DATABASE_NAME
 \dt
 
 # Verify key tables exist
-SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public'
 ORDER BY table_name;
 
 # Check indexes are created
-SELECT indexname FROM pg_indexes 
-WHERE schemaname = 'public' 
+SELECT indexname FROM pg_indexes
+WHERE schemaname = 'public'
 ORDER BY indexname;
 
 # Verify triggers are active
-SELECT trigger_name FROM information_schema.triggers 
+SELECT trigger_name FROM information_schema.triggers
 WHERE trigger_schema = 'public';
 ```
 
@@ -72,11 +72,11 @@ WHERE trigger_schema = 'public';
 
 ```bash
 # Check for foreign key constraints
-SELECT constraint_name, table_name FROM information_schema.table_constraints 
+SELECT constraint_name, table_name FROM information_schema.table_constraints
 WHERE constraint_type = 'FOREIGN KEY';
 
 # Verify no orphaned records
-SELECT COUNT(*) FROM workspace_members 
+SELECT COUNT(*) FROM workspace_members
 WHERE workspace_id NOT IN (SELECT id FROM workspaces);
 
 # Check token encryption is working
@@ -227,8 +227,8 @@ ab -n 100 -c 5 -p workflow.json -T application/json \
 
 ```bash
 # Check query performance
-EXPLAIN ANALYZE SELECT * FROM workflow_executions 
-WHERE workspace_id = 'test-workspace' 
+EXPLAIN ANALYZE SELECT * FROM workflow_executions
+WHERE workspace_id = 'test-workspace'
 AND created_at > NOW() - INTERVAL '1 day'
 ORDER BY created_at DESC;
 

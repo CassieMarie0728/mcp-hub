@@ -1,0 +1,58 @@
+---
+title: MCP Hub Documentation
+description: Start here to understand, develop, deploy, and operate MCP Hub as a centralized platform for working with Model Context Protocol servers.
+---
+
+## Documentation overview
+
+MCP Hub documentation is organized around the tasks readers actually need to complete: understanding the platform, working with the current backend/API surface, developing locally, and operating the system in deployment environments.
+
+<Callout kind="info">
+
+MCP Hub centralizes interaction with Model Context Protocol servers. The repository also contains broader feature modules beyond the currently mounted backend routers, so this documentation distinguishes clearly between active runtime surfaces and additional modules present in the codebase.
+
+</Callout>
+
+<Columns cols={2}>
+  <Card title="Documentation Overview" icon="book-open" href="/docs/README" horizontal>
+    Start with the repository documentation index and topic map.
+  </Card>
+  <Card title="API Overview" icon="code" href="/docs/api/README" horizontal>
+    Review the currently mounted backend routers and runtime entry points.
+  </Card>
+  <Card title="Architecture Overview" icon="database" href="/docs/architecture/README" horizontal>
+    Understand the app, backend, database, and deployment layers.
+  </Card>
+  <Card title="Deployment" icon="cloud" href="/docs/deployment/README" horizontal>
+    Follow local, container, and Kubernetes deployment guidance.
+  </Card>
+  <Card title="Development" icon="terminal" href="/docs/development/README" horizontal>
+    Set up a local environment and contribute safely.
+  </Card>
+  <Card title="User Guides" icon="compass" href="/docs/user-guides/README" horizontal>
+    Find end-user workflows and orientation material.
+  </Card>
+</Columns>
+
+## Getting oriented
+
+- **Users and evaluators** should begin with the documentation overview and user-guides section.
+- **Contributors** should pair the root README with the development and architecture docs.
+- **Operators and maintainers** should review deployment, architecture, and maintenance materials together.
+
+## Current backend surface
+
+The current top-level backend routers mounted in the main runtime are:
+
+- `system`
+- `auth`
+- `mcp`
+- `mcpServers`
+
+These routers are mounted through the main tRPC router and exposed by the Express server runtime.
+
+## Next steps
+
+- Start with the Documentation Overview for the full docs map.
+- Use the API Overview for backend/runtime scope.
+- Use the Architecture Overview before making large implementation or deployment changes.

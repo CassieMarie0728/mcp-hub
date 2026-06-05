@@ -57,7 +57,7 @@ export default function MacroBuilderScreen() {
   const { mutate: createWorkflow, loading: createLoading } = useCreateWorkflow();
   const { mutate: saveWorkflow, loading: saveLoading } = useSaveWorkflow();
   const { mutate: executeWorkflow, loading: executeLoading } = useExecuteWorkflow();
-  
+
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
   const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
@@ -66,7 +66,7 @@ export default function MacroBuilderScreen() {
   const [newWorkflowDesc, setNewWorkflowDesc] = useState('');
   const [showStepPicker, setShowStepPicker] = useState(false);
   const [selectedStepType, setSelectedStepType] = useState<string | null>(null);
-  
+
   useEffect(() => {
     if (fetchedWorkflows) {
       setWorkflows(fetchedWorkflows as Workflow[]);

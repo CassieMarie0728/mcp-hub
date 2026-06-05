@@ -64,6 +64,10 @@ Discover and execute MCP tools.
 - `mcp.discoverTools()` — Discover available tools
 - `mcp.executeTool()` — Execute MCP tool
 - `mcp.getServerStatus()` — Get server status
+- `mcp.getServer()` — Get server configuration (sensitive fields redacted)
+- `mcp.getAllServers()` — List all registered servers (sensitive fields redacted)
+
+> **Note:** Sensitive information such as authentication tokens, passwords, and authorization headers are automatically redacted from server configuration responses.
 
 ### Auth Router
 Handle OAuth flows and authentication.

@@ -106,7 +106,7 @@ Comprehensive audit of 35+ screens across the MCP Hub mobile app. Identified des
 
 ### Color Palette
 **Current State:** Basic light/dark theme with primary/background/foreground
-**Needed:** 
+**Needed:**
 - Semantic colors (success, warning, error, info)
 - Proper contrast ratios for accessibility
 - Consistent tint/shade variations

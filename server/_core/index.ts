@@ -36,18 +36,35 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  // Enable CORS for all routes - reflect the request origin to support credentials
+  // Enable CORS with origin validation and add security headers
   app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (origin) {
+    const origin = req.headers.origin as string;
+    const allowedOrigins = [
+      "http://localhost:8081",
+      "http://localhost:3000",
+      process.env.EXPO_WEB_PREVIEW_URL,
+      process.env.EXPO_PACKAGER_PROXY_URL,
+    ].filter(Boolean) as string[];
+
+    if (origin && allowedOrigins.includes(origin)) {
       res.header("Access-Control-Allow-Origin", origin);
+      res.header("Vary", "Origin");
     }
+
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.header(
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept, Authorization",
     );
     res.header("Access-Control-Allow-Credentials", "true");
+
+    // Standard Security Headers
+    res.header("X-Frame-Options", "DENY");
+    res.header("X-Content-Type-Options", "nosniff");
+    res.header("X-XSS-Protection", "1; mode=block");
+    if (process.env.NODE_ENV === "production") {
+      res.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    }
 
     // Handle preflight requests
     if (req.method === "OPTIONS") {
