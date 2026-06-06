@@ -1,1 +1,77 @@
-.
+---
+title: "MCP Server Connections: Transports & Auth in MCP Hub"
+sidebarTitle: "Connections"
+description: "Understand how MCP Hub manages server connections, connection states, transport types, and authentication modes for MCP server integrations."
+---
+
+A connection in MCP Hub represents a managed link to a single MCP server. Each connection tracks its transport configuration, authentication credentials, lifecycle state, and the protocol capabilities the server advertises. You can add as many connections as you need — MCP Hub maintains a separate MCP client for each one and lets you connect, disconnect, and reconnect them independently.
+
+## Connection States
+
+Every connection moves through a defined set of states. MCP Hub surfaces the current state in the server list so you always know what is happening.
+
+| State | Meaning |
+|---|---|
+| `disconnected` | The connection is not active. The server is ready to attempt a new connection when you tap **Connect**. |
+| `connecting` | The transport handshake is in progress. MCP Hub is establishing the channel and sending the `initialize` request. |
+| `connected` | The transport is open. MCP Hub has confirmed the channel and is ready to complete the MCP initialization handshake. |
+| `initialized` | The connection is fully active. Capability negotiation is complete and the server's tools, resources, and prompts are discoverable and executable. |
+| `error` | The connection failed. MCP Hub stores the error message so you can diagnose the problem and retry. |
+
+## Transport Configuration
+
+Choose a transport type when you add a server. The transport determines how MCP Hub physically communicates with the server process.
+
+**`streamable_http`** connects to a remote HTTP endpoint. Provide the full URL of the server's MCP endpoint. MCP Hub sends JSON-RPC requests as HTTP POST messages and uses Server-Sent Events for streaming responses where supported. Use this transport for any cloud-hosted or self-hosted remote server.
+
+```json
+{
+  "type": "streamable_http",
+  "httpEndpoint": "https://my-mcp-server.com/mcp"
+}
+```
+
+**`stdio`** launches a local process and communicates over its standard input and output streams. Provide the command to run and any arguments. MCP Hub spawns the process when you connect and terminates it when you disconnect. Use this transport for local CLI tools, `npx`-based servers, or any binary you run locally.
+
+```json
+{
+  "type": "stdio",
+  "stdioCommand": "npx",
+  "stdioArgs": ["-y", "my-mcp-server"]
+}
+```
+
+## Authentication Modes
+
+MCP Hub supports four authentication modes. Select the one that matches your server's requirements when you configure the connection.
+
+<CardGroup cols={2}>
+  <Card title="none" icon="lock-open">
+    No authentication. The server accepts connections without credentials. Suitable for local development servers or servers on a trusted private network.
+  </Card>
+  <Card title="bearer" icon="key">
+    Pass a static bearer token in the `Authorization: Bearer <token>` header on every request. Enter your token once when you add the server — MCP Hub stores it securely and attaches it automatically.
+  </Card>
+  <Card title="oauth2" icon="arrow-right-arrow-left">
+    OAuth 2.0 authorization code flow. MCP Hub redirects you to the server's authorization URL, exchanges the code for tokens, and stores the access and refresh tokens. Token refresh happens automatically in the background.
+  </Card>
+  <Card title="secret_env" icon="shield">
+    Attach environment variables or secrets to a `stdio` server's startup environment. Use this to pass API keys or configuration values to local process-based servers without exposing them in your command string.
+  </Card>
+</CardGroup>
+
+## Server Capabilities
+
+After a successful connection, MCP Hub completes capability negotiation as part of the MCP initialization handshake. The server declares which features it supports, and MCP Hub stores that information for the lifetime of the connection. Capabilities can include:
+
+- **Tools** — whether the server exposes executable tools and whether the tool list can change at runtime (`listChanged`)
+- **Resources** — whether resources can be subscribed to for live updates (`subscribe`) and whether the list can change (`listChanged`)
+- **Prompts** — whether the server exposes prompt templates and whether the list can change (`listChanged`)
+- **Logging** — whether the server emits structured log messages back to the client
+- **Streaming** — whether the server uses Server-Sent Events for long-running responses
+
+MCP Hub uses these capabilities to decide which UI features to enable for each connection. If a server does not advertise prompt support, the Prompts tab is hidden for that server.
+
+<Tip>
+  Save frequently used server configurations as presets in the app for quick reconnection. Tap the **⋯** menu on any server and choose **Save as Preset** to store the transport config and auth settings so you can restore the connection with a single tap.
+</Tip>

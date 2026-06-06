@@ -1,0 +1,77 @@
+---
+title: "Tools, Resources & Prompts — MCP Hub Primitives Guide"
+sidebarTitle: "Tools & Resources"
+description: "Learn how MCP Hub discovers and interacts with tools, resources, and prompts exposed by MCP servers — the three core primitives of the MCP protocol."
+---
+
+MCP servers expose three types of capabilities: tools (executable functions), resources (data sources), and prompts (reusable templates). MCP Hub discovers and surfaces all three through its UI and API as soon as you connect to a server. You can browse them in the server detail screen, execute them directly, and incorporate them into macros and automation workflows.
+
+## Tools
+
+Tools are executable functions that accept structured input and return results. Every tool has three key fields: a `name` that uniquely identifies it on the server, a `description` that explains what it does, and an `inputSchema` — a JSON Schema object that describes the parameters the tool expects.
+
+MCP Hub reads the `inputSchema` and automatically generates an input form for each tool. Fill in the fields, tap **Run**, and MCP Hub sends the `tools/call` request with your parameters. You do not need to write any code or construct JSON manually.
+
+Here is an example of a tool schema as returned by `tools/list`:
+
+```json
+{
+  "name": "search_github",
+  "description": "Search GitHub repositories",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": { "type": "string", "description": "Search query" },
+      "limit": { "type": "integer", "minimum": 1, "maximum": 100 }
+    },
+    "required": ["query"]
+  }
+}
+```
+
+MCP Hub renders `query` as a required text field and `limit` as an optional number input with `1`–`100` validation — all derived automatically from the schema.
+
+## Resources
+
+Resources are data sources that a server exposes by URI. A resource might be a local file, a database query result, a configuration snapshot, or a live metric feed — anything a server can name and deliver as content.
+
+Call `resources/list` to see every resource a server publishes. Each entry includes a URI, a human-readable name, and an optional MIME type. Read the content of a specific resource by calling `resources/read` with its URI.
+
+Where a server supports subscriptions, you can subscribe to a resource to receive push notifications whenever its content changes. MCP Hub surfaces active resource subscriptions in the server detail view and shows a badge when updated data is available.
+
+## Prompts
+
+Prompts are reusable prompt templates stored on the MCP server. Instead of every team member writing the same LLM prompt from scratch, a server can publish a named template — with defined argument slots — that anyone connected to the server can retrieve and use.
+
+Call `prompts/list` to see available templates on a connected server. Each prompt has a name, a description, and an optional list of arguments. Call `prompts/get` with the prompt name and your argument values to receive the fully rendered template text, ready to send to an LLM. Prompts are ideal for standardizing how your team interacts with LLMs across different tools and workflows.
+
+## Tool Execution Results
+
+When MCP Hub calls `tools/call`, the server responds with a `content` array and an `isError` flag. Each item in the `content` array is a typed content block. MCP Hub handles the following content types and renders each one appropriately in the results panel:
+
+| Type | Description |
+|---|---|
+| `text` | Plain text output rendered as readable prose or code. |
+| `image` | A base64-encoded image with a MIME type. MCP Hub decodes and displays it inline. |
+| `audio` | A base64-encoded audio clip with a MIME type. MCP Hub provides a playback control. |
+| `resource` | Embedded resource data or a URI link to a resource on the server. |
+
+A successful tool call response looks like this:
+
+```json
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Found 42 repositories matching 'mcp-server'"
+    }
+  ],
+  "isError": false
+}
+```
+
+If `isError` is `true`, MCP Hub displays the content as an error message and highlights the result in red. The execution is still recorded in your history so you can review the error details and retry with adjusted parameters.
+
+<Info>
+  Tool schemas follow the JSON Schema specification. Properties can include `type`, `description`, `enum`, `minimum`, `maximum`, `pattern`, and more. MCP Hub uses these constraints to validate your input before sending the request, catching errors before they reach the server.
+</Info>
