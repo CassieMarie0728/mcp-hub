@@ -184,14 +184,14 @@ export default function ThemeLabScreen() {
                 useColors()
               </Text>
               <Text className="mt-1 text-sm text-muted">
-                Background: {colors.background} • Text: {colors.text} • Tint: {colors.tint}
+                Background: {colors.background} • Text: {colors.foreground} • Tint: {colors.primary}
               </Text>
               <Text className="text-xs text-muted">
                 (Pressable uses style; Tailwind on Pressable is disabled via remap)
               </Text>
               <View className="mt-3 gap-2">
                 <View className="flex-row items-center gap-2">
-                  <IconSymbol name="house.fill" color={colors.tint} size={20} />
+                  <IconSymbol name="house.fill" color={colors.primary} size={20} />
                   <Text className="text-sm text-foreground">
                     Press count: {pressCount}
                   </Text>
