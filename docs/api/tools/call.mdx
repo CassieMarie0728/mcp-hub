@@ -1,1 +1,124 @@
-.
+---
+title: "Execute MCP Tools and Send Completions — MCP Hub"
+sidebarTitle: "Call Tool"
+description: "Execute an MCP tool by name and retrieve output. Also covers POST /completions for resolving prompt references and argument suggestions."
+---
+
+Execute a tool on a connected MCP server. Provide the tool arguments as a JSON object matching the tool's input schema. The response includes a `requestId` you can use to retrieve the full request record later, along with the tool's result payload.
+
+## Call a tool
+
+**POST /api/connections/{connectionId}/tools/{toolName}/call**
+
+### Path parameters
+
+<ParamField path="connectionId" type="string" required>
+  ID of the MCP server connection that owns the tool.
+</ParamField>
+
+<ParamField path="toolName" type="string" required>
+  Name of the tool to execute. Must match the `name` field returned by [List Tools](/api/tools/list).
+</ParamField>
+
+### Request body
+
+<ParamField body="args" type="object">
+  Key-value pairs matching the tool's input schema. Refer to the tool's `schema` field to determine required and optional arguments.
+</ParamField>
+
+<ParamField body="timeoutMs" type="integer" default={60000}>
+  Maximum time in milliseconds to wait for the tool to respond. Increase this for long-running tools; decrease it to fail fast.
+</ParamField>
+
+<ParamField body="progressToken" type="string">
+  Optional token to associate progress notifications with this tool call. If supplied, the MCP server may emit progress events that reference this token.
+</ParamField>
+
+```json Example request
+{
+  "args": {
+    "query": "mcp server typescript",
+    "limit": 10
+  },
+  "timeoutMs": 30000
+}
+```
+
+### Response
+
+<ResponseField name="requestId" type="string">
+  UUID of the request record created for this tool call. Use [GET /api/requests/{requestId}](/api/requests) to inspect the full record, including status, payloads, and timing.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  The raw result object returned by the MCP server for this tool call. The shape of `result` is defined by the tool's server-side implementation and may include any fields.
+</ResponseField>
+
+```json Example response
+{
+  "requestId": "b2e4f1a0-1234-4abc-8def-0123456789ab",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Found 23 repositories matching 'mcp server typescript'"
+      }
+    ],
+    "isError": false
+  }
+}
+```
+
+<Note>
+  MCP Hub returns **HTTP 200** as long as the request was forwarded to the server. An `isError: true` value inside `result.content` means the tool itself reported an error — check the tool's output for details. A non-200 HTTP status means MCP Hub encountered a failure (lost connection, invalid request) before the tool could execute.
+</Note>
+
+<Warning>
+  Passing arguments that do not satisfy the tool's `schema` (e.g. missing required fields, wrong types) will cause the tool to return an error. Validate arguments against the schema from [Get a single tool](/api/tools/list#get-a-single-tool) before calling.
+</Warning>
+
+---
+
+## Request completions
+
+**POST /api/connections/{connectionId}/completions**
+
+Ask the MCP server to complete a prompt or resource reference given a set of arguments. Completions are used by AI clients to resolve template variables, fill prompt arguments, or generate contextual suggestions from the server.
+
+### Request body
+
+<ParamField body="ref" type="string">
+  The reference string to complete — typically a prompt name or resource URI template.
+</ParamField>
+
+<ParamField body="args" type="object">
+  Arguments to pass to the completion operation. The accepted keys depend on the referenced prompt or resource template.
+</ParamField>
+
+```json Example request
+{
+  "ref": "summarize_file",
+  "args": {
+    "path": "src/index.ts"
+  }
+}
+```
+
+### Response
+
+<ResponseField name="requestId" type="string">
+  UUID of the request record for this completion call.
+</ResponseField>
+
+<ResponseField name="completion" type="object">
+  The completion result returned by the MCP server. The exact structure is server-defined.
+</ResponseField>
+
+```json Example response
+{
+  "requestId": "c3f5a2b1-5678-4cde-9ef0-abcdef012345",
+  "completion": {
+    "values": ["typescript", "typescipt-sdk", "typescript-server"]
+  }
+}
+```

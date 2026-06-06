@@ -1,0 +1,117 @@
+---
+title: "List and Inspect Tools Exposed by an MCP Connection"
+sidebarTitle: "List Tools"
+description: "List tools cached from a connected MCP server, inspect individual tool schemas, and use cursor-based pagination or force a live refresh from the server."
+---
+
+Retrieve all tools discovered from a connected MCP server. Tools are cached after the first discovery; use the `refresh` parameter to force re-fetch from the server.
+
+## List all tools
+
+**GET /api/connections/{connectionId}/tools**
+
+Returns a paginated list of every tool discovered from the specified connection. Each tool includes its name, description, JSON Schema for its inputs, and the timestamp of its last discovery.
+
+### Query parameters
+
+<ParamField query="cursor" type="string">
+  Pagination cursor returned by the previous response. Omit to start from the beginning.
+</ParamField>
+
+<ParamField query="refresh" type="boolean" default={false}>
+  Set to `true` to force re-discovery from the MCP server instead of returning cached results.
+</ParamField>
+
+### Response
+
+An array of `ToolMetadata` objects.
+
+<ResponseField name="name" type="string">
+  Unique name of the tool within this connection.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Human-readable description of what the tool does.
+</ResponseField>
+
+<ResponseField name="schema" type="object">
+  JSON Schema describing the tool's input arguments, including types, constraints, and required fields.
+</ResponseField>
+
+<ResponseField name="lastDiscoveredAt" type="string">
+  ISO 8601 timestamp of the most recent discovery.
+</ResponseField>
+
+```json Example response
+[
+  {
+    "name": "search_repositories",
+    "description": "Search GitHub repositories by query",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string" },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 100 }
+      },
+      "required": ["query"]
+    },
+    "lastDiscoveredAt": "2025-01-15T10:00:00Z"
+  }
+]
+```
+
+---
+
+## Get a single tool
+
+**GET /api/connections/{connectionId}/tools/{toolName}**
+
+Retrieve metadata for one specific tool by name. Use this to inspect the tool's input schema before calling it.
+
+### Path parameters
+
+<ParamField path="connectionId" type="string" required>
+  ID of the MCP server connection.
+</ParamField>
+
+<ParamField path="toolName" type="string" required>
+  Exact name of the tool to retrieve.
+</ParamField>
+
+### Response
+
+<ResponseField name="name" type="string">
+  Unique name of the tool.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Human-readable description of the tool's purpose.
+</ResponseField>
+
+<ResponseField name="schema" type="object">
+  JSON Schema object describing all accepted input arguments, including types, constraints, and required fields.
+</ResponseField>
+
+<ResponseField name="lastDiscoveredAt" type="string">
+  ISO 8601 timestamp of the most recent discovery for this tool.
+</ResponseField>
+
+```json Example response
+{
+  "name": "search_repositories",
+  "description": "Search GitHub repositories by query",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": { "type": "string" },
+      "limit": { "type": "integer", "minimum": 1, "maximum": 100 }
+    },
+    "required": ["query"]
+  },
+  "lastDiscoveredAt": "2025-01-15T10:00:00Z"
+}
+```
+
+<Note>
+  Tool schemas are defined by the MCP server. Always read the `schema` field before constructing a call — required fields and value constraints vary per tool.
+</Note>
