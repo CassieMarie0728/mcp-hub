@@ -1,1 +1,82 @@
-.
+---
+title: "Record, Schedule, and Share Tool Macros in MCP Hub"
+sidebarTitle: "Macros"
+description: "Record sequences of MCP tool calls as macros, replay them on demand, schedule recurring runs, and share macros with your team using MCP Hub."
+---
+
+Macros let you record a sequence of MCP tool calls and replay them with a single tap. Instead of manually re-entering tool parameters each time, save the sequence once and run it whenever you need.
+
+## Creating a Macro
+
+Build a macro step-by-step using the Macro Builder — ideal when you know exactly which tools and parameters you want to chain together.
+
+<Steps>
+  <Step title="Open the Macro Builder">
+    Navigate to the **Macros** tab and tap **New Macro** to open the Macro Builder.
+  </Step>
+  <Step title="Name your macro">
+    Give your macro a descriptive name and an optional description so you and your teammates can identify it later.
+  </Step>
+  <Step title="Add steps">
+    For each step, select the MCP server and tool you want to call, then fill in the required parameters.
+  </Step>
+  <Step title="Configure dependencies and logic">
+    Optionally set step dependencies to control execution order, or add conditional logic to skip steps based on earlier results.
+  </Step>
+  <Step title="Save the macro">
+    Tap **Save** to store the macro. It will appear in your Macro Gallery and Macro Management screen.
+  </Step>
+</Steps>
+
+## Recording a Macro
+
+If you prefer to capture tool calls as you make them rather than building a macro manually, use the Macro Recorder.
+
+Tap **Record** in the Macro Recorder to start a session. Execute tools normally — each execution is captured automatically as a macro step. Tap **Stop Recording** when you have finished the sequence. MCP Hub prompts you to review the captured steps and give the macro a name before saving.
+
+## Replaying a Macro
+
+Open the **Macro Gallery** or **Macro Management** screen and find the macro you want to run. Tap **Run** to execute it.
+
+MCP Hub runs each step in order, showing real-time progress so you can see which step is currently executing. Once all steps complete, you can expand each step to view its individual result, making it easy to verify that the macro produced the expected output.
+
+## Scheduling Macros
+
+Automate recurring sequences by attaching a schedule to any saved macro.
+
+Open the macro and tap **Schedule**. Choose one of the following options:
+
+- **One-time** — pick a specific date and time for a single future run.
+- **Recurring** — enter a cron expression to define a repeating schedule. For example, `0 9 * * 1-5` runs the macro every weekday at 9 AM.
+
+Scheduled macros run in the background even when the app is closed — the backend executes them on your behalf at the configured time.
+
+## Chaining Macros
+
+Use **Macro Chaining** to connect multiple macros into a pipeline, where the output of one macro becomes the input of the next. This is useful for complex automations such as:
+
+- Fetch data from an API → transform the response → post a summary to Slack
+- Query a database → format the results → generate a PDF report
+
+Open the Macro Chaining screen, add the macros you want to connect, and map each macro's output fields to the next macro's input parameters.
+
+## Sharing Macros
+
+Share any macro with teammates by assigning them one of four permission levels:
+
+| Permission | What the recipient can do |
+|---|---|
+| **View** | Inspect the macro steps and configuration |
+| **Execute** | Run the macro |
+| **Edit** | Modify steps and parameters |
+| **Admin** | Manage sharing and permissions |
+
+Recipients can access shared macros in the **Macro Marketplace**. Open a macro, tap **Share**, add teammates by name or email, and choose their permission level.
+
+## Version History
+
+Every time you edit and save a macro, MCP Hub creates a new version automatically. Open **Macro Version History** to browse the full change log for a macro. You can compare two versions side-by-side to see exactly what changed, and roll back to any previous version with a single tap.
+
+<Tip>
+  Use the **Macro Debugger** to step through macro execution and inspect intermediate results when troubleshooting a failing macro. The debugger pauses after each step and displays the raw output, making it easy to pinpoint where something went wrong.
+</Tip>

@@ -1,0 +1,78 @@
+---
+title: "Build and Schedule Automation Workflows in MCP Hub"
+sidebarTitle: "Workflows"
+description: "Create multi-step automation workflows in MCP Hub by chaining macros and tool calls. Use templates or build from scratch and schedule recurring runs."
+---
+
+Workflows in MCP Hub are multi-step automation pipelines that chain together macros and tool calls. They're designed for complex, recurring automations like syncing data between services, generating reports, or responding to events.
+
+## Workflows vs. Macros
+
+Macros and workflows solve related but different problems. Use the table below to decide which is right for your use case.
+
+| Feature | Macro | Workflow |
+|---|---|---|
+| Unit of work | Single sequence of steps | Chains multiple macros together |
+| Scheduling | Yes | Yes |
+| Conditional branching | Limited | Yes |
+| Triggered by webhooks | No | Yes |
+| Templates available | Yes | Yes |
+
+Use a macro when you want to automate a single, contained sequence. Reach for a workflow when you need to coordinate multiple macros, branch on conditions, or respond to external events.
+
+## Creating a Workflow
+
+Build a workflow from scratch using the workflow editor. Each stage in a workflow references either a saved macro or a direct tool call.
+
+<Steps>
+  <Step title="Open the workflow editor">
+    Navigate to **Workflows** (or open the **Schedule Workflow** screen) and tap **New Workflow**.
+  </Step>
+  <Step title="Name your workflow">
+    Give your workflow a name and an optional description to explain what it automates.
+  </Step>
+  <Step title="Add stages">
+    Tap **Add Stage** for each step in your pipeline. Each stage references either an existing macro or a direct MCP tool call.
+  </Step>
+  <Step title="Map stage inputs and outputs">
+    Configure each stage's inputs by mapping output fields from previous stages. For example, pass the `file_url` returned by stage 1 into the `source` parameter of stage 2.
+  </Step>
+  <Step title="Add conditional branches">
+    Optionally add a conditional branch to any stage. The stage runs only when the previous result matches the condition you define — for example, continue only if `status == "success"`.
+  </Step>
+  <Step title="Save the workflow">
+    Tap **Save**. Your workflow is now available to schedule, trigger via webhook, or run manually.
+  </Step>
+</Steps>
+
+## Workflow Templates
+
+Browse pre-built workflow templates in the **Templates Gallery** to get started quickly. Templates cover common use cases such as data synchronization, report generation, and event-driven notifications.
+
+To use a template:
+
+1. Open the **Templates Gallery** and browse or search for a template.
+2. Tap **Use Template** on the template you want.
+3. Adjust the parameters and stage configuration to match your environment.
+4. Tap **Save** to store it as your own workflow.
+
+You can edit a template-based workflow at any time — your copy is fully independent of the original template.
+
+## Scheduling Workflows
+
+Attach a schedule to any workflow the same way you would for a macro. Open the workflow and tap **Schedule**, then choose:
+
+- **One-time** — select a date and time for a single future run.
+- **Recurring** — enter a cron expression for a repeating schedule.
+
+After each run, full execution details are available in **Execution History**, including per-stage results and any errors encountered.
+
+## Webhook Triggers
+
+Workflows can be triggered by incoming webhooks from external systems, allowing you to kick off automations in response to real-world events without polling.
+
+Configure webhook triggers in the **Webhooks** screen. See the [Webhooks guide](/guides/webhooks) for full instructions on creating a webhook endpoint, mapping payload fields to workflow inputs, and securing your endpoint with a signature secret.
+
+<Note>
+  Workflow execution runs server-side. Even if you close the app, scheduled and webhook-triggered workflows continue running until they complete or encounter an unrecoverable error.
+</Note>

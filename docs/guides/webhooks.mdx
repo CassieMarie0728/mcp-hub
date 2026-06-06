@@ -1,0 +1,93 @@
+---
+title: "Configure Incoming Webhooks to Trigger MCP Workflows"
+sidebarTitle: "Webhooks"
+description: "Set up incoming webhooks in MCP Hub to trigger automation workflows from external events. Configure webhook endpoints and map payloads to workflow inputs."
+---
+
+MCP Hub supports incoming webhooks, allowing external systems (GitHub, Slack, CI/CD pipelines, etc.) to trigger your automation workflows. When a webhook event arrives, MCP Hub executes the linked workflow with the event payload.
+
+## Creating a Webhook
+
+Set up a webhook endpoint in a few steps and hand the URL to whichever external service you want to connect.
+
+<Steps>
+  <Step title="Open the Webhooks screen">
+    Navigate to **Settings → Webhooks** to see all your existing webhook endpoints.
+  </Step>
+  <Step title="Add a new webhook">
+    Tap **Add Webhook** to open the webhook configuration form.
+  </Step>
+  <Step title="Name it and select a workflow">
+    Give the webhook a descriptive name and choose the workflow it should trigger from the dropdown.
+  </Step>
+  <Step title="Copy the generated URL">
+    MCP Hub generates a unique endpoint URL for this webhook. Copy it — you'll paste it into your external service.
+  </Step>
+  <Step title="Set a secret (recommended)">
+    Optionally enter a secret string. MCP Hub uses it to verify that incoming requests are genuinely from your external service.
+  </Step>
+  <Step title="Save the webhook">
+    Tap **Save**. Your webhook is now live and ready to receive events.
+  </Step>
+</Steps>
+
+## Webhook URL Format
+
+Your webhook endpoint follows this pattern:
+
+```
+https://your-mcp-hub-instance.com/webhooks/{webhookId}
+```
+
+MCP Hub accepts `POST` requests with a JSON body. The entire request body is available as the `payload` object when mapping fields to workflow inputs.
+
+## Payload Mapping
+
+Configure how fields from the incoming webhook payload map to your workflow's input parameters. Open the webhook's **Payload Mapping** section and define each mapping.
+
+For example, if a GitHub webhook sends a `push` event, you might map:
+
+| Payload field | Workflow input parameter |
+|---|---|
+| `payload.repository.full_name` | `repo` |
+| `payload.ref` | `branch` |
+| `payload.head_commit.id` | `commit_sha` |
+
+Mapped values are injected into the first stage of the workflow at execution time. Any unmapped payload fields are still accessible within workflow stages using the `webhook.payload` variable.
+
+## Securing Webhooks
+
+If you set a secret when creating the webhook, MCP Hub verifies the HMAC-SHA256 signature of every incoming request. Requests with a missing or invalid signature are rejected before your workflow runs.
+
+Send the signature in the `X-Hub-Signature-256` header using the following format — this matches the convention used by GitHub webhooks:
+
+```bash
+# Example: GitHub-style signature header
+X-Hub-Signature-256: sha256=<hmac-sha256-of-payload>
+```
+
+To generate the signature on the sending side, compute the HMAC-SHA256 of the raw request body using your shared secret as the key, then prefix the hex digest with `sha256=`.
+
+## Testing Webhooks
+
+Before connecting a live external service, use the built-in test tool to verify your setup:
+
+1. Open the webhook in the **Webhooks** screen.
+2. Tap **Send Test Payload** to dispatch a sample JSON body to your endpoint.
+3. MCP Hub triggers the linked workflow using the test payload.
+4. Open **Execution History** to confirm the workflow ran and inspect per-stage results.
+
+Iterating with test payloads lets you validate your payload mappings before real events start arriving.
+
+## Common Use Cases
+
+Webhooks unlock a wide range of event-driven automations:
+
+- Trigger a data sync workflow when a GitHub PR is merged
+- Run a Slack notification macro when a monitoring alert fires
+- Start a report generation workflow on a CI/CD pipeline success
+- Auto-reply via a Slack bot when a message matches a pattern
+
+<Warning>
+  Always use a webhook secret in production to prevent unauthorized workflow triggers from malicious requests. Without signature verification, anyone who discovers your webhook URL can trigger your workflows.
+</Warning>

@@ -1,0 +1,98 @@
+---
+title: "Discover and Browse MCP Tools on Connected Servers"
+sidebarTitle: "Tool Discovery"
+description: "Browse, search, and inspect tools exposed by connected MCP servers. View input schemas, descriptions, and categories to find the right tool for the job."
+---
+
+Once connected to an MCP server, MCP Hub automatically discovers all available tools. The Tool Browser lets you search, filter, and inspect every tool before you execute it — so you always know exactly what a tool does and what inputs it expects.
+
+## Browsing Tools
+
+Navigate to the **Tool Browser** tab to see all tools from your connected servers. Tools are grouped by **category**, derived from the tags declared in each tool's MCP schema. Each tool card displays:
+
+- **Name** — the tool identifier used when calling it
+- **Description** — a human-readable summary from the server
+- **Category** — the tag group the tool belongs to (e.g., `files`, `github`, `database`)
+
+If you are connected to multiple servers, tools from all servers appear together. A server badge on each card shows which server the tool comes from.
+
+## Searching Tools
+
+Use the **search bar** at the top of the Tool Browser to filter tools by name or description. Results update as you type — you do not need to press a search button. Clear the search bar to return to the full list.
+
+<Tip>
+  Search is case-insensitive and matches partial strings. Searching `issue` will match `create_issue`, `list_issues`, `close_issue`, and any tool with "issue" in its description.
+</Tip>
+
+## Viewing Tool Details
+
+Tap any tool card to open the **Tool Detail** screen. This screen shows:
+
+- The full tool description
+- Every parameter — name, type, whether it is required or optional
+- Validation rules such as minimum/maximum values, allowed enum values, and regex patterns
+- The raw JSON Schema if you want to inspect the complete definition
+
+Use this screen to understand a tool before you commit to executing it.
+
+## Tool Schema Details
+
+Every MCP tool declares an `inputSchema` — a standard JSON Schema object that describes the parameters the tool accepts. MCP Hub reads this schema to auto-generate the input form on the execution screen, so you never have to write JSON by hand.
+
+Here is an example tool schema:
+
+```json
+{
+  "name": "create_issue",
+  "description": "Create a GitHub issue",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "repo": {
+        "type": "string",
+        "description": "Repository in owner/repo format"
+      },
+      "title": {
+        "type": "string"
+      },
+      "body": {
+        "type": "string"
+      }
+    },
+    "required": ["repo", "title"]
+  }
+}
+```
+
+In this example, `repo` and `title` are required — MCP Hub marks them with an asterisk and blocks submission if they are empty. The `body` field is optional and can be left blank.
+
+Supported schema features include:
+
+| Feature | Example |
+|---|---|
+| Primitive types | `string`, `number`, `boolean`, `integer` |
+| Required fields | `"required": ["repo", "title"]` |
+| Enumerations | `"enum": ["open", "closed", "all"]` |
+| String patterns | `"pattern": "^[a-z0-9-]+$"` |
+| Numeric ranges | `"minimum": 1, "maximum": 100` |
+| Nested objects | `"type": "object"` with sub-properties |
+| Arrays | `"type": "array", "items": { "type": "string" }` |
+
+## Refreshing the Tool List
+
+MCP Hub caches tool schemas locally to keep the browser fast even when offline. To fetch the latest tools from the server, either:
+
+- **Pull to refresh** — drag the tool list downward and release
+- **Tap the Refresh button** — the circular arrow icon in the top-right corner of the Tool Browser
+
+A refresh re-issues the MCP `tools/list` request and updates the local cache with any additions, removals, or schema changes.
+
+<Tip>
+  You can also discover tools programmatically using the REST API:
+
+  ```
+  GET /api/connections/{connectionId}/tools
+  ```
+
+  The response is a JSON array of tool objects matching the MCP schema format.
+</Tip>
