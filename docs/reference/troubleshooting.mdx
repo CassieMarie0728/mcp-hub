@@ -1,1 +1,183 @@
-.
+---
+title: "MCP Hub Troubleshooting: Fix Common Problems and Errors"
+sidebarTitle: "Troubleshooting"
+description: "Diagnose and fix common MCP Hub problems: connection failures, tool execution errors, database issues, port conflicts, and authentication problems."
+---
+
+This guide covers the most common issues users encounter with MCP Hub and their solutions. For each problem, start with the quick fix and escalate to more involved solutions if needed.
+
+<AccordionGroup>
+
+  <Accordion title="Server Won't Connect">
+    Start by verifying the basics — most connection failures come down to a wrong URL, a network restriction, or an expired token.
+
+    - **Check the server URL.** Make sure the URL is correct and reachable from your device or network. A typo, a missing port, or a trailing slash can prevent the connection.
+    - **Test HTTP servers in a browser.** Open the server URL directly — you should see an MCP endpoint response. If the browser can't reach it, MCP Hub won't be able to either.
+    - **Test stdio servers in a terminal.** Run the command manually (e.g., `npx -y <package>`) and confirm it starts without errors. `npx` may need internet access to download packages on first run.
+    - **Check your authentication settings.** Bearer tokens expire. If the server previously connected and now refuses, re-enter your token in the server's settings screen.
+    - **Check the connection status badge.**
+      - `TIMEOUT` — the server is reachable but slow to respond. Try increasing the connection timeout in server settings.
+      - `UNREACHABLE` — the server cannot be reached at all. Check your network and confirm the server process is running.
+      - `ERROR` — tap **View Error** to read the specific error message and act on it.
+    - **Try reconnecting.** Pull down to refresh the server list, or open the server and tap **Reconnect**.
+  </Accordion>
+
+  <Accordion title="Tool Execution Fails">
+    MCP Hub retries failed tool calls automatically using exponential backoff (500 ms → 1 s → 2 s, up to 3 attempts). If all retries fail, the error code and message are displayed. Use the table below to act on the specific error you see.
+
+    | Error code | What it means | What to do |
+    |---|---|---|
+    | `INVALID_PARAMS` | A required field is missing or has the wrong type. | Re-open the tool form, check all required fields, and correct any type mismatches before retrying. |
+    | `AUTH_FAILED` | Your server token is expired or invalid. | Go to server settings, remove the current token, and re-enter a valid one. Then retry the tool. |
+    | `TIMEOUT` | The tool call exceeded the 60-second limit. | Retry once. If it keeps timing out, the server may be overloaded — wait and try again later. |
+    | `TOOL_ERROR` | The server returned an error from the tool itself. | Read the message carefully. Check your parameter values and refer to the tool's own documentation. |
+    | `PARTIAL_RESULT` | Streaming was interrupted before the result was complete. | The partial result is displayed so you can review it. Tap **Retry** to request a complete result. |
+    | `INVALID_RESPONSE` | The server returned a response MCP Hub couldn't parse. | Tap **Reconnect** to re-establish the server connection, then retry the tool. |
+
+    <Tip>
+      Tap the error badge on any tool result to copy the full error message to your clipboard — useful when filing a bug report.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Database Connection Error">
+    All database errors appear at startup. Fix the underlying problem, then restart the backend.
+
+    **`connect ECONNREFUSED`** — MySQL is not running.
+
+    ```bash
+    # Docker
+    docker start mysql
+
+    # Homebrew (macOS)
+    brew services start mysql
+
+    # systemd (Linux)
+    sudo systemctl start mysql
+    ```
+
+    **`Access denied for user '...'@'...'`** — The username or password in `DATABASE_URL` is wrong. Double-check both values, confirm the user exists, and make sure it has access to the target database.
+
+    **`Unknown database 'mcp_hub'`** — The database hasn't been created yet. Connect to MySQL and create it:
+
+    ```sql
+    CREATE DATABASE mcp_hub;
+    ```
+
+    After fixing any of the above, sync the schema to make sure it is up to date:
+
+    ```bash
+    pnpm db:push
+    ```
+
+    <Note>
+      If your password contains special characters, percent-encode them in the URL. For example, `p@ss` becomes `p%40ss`. See the [Database URL Format](/reference/environment-variables#database-url-format) section for details.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Port Already in Use">
+    MCP Hub uses two ports by default: **3000** for the backend API and **8081** for the Expo / web frontend. If either is taken by another process, the app fails to start.
+
+    **Backend port conflict (`EADDRINUSE :::3000`)**
+
+    Set a different port in `.env` and restart:
+
+    ```bash
+    PORT=3001
+    ```
+
+    Or find and stop the process that owns port 3000:
+
+    ```bash
+    # macOS / Linux
+    lsof -i :3000
+
+    # Windows
+    netstat -ano | findstr :3000
+    ```
+
+    **Expo port conflict**
+
+    Set a different Expo port in `.env` and restart Metro:
+
+    ```bash
+    EXPO_PORT=8082
+    ```
+
+    <Tip>
+      After changing `PORT`, update `MCP_SERVER_URL` (or the URL your mobile app uses) to match — otherwise the frontend will still try to connect on the old port.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="Authentication Issues">
+    **Bearer token not working**
+
+    - Verify the token is correct and has not expired.
+    - Paste it without leading or trailing whitespace.
+    - If the server rotates tokens, fetch a fresh one from your server's admin panel and update it in MCP Hub's server settings.
+
+    **OAuth2 redirect not working**
+
+    - Ensure your MCP Hub instance is publicly accessible at the redirect URL you registered with the OAuth provider.
+    - Check that the redirect URL in the OAuth provider's dashboard matches the URL exactly — including the scheme (`http` vs `https`) and any trailing slash.
+
+    **Session expired / logged out unexpectedly**
+
+    - Log out and log back in.
+    - `COOKIE_SECRET` must remain constant between server restarts. If you changed it, all existing sessions are immediately invalidated — this is expected behaviour. Generate a new secret, set it in `.env`, and keep it stable going forward.
+
+    **JWT errors in API responses**
+
+    - A `JWT_SECRET` mismatch between processes (e.g., after a rolling restart with different values) will cause all tokens to fail validation. Set a single stable value in `.env` and redeploy.
+  </Accordion>
+
+  <Accordion title="Expo / Mobile App Issues">
+    **Can't scan the QR code**
+
+    Make sure your phone and your computer are on the **same Wi-Fi network**. Corporate or guest networks that isolate clients will block the connection. Switch to a standard network and restart Metro.
+
+    **"Unable to resolve module" error**
+
+    Re-install dependencies and restart Metro:
+
+    ```bash
+    pnpm install
+    pnpm dev:metro
+    ```
+
+    If the error persists, clear the Metro cache:
+
+    ```bash
+    pnpm dev:metro --reset-cache
+    ```
+
+    **App crashes on launch**
+
+    Check that the backend is running and accessible at `http://localhost:3000` (or the value of `PORT` you set in `.env`). The app cannot function without the backend API.
+
+    **TypeScript errors in the terminal**
+
+    Type errors do not prevent the app from running in development mode — Metro compiles TypeScript without type-checking. To see all current type errors, run:
+
+    ```bash
+    pnpm check
+    ```
+
+    Fix any errors before building a production release, as the production build will fail on type errors.
+  </Accordion>
+
+</AccordionGroup>
+
+## Getting Help
+
+If none of the steps above resolve your issue, reach out through one of the following channels. Include as much detail as possible so the team can reproduce the problem quickly.
+
+- **GitHub Issues:** [github.com/CassieMarie0728/mcp-hub/issues](https://github.com/CassieMarie0728/mcp-hub/issues)
+- **Email:** [cmcrossno@gmail.com](mailto:cmcrossno@gmail.com)
+
+When you report an issue, include:
+
+- The full error message (copy it from the app or terminal)
+- Steps to reproduce the problem
+- MCP Hub version (visible in **Settings → About**)
+- Node.js version (`node --version`)
+- Platform: iOS, Android, or web
