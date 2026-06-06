@@ -1,0 +1,82 @@
+---
+title: "Stream and Query MCP Connection Events — MCP Hub"
+sidebarTitle: "Events"
+description: "Query historical MCP connection events by type and time range, or subscribe to a live event stream via Server-Sent Events for real-time monitoring."
+---
+
+MCP Hub records all events — tool calls, connection state changes, errors, and notifications — for each connection. You can query historical events by time range and type, or subscribe to a real-time event stream using Server-Sent Events (SSE) for live monitoring and automation.
+
+## Query event history
+
+**GET /api/connections/\{connectionId\}/events**
+
+Retrieve a paginated list of past events for a specific connection. Use the query parameters below to narrow results by type or time window.
+
+### Query parameters
+
+<ParamField query="eventType" type="string">
+  Filter events by type. Common values include `tool_call`, `connection_state_change`, and `error`. Omit to return all event types.
+</ParamField>
+
+<ParamField query="since" type="string">
+  Return only events that occurred after this timestamp. Must be a valid ISO 8601 datetime string, e.g. `2025-01-15T10:00:00Z`.
+</ParamField>
+
+<ParamField query="until" type="string">
+  Return only events that occurred before this timestamp. Must be a valid ISO 8601 datetime string, e.g. `2025-01-15T11:00:00Z`.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="50">
+  Maximum number of events to return in a single response. Reduce this value when querying high-frequency connections.
+</ParamField>
+
+### Response example
+
+The endpoint returns a JSON array of `EventRecord` objects. Each record contains the following fields: `id`, `eventType`, `eventPayload`, and `timestamp`.
+
+```json
+[
+  {
+    "id": "a1b2c3d4-0000-4abc-8000-000000000001",
+    "eventType": "tool_call",
+    "eventPayload": {
+      "toolName": "search_repositories",
+      "arguments": { "query": "mcp" },
+      "durationMs": 342
+    },
+    "timestamp": "2025-01-15T10:30:00Z"
+  }
+]
+```
+
+## Subscribe to a live event stream
+
+**GET /api/connections/\{connectionId\}/stream**
+
+Open a long-lived HTTP connection to receive events in real time as they occur on the specified connection. The server pushes each event as a Server-Sent Event, encoded as a JSON `EventRecord`.
+
+Use this endpoint to build live dashboards, trigger client-side automation, or monitor tool calls without polling.
+
+### Browser / JavaScript example
+
+```javascript
+const eventSource = new EventSource(
+  '/api/connections/conn_01h.../stream',
+  { withCredentials: true }
+);
+
+eventSource.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log('Event:', data.eventType, data.eventPayload);
+};
+
+eventSource.onerror = () => {
+  eventSource.close();
+};
+```
+
+Each message dispatched by the server is a JSON-encoded `EventRecord` with the fields `id`, `eventType`, `eventPayload`, and `timestamp`.
+
+<Note>
+  SSE connections automatically reconnect if the connection drops. Pass the `Last-Event-ID` request header when reconnecting to resume the stream from a specific event and avoid missing messages during the gap.
+</Note>
