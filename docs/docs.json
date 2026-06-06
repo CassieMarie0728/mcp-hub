@@ -12,38 +12,40 @@
     "dark": "#312E81"
   },
   "theme": "mint",
-  "navigation": [
-    {
-      "group": "Getting Started",
-      "pages": [
-        "introduction",
-        "quickstart",
-        "installation"
-      ]
-    },
-    {
-      "group": "Core Concepts",
-      "pages": [
-        "how-it-works",
-        "mcp-protocol"
-      ]
-    },
-    {
-      "group": "Configuration & Features",
-      "pages": [
-        "connecting-servers",
-        "mobile-interface",
-        "environment-variables"
-      ]
-    },
-    {
-      "group": "Deployment & Guides",
-      "pages": [
-        "expo-deployment",
-        "troubleshooting"
-      ]
-    }
-  ],
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "introduction",
+          "quickstart",
+          "installation"
+        ]
+      },
+      {
+        "group": "Core Concepts",
+        "pages": [
+          "how-it-works",
+          "mcp-protocol"
+        ]
+      },
+      {
+        "group": "Configuration & Features",
+        "pages": [
+          "connecting-servers",
+          "mobile-interface",
+          "environment-variables"
+        ]
+      },
+      {
+        "group": "Deployment & Guides",
+        "pages": [
+          "expo-deployment",
+          "troubleshooting"
+        ]
+      }
+    ]
+  },
   "footerSocials": {
     "github": "https://github.com/CassieMarie0728/mcp-hub"
   }
