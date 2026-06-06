@@ -1,1 +1,278 @@
-.
+---
+title: "List MCP Resources, Prompts, and Subscriptions"
+sidebarTitle: "List Resources"
+description: "List resources and templates from an MCP server, subscribe to change notifications, and discover and retrieve MCP prompts from a connection."
+---
+
+MCP servers can expose resources — data sources identified by URI, like files, database views, or live feeds. Use these endpoints to discover and subscribe to resources from a connected server. Resources are cached after the first discovery; use the `refresh` parameter to pull the latest list directly from the server.
+
+## List all resources
+
+**GET /api/connections/{connectionId}/resources**
+
+Returns a paginated list of every resource exposed by the specified MCP server connection.
+
+### Query parameters
+
+<ParamField query="cursor" type="string">
+  Pagination cursor returned by the previous response. Omit to start from the beginning.
+</ParamField>
+
+<ParamField query="refresh" type="boolean" default={false}>
+  Set to `true` to force re-discovery from the MCP server instead of returning cached results.
+</ParamField>
+
+### Response
+
+An array of `ResourceMetadata` objects.
+
+<ResponseField name="uri" type="string">
+  Unique URI identifying this resource (e.g. `file:///workspace/README.md`).
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Human-readable name for the resource.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Description of the resource's contents or purpose.
+</ResponseField>
+
+<ResponseField name="lastDiscoveredAt" type="string">
+  ISO 8601 timestamp of the most recent discovery.
+</ResponseField>
+
+```json Example response
+[
+  {
+    "uri": "file:///workspace/README.md",
+    "name": "README.md",
+    "description": "Project readme",
+    "lastDiscoveredAt": "2025-01-15T10:00:00Z"
+  }
+]
+```
+
+---
+
+## List resource templates
+
+**GET /api/connections/{connectionId}/resource-templates**
+
+Resource templates define URI patterns that let you construct valid resource URIs dynamically. Use a template's `schema.uriTemplate` to build a URI, then pass it to [Read Resource](/api/resources/read).
+
+### Response
+
+An array of `ResourceTemplate` objects.
+
+<ResponseField name="templateId" type="string">
+  Unique identifier for this template.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Human-readable name for the template.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Description of the resource pattern this template covers.
+</ResponseField>
+
+<ResponseField name="schema" type="object">
+  Schema describing how to construct the URI. Includes a `uriTemplate` string with named placeholders.
+</ResponseField>
+
+```json Example response
+[
+  {
+    "templateId": "file-template",
+    "name": "File Resource",
+    "description": "Access any file by path",
+    "schema": { "uriTemplate": "file:///{path}" }
+  }
+]
+```
+
+---
+
+## Subscribe to resource updates
+
+**POST /api/connections/{connectionId}/resources/subscribe**
+
+Subscribe to change notifications for a specific resource. When the resource changes on the MCP server, MCP Hub will deliver an update notification.
+
+### Request body
+
+<ParamField body="resourceUri" type="string" required>
+  URI of the resource to watch. Must match the `uri` field from the resources list.
+</ParamField>
+
+```json Example request
+{ "resourceUri": "file:///workspace/data.json" }
+```
+
+### Response
+
+<ResponseField name="subscriptionId" type="string">
+  UUID of the created subscription. Store this to reference or cancel the subscription later.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Confirmation string — `"subscribed"` on success.
+</ResponseField>
+
+```json Example response
+{
+  "subscriptionId": "d4e6c3b2-9012-4fgh-aijk-lmnopqrstuvw",
+  "status": "subscribed"
+}
+```
+
+---
+
+## Unsubscribe from resource updates
+
+**POST /api/connections/{connectionId}/resources/unsubscribe**
+
+Cancel an active subscription. MCP Hub will stop delivering change notifications for the specified resource.
+
+### Request body
+
+<ParamField body="resourceUri" type="string" required>
+  URI of the resource to stop watching.
+</ParamField>
+
+```json Example request
+{ "resourceUri": "file:///workspace/data.json" }
+```
+
+### Response
+
+<ResponseField name="subscriptionId" type="string">
+  UUID of the cancelled subscription.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Confirmation string — `"unsubscribed"` on success.
+</ResponseField>
+
+```json Example response
+{
+  "subscriptionId": "d4e6c3b2-9012-4fgh-aijk-lmnopqrstuvw",
+  "status": "unsubscribed"
+}
+```
+
+<Info>
+  Unsubscribing from a URI you are not currently subscribed to is a no-op — no error is returned.
+</Info>
+
+---
+
+## List prompts
+
+**GET /api/connections/{connectionId}/prompts**
+
+MCP servers can expose reusable prompt templates alongside resources. Use this endpoint to discover all prompts available on the connection. Prompts may accept arguments that get substituted when retrieved via [Get Prompt](#get-a-prompt).
+
+### Query parameters
+
+<ParamField query="cursor" type="string">
+  Pagination cursor returned by the previous response. Omit to start from the beginning.
+</ParamField>
+
+### Response
+
+An array of `PromptMetadata` objects.
+
+<ResponseField name="name" type="string">
+  Unique name of the prompt within this connection.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Human-readable description of the prompt's purpose.
+</ResponseField>
+
+<ResponseField name="lastDiscoveredAt" type="string">
+  ISO 8601 timestamp of the most recent discovery.
+</ResponseField>
+
+```json Example response
+[
+  {
+    "name": "summarize_file",
+    "description": "Summarize the contents of a file at a given path",
+    "lastDiscoveredAt": "2025-01-15T10:00:00Z"
+  }
+]
+```
+
+---
+
+## Get a prompt
+
+**POST /api/connections/{connectionId}/prompts/{promptName}/get**
+
+Retrieve the full details of a specific prompt, optionally passing arguments to resolve template variables. The server returns a `Prompt` object containing the resolved schema and any filled-in content.
+
+### Path parameters
+
+<ParamField path="connectionId" type="string" required>
+  ID of the MCP server connection.
+</ParamField>
+
+<ParamField path="promptName" type="string" required>
+  Name of the prompt to retrieve. Must match the `name` field from the prompts list.
+</ParamField>
+
+### Request body
+
+<ParamField body="args" type="object">
+  Optional key-value arguments to pass to the prompt. The accepted keys depend on the prompt's schema defined by the server.
+</ParamField>
+
+```json Example request
+{
+  "args": {
+    "path": "src/index.ts"
+  }
+}
+```
+
+### Response
+
+<ResponseField name="requestId" type="string">
+  UUID of the request record for this prompt retrieval.
+</ResponseField>
+
+<ResponseField name="prompt" type="object">
+  The resolved prompt object returned by the server.
+
+  <Expandable title="Prompt fields">
+    <ResponseField name="name" type="string">
+      Name of the prompt.
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      Description of the prompt.
+    </ResponseField>
+    <ResponseField name="schema" type="object">
+      JSON Schema describing the prompt's arguments and structure.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+```json Example response
+{
+  "requestId": "e5f7d4c3-3456-4hij-klmn-opqrstuvwxyz",
+  "prompt": {
+    "name": "summarize_file",
+    "description": "Summarize the contents of a file at a given path",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" }
+      },
+      "required": ["path"]
+    }
+  }
+}
+```

@@ -1,0 +1,189 @@
+---
+title: "Read MCP Resource Contents and Manage Client Roots"
+sidebarTitle: "Read Resource"
+description: "Fetch resource content by URI from a connected MCP server. Also covers listing and replacing client roots that scope server access to the filesystem."
+---
+
+Read the content of a specific resource from a connected MCP server. Provide the resource URI, and MCP Hub fetches and returns its contents. Depending on the resource type, each content object contains either a `text` field for human-readable content or a `blob` field carrying base64-encoded binary data.
+
+## Read a resource
+
+**POST /api/connections/{connectionId}/resources/read**
+
+### Path parameters
+
+<ParamField path="connectionId" type="string" required>
+  ID of the MCP server connection that owns the resource.
+</ParamField>
+
+### Request body
+
+<ParamField body="resourceUri" type="string" required>
+  URI of the resource to read. Obtain valid URIs from [List Resources](/api/resources/list) or by constructing one from a [resource template](/api/resources/list#list-resource-templates).
+</ParamField>
+
+```json Example request
+{ "resourceUri": "file:///workspace/data.json" }
+```
+
+### Response
+
+<ResponseField name="requestId" type="string">
+  UUID of the request record created for this read operation. Use [GET /api/requests/{requestId}](/api/requests) to inspect the full record.
+</ResponseField>
+
+<ResponseField name="contents" type="array">
+  One or more content objects returned by the MCP server for the requested URI.
+
+  <Expandable title="Content object fields">
+    <ResponseField name="uri" type="string">
+      URI of the resource this content belongs to. Matches the requested URI in most cases; may differ if the server returns related resources.
+    </ResponseField>
+    <ResponseField name="text" type="string">
+      Present for text resources. The raw text content of the resource (e.g. file text, serialized JSON).
+    </ResponseField>
+    <ResponseField name="blob" type="string">
+      Present for binary resources. Base64-encoded binary content. Decode before use.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+```json Example response — text resource
+{
+  "requestId": "a1b2c3d4-5678-4efg-hijk-lmnopqrstuvw",
+  "contents": [
+    {
+      "uri": "file:///workspace/data.json",
+      "text": "{\"key\": \"value\"}"
+    }
+  ]
+}
+```
+
+```json Example response — binary resource
+{
+  "requestId": "a1b2c3d4-5678-4efg-hijk-lmnopqrstuvw",
+  "contents": [
+    {
+      "uri": "file:///workspace/image.png",
+      "blob": "iVBORw0KGgoAAAANSUhEUgAA..."
+    }
+  ]
+}
+```
+
+### Text vs. binary resources
+
+| Response field | Content type    | How to use                          |
+|----------------|-----------------|-------------------------------------|
+| `text`         | Text / JSON     | Read directly as a UTF-8 string     |
+| `blob`         | Binary / images | Base64-decode before processing     |
+
+Each content object contains either `text` or `blob`, never both.
+
+<Tip>
+  Use **GET /api/connections/{connectionId}/resources/cache** to inspect cached resource metadata — including URI, name, and last-fetched timestamp — without triggering a live fetch from the MCP server.
+</Tip>
+
+<Warning>
+  Reading a resource URI that no longer exists on the MCP server will return a non-200 error. Refresh the resource list with `?refresh=true` to ensure the URI is still valid before reading.
+</Warning>
+
+---
+
+## Get client roots
+
+**GET /api/connections/{connectionId}/roots**
+
+Client roots are filesystem or URI boundaries that the MCP client exposes to the server, scoping which locations the server is permitted to access. Use this endpoint to retrieve the list of roots currently configured for a connection.
+
+### Path parameters
+
+<ParamField path="connectionId" type="string" required>
+  ID of the MCP server connection.
+</ParamField>
+
+### Response
+
+An array of `Root` objects.
+
+<ResponseField name="id" type="string">
+  UUID of the root entry.
+</ResponseField>
+
+<ResponseField name="rootUri" type="string">
+  URI boundary exposed to the server (e.g. `file:///workspace`).
+</ResponseField>
+
+<ResponseField name="rootName" type="string">
+  Human-readable name for the root.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string">
+  ISO 8601 timestamp of when this root was added.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string">
+  ISO 8601 timestamp of the most recent update.
+</ResponseField>
+
+```json Example response
+[
+  {
+    "id": "f1a2b3c4-d5e6-7890-abcd-ef1234567890",
+    "rootUri": "file:///workspace",
+    "rootName": "Project Workspace",
+    "createdAt": "2025-01-10T09:00:00Z",
+    "updatedAt": "2025-01-10T09:00:00Z"
+  }
+]
+```
+
+---
+
+## Replace client roots
+
+**PUT /api/connections/{connectionId}/roots**
+
+Replace the entire set of client roots for a connection with a new list. This is a full replacement — any roots not included in the request body are removed. The MCP server is notified of the change so it can update its access scope accordingly.
+
+### Path parameters
+
+<ParamField path="connectionId" type="string" required>
+  ID of the MCP server connection.
+</ParamField>
+
+### Request body
+
+Send a JSON array of `Root` objects. All current roots for the connection are replaced with this list.
+
+<ParamField body="rootUri" type="string" required>
+  URI boundary to expose to the server.
+</ParamField>
+
+<ParamField body="rootName" type="string">
+  Human-readable name for the root.
+</ParamField>
+
+```json Example request
+[
+  {
+    "rootUri": "file:///workspace",
+    "rootName": "Project Workspace"
+  },
+  {
+    "rootUri": "file:///shared/assets",
+    "rootName": "Shared Assets"
+  }
+]
+```
+
+### Response
+
+```json Example response
+{ "message": "Roots replaced successfully" }
+```
+
+<Note>
+  Replacing roots immediately notifies the MCP server of the updated list. Removing a root that the server is actively using may cause resource reads or tool calls referencing that path to fail.
+</Note>
