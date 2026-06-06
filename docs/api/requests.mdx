@@ -1,0 +1,116 @@
+---
+title: "Inspect, Track, and Cancel In-Flight MCP Requests"
+sidebarTitle: "Requests"
+description: "Inspect full request records for MCP tool calls and resource reads. Cancel pending operations and check status, payloads, and timing information."
+---
+
+Every MCP tool call and resource read creates a request record you can inspect. Each record captures the full JSON-RPC method and payload, the server response, any error details, and timing information. For long-running operations, you can cancel an in-flight request before it completes.
+
+## Retrieve a request record
+
+**GET /api/requests/\{requestId\}**
+
+Fetch the full record for a specific request, including its current status, payloads, and execution duration.
+
+### Response fields
+
+<ResponseField name="id" type="string" required>
+  Unique UUID for this request record.
+</ResponseField>
+
+<ResponseField name="connectionId" type="string" required>
+  UUID of the MCP connection this request was made on.
+</ResponseField>
+
+<ResponseField name="jsonrpcId" type="string">
+  The JSON-RPC `id` value from the underlying protocol message.
+</ResponseField>
+
+<ResponseField name="method" type="string">
+  The MCP JSON-RPC method name (e.g. `tools/call`, `resources/read`).
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Current state of the request: `pending`, `completed`, `failed`, or `cancelled`.
+</ResponseField>
+
+<ResponseField name="requestPayload" type="object" required>
+  The original JSON-RPC request sent to the MCP server, including `method` and `params`.
+</ResponseField>
+
+<ResponseField name="responsePayload" type="object | null">
+  The server's response, populated once the request reaches `completed` status. `null` for all other statuses.
+</ResponseField>
+
+<ResponseField name="errorPayload" type="object | null">
+  Structured error details populated when status is `failed`. `null` otherwise.
+</ResponseField>
+
+<ResponseField name="progressToken" type="string | null">
+  The progress token associated with this request, if one was supplied at call time. `null` otherwise.
+</ResponseField>
+
+<ResponseField name="durationMs" type="integer | null">
+  Total execution time in milliseconds from creation to completion. `null` if the request has not yet finished.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string" required>
+  ISO 8601 timestamp indicating when the request record was created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string" required>
+  ISO 8601 timestamp of the most recent status change for this record.
+</ResponseField>
+
+```json Example response
+{
+  "id": "req_01h...",
+  "connectionId": "conn_01h...",
+  "jsonrpcId": "1",
+  "method": "tools/call",
+  "status": "completed",
+  "requestPayload": {
+    "method": "tools/call",
+    "params": {
+      "name": "search_repositories",
+      "arguments": { "query": "mcp" }
+    }
+  },
+  "responsePayload": {
+    "content": [{ "type": "text", "text": "Found 42 repositories" }],
+    "isError": false
+  },
+  "errorPayload": null,
+  "progressToken": null,
+  "durationMs": 342,
+  "createdAt": "2025-01-15T10:30:00Z",
+  "updatedAt": "2025-01-15T10:30:00.342Z"
+}
+```
+
+### Request status values
+
+| Status      | Description                                                              |
+|-------------|--------------------------------------------------------------------------|
+| `pending`   | The request is currently in flight and awaiting a response.              |
+| `completed` | The request finished successfully and a response was received.           |
+| `failed`    | The request encountered an error; see `errorPayload` for details.        |
+| `cancelled` | The request was cancelled before the server returned a response.         |
+
+---
+
+## Cancel an in-flight request
+
+**POST /api/requests/\{requestId\}/cancel**
+
+Send a cancellation signal for a request that is currently `pending`. No request body is required. On success, the endpoint returns a confirmation message:
+
+```json Example response
+{ "message": "Request cancelled" }
+```
+
+After a successful cancellation, the request record's `status` transitions to `cancelled` and no `responsePayload` is populated.
+
+<Note>
+  Cancellation is best-effort. If the MCP server has already processed the request by the time the cancellation signal arrives, the operation may still complete server-side. Always verify the final `status` of the request record after calling this endpoint.
+</Note>

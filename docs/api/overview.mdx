@@ -1,0 +1,78 @@
+---
+title: "MCP Hub REST API — Complete Overview and Reference"
+sidebarTitle: "Overview"
+description: "The MCP Hub REST API lets you manage server connections, discover tools, execute them, and stream events programmatically. Base URL: /api."
+---
+
+The MCP Hub REST API gives you programmatic access to all MCP Hub features: create and manage server connections, list and call tools, read resources, stream events, and inspect execution logs. The base URL for all endpoints is `/api`.
+
+## Base URL
+
+```
+http://localhost:3000/api
+```
+
+Replace `localhost:3000` with your deployed instance's hostname when running MCP Hub in production.
+
+## Authentication
+
+MCP Hub supports two authentication methods:
+
+**1. Session cookie** — automatically handled by the MCP Hub web and mobile app. No additional configuration is required when you are authenticated through the app interface.
+
+**2. Bearer token** — include your token in the `Authorization` header on every request:
+
+```http
+Authorization: Bearer <your-token>
+```
+
+Obtain a token by authenticating through the MCP Hub app. Any request made without valid credentials returns `401 Unauthorized`.
+
+## Request & Response Format
+
+All request and response bodies use JSON. Set the `Content-Type` header to `application/json` on every `POST` or `PUT` request:
+
+```http
+Content-Type: application/json
+```
+
+Responses always return a JSON body. Empty responses (for example, a successful `DELETE`) return `204 No Content` with no body.
+
+## Errors
+
+All errors follow a standard envelope shape:
+
+```json
+{
+  "code": "NOT_FOUND",
+  "message": "Connection not found",
+  "details": {}
+}
+```
+
+| Status | Meaning |
+|---|---|
+| `200 OK` | Request succeeded |
+| `201 Created` | Resource was created successfully |
+| `400 Bad Request` | The request body or parameters are invalid |
+| `401 Unauthorized` | Missing or invalid authentication credentials |
+| `404 Not Found` | The requested resource does not exist |
+
+The `code` field contains a machine-readable string you can use for programmatic error handling. The `message` field contains a human-readable explanation. The `details` object may contain additional context depending on the error type.
+
+## API Groups
+
+<CardGroup cols={2}>
+  <Card title="Connections" href="/api/connections/list" icon="plug">
+    Create and manage MCP server connections
+  </Card>
+  <Card title="Tools" href="/api/tools/list" icon="bolt">
+    Discover and execute tools
+  </Card>
+  <Card title="Resources" href="/api/resources/list" icon="database">
+    Browse and read server resources
+  </Card>
+  <Card title="Events & Logs" href="/api/events" icon="satellite-dish">
+    Stream events and query logs
+  </Card>
+</CardGroup>
