@@ -1,0 +1,101 @@
+---
+title: "Create MCP Connection — Request Body and Response Fields"
+sidebarTitle: "Create Connection"
+description: "POST /api/connections registers a new MCP server connection. Specify the server UUID, transport config, and authentication mode to get started."
+---
+
+Register a new MCP server connection in MCP Hub. After creating a connection, use the [connect endpoint](/api/connections/manage) to open the transport and begin the MCP initialization handshake.
+
+```http
+POST /api/connections
+```
+
+## Request Body
+
+<ParamField body="serverId" type="string (uuid)" required>
+  The UUID of the MCP server to connect to. This must reference a server already registered in your MCP Hub instance.
+</ParamField>
+
+<ParamField body="transportConfig" type="object" required>
+  Configuration for the transport layer used to communicate with the MCP server.
+
+  <Expandable title="transportConfig fields">
+    <ParamField body="type" type="string" required>
+      The transport protocol to use. Accepted values: `streamable_http` or `stdio`.
+    </ParamField>
+
+    <ParamField body="httpEndpoint" type="string (uri)">
+      The full URL of the HTTP MCP endpoint. Required when `type` is `streamable_http`.
+    </ParamField>
+
+    <ParamField body="stdioCommand" type="string">
+      The command to run when starting the server process. Required when `type` is `stdio`.
+    </ParamField>
+
+    <ParamField body="stdioArgs" type="array">
+      An optional list of string arguments passed to `stdioCommand` at startup. Only used when `type` is `stdio`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="authMode" type="string" required>
+  The authentication mode for this connection. Accepted values:
+
+  - `none` — no authentication required
+  - `oauth2` — OAuth 2.0 flow managed by MCP Hub
+  - `bearer` — a static bearer token you supply
+  - `secret_env` — secrets injected as environment variables into the stdio process
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Optional metadata to associate with this connection, such as `workspaceId` or owner information.
+</ParamField>
+
+## Example Request
+
+<CodeGroup>
+```json HTTP Transport
+{
+  "serverId": "f1e2d3c4-b5a6-7890-abcd-123456789abc",
+  "transportConfig": {
+    "type": "streamable_http",
+    "httpEndpoint": "https://github-mcp.example.com/mcp"
+  },
+  "authMode": "bearer"
+}
+```
+
+```json Stdio Transport
+{
+  "serverId": "a9b8c7d6-e5f4-3210-fedc-ba9876543210",
+  "transportConfig": {
+    "type": "stdio",
+    "stdioCommand": "npx",
+    "stdioArgs": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+  },
+  "authMode": "secret_env"
+}
+```
+</CodeGroup>
+
+## Response
+
+A successful request returns `201 Created` with the full `Connection` object, including the system-assigned `id` you will use in all subsequent requests for this connection.
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "serverId": "f1e2d3c4-b5a6-7890-abcd-123456789abc",
+  "status": "disconnected",
+  "transportType": "streamable_http",
+  "lastSeenAt": null,
+  "lifecycleState": "created",
+  "authState": "unauthenticated",
+  "createdAt": "2025-01-15T10:00:00Z",
+  "updatedAt": "2025-01-15T10:00:00Z"
+}
+```
+
+<Note>
+  A newly created connection starts in the `disconnected` status with `lifecycleState: "created"`. Call `POST /api/connections/{connectionId}/connect` to open the transport, then `POST /api/connections/{connectionId}/initialize` to complete the MCP handshake before using tools or resources.
+</Note>

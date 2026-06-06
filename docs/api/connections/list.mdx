@@ -1,0 +1,138 @@
+---
+title: "List and Fetch MCP Connections — GET /api/connections"
+sidebarTitle: "List Connections"
+description: "GET /api/connections returns a paginated array of MCP server connections. GET /api/connections/{connectionId} retrieves a single connection by ID."
+---
+
+Use these endpoints to list all MCP server connections registered in MCP Hub and to fetch the full details of a single connection by its ID. Both endpoints require authentication.
+
+---
+
+## List Connections
+
+```http
+GET /api/connections
+```
+
+Returns an array of [`ConnectionSummary`](/api/connections/create) objects for all registered MCP server connections. Use the `limit` and `offset` parameters to page through large sets.
+
+### Query Parameters
+
+<ParamField query="limit" type="integer" default={20}>
+  The maximum number of connections to return in a single response. Must be between `1` and `100`.
+</ParamField>
+
+<ParamField query="offset" type="integer" default={0}>
+  The number of connections to skip before returning results. Use together with `limit` to paginate through all connections.
+</ParamField>
+
+### Response
+
+A successful request returns `200 OK` with a JSON array of connection summary objects.
+
+```json
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "serverId": "f1e2d3c4-b5a6-7890-abcd-123456789abc",
+    "status": "connected",
+    "transportType": "streamable_http",
+    "lastSeenAt": "2025-01-15T10:30:00Z"
+  }
+]
+```
+
+### Response Fields
+
+Each object in the array is a `ConnectionSummary` with the following fields:
+
+<ResponseField name="id" type="string (uuid)">
+  The unique identifier for the connection, assigned by MCP Hub at creation time.
+</ResponseField>
+
+<ResponseField name="serverId" type="string (uuid)">
+  The UUID of the MCP server this connection points to.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current high-level connection status. Possible values: `disconnected`, `connecting`, `connected`, `initialized`, `error`.
+</ResponseField>
+
+<ResponseField name="transportType" type="string">
+  The transport protocol in use: `streamable_http` or `stdio`.
+</ResponseField>
+
+<ResponseField name="lastSeenAt" type="string (date-time)">
+  ISO 8601 timestamp of the most recent successful communication with the server. `null` if the connection has never been active.
+</ResponseField>
+
+---
+
+## Get Connection
+
+```http
+GET /api/connections/{connectionId}
+```
+
+Returns the full `Connection` object for a single connection, including all lifecycle, auth, and protocol fields populated after initialization.
+
+### Path Parameters
+
+<ParamField path="connectionId" type="string (uuid)" required>
+  The UUID of the connection to retrieve.
+</ParamField>
+
+### Response
+
+A successful request returns `200 OK` with the full connection object.
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "serverId": "f1e2d3c4-b5a6-7890-abcd-123456789abc",
+  "status": "initialized",
+  "transportType": "streamable_http",
+  "lastSeenAt": "2025-01-15T10:30:00Z",
+  "lifecycleState": "initialized",
+  "authState": "authenticated",
+  "negotiatedProtocolVersion": "2024-11-05",
+  "createdAt": "2025-01-10T08:00:00Z",
+  "updatedAt": "2025-01-15T10:30:00Z"
+}
+```
+
+The full `Connection` object extends `ConnectionSummary` with these additional fields:
+
+<ResponseField name="lifecycleState" type="string">
+  MCP lifecycle state: `created`, `connected`, `initialized`, or `disconnected`.
+</ResponseField>
+
+<ResponseField name="authState" type="string">
+  Authentication state: `unauthenticated`, `authenticating`, `authenticated`, or `failed`.
+</ResponseField>
+
+<ResponseField name="negotiatedProtocolVersion" type="string">
+  The MCP protocol version agreed upon during the initialization handshake.
+</ResponseField>
+
+<ResponseField name="serverInfo" type="object">
+  Normalized server info JSON reported by the server during initialization, or `null` before initialization.
+</ResponseField>
+
+<ResponseField name="serverCapabilities" type="object">
+  Capabilities advertised by the server during initialization, or `null` before initialization.
+</ResponseField>
+
+<ResponseField name="clientCapabilities" type="object">
+  Capabilities MCP Hub presented to the server during initialization.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string (date-time)">
+  ISO 8601 timestamp when the connection record was created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string (date-time)">
+  ISO 8601 timestamp of the last change to the connection record.
+</ResponseField>
+
+Returns `404 Not Found` if no connection with the given ID exists.

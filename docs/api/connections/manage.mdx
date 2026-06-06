@@ -1,0 +1,220 @@
+---
+title: "Manage MCP Connection Lifecycle — Connect to Disconnect"
+sidebarTitle: "Manage Connections"
+description: "Open, initialize, ping, and disconnect MCP server connections. Covers status, capabilities, server info, and DELETE endpoints for full lifecycle control."
+---
+
+After creating a connection, use these endpoints to control its lifecycle: open the transport, run the MCP initialization handshake, check status, ping, and disconnect. Always follow the sequence — connect, then initialize — before calling tools or reading resources on that connection.
+
+---
+
+## Connect
+
+```http
+POST /api/connections/{connectionId}/connect
+```
+
+Opens the transport layer for the specified connection. For `streamable_http` connections this establishes the HTTP channel; for `stdio` connections it spawns the server process. No request body is required.
+
+A successful response returns `200 OK` with a `ConnectionStatus` object:
+
+```json
+{
+  "transportState": "connected",
+  "lifecycleState": "connected",
+  "authState": "unauthenticated",
+  "protocolVersion": null,
+  "lastError": null
+}
+```
+
+<Warning>
+  You must call `/connect` before `/initialize`. Calling `/initialize` on a connection whose transport is not yet open returns `400 Bad Request`.
+</Warning>
+
+---
+
+## Initialize
+
+```http
+POST /api/connections/{connectionId}/initialize
+```
+
+Runs the MCP initialization lifecycle on an already-connected transport. This exchanges protocol version and capability information between MCP Hub and the server. No request body is required.
+
+Returns an `InitializationResult`:
+
+```json
+{
+  "negotiatedProtocolVersion": "2024-11-05",
+  "serverInfo": {
+    "name": "GitHub MCP Server",
+    "version": "1.2.0"
+  },
+  "serverCapabilities": {
+    "tools": {},
+    "resources": {}
+  },
+  "clientCapabilities": {
+    "roots": {},
+    "sampling": {}
+  }
+}
+```
+
+### InitializationResult Fields
+
+<ResponseField name="negotiatedProtocolVersion" type="string">
+  The MCP protocol version agreed upon between MCP Hub and the server.
+</ResponseField>
+
+<ResponseField name="serverInfo" type="object">
+  Metadata the server reported about itself, such as `name` and `version`.
+</ResponseField>
+
+<ResponseField name="serverCapabilities" type="object">
+  The capabilities the server advertised during the handshake (e.g. `tools`, `resources`, `prompts`).
+</ResponseField>
+
+<ResponseField name="clientCapabilities" type="object">
+  The capabilities MCP Hub presented to the server (e.g. `roots`, `sampling`).
+</ResponseField>
+
+---
+
+## Disconnect
+
+```http
+POST /api/connections/{connectionId}/disconnect
+```
+
+Gracefully closes the connection. For HTTP connections, this tears down the channel; for stdio connections, it sends a shutdown signal to the server process before terminating it. No request body is required.
+
+Returns `200 OK` on success:
+
+```json
+{
+  "message": "Disconnected successfully"
+}
+```
+
+---
+
+## Ping
+
+```http
+POST /api/connections/{connectionId}/ping
+```
+
+Sends an MCP ping message to verify the connection is alive and the remote server is responding. No request body is required.
+
+```json
+{
+  "latencyMs": 42,
+  "status": "ok"
+}
+```
+
+<ResponseField name="latencyMs" type="integer">
+  Round-trip time in milliseconds for the ping response.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  `"ok"` if the server responded successfully.
+</ResponseField>
+
+---
+
+## Get Status
+
+```http
+GET /api/connections/{connectionId}/status
+```
+
+Returns the full status of the connection across all state dimensions: transport, lifecycle, and authentication.
+
+```json
+{
+  "transportState": "connected",
+  "lifecycleState": "initialized",
+  "authState": "authenticated",
+  "protocolVersion": "2024-11-05",
+  "lastError": null
+}
+```
+
+| Field | Description |
+|---|---|
+| `transportState` | Low-level transport state: `disconnected`, `connecting`, `connected`, `error` |
+| `lifecycleState` | MCP lifecycle state: `created`, `connected`, `initialized`, `disconnected` |
+| `authState` | Authentication state: `unauthenticated`, `authenticating`, `authenticated`, `failed` |
+| `protocolVersion` | The negotiated MCP protocol version, set after initialization; `null` before |
+| `lastError` | An object with `code` and `message` fields describing the most recent error, or `null` if none |
+
+---
+
+## Get Capabilities
+
+```http
+GET /api/connections/{connectionId}/capabilities
+```
+
+Returns the negotiated protocol version and capabilities object agreed upon during initialization. This reflects what the server advertised and what MCP Hub accepted.
+
+```json
+{
+  "protocolVersion": "2024-11-05",
+  "capabilities": {
+    "tools": {},
+    "resources": {},
+    "prompts": {}
+  }
+}
+```
+
+<ResponseField name="protocolVersion" type="string">
+  The MCP protocol version negotiated during initialization.
+</ResponseField>
+
+<ResponseField name="capabilities" type="object">
+  The server capabilities object as negotiated. Structure varies by server implementation.
+</ResponseField>
+
+<Note>
+  Capabilities are only populated after you have successfully called `/initialize`. Before that, this endpoint returns an empty object.
+</Note>
+
+---
+
+## Get Server Info
+
+```http
+GET /api/connections/{connectionId}/server-info
+```
+
+Returns metadata the MCP server reported about itself during initialization.
+
+```json
+{
+  "name": "GitHub MCP Server",
+  "version": "1.2.0",
+  "description": "Provides tools for interacting with GitHub repositories.",
+  "documentationUrl": "https://github.com/example/github-mcp#readme"
+}
+```
+
+---
+
+## Delete Connection
+
+```http
+DELETE /api/connections/{connectionId}
+```
+
+Deletes the connection record from MCP Hub. If the connection is currently open, MCP Hub disconnects it before deleting. This action is irreversible.
+
+Returns `204 No Content` on success.
+
+<Warning>
+  Deleting a connection removes all stored configuration, auth tokens, and secrets associated with it. You will need to recreate and re-authenticate the connection from scratch.
+</Warning>
