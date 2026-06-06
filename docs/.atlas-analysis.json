@@ -1,0 +1,135 @@
+{
+  "projectType": "saas",
+  "projectName": "MCP Hub",
+  "projectDescription": "A mobile-first control center for connecting to Model Context Protocol (MCP) servers, discovering and executing tools, recording macros, and building automation workflows.",
+  "theme": "luma",
+  "primaryColor": "#040404",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "configuration"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/mcp-protocol",
+              "concepts/connections",
+              "concepts/tools-resources"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/connecting-servers",
+              "guides/tool-discovery",
+              "guides/executing-tools",
+              "guides/macros",
+              "guides/workflows",
+              "guides/webhooks"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/environment-variables",
+              "reference/troubleshooting"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api/overview"
+            ]
+          },
+          {
+            "group": "Connections",
+            "pages": [
+              "api/connections/list",
+              "api/connections/create",
+              "api/connections/manage",
+              "api/connections/auth"
+            ]
+          },
+          {
+            "group": "Tools & Resources",
+            "pages": [
+              "api/tools/list",
+              "api/tools/call",
+              "api/resources/list",
+              "api/resources/read"
+            ]
+          },
+          {
+            "group": "Events & Logs",
+            "pages": [
+              "api/events",
+              "api/logs",
+              "api/requests"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Connect to any MCP server over stdio or HTTP transports",
+    "Discover and browse tools exposed by connected servers",
+    "Execute tools with dynamic form generation from JSON Schema",
+    "Record macros and chain tool calls into reusable workflows",
+    "Schedule automated workflow runs",
+    "Full execution history and audit log",
+    "OAuth2, bearer token, and secret-based authentication",
+    "Real-time event streaming via SSE/WebSocket",
+    "Share macros and collaborate in team workspaces",
+    "Cross-platform: iOS, Android, and web"
+  ],
+  "publicApiSurface": [
+    "GET /api/connections",
+    "POST /api/connections",
+    "GET /api/connections/{connectionId}",
+    "DELETE /api/connections/{connectionId}",
+    "POST /api/connections/{connectionId}/connect",
+    "POST /api/connections/{connectionId}/initialize",
+    "POST /api/connections/{connectionId}/disconnect",
+    "POST /api/connections/{connectionId}/ping",
+    "GET /api/connections/{connectionId}/status",
+    "GET /api/connections/{connectionId}/capabilities",
+    "POST /api/connections/{connectionId}/auth/start",
+    "GET /api/connections/{connectionId}/auth/status",
+    "POST /api/connections/{connectionId}/auth/refresh",
+    "DELETE /api/connections/{connectionId}/auth",
+    "POST /api/connections/{connectionId}/secrets",
+    "GET /api/connections/{connectionId}/tools",
+    "GET /api/connections/{connectionId}/tools/{toolName}",
+    "POST /api/connections/{connectionId}/tools/{toolName}/call",
+    "GET /api/connections/{connectionId}/resources",
+    "POST /api/connections/{connectionId}/resources/read",
+    "GET /api/connections/{connectionId}/resources/subscribe",
+    "GET /api/connections/{connectionId}/prompts",
+    "POST /api/connections/{connectionId}/prompts/{promptName}/get",
+    "POST /api/connections/{connectionId}/completions",
+    "GET /api/connections/{connectionId}/events",
+    "GET /api/connections/{connectionId}/stream",
+    "GET /api/connections/{connectionId}/logs",
+    "POST /api/connections/{connectionId}/logging/level",
+    "GET /api/requests/{requestId}",
+    "POST /api/requests/{requestId}/cancel",
+    "GET /api/connections/{connectionId}/roots",
+    "PUT /api/connections/{connectionId}/roots"
+  ]
+}

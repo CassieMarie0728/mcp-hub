@@ -1,0 +1,119 @@
+---
+title: "Configure MCP Hub for Your Environment"
+sidebarTitle: "Configuration"
+description: "Configure MCP Hub using environment variables. Set your database URL, auth secrets, MCP server URL, and optional OpenAI API key."
+---
+
+MCP Hub is configured entirely through environment variables stored in a `.env` file at the root of the repository. This page describes every supported variable, its purpose, whether it is required, and example values. Start by copying the example file and then editing it for your environment.
+
+```bash
+cp .env.example .env
+```
+
+<Warning>
+  Never commit your `.env` file to version control. It contains database credentials and signing secrets. Make sure `.env` is listed in your `.gitignore` — the MCP Hub repository includes this entry by default, but double-check before pushing.
+</Warning>
+
+## Environment Variables
+
+<ParamField body="DATABASE_URL" type="string" required>
+  The full MySQL connection string for your database. MCP Hub uses Drizzle ORM and passes this value directly to the Drizzle client.
+
+  ```
+  DATABASE_URL="mysql://user:password@localhost:3306/mcp_hub"
+  ```
+</ParamField>
+
+<ParamField body="COOKIE_SECRET" type="string" required>
+  A long, random string used to sign and verify session cookies. If this value changes, all existing sessions are immediately invalidated. Generate a new value with the command in the [Generating Secrets](#generating-secrets) section below.
+</ParamField>
+
+<ParamField body="JWT_SECRET" type="string" required>
+  A separate long, random string used to sign and verify JWT tokens issued by the API. Keep this value different from `COOKIE_SECRET`. Rotating this value invalidates all outstanding JWTs.
+</ParamField>
+
+<ParamField body="PORT" type="number" default="3000">
+  The port the backend REST API server listens on. Change this if port 3000 is already in use on your machine or host.
+</ParamField>
+
+<ParamField body="EXPO_PORT" type="number" default="8081">
+  The port the Expo / web frontend development server listens on. Change this if port 8081 conflicts with another service.
+</ParamField>
+
+<ParamField body="MCP_SERVER_URL" type="string">
+  The default MCP server URL pre-populated when you add a new server in the UI. Set this to your most commonly used server to save time. You can still add servers with different URLs from within the app.
+
+  ```
+  MCP_SERVER_URL="http://localhost:3001"
+  ```
+</ParamField>
+
+<ParamField body="OPENAI_API_KEY" type="string">
+  Your OpenAI API key, required only if you want to use AI-powered features such as natural-language tool search or automated workflow suggestions. Leave blank to disable those features.
+
+  ```
+  OPENAI_API_KEY="sk-..."
+  ```
+</ParamField>
+
+<ParamField body="NODE_ENV" type="string" default="development">
+  The runtime environment. Set to `production` when deploying. In production mode, the application enables stricter security headers, disables verbose error responses, and serves the pre-built Expo web bundle.
+
+  Accepted values: `development`, `production`.
+</ParamField>
+
+## Complete `.env` Example
+
+Below is a complete example `.env` file with every variable filled in. Copy this as a starting point and replace placeholder values with your own.
+
+```ini
+# .env — MCP Hub environment configuration
+
+# ── Database ───────────────────────────────────────────────────────────────
+DATABASE_URL="mysql://mcp_user:s3cur3p4ss@localhost:3306/mcp_hub"
+
+# ── Auth secrets (generate unique values — see docs) ──────────────────────
+COOKIE_SECRET="a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
+JWT_SECRET="z9y8x7w6v5u4z9y8x7w6v5u4z9y8x7w6v5u4z9y8x7w6v5u4z9y8x7w6v5u4z9y8"
+
+# ── Server ports ───────────────────────────────────────────────────────────
+PORT=3000
+EXPO_PORT=8081
+
+# ── MCP defaults ───────────────────────────────────────────────────────────
+MCP_SERVER_URL="http://localhost:3001"
+
+# ── Optional integrations ──────────────────────────────────────────────────
+OPENAI_API_KEY=""
+
+# ── Runtime ────────────────────────────────────────────────────────────────
+NODE_ENV="development"
+```
+
+## Database Setup
+
+The `DATABASE_URL` variable must point to a running MySQL-compatible database. MCP Hub is tested against **MySQL 8.0** and works with any MySQL-compatible service. Once `DATABASE_URL` is set, run `pnpm db:push` to generate and apply the Drizzle schema. The command runs `drizzle-kit generate && drizzle-kit migrate` and creates all required tables automatically.
+
+Supported services include:
+
+- **MySQL 8** running locally or in Docker
+- **PlanetScale** — use the connection string from your PlanetScale dashboard; the `?sslaccept=strict` query parameter is typically required
+- **TiDB Cloud** — use the TiDB-provided MySQL connection string
+
+The database itself must exist before you run `pnpm db:push`. Create it with:
+
+```sql
+CREATE DATABASE mcp_hub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+Or, if you used the Docker command from the [Quick Start](/quickstart), the `MYSQL_DATABASE=mcp_hub` flag already created it for you.
+
+## Generating Secrets
+
+Use Node.js's built-in `crypto` module to generate a cryptographically secure random string suitable for `COOKIE_SECRET` and `JWT_SECRET`. Run the following command twice — once for each secret — and paste the output into your `.env` file.
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+This produces a 64-character hexadecimal string. Because the two secrets serve different purposes, generate them separately so they are never equal.

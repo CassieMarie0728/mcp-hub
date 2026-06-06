@@ -1,0 +1,35 @@
+---
+title: "MCP Hub: What It Is and How It Works"
+sidebarTitle: "Introduction"
+description: "Learn what MCP Hub does, how it connects to Model Context Protocol servers, and why it's the right tool for MCP-powered automation workflows."
+---
+
+MCP Hub is a mobile-first dashboard for the Model Context Protocol (MCP). It lets you connect to MCP servers, discover the tools they expose, execute those tools through dynamic UI forms, record macro sequences, and build automated workflows — all from a single cross-platform application that runs on iOS, Android, and the web. Whether you are a developer testing an MCP server locally or an operator running production automations, MCP Hub gives you a unified interface to manage every aspect of your MCP environment.
+
+## The Problem MCP Hub Solves
+
+As the MCP ecosystem grows, teams increasingly run multiple MCP servers — one for file access, another for database queries, another for third-party API integrations, and so on. Managing those connections by hand means juggling multiple terminals, writing custom scripts to call `tools/list` and `tools/call`, and stitching together ad hoc logging. There is no standard way to discover what tools are available, no shared history of what was executed, and no mechanism to replay or schedule a sequence of calls.
+
+MCP Hub solves this by providing a single, persistent control plane for your entire MCP server fleet. You add servers once, and MCP Hub handles connection management, tool discovery, execution, recording, and scheduling — with a full audit trail and a polished mobile-friendly UI.
+
+## Key Capabilities
+
+- **Server lifecycle management** — Connect, disconnect, and ping MCP servers. Connection state is persisted across sessions.
+- **Tool discovery and schema browsing** — Run `tools/list` against any connected server and browse each tool's name, description, and JSON Schema input definition.
+- **Tool execution with dynamic forms** — MCP Hub auto-generates an input form from a tool's JSON Schema so you can execute any tool without writing code.
+- **Macro recording** — Record a sequence of tool calls as a named macro and replay it with a single tap.
+- **Workflow automation** — Chain tool calls and macros into multi-step workflows that can be triggered manually or on a schedule.
+- **Execution history and auditing** — Every tool call is logged with its full request payload, response, timestamp, duration, and status.
+- **Real-time event streaming** — Subscribe to a live SSE stream of server events and execution results as they happen.
+
+## How It Works
+
+MCP Hub acts as an MCP **client and host**. When you add a server, MCP Hub establishes a transport connection — either over HTTP (using the MCP Streamable HTTP transport) or via stdio (spawning a local process). Once connected, it calls `tools/list` to retrieve the server's full tool manifest and caches the resulting schemas locally.
+
+When you execute a tool, MCP Hub sends a `tools/call` JSON-RPC request with the arguments you provided and streams the response back to the UI. Results are rendered in multiple formats: raw JSON, a formatted table for array responses, and a syntax-highlighted code view for string output.
+
+The backend is a Node.js REST API that persists server configurations, macro definitions, workflow schedules, and execution logs in a MySQL database. The frontend is an Expo application that targets iOS, Android, and web from a single codebase, communicating with the backend over the REST API and an SSE event stream.
+
+<Note>
+  MCP Hub is open source under the MIT License. You can browse the source code, file issues, and contribute at [https://github.com/CassieMarie0728/mcp-hub](https://github.com/CassieMarie0728/mcp-hub).
+</Note>

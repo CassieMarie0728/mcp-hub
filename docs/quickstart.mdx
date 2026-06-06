@@ -1,0 +1,135 @@
+---
+title: "Get Started with MCP Hub in Minutes"
+sidebarTitle: "Quick Start"
+description: "Install MCP Hub, run the server, and connect your first MCP server in under 5 minutes. Prerequisites: Node.js 20+, pnpm, and a MySQL database."
+---
+
+This guide walks you through installing MCP Hub, starting the backend server, and connecting your first MCP server. By the end you will have the full application running locally and at least one MCP server listed in your dashboard.
+
+<Tip>
+  Want a quick MySQL instance without a local install? Use Docker: `docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mcp_hub mysql:8`
+</Tip>
+
+<Steps>
+  <Step title="Prerequisites">
+    Before you begin, make sure you have the following installed on your machine.
+
+    | Requirement | Minimum version |
+    |---|---|
+    | Node.js | 20.x or later |
+    | pnpm | 9.12.0 or later |
+    | MySQL | 8.0 or later (or a compatible hosted DB) |
+
+    Install Node.js from [nodejs.org](https://nodejs.org). Then install pnpm:
+
+    ```bash
+    npm install -g pnpm
+    ```
+
+    Verify both are available:
+
+    ```bash
+    node --version   # should print v20.x.x or higher
+    pnpm --version   # should print 9.12.x or higher
+    ```
+  </Step>
+
+  <Step title="Clone and Install">
+    Clone the MCP Hub repository and install all dependencies with pnpm.
+
+    ```bash
+    git clone https://github.com/CassieMarie0728/mcp-hub.git && cd mcp-hub && pnpm install
+    ```
+
+    pnpm will install dependencies for the backend, frontend, and any shared packages defined in the monorepo workspace.
+  </Step>
+
+  <Step title="Configure Environment">
+    Copy the example environment file to `.env` and fill in your values.
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    Open `.env` in your editor and set the following variables:
+
+    ```ini
+    # .env
+
+    # MySQL connection string (required)
+    DATABASE_URL="mysql://user:password@localhost:3306/mcp_hub"
+
+    # Secret used to sign session cookies — use a long random string (required)
+    COOKIE_SECRET="replace-with-a-secure-random-string"
+
+    # Secret used to sign JWT tokens — use a different random string (required)
+    JWT_SECRET="replace-with-another-secure-random-string"
+
+    # Backend API port (optional, default: 3000)
+    PORT=3000
+
+    # Expo / web frontend port (optional, default: 8081)
+    EXPO_PORT=8081
+
+    # Default MCP server URL (optional)
+    MCP_SERVER_URL="http://localhost:3001"
+
+    # OpenAI API key for AI-powered features (optional)
+    OPENAI_API_KEY=""
+
+    # Node environment
+    NODE_ENV="development"
+    ```
+
+    Replace `user`, `password`, and the two secret values with your own. See the [Configuration](/configuration) page for guidance on generating secure secrets.
+  </Step>
+
+  <Step title="Initialize the Database">
+    Generate and apply the Drizzle schema to your database to create all required tables.
+
+    ```bash
+    pnpm db:push
+    ```
+
+    This command runs `drizzle-kit generate` followed by `drizzle-kit migrate`, which reads your `DATABASE_URL`, generates the SQL from the schema defined in `drizzle/schema.ts`, and applies it to your database. You should see output similar to:
+
+    ```
+    [✓] Changes applied
+    ```
+  </Step>
+
+  <Step title="Start the App">
+    Start both the backend API server and the Expo frontend in development mode with a single command.
+
+    ```bash
+    pnpm dev
+    ```
+
+    This launches:
+    - **Backend API** on `http://localhost:3000`
+    - **Expo / web frontend** on `http://localhost:8081`
+
+    You will see log output from both processes in the same terminal, prefixed so you can tell them apart.
+  </Step>
+
+  <Step title="Open in Browser or Expo Go">
+    **Web:** Open [http://localhost:8081](http://localhost:8081) in your browser. The MCP Hub dashboard loads immediately — no sign-in is required in development mode.
+
+    **iOS / Android:** Install the [Expo Go](https://expo.dev/go) app on your device, then scan the QR code printed in the terminal after `pnpm dev` starts. Your device and development machine must be on the same network.
+  </Step>
+
+  <Step title="Connect Your First MCP Server">
+    With the dashboard open, connect your first MCP server:
+
+    1. Tap or click the **Servers** tab in the bottom navigation.
+    2. Tap **Add Server** (the **+** button in the top-right corner).
+    3. Enter a display name for the server (e.g., `My Local Server`).
+    4. Enter the server URL (e.g., `http://localhost:3001`) or the stdio launch command.
+    5. Choose the transport type: **HTTP** for network-reachable servers, **stdio** for local processes.
+    6. Tap **Save**.
+
+    MCP Hub immediately attempts to connect and runs `tools/list`. Navigate to the **Tool Discovery** tab to browse every tool your server exposes and start executing them.
+  </Step>
+</Steps>
+
+For a deeper walkthrough of server configuration options, transport types, and authentication, see the [Connect a Server](/guides/connecting-servers) guide.

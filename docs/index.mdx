@@ -1,0 +1,53 @@
+---
+title: "MCP Hub: Mobile-First MCP Control Center"
+sidebarTitle: "Home"
+description: "MCP Hub is a mobile-first control center for MCP server connections, tool discovery, execution, macros, and automation workflows. Works on iOS, Android, and web."
+---
+
+Welcome to MCP Hub — your mobile-first control center for the Model Context Protocol. MCP Hub lets you connect to any MCP server, discover the tools it exposes, execute them with dynamically generated forms, record macro sequences, and automate full workflows, all from a single interface that runs on iOS, Android, and the web.
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Get up and running in minutes
+  </Card>
+  <Card title="Connect a Server" icon="server" href="/guides/connecting-servers">
+    Add your first MCP server
+  </Card>
+  <Card title="Execute Tools" icon="bolt" href="/guides/executing-tools">
+    Discover and run tools
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/overview">
+    Explore the REST API
+  </Card>
+</CardGroup>
+
+## What is MCP Hub?
+
+MCP Hub is built around three core pillars that take you from raw MCP server connections all the way to production-grade automation.
+
+**Server Connections** — MCP Hub manages the full lifecycle of your MCP server connections. Add servers by URL or stdio command, connect and disconnect on demand, and monitor health with built-in ping checks. All connection state is persisted so your servers are ready the moment you open the app.
+
+**Tool Execution** — Once a server is connected, MCP Hub runs `tools/list` to enumerate every tool the server exposes and renders a dynamic form for each one based on its JSON Schema input definition. Fill in the fields, tap Execute, and see structured results instantly — no code required.
+
+**Automation and Macros** — Record a sequence of tool calls as a macro and replay it with a single tap. Chain macros and individual tool calls into scheduled workflows for end-to-end automation. Every execution is logged in a full audit history with request and response payloads.
+
+<CardGroup cols={3}>
+  <Card title="Server Connections" icon="plug">
+    Connect to any MCP server via HTTP or stdio
+  </Card>
+  <Card title="Tool Discovery" icon="magnifying-glass">
+    Browse tools exposed by your servers
+  </Card>
+  <Card title="Macro Recording" icon="circle-dot">
+    Record and replay tool call sequences
+  </Card>
+  <Card title="Workflow Automation" icon="diagram-project">
+    Chain tools into scheduled workflows
+  </Card>
+  <Card title="Execution History" icon="clock-rotate-left">
+    Full audit log of every tool call
+  </Card>
+  <Card title="Real-Time Events" icon="satellite-dish">
+    Live event streaming via SSE
+  </Card>
+</CardGroup>

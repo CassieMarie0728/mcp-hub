@@ -1,52 +1,99 @@
 {
-  "$schema": "https://mintlify.com",
+  "$schema": "https://mintlify.com/docs.json",
   "name": "MCP Hub",
+  "theme": "luma",
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "https://media.brand.dev/efaa462a-7e44-486c-a3fb-f587e0d18823.svg",
+    "dark": "https://media.brand.dev/efaa462a-7e44-486c-a3fb-f587e0d18823.svg"
   },
-  "favicon": "/favicon.png",
+  "favicon": "https://icons.duckduckgo.com/ip3/typescriptlang.org.ico",
   "colors": {
-    "primary": "#4F46E5",
-    "light": "#818CF8",
-    "dark": "#312E81"
+    "primary": "#040404"
   },
-  "theme": "mint",
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/CassieMarie0728/mcp-hub"
+    }
+  },
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "introduction",
-          "quickstart",
-          "installation"
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "configuration"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/mcp-protocol",
+              "concepts/connections",
+              "concepts/tools-resources"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/connecting-servers",
+              "guides/tool-discovery",
+              "guides/executing-tools",
+              "guides/macros",
+              "guides/workflows",
+              "guides/webhooks"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/environment-variables",
+              "reference/troubleshooting"
+            ]
+          }
         ]
       },
       {
-        "group": "Core Concepts",
-        "pages": [
-          "how-it-works",
-          "mcp-protocol"
-        ]
-      },
-      {
-        "group": "Configuration & Features",
-        "pages": [
-          "connecting-servers",
-          "mobile-interface",
-          "environment-variables"
-        ]
-      },
-      {
-        "group": "Deployment & Guides",
-        "pages": [
-          "expo-deployment",
-          "troubleshooting"
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api/overview"
+            ]
+          },
+          {
+            "group": "Connections",
+            "pages": [
+              "api/connections/list",
+              "api/connections/create",
+              "api/connections/manage",
+              "api/connections/auth"
+            ]
+          },
+          {
+            "group": "Tools & Resources",
+            "pages": [
+              "api/tools/list",
+              "api/tools/call",
+              "api/resources/list",
+              "api/resources/read"
+            ]
+          },
+          {
+            "group": "Events & Logs",
+            "pages": [
+              "api/events",
+              "api/logs",
+              "api/requests"
+            ]
+          }
         ]
       }
     ]
-  },
-  "footerSocials": {
-    "github": "https://github.com/CassieMarie0728/mcp-hub"
   }
 }
