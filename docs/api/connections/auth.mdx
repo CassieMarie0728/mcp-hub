@@ -57,8 +57,12 @@ Initiates an authentication flow for the connection. For `oauth2` connections, M
 
 Store the `state` value **server-side** (for example, in the user's session) and compare it for exact equality when the OAuth2 provider redirects back. Do not rely on a `state` value echoed from a query string or `localStorage` alone — that defeats CSRF protection.
 
+<Warning>
+  Your registered OAuth2 callback (redirect) URL **must use HTTPS in production** and must exactly match the URI registered with the authorization server. `http://` callbacks are only acceptable for `localhost` during local development. Avoid using wildcards or open redirects in the registered URL — these allow an attacker to intercept the authorization code.
+</Warning>
+
 <Note>
-  After the user completes the OAuth2 flow and your callback URL receives the authorization code, MCP Hub handles the token exchange automatically. Poll `GET /api/connections/{connectionId}/auth/status` to confirm authentication completed successfully.
+  After the user completes the OAuth2 flow and your callback URL receives the authorization code, MCP Hub handles the token exchange automatically. Poll `GET /api/connections/{connectionId}/auth/status` to confirm authentication completed successfully. Access and refresh tokens are stored encrypted at rest by MCP Hub and are never returned to the client over the API.
 </Note>
 
 <Warning>
@@ -163,6 +167,7 @@ Attaches secret references and plain environment variables to the connection. MC
 </ParamField>
 
 <Warning>
+  Values in `envVars` are transmitted as plaintext in the request body — always call this endpoint over HTTPS. Prefer `secretRefs` for production. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs. Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
   **Handling secret values.**
 
   - Only call this endpoint over HTTPS — the request body sends secret values in plain text.
@@ -180,5 +185,5 @@ Returns `200 OK` on success:
 ```
 
 <Note>
-  Secrets are only injected when MCP Hub spawns the stdio process. If the connection is already running, disconnect and reconnect to apply updated secrets.
+  Secrets are only injected when MCP Hub spawns the stdio process. If the connection is already running, disconnect and reconnect to apply updated secrets. Rotate any secret that may have been exposed in logs, screenshots, or shared `.env` files immediately.
 </Note>
