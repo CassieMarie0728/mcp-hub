@@ -78,15 +78,19 @@ MCP Hub supports four authentication modes. Choose the one that matches how your
 
 | Mode | When to use |
 |---|---|
-| **None** | Open MCP servers, local development environments, or servers protected at the network level. Only use over loopback (`127.0.0.1`) or a trusted private network — never with a public HTTP endpoint. |
-| **Bearer Token** | Servers that require an API key or a static token in the `Authorization: Bearer` header. Always pair with an `https://` URL — bearer tokens sent over `http://` can be intercepted. |
+| **None** | Open MCP servers, local development environments, or servers protected at the network level. Use only over loopback (`127.0.0.1`) or a trusted private network, never with a public HTTP endpoint. |
+| **Bearer Token** | Servers that require an API key or a static token in the `Authorization: Bearer` header. Always pair with an `https://` URL — `http://` exposes the token to interception. |
 | **OAuth2** | Servers with user-delegated auth (GitHub, Slack, Google, etc.) — MCP Hub handles the full PKCE flow and token refresh |
 | **Secret Env** | Stdio servers that expect credentials as environment variables (e.g., `GITHUB_TOKEN`, `OPENAI_API_KEY`) |
 
 For OAuth2 servers, MCP Hub stores the access and refresh tokens securely in the device keychain and automatically refreshes them before they expire. You can review and revoke tokens at any time from the **Token Management** screen.
 
 <Tip>
-  When issuing tokens to attach here, follow the **principle of least privilege**: grant only the scopes the MCP server actually needs (for example, `read:user` instead of full `repo` if read-only profile access is enough), and set the shortest practical expiry. Revoke tokens from the provider's dashboard when no longer needed.
+  When issuing tokens to attach here, follow the **principle of least privilege**:
+
+  - Grant only the scopes the MCP server needs (for example, `read:user` instead of full `repo` if read-only profile access is enough).
+  - Set the shortest practical expiry.
+  - Revoke tokens from the provider's dashboard when they are no longer needed.
 </Tip>
 
 ## Managing Connections

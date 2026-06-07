@@ -56,7 +56,11 @@ cp .env.example .env
   ```
 
   <Warning>
-    Treat `OPENAI_API_KEY` like a password: store it only in `.env` (never in source), rotate it from the OpenAI dashboard if it leaks, and scope keys per environment so a leaked development key cannot be used against production usage limits.
+    Treat `OPENAI_API_KEY` like a password:
+
+    - Store it only in `.env`, never in source.
+    - Rotate it from the OpenAI dashboard if it leaks.
+    - Use a separate key per environment so a leaked development key cannot consume production quota.
   </Warning>
 </ParamField>
 
@@ -71,8 +75,8 @@ cp .env.example .env
 
   - Serve MCP Hub over HTTPS only — cookies are only marked `Secure` on HTTPS origins.
   - Generate **fresh** `COOKIE_SECRET` and `JWT_SECRET` values for each environment (never reuse development secrets in production).
-  - Use a dedicated database user with the minimum privileges needed (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema) — not the database root account.
-  - Provision `OPENAI_API_KEY` and any third-party tokens from your deployment platform's secrets manager rather than a committed `.env` file.
+  - Use a dedicated database user with the minimum privileges needed (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema). Do not connect with the database root account.
+  - Provision `OPENAI_API_KEY` and any third-party tokens from your deployment platform's secrets manager, not a committed `.env` file.
 </Warning>
 
 ## Complete `.env` Example

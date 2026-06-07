@@ -119,8 +119,8 @@ This guide covers the most common issues users encounter with MCP Hub and their 
 
     - Ensure your MCP Hub instance is publicly accessible at the redirect URL you registered with the OAuth provider.
     - Check that the redirect URL in the OAuth provider's dashboard matches the URL exactly — including the scheme (`http` vs `https`) and any trailing slash.
-    - Use `https://` for any non-localhost redirect URL. Most providers reject `http://` callbacks for non-loopback hosts, and tokens delivered over `http://` can be intercepted.
-    - Register a single, exact redirect URL per environment — avoid wildcards or open-ended patterns that can be abused to exfiltrate authorization codes.
+    - Use `https://` for any non-localhost redirect URL. Most providers reject `http://` callbacks for non-loopback hosts, and `http://` exposes tokens to interception.
+    - Register a single, exact redirect URL per environment. Avoid wildcards or open-ended patterns — attackers can abuse them to exfiltrate authorization codes.
 
     **Session expired / logged out unexpectedly**
 

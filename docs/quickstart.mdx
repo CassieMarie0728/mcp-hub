@@ -94,7 +94,12 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     Replace `<db_user>`, `<db_password>`, and the two secret placeholders with your own values. See the [Configuration](/configuration) page for guidance on generating secure secrets.
 
     <Warning>
-      The values shown here — including the `mcp_hub` database name and `localhost` host — are for **local development only**. Before deploying to production, generate fresh `COOKIE_SECRET` and `JWT_SECRET` values, use a dedicated least-privilege database user (not `root`), enforce TLS on the database connection, and serve the app over HTTPS.
+      The values shown here — including the `mcp_hub` database name and `localhost` host — are for **local development only**. Before deploying to production:
+
+      - Generate fresh `COOKIE_SECRET` and `JWT_SECRET` values.
+      - Use a dedicated least-privilege database user, not `root`.
+      - Enforce TLS on the database connection.
+      - Serve the app over HTTPS.
     </Warning>
   </Step>
 
@@ -130,7 +135,7 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     **Web:** Open [http://localhost:8081](http://localhost:8081) in your browser. The MCP Hub dashboard loads immediately — no sign-in is required in development mode.
 
     <Warning>
-      The "no sign-in" behavior is a development convenience and **must not** be enabled in production. Ensure `NODE_ENV=production` is set on any publicly reachable deployment so authentication is enforced.
+      The "no sign-in" behavior is a development convenience and **must not** run in production. Set `NODE_ENV=production` on any publicly reachable deployment so authentication is enforced.
     </Warning>
 
     **iOS / Android:** Install the [Expo Go](https://expo.dev/go) app on your device, then scan the QR code printed in the terminal after `pnpm dev` starts. Your device and development machine must be on the same network.

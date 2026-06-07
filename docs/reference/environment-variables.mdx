@@ -29,7 +29,7 @@ OPENAI_API_KEY=
 ```
 
 <Warning>
-  Never commit your `.env` file. Ensure it is listed in your `.gitignore` before your first `git add`. If a secret is ever committed (even briefly), rotate it immediately — `git` history preserves it even after deletion.
+  Never commit your `.env` file. List it in your `.gitignore` before your first `git add`. If you ever commit a secret, even briefly, rotate it immediately — `git` history preserves it even after deletion.
 </Warning>
 
 ## Required Variables
@@ -74,7 +74,7 @@ JWT_SECRET=<a-different-64-char-hex-string-from-the-command-above>
 ```
 
 <Warning>
-  Treat both values as production credentials. Store them in your deployment platform's secrets manager, never in source control or chat logs. Rotate them immediately if you suspect exposure — this invalidates all active sessions and JWTs, which is the desired behavior after a leak.
+  Treat both values as production credentials. Store them in your deployment platform's secrets manager, never in source control or chat logs. Rotate them immediately if you suspect exposure. Rotation invalidates all active sessions and JWTs, which is the desired behavior after a leak.
 </Warning>
 
 ## Database URL Format
@@ -102,7 +102,7 @@ DATABASE_URL=mysql://<tidb_user>:<tidb_password>@gateway01.<region>.prod.aws.tid
 ```
 
 <Warning>
-  In production, create a dedicated database user with the **minimum required privileges** (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema only). Never connect with the MySQL `root` account, and always enable TLS (`?ssl={"rejectUnauthorized":true}` for hosted providers).
+  In production, create a dedicated database user with the **minimum required privileges** (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema only). Do not connect with the MySQL `root` account. Always enable TLS (`?ssl={"rejectUnauthorized":true}` for hosted providers).
 </Warning>
 
 <Note>
