@@ -39,7 +39,6 @@ These three variables must be set before MCP Hub will start. The app will exit w
 | Variable | Description | Example |
 |---|---|---|
 | `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. Use a dedicated, least-privileged application user — not `root`. | `mysql://mcp_app:<password>@localhost:3306/mcp_hub` |
-| `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. | `mysql://<db_user>:<db_password>@localhost:3306/mcp_hub` |
 | `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Must stay constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
 | `JWT_SECRET` | Secret for signing JWT tokens. Use a **different** random string of at least 32 characters. | *(generated — see below)* |
 
@@ -67,20 +66,11 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   Run this command twice and use a **different output** for `COOKIE_SECRET` and `JWT_SECRET`. Reusing the same secret for both reduces the security of your sessions and tokens.
 </Tip>
 
-Your `.env` should look like this after substitution (use your own generated values — do not copy these):
+Your `.env` should look like this after substitution (the values below are illustrative placeholders — **do not copy them**; generate your own):
 
 ```bash
 COOKIE_SECRET=<paste-64-char-hex-output-here>
 JWT_SECRET=<paste-different-64-char-hex-output-here>
-```
-
-<Warning>
-  Treat these values as production secrets. Never commit them to version control, share them in chat, or paste them into bug reports. If a secret is exposed, rotate it immediately and restart the app — all existing sessions and JWTs will be invalidated.
-Your `.env` should look like this after substitution (the values below are illustrative — **do not copy them**; generate your own):
-
-```bash
-COOKIE_SECRET=<64-char-hex-string-from-the-command-above>
-JWT_SECRET=<a-different-64-char-hex-string-from-the-command-above>
 ```
 
 <Warning>
