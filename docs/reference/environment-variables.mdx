@@ -32,7 +32,7 @@ OPENAI_API_KEY=
   Never commit your `.env` file. List it in your `.gitignore` before your first `git add`. If you ever commit a secret, even briefly, rotate it immediately — `git` history preserves it even after deletion.
 </Warning>
 
-## Required Variables
+## Required variables
 
 These three variables must be set before MCP Hub will start. The app will exit with an error if any of them are missing or left at their placeholder values.
 
@@ -42,7 +42,7 @@ These three variables must be set before MCP Hub will start. The app will exit w
 | `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Must stay constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
 | `JWT_SECRET` | Secret for signing JWT tokens. Use a **different** random string of at least 32 characters. | *(generated — see below)* |
 
-## Optional Variables
+## Optional variables
 
 These variables have safe defaults for local development. Override them in `.env` when you need a different port, a remote MCP server, or AI features.
 
@@ -54,7 +54,7 @@ These variables have safe defaults for local development. Override them in `.env
 | `MCP_SERVER_URL` | `http://localhost:3001` | Default MCP server URL used as a starting point when you add your first server. You can override this per-server inside the app. |
 | `OPENAI_API_KEY` | *(empty)* | OpenAI API key for AI-powered features. Leave blank to disable AI features entirely — all other functionality continues to work without it. |
 
-## Generating Secure Secrets
+## Generating secure secrets
 
 Generate cryptographically random values for `COOKIE_SECRET` and `JWT_SECRET` using the Node.js built-in `crypto` module. Run the command twice — once for each secret — and paste the two outputs into your `.env`.
 
@@ -77,7 +77,7 @@ JWT_SECRET=<a-different-64-char-hex-string-from-the-command-above>
   Treat both values as production credentials. Store them in your deployment platform's secrets manager, never in source control or chat logs. Rotate them immediately if you suspect exposure. Rotation invalidates all active sessions and JWTs, which is the desired behavior after a leak.
 </Warning>
 
-## Database URL Format
+## Database URL format
 
 `DATABASE_URL` follows the standard connection string format used by Prisma and most MySQL clients:
 
