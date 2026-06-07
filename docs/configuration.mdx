@@ -70,11 +70,12 @@ Below is a complete example `.env` file with every variable filled in. Copy this
 # .env — MCP Hub environment configuration
 
 # ── Database ───────────────────────────────────────────────────────────────
-DATABASE_URL="mysql://mcp_user:s3cur3p4ss@localhost:3306/mcp_hub"
+# Use a dedicated, least-privileged MySQL user — not root.
+DATABASE_URL="mysql://mcp_app:<replace-with-strong-password>@localhost:3306/mcp_hub"
 
 # ── Auth secrets (generate unique values — see docs) ──────────────────────
-COOKIE_SECRET="a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2"
-JWT_SECRET="z9y8x7w6v5u4z9y8x7w6v5u4z9y8x7w6v5u4z9y8x7w6v5u4z9y8x7w6v5u4z9y8"
+COOKIE_SECRET="<paste-64-char-hex-output-here>"
+JWT_SECRET="<paste-different-64-char-hex-output-here>"
 
 # ── Server ports ───────────────────────────────────────────────────────────
 PORT=3000

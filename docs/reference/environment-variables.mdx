@@ -38,7 +38,7 @@ These three variables must be set before MCP Hub will start. The app will exit w
 
 | Variable | Description | Example |
 |---|---|---|
-| `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. | `mysql://root:secret@localhost:3306/mcp_hub` |
+| `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. Use a dedicated, least-privileged application user — not `root`. | `mysql://mcp_app:<password>@localhost:3306/mcp_hub` |
 | `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Must stay constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
 | `JWT_SECRET` | Secret for signing JWT tokens. Use a **different** random string of at least 32 characters. | *(generated — see below)* |
 
@@ -66,12 +66,16 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   Run this command twice and use a **different output** for `COOKIE_SECRET` and `JWT_SECRET`. Reusing the same secret for both reduces the security of your sessions and tokens.
 </Tip>
 
-Your `.env` should look like this after substitution:
+Your `.env` should look like this after substitution (use your own generated values — do not copy these):
 
 ```bash
-COOKIE_SECRET=4a9f2e1b7c3d8e5f0a6b2c9d4e7f1a3b5c8d2e6f9a0b4c7d1e5f8a2b3c6d9e0f
-JWT_SECRET=8d3c1a7b5f2e9d4c0b6a3e8f1c5d2b7a4e9f6c3d0b5a8e2f7c1d4b9a6e3f0c2
+COOKIE_SECRET=<paste-64-char-hex-output-here>
+JWT_SECRET=<paste-different-64-char-hex-output-here>
 ```
+
+<Warning>
+  Treat these values as production secrets. Never commit them to version control, share them in chat, or paste them into bug reports. If a secret is exposed, rotate it immediately and restart the app — all existing sessions and JWTs will be invalidated.
+</Warning>
 
 ## Database URL Format
 
