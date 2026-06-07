@@ -112,7 +112,7 @@ DATABASE_URL=mysql://<tidb_user>:<tidb_password>@gateway01.<region>.prod.aws.tid
 ```
 
 <Warning>
-  In production, create a dedicated database user with the **minimum required privileges** (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema only). Do not connect with the MySQL `root` account. Always enable TLS (`?ssl={"rejectUnauthorized":true}` for hosted providers).
+  In production, create a dedicated database user with the **minimum required privileges** (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema only). Do not connect with the MySQL `root` account. Always enable TLS — use `?ssl={"rejectUnauthorized":true}` for hosted providers. Never set `rejectUnauthorized:false`: it disables certificate verification and allows man-in-the-middle attacks.
 </Warning>
 
 <Note>

@@ -121,6 +121,7 @@ This guide covers the most common issues users encounter with MCP Hub and their 
     - Check that the redirect URL in the OAuth provider's dashboard matches the URL exactly — including the scheme (`http` vs `https`) and any trailing slash.
     - Use `https://` for any non-localhost redirect URL. Most providers reject `http://` callbacks for non-loopback hosts, and `http://` exposes tokens to interception.
     - Register a single, exact redirect URL per environment. Avoid wildcards or open-ended patterns — attackers can abuse them to exfiltrate authorization codes.
+    - Validate the `state` parameter on the callback. Store it server-side when you start the flow and compare for exact equality on return. A missing or mismatched `state` indicates a CSRF attempt — abort the flow and do not exchange the code.
 
     **Session expired / logged out unexpectedly**
 
