@@ -1,76 +1,144 @@
 /**
- * Client-side admin metrics mock
- * This is a placeholder for the server-side adminMetricsManager
- * In a real app, this would fetch metrics from the backend API
+ * Client-side admin metrics mock.
+ *
+ * This mirrors the shape consumed by the admin dashboard. In production, this
+ * module should fetch the same contract from the backend API instead of
+ * generating local placeholder values.
  */
+
+export type MetricsTimeRange = 'hour' | 'day' | 'week' | 'month';
+
+export interface SystemHealthMetrics {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  databaseConnected: boolean;
+  cacheConnected: boolean;
+  memoryUsage: number;
+  apiResponseTime: number;
+}
+
+export interface WorkflowMetrics {
+  totalExecutions: number;
+  successfulExecutions: number;
+  failedExecutions: number;
+  successRate: number;
+  averageDuration: number;
+  executionsPerMinute: number;
+}
+
+export interface TokenMetrics {
+  activeTokens: number;
+  totalTokens: number;
+  expiringTokens: number;
+  tokensByServer: Record<string, number>;
+}
+
+export interface UserMetrics {
+  activeUsers: number;
+  totalUsers: number;
+  newUsersToday: number;
+}
+
+export interface WorkspaceMetrics {
+  totalWorkspaces: number;
+  activeWorkspaces: number;
+  workspacesWithErrors: number;
+}
+
+export interface ErrorMetrics {
+  totalErrors: number;
+  errorRate: number;
+  topErrors: Array<{
+    type: string;
+    count: number;
+  }>;
+  errorTrend: Array<{
+    timestamp: number;
+    count: number;
+  }>;
+}
 
 export interface SystemMetrics {
   timestamp: number;
   uptime: number;
-  health: {
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    checks: Record<string, boolean>;
-  };
-  workflows: {
-    total: number;
-    running: number;
-    completed: number;
-    failed: number;
-  };
-  tokens: {
-    active: number;
-    expired: number;
-    total: number;
-  };
-  errors: {
-    total: number;
-    recent: Array<{
-      timestamp: number;
-      message: string;
-      count: number;
-    }>;
-  };
+  systemHealth: SystemHealthMetrics;
+  workflowMetrics: WorkflowMetrics;
+  tokenMetrics: TokenMetrics;
+  userMetrics: UserMetrics;
+  workspaceMetrics: WorkspaceMetrics;
+  errorMetrics: ErrorMetrics;
 }
 
+const randomInt = (max: number, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+const calculateRate = (part: number, total: number) => (total === 0 ? 0 : (part / total) * 100);
+
 export const adminMetricsManager = {
-  async getSystemMetrics(timeRange: 'hour' | 'day' | 'week' | 'month'): Promise<SystemMetrics> {
-    // Mock data - in production, this would call the backend API
+  async getSystemMetrics(timeRange: MetricsTimeRange): Promise<SystemMetrics> {
+    const rangeMultiplier: Record<MetricsTimeRange, number> = {
+      hour: 1,
+      day: 6,
+      week: 24,
+      month: 72,
+    };
+
+    const multiplier = rangeMultiplier[timeRange];
+    const totalExecutions = randomInt(180 * multiplier, 25 * multiplier);
+    const failedExecutions = randomInt(Math.max(1, Math.floor(totalExecutions * 0.12)));
+    const successfulExecutions = totalExecutions - failedExecutions;
+    const totalTokens = randomInt(300, 120);
+    const totalErrors = randomInt(80, failedExecutions);
+
     return {
       timestamp: Date.now(),
-      uptime: Math.random() * 86400000, // Random uptime in ms
-      health: {
-        status: 'healthy',
-        checks: {
-          database: true,
-          cache: true,
-          api: true,
+      uptime: randomInt(86_400_000, 3_600_000),
+      systemHealth: {
+        status: failedExecutions > totalExecutions * 0.2 ? 'degraded' : 'healthy',
+        databaseConnected: true,
+        cacheConnected: true,
+        memoryUsage: randomInt(74, 28),
+        apiResponseTime: randomInt(380, 45),
+      },
+      workflowMetrics: {
+        totalExecutions,
+        successfulExecutions,
+        failedExecutions,
+        successRate: calculateRate(successfulExecutions, totalExecutions),
+        averageDuration: randomInt(18_000, 800),
+        executionsPerMinute: Number((totalExecutions / Math.max(1, multiplier * 60)).toFixed(2)),
+      },
+      tokenMetrics: {
+        activeTokens: randomInt(totalTokens, 40),
+        totalTokens,
+        expiringTokens: randomInt(18),
+        tokensByServer: {
+          github: randomInt(80, 10),
+          slack: randomInt(45, 5),
+          notion: randomInt(35, 3),
+          custom: randomInt(25, 1),
         },
       },
-      workflows: {
-        total: Math.floor(Math.random() * 1000),
-        running: Math.floor(Math.random() * 50),
-        completed: Math.floor(Math.random() * 500),
-        failed: Math.floor(Math.random() * 100),
+      userMetrics: {
+        activeUsers: randomInt(42, 5),
+        totalUsers: randomInt(120, 45),
+        newUsersToday: randomInt(12),
       },
-      tokens: {
-        active: Math.floor(Math.random() * 200),
-        expired: Math.floor(Math.random() * 50),
-        total: Math.floor(Math.random() * 300),
+      workspaceMetrics: {
+        totalWorkspaces: randomInt(60, 12),
+        activeWorkspaces: randomInt(30, 4),
+        workspacesWithErrors: randomInt(8),
       },
-      errors: {
-        total: Math.floor(Math.random() * 100),
-        recent: [
-          {
-            timestamp: Date.now() - 3600000,
-            message: 'Connection timeout',
-            count: Math.floor(Math.random() * 10),
-          },
-          {
-            timestamp: Date.now() - 7200000,
-            message: 'Invalid token',
-            count: Math.floor(Math.random() * 5),
-          },
+      errorMetrics: {
+        totalErrors,
+        errorRate: calculateRate(totalErrors, totalExecutions),
+        topErrors: [
+          { type: 'connection timeout', count: randomInt(12, 1) },
+          { type: 'invalid token', count: randomInt(8, 1) },
+          { type: 'rate limit', count: randomInt(6, 1) },
         ],
+        errorTrend: Array.from({ length: 8 }, (_, index) => ({
+          timestamp: Date.now() - (7 - index) * 3_600_000,
+          count: randomInt(10),
+        })),
       },
     };
   },
