@@ -167,11 +167,11 @@ Attaches secret references and plain environment variables to the connection. MC
 </ParamField>
 
 <Warning>
-  Values in `envVars` are transmitted as plaintext in the request body — always call this endpoint over HTTPS. Prefer `secretRefs` for production. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs. Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
   **Handling secret values.**
 
-  - Only call this endpoint over HTTPS — the request body sends secret values in plain text.
-  - Do not log request bodies or include them in error reports. For production credentials, prefer `secretRefs` (vault lookup) over `envVars`.
+  - Only call this endpoint over HTTPS — values in `envVars` are sent as plain text in the request body.
+  - Do not log request bodies or include them in error reports. For production credentials, prefer `secretRefs` (vault lookup) over `envVars` so the raw value never travels through this API.
+  - Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
   - Use **least-privilege** tokens. Scope `GITHUB_TOKEN` to the specific repos and permissions the MCP server needs, and avoid full `repo` or `admin` scopes. Use scoped or project-restricted API keys for third-party services.
   - Rotate any secret that may have leaked through shell history, screenshots, or commit history. Provider-side revocation is the only guaranteed remediation.
 </Warning>
