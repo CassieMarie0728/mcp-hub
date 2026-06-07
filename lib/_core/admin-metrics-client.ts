@@ -68,7 +68,12 @@ export interface SystemMetrics {
   errorMetrics: ErrorMetrics;
 }
 
-const randomInt = (max: number, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randomInt = (max: number, min = 0) => {
+  const lower = Math.min(min, max);
+  const upper = Math.max(min, max);
+
+  return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+};
 
 const calculateRate = (part: number, total: number) => (total === 0 ? 0 : (part / total) * 100);
 
@@ -86,7 +91,7 @@ export const adminMetricsManager = {
     const failedExecutions = randomInt(Math.max(1, Math.floor(totalExecutions * 0.12)));
     const successfulExecutions = totalExecutions - failedExecutions;
     const totalTokens = randomInt(300, 120);
-    const totalErrors = randomInt(80, failedExecutions);
+    const totalErrors = randomInt(failedExecutions, Math.min(80, failedExecutions));
 
     return {
       timestamp: Date.now(),
