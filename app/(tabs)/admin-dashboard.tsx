@@ -2,7 +2,7 @@ import { ScrollView, View, Text, Pressable, ActivityIndicator } from 'react-nati
 import { useState, useEffect } from 'react';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
-import { adminMetricsManager, type SystemMetrics } from '@/server/admin/admin-metrics';
+import { adminMetricsManager, type SystemMetrics } from '@/lib/_core/admin-metrics-client';
 
 /**
  * Admin Dashboard Screen

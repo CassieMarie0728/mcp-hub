@@ -29,8 +29,7 @@ export function createTRPCClient() {
           const token = await Auth.getSessionToken();
           return token ? { Authorization: `Bearer ${token}` } : {};
         },
-        // Custom fetch to include credentials for cookie-based auth
-        fetch(url, options) {
+        fetch: async (url, options) => {
           return fetch(url, {
             ...options,
             credentials: "include",
