@@ -67,15 +67,6 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   Run this command twice and use a **different output** for `COOKIE_SECRET` and `JWT_SECRET`. Reusing the same secret for both reduces the security of your sessions and tokens.
 </Tip>
 
-Your `.env` should look like this after substitution (use your own generated values — do not copy these):
-
-```bash
-COOKIE_SECRET=<paste-64-char-hex-output-here>
-JWT_SECRET=<paste-different-64-char-hex-output-here>
-```
-
-<Warning>
-  Treat these values as production secrets. Never commit them to version control, share them in chat, or paste them into bug reports. If a secret is exposed, rotate it immediately and restart the app — all existing sessions and JWTs will be invalidated.
 Your `.env` should look like this after substitution (the values below are illustrative — **do not copy them**; generate your own):
 
 ```bash
