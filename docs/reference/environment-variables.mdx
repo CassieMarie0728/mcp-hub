@@ -74,7 +74,7 @@ JWT_SECRET=<a-different-64-char-hex-string-from-the-command-above>
 ```
 
 <Warning>
-  Treat both values as production credentials. Store them in your deployment platform's secrets manager, never in source control or chat logs. Rotate them immediately if you suspect exposure. Rotation invalidates all active sessions and JWTs, which is the desired behavior after a leak.
+  Treat both values as production credentials. Store them in your deployment platform's secrets manager, never in source control or chat logs. Rotate them immediately if you suspect exposure — this invalidates all active sessions and JWTs, which is the desired outcome after a leak.
 </Warning>
 
 ## Database URL Format
