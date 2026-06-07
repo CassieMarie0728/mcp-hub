@@ -91,11 +91,6 @@ Below is a complete example `.env` file with every variable filled in. Copy this
 DATABASE_URL="mysql://mcp_app:<replace-with-strong-password>@localhost:3306/mcp_hub"
 
 # ── Auth secrets (generate unique values — see docs) ──────────────────────
-COOKIE_SECRET="<paste-64-char-hex-output-here>"
-JWT_SECRET="<paste-different-64-char-hex-output-here>"
-DATABASE_URL="mysql://<db_user>:<db_password>@localhost:3306/mcp_hub"
-
-# ── Auth secrets (generate unique values — see docs) ──────────────────────
 # Generate each with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 COOKIE_SECRET="<generate-a-64-char-hex-string>"
 JWT_SECRET="<generate-a-different-64-char-hex-string>"
