@@ -159,7 +159,7 @@ Attaches secret references and plain environment variables to the connection. MC
 </ParamField>
 
 <Warning>
-  Values in `envVars` are transmitted as plaintext in the request body — always call this endpoint over HTTPS. Prefer `secretRefs` for production: store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name so the raw value never travels through this API or appears in request logs. Grant the resolving identity (e.g., IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
+  Values in `envVars` are transmitted as plaintext in the request body — always call this endpoint over HTTPS. Prefer `secretRefs` for production. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs. Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
 </Warning>
 
 Returns `200 OK` on success:
