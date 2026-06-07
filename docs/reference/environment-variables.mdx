@@ -76,15 +76,6 @@ JWT_SECRET=<paste-different-64-char-hex-output-here>
 
 <Warning>
   Treat these values as production secrets. Never commit them to version control, share them in chat, or paste them into bug reports. If a secret is exposed, rotate it immediately and restart the app — all existing sessions and JWTs will be invalidated.
-Your `.env` should look like this after substitution (the values below are illustrative — **do not copy them**; generate your own):
-
-```bash
-COOKIE_SECRET=<64-char-hex-string-from-the-command-above>
-JWT_SECRET=<a-different-64-char-hex-string-from-the-command-above>
-```
-
-<Warning>
-  Treat both values as production credentials. Store them in your deployment platform's secrets manager, never in source control or chat logs. Rotate them immediately if you suspect exposure — this invalidates all active sessions and JWTs, which is the desired outcome after a leak.
 </Warning>
 
 ## Database URL Format
