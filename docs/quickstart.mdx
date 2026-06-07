@@ -7,7 +7,16 @@ description: "Install MCP Hub, run the server, and connect your first MCP server
 This guide walks you through installing MCP Hub, starting the backend server, and connecting your first MCP server. By the end you will have the full application running locally and at least one MCP server listed in your dashboard.
 
 <Tip>
-  Want a quick MySQL instance without a local install? Use Docker: `docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mcp_hub mysql:8`
+  Want a quick MySQL instance without a local install? Use Docker (development only — do not expose this container or reuse this command in production):
+
+  ```bash
+  docker run -d -p 127.0.0.1:3306:3306 \
+    -e MYSQL_ROOT_PASSWORD="$(openssl rand -hex 24)" \
+    -e MYSQL_DATABASE=mcp_hub \
+    mysql:8
+  ```
+
+  Binding to `127.0.0.1` keeps the database off your local network, and generating a random root password avoids the well-known `password` default.
 </Tip>
 
 <Steps>
@@ -57,13 +66,14 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     # .env
 
     # MySQL connection string (required)
-    DATABASE_URL="mysql://user:password@localhost:3306/mcp_hub"
+    DATABASE_URL="mysql://<db_user>:<db_password>@localhost:3306/mcp_hub"
 
     # Secret used to sign session cookies — use a long random string (required)
-    COOKIE_SECRET="replace-with-a-secure-random-string"
+    # Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+    COOKIE_SECRET="<generate-a-64-char-hex-string>"
 
     # Secret used to sign JWT tokens — use a different random string (required)
-    JWT_SECRET="replace-with-another-secure-random-string"
+    JWT_SECRET="<generate-a-different-64-char-hex-string>"
 
     # Backend API port (optional, default: 3000)
     PORT=3000
@@ -81,7 +91,11 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     NODE_ENV="development"
     ```
 
-    Replace `user`, `password`, and the two secret values with your own. See the [Configuration](/configuration) page for guidance on generating secure secrets.
+    Replace `<db_user>`, `<db_password>`, and the two secret placeholders with your own values. See the [Configuration](/configuration) page for guidance on generating secure secrets.
+
+    <Warning>
+      The values shown here — including the `mcp_hub` database name and `localhost` host — are for **local development only**. Before deploying to production, generate fresh `COOKIE_SECRET` and `JWT_SECRET` values, use a dedicated least-privilege database user (not `root`), enforce TLS on the database connection, and serve the app over HTTPS.
+    </Warning>
   </Step>
 
   <Step title="Initialize the Database">
@@ -114,6 +128,10 @@ This guide walks you through installing MCP Hub, starting the backend server, an
 
   <Step title="Open in Browser or Expo Go">
     **Web:** Open [http://localhost:8081](http://localhost:8081) in your browser. The MCP Hub dashboard loads immediately — no sign-in is required in development mode.
+
+    <Warning>
+      The "no sign-in" behavior is a development convenience and **must not** be enabled in production. Ensure `NODE_ENV=production` is set on any publicly reachable deployment so authentication is enforced.
+    </Warning>
 
     **iOS / Android:** Install the [Expo Go](https://expo.dev/go) app on your device, then scan the QR code printed in the terminal after `pnpm dev` starts. Your device and development machine must be on the same network.
   </Step>
