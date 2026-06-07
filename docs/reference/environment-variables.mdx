@@ -19,7 +19,7 @@ EXPO_PORT=8081
 # Database
 DATABASE_URL=mysql://<db_user>:<db_password>@localhost:3306/mcp_hub
 
-# Auth / sessions — generate with the command in "Generating Secure Secrets" below
+# Auth / sessions — generate with the command in "Generating secure secrets" below
 COOKIE_SECRET=<generate-a-64-char-hex-string>
 JWT_SECRET=<generate-a-different-64-char-hex-string>
 
@@ -32,18 +32,17 @@ OPENAI_API_KEY=
   Never commit your `.env` file. List it in your `.gitignore` before your first `git add`. If you ever commit a secret, even briefly, rotate it immediately — `git` history preserves it even after deletion.
 </Warning>
 
-## Required Variables
+## Required variables
 
-These three variables must be set before MCP Hub will start. The app will exit with an error if any of them are missing or left at their placeholder values.
+Set these three variables before starting MCP Hub. The app exits with an error if any are missing or left at their placeholder values.
 
 | Variable | Description | Example |
 |---|---|---|
 | `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. Use a dedicated, least-privileged application user — not `root`. | `mysql://mcp_app:<password>@localhost:3306/mcp_hub` |
-| `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. | `mysql://<db_user>:<db_password>@localhost:3306/mcp_hub` |
-| `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Must stay constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
+| `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Keep it constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
 | `JWT_SECRET` | Secret for signing JWT tokens. Use a **different** random string of at least 32 characters. | *(generated — see below)* |
 
-## Optional Variables
+## Optional variables
 
 These variables have safe defaults for local development. Override them in `.env` when you need a different port, a remote MCP server, or AI features.
 
@@ -55,7 +54,7 @@ These variables have safe defaults for local development. Override them in `.env
 | `MCP_SERVER_URL` | `http://localhost:3001` | Default MCP server URL used as a starting point when you add your first server. You can override this per-server inside the app. |
 | `OPENAI_API_KEY` | *(empty)* | OpenAI API key for AI-powered features. Leave blank to disable AI features entirely — all other functionality continues to work without it. |
 
-## Generating Secure Secrets
+## Generating secure secrets
 
 Generate cryptographically random values for `COOKIE_SECRET` and `JWT_SECRET` using the Node.js built-in `crypto` module. Run the command twice — once for each secret — and paste the two outputs into your `.env`.
 
@@ -78,7 +77,7 @@ JWT_SECRET=<paste-different-64-char-hex-output-here>
   Treat these values as production secrets. Never commit them to version control, share them in chat, or paste them into bug reports. If a secret is exposed, rotate it immediately and restart the app — all existing sessions and JWTs will be invalidated.
 </Warning>
 
-## Database URL Format
+## Database URL format
 
 `DATABASE_URL` follows the standard connection string format used by Prisma and most MySQL clients:
 
