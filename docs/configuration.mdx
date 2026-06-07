@@ -52,8 +52,16 @@ cp .env.example .env
   Your OpenAI API key, required only if you want to use AI-powered features such as natural-language tool search or automated workflow suggestions. Leave blank to disable those features.
 
   ```
-  OPENAI_API_KEY="sk-..."
+  OPENAI_API_KEY="<your-openai-api-key>"
   ```
+
+  <Warning>
+    Treat `OPENAI_API_KEY` like a password:
+
+    - Store it only in `.env`, never in source.
+    - Rotate it from the OpenAI dashboard if it leaks.
+    - Use a separate key per environment so a leaked development key cannot consume production quota.
+  </Warning>
 </ParamField>
 
 <ParamField body="NODE_ENV" type="string" default="development">
@@ -61,6 +69,15 @@ cp .env.example .env
 
   Accepted values: `development`, `production`.
 </ParamField>
+
+<Warning>
+  When `NODE_ENV=production`, also make sure you:
+
+  - Serve MCP Hub over HTTPS only — cookies are only marked `Secure` on HTTPS origins.
+  - Generate **fresh** `COOKIE_SECRET` and `JWT_SECRET` values for each environment (never reuse development secrets in production).
+  - Use a dedicated database user with the minimum privileges needed (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema). Do not connect with the database root account.
+  - Provision `OPENAI_API_KEY` and any third-party tokens from your deployment platform's secrets manager, not a committed `.env` file.
+</Warning>
 
 ## Complete `.env` Example
 
@@ -76,6 +93,12 @@ DATABASE_URL="mysql://mcp_app:<replace-with-strong-password>@localhost:3306/mcp_
 # ── Auth secrets (generate unique values — see docs) ──────────────────────
 COOKIE_SECRET="<paste-64-char-hex-output-here>"
 JWT_SECRET="<paste-different-64-char-hex-output-here>"
+DATABASE_URL="mysql://<db_user>:<db_password>@localhost:3306/mcp_hub"
+
+# ── Auth secrets (generate unique values — see docs) ──────────────────────
+# Generate each with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+COOKIE_SECRET="<generate-a-64-char-hex-string>"
+JWT_SECRET="<generate-a-different-64-char-hex-string>"
 
 # ── Server ports ───────────────────────────────────────────────────────────
 PORT=3000
