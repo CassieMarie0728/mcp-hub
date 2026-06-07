@@ -39,7 +39,6 @@ These three variables must be set before MCP Hub will start. The app will exit w
 | Variable | Description | Example |
 |---|---|---|
 | `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. Use a dedicated, least-privileged application user — not `root`. | `mysql://mcp_app:<password>@localhost:3306/mcp_hub` |
-| `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. | `mysql://<db_user>:<db_password>@localhost:3306/mcp_hub` |
 | `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Must stay constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
 | `JWT_SECRET` | Secret for signing JWT tokens. Use a **different** random string of at least 32 characters. | *(generated — see below)* |
 
