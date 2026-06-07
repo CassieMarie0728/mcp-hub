@@ -17,11 +17,11 @@ PORT=3000
 EXPO_PORT=8081
 
 # Database
-DATABASE_URL=mysql://user:password@localhost:3306/mcp_hub
+DATABASE_URL=mysql://<db_user>:<db_password>@localhost:3306/mcp_hub
 
-# Auth / sessions
-COOKIE_SECRET=change-me
-JWT_SECRET=change-me
+# Auth / sessions — generate with the command in "Generating Secure Secrets" below
+COOKIE_SECRET=<generate-a-64-char-hex-string>
+JWT_SECRET=<generate-a-different-64-char-hex-string>
 
 # MCP and external integrations
 MCP_SERVER_URL=http://localhost:3001
@@ -29,7 +29,7 @@ OPENAI_API_KEY=
 ```
 
 <Warning>
-  Never commit your `.env` file. Ensure it is listed in your `.gitignore` before your first `git add`.
+  Never commit your `.env` file. List it in your `.gitignore` before your first `git add`. If you ever commit a secret, even briefly, rotate it immediately — `git` history preserves it even after deletion.
 </Warning>
 
 ## Required Variables
@@ -38,7 +38,7 @@ These three variables must be set before MCP Hub will start. The app will exit w
 
 | Variable | Description | Example |
 |---|---|---|
-| `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. | `mysql://root:secret@localhost:3306/mcp_hub` |
+| `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. | `mysql://<db_user>:<db_password>@localhost:3306/mcp_hub` |
 | `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Must stay constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
 | `JWT_SECRET` | Secret for signing JWT tokens. Use a **different** random string of at least 32 characters. | *(generated — see below)* |
 
@@ -66,12 +66,16 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   Run this command twice and use a **different output** for `COOKIE_SECRET` and `JWT_SECRET`. Reusing the same secret for both reduces the security of your sessions and tokens.
 </Tip>
 
-Your `.env` should look like this after substitution:
+Your `.env` should look like this after substitution (the values below are illustrative — **do not copy them**; generate your own):
 
 ```bash
-COOKIE_SECRET=4a9f2e1b7c3d8e5f0a6b2c9d4e7f1a3b5c8d2e6f9a0b4c7d1e5f8a2b3c6d9e0f
-JWT_SECRET=8d3c1a7b5f2e9d4c0b6a3e8f1c5d2b7a4e9f6c3d0b5a8e2f7c1d4b9a6e3f0c2
+COOKIE_SECRET=<64-char-hex-string-from-the-command-above>
+JWT_SECRET=<a-different-64-char-hex-string-from-the-command-above>
 ```
+
+<Warning>
+  Treat both values as production credentials. Store them in your deployment platform's secrets manager, never in source control or chat logs. Rotate them immediately if you suspect exposure. Rotation invalidates all active sessions and JWTs, which is the desired behavior after a leak.
+</Warning>
 
 ## Database URL Format
 
@@ -84,18 +88,22 @@ mysql://[user]:[password]@[host]:[port]/[database]
 Common examples:
 
 ```bash
-# Local MySQL (default install)
-DATABASE_URL=mysql://root:password@localhost:3306/mcp_hub
+# Local MySQL (development only — do not use the root account in production)
+DATABASE_URL=mysql://<db_user>:<db_password>@localhost:3306/mcp_hub
 
-# MySQL running in Docker
-DATABASE_URL=mysql://mcp_user:mcp_pass@127.0.0.1:3306/mcp_hub
+# MySQL running in Docker (development only)
+DATABASE_URL=mysql://<db_user>:<db_password>@127.0.0.1:3306/mcp_hub
 
 # PlanetScale (mysql2 compatible — append ?ssl={"rejectUnauthorized":true})
-DATABASE_URL=mysql://abc123:pscale_pw_xxxx@aws.connect.psdb.cloud/mcp_hub?ssl={"rejectUnauthorized":true}
+DATABASE_URL=mysql://<ps_user>:<ps_password>@aws.connect.psdb.cloud/mcp_hub?ssl={"rejectUnauthorized":true}
 
 # TiDB Serverless
-DATABASE_URL=mysql://root:<password>@gateway01.<region>.prod.aws.tidbcloud.com:4000/mcp_hub?ssl={"rejectUnauthorized":true}
+DATABASE_URL=mysql://<tidb_user>:<tidb_password>@gateway01.<region>.prod.aws.tidbcloud.com:4000/mcp_hub?ssl={"rejectUnauthorized":true}
 ```
+
+<Warning>
+  In production, create a dedicated database user with the **minimum required privileges** (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema only). Do not connect with the MySQL `root` account. Always enable TLS (`?ssl={"rejectUnauthorized":true}` for hosted providers).
+</Warning>
 
 <Note>
   If your password contains special characters (e.g., `@`, `/`, `:`), percent-encode them. For example, `p@ss/word` becomes `p%40ss%2Fword`.
