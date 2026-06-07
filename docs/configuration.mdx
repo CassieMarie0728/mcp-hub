@@ -49,7 +49,7 @@ cp .env.example .env
 </ParamField>
 
 <ParamField body="OPENAI_API_KEY" type="string">
-  Your OpenAI API key, required only if you want to use AI-powered features such as natural-language tool search or automated workflow suggestions. Leave blank to disable those features.
+  Your OpenAI API key, required only if you use AI features such as natural-language tool search or automated workflow suggestions. Leave blank to disable those features.
 
   ```
   OPENAI_API_KEY="<your-openai-api-key>"
@@ -91,11 +91,6 @@ Below is a complete example `.env` file with every variable filled in. Copy this
 DATABASE_URL="mysql://mcp_app:<replace-with-strong-password>@localhost:3306/mcp_hub"
 
 # ── Auth secrets (generate unique values — see docs) ──────────────────────
-COOKIE_SECRET="<paste-64-char-hex-output-here>"
-JWT_SECRET="<paste-different-64-char-hex-output-here>"
-DATABASE_URL="mysql://<db_user>:<db_password>@localhost:3306/mcp_hub"
-
-# ── Auth secrets (generate unique values — see docs) ──────────────────────
 # Generate each with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 COOKIE_SECRET="<generate-a-64-char-hex-string>"
 JWT_SECRET="<generate-a-different-64-char-hex-string>"
@@ -116,7 +111,7 @@ NODE_ENV="development"
 
 ## Database Setup
 
-The `DATABASE_URL` variable must point to a running MySQL-compatible database. MCP Hub is tested against **MySQL 8.0** and works with any MySQL-compatible service. Once `DATABASE_URL` is set, run `pnpm db:push` to generate and apply the Drizzle schema. The command runs `drizzle-kit generate && drizzle-kit migrate` and creates all required tables automatically.
+The `DATABASE_URL` variable must point to a running MySQL-compatible database. MCP Hub is tested against **MySQL 8.0**; any MySQL-compatible service should work. After you set `DATABASE_URL`, run `pnpm db:push` to generate and apply the Drizzle schema. The command runs `drizzle-kit generate && drizzle-kit migrate` and creates all required tables.
 
 Supported services include:
 
@@ -140,4 +135,4 @@ Use Node.js's built-in `crypto` module to generate a cryptographically secure ra
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-This produces a 64-character hexadecimal string. Because the two secrets serve different purposes, generate them separately so they are never equal.
+This produces a 64-character hexadecimal string. Generate the two secrets separately so the values are never equal — they serve different purposes.

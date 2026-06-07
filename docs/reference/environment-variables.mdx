@@ -1,5 +1,5 @@
 ---
-title: "MCP Hub Environment Variables: Full Configuration Reference"
+title: "MCP Hub Environment Variables Reference"
 sidebarTitle: "Environment Variables"
 description: "Complete reference for all MCP Hub environment variables. Configure your database, auth secrets, server ports, and integrations using these settings."
 ---
@@ -39,7 +39,6 @@ These three variables must be set before MCP Hub will start. The app will exit w
 | Variable | Description | Example |
 |---|---|---|
 | `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. Use a dedicated, least-privileged application user — not `root`. | `mysql://mcp_app:<password>@localhost:3306/mcp_hub` |
-| `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. | `mysql://<db_user>:<db_password>@localhost:3306/mcp_hub` |
 | `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Must stay constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
 | `JWT_SECRET` | Secret for signing JWT tokens. Use a **different** random string of at least 32 characters. | *(generated — see below)* |
 
@@ -53,7 +52,7 @@ These variables have safe defaults for local development. Override them in `.env
 | `PORT` | `3000` | Port for the backend API server. Change this if port 3000 is already in use on your machine. |
 | `EXPO_PORT` | `8081` | Port for the Expo / web frontend served by Metro. Change this if port 8081 conflicts with another process. |
 | `MCP_SERVER_URL` | `http://localhost:3001` | Default MCP server URL used as a starting point when you add your first server. You can override this per-server inside the app. |
-| `OPENAI_API_KEY` | *(empty)* | OpenAI API key for AI-powered features. Leave blank to disable AI features entirely — all other functionality continues to work without it. |
+| `OPENAI_API_KEY` | *(empty)* | OpenAI API key for AI features. Leave blank to disable AI features entirely — all other functionality continues to work without it. |
 
 ## Generating Secure Secrets
 
@@ -67,15 +66,6 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   Run this command twice and use a **different output** for `COOKIE_SECRET` and `JWT_SECRET`. Reusing the same secret for both reduces the security of your sessions and tokens.
 </Tip>
 
-Your `.env` should look like this after substitution (use your own generated values — do not copy these):
-
-```bash
-COOKIE_SECRET=<paste-64-char-hex-output-here>
-JWT_SECRET=<paste-different-64-char-hex-output-here>
-```
-
-<Warning>
-  Treat these values as production secrets. Never commit them to version control, share them in chat, or paste them into bug reports. If a secret is exposed, rotate it immediately and restart the app — all existing sessions and JWTs will be invalidated.
 Your `.env` should look like this after substitution (the values below are illustrative — **do not copy them**; generate your own):
 
 ```bash
@@ -89,7 +79,7 @@ JWT_SECRET=<a-different-64-char-hex-string-from-the-command-above>
 
 ## Database URL Format
 
-`DATABASE_URL` follows the standard connection string format used by Prisma and most MySQL clients:
+`DATABASE_URL` follows the standard MySQL connection string format:
 
 ```
 mysql://[user]:[password]@[host]:[port]/[database]
@@ -104,15 +94,15 @@ DATABASE_URL=mysql://<db_user>:<db_password>@localhost:3306/mcp_hub
 # MySQL running in Docker (development only)
 DATABASE_URL=mysql://<db_user>:<db_password>@127.0.0.1:3306/mcp_hub
 
-# PlanetScale (mysql2 compatible — append ?ssl={"rejectUnauthorized":true})
-DATABASE_URL=mysql://<ps_user>:<ps_password>@aws.connect.psdb.cloud/mcp_hub?ssl={"rejectUnauthorized":true}
+# PlanetScale (append ?sslaccept=strict for TLS)
+DATABASE_URL=mysql://<ps_user>:<ps_password>@aws.connect.psdb.cloud/mcp_hub?sslaccept=strict
 
 # TiDB Serverless
 DATABASE_URL=mysql://<tidb_user>:<tidb_password>@gateway01.<region>.prod.aws.tidbcloud.com:4000/mcp_hub?ssl={"rejectUnauthorized":true}
 ```
 
 <Warning>
-  In production, create a dedicated database user with the **minimum required privileges** (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema only). Do not connect with the MySQL `root` account. Always enable TLS — use `?ssl={"rejectUnauthorized":true}` for hosted providers. Never set `rejectUnauthorized:false`: it disables certificate verification and allows man-in-the-middle attacks.
+  In production, create a dedicated database user with the **minimum required privileges** (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema only). Do not connect with the MySQL `root` account. Always enable TLS — use the provider's documented TLS query parameter (for example, `?sslaccept=strict` for PlanetScale or `?ssl={"rejectUnauthorized":true}` for `mysql2`-style clients). Never set `rejectUnauthorized:false`: it disables certificate verification and allows man-in-the-middle attacks.
 </Warning>
 
 <Note>
