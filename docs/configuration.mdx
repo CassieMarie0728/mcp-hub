@@ -14,7 +14,7 @@ cp .env.example .env
   Never commit your `.env` file to version control. It contains database credentials and signing secrets. Make sure `.env` is listed in your `.gitignore` — the MCP Hub repository includes this entry by default, but double-check before pushing.
 </Warning>
 
-## Environment Variables
+## Environment variables
 
 <ParamField body="DATABASE_URL" type="string" required>
   The full MySQL connection string for your database. MCP Hub uses Drizzle ORM and passes this value directly to the Drizzle client.
@@ -25,7 +25,7 @@ cp .env.example .env
 </ParamField>
 
 <ParamField body="COOKIE_SECRET" type="string" required>
-  A long, random string used to sign and verify session cookies. If this value changes, all existing sessions are immediately invalidated. Generate a new value with the command in the [Generating Secrets](#generating-secrets) section below.
+  A long, random string used to sign and verify session cookies. If this value changes, all existing sessions are immediately invalidated. Generate a new value with the command in the [Generating secrets](#generating-secrets) section below.
 </ParamField>
 
 <ParamField body="JWT_SECRET" type="string" required>
@@ -79,7 +79,7 @@ cp .env.example .env
   - Provision `OPENAI_API_KEY` and any third-party tokens from your deployment platform's secrets manager, not a committed `.env` file.
 </Warning>
 
-## Complete `.env` Example
+## Complete `.env` example
 
 Below is a complete example `.env` file with every variable filled in. Copy this as a starting point and replace placeholder values with your own.
 
@@ -109,7 +109,7 @@ OPENAI_API_KEY=""
 NODE_ENV="development"
 ```
 
-## Database Setup
+## Database setup
 
 The `DATABASE_URL` variable must point to a running MySQL-compatible database. MCP Hub is tested against **MySQL 8.0** and works with any MySQL-compatible service. Once `DATABASE_URL` is set, run `pnpm db:push` to generate and apply the Drizzle schema. The command runs `drizzle-kit generate && drizzle-kit migrate` and creates all required tables automatically.
 
@@ -127,7 +127,7 @@ CREATE DATABASE mcp_hub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 Or, if you used the Docker command from the [Quick Start](/quickstart), the `MYSQL_DATABASE=mcp_hub` flag already created it for you.
 
-## Generating Secrets
+## Generating secrets
 
 Use Node.js's built-in `crypto` module to generate a cryptographically secure random string suitable for `COOKIE_SECRET` and `JWT_SECRET`. Run the following command twice — once for each secret — and paste the output into your `.env` file.
 

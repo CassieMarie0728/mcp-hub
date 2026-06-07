@@ -8,7 +8,7 @@ MCP Hub supports multiple authentication modes for server connections: OAuth2, b
 
 ---
 
-## Start Auth Flow
+## Start auth flow
 
 ```http
 POST /api/connections/{connectionId}/auth/start
@@ -71,7 +71,7 @@ Store the `state` value **server-side** (for example, in the user's session) and
 
 ---
 
-## Get Auth Status
+## Get auth status
 
 ```http
 GET /api/connections/{connectionId}/auth/status
@@ -97,7 +97,7 @@ Returns the current authentication state for the connection, including whether a
 
 ---
 
-## Refresh Token
+## Refresh token
 
 ```http
 POST /api/connections/{connectionId}/auth/refresh
@@ -122,7 +122,7 @@ Returns `200 OK` with the updated `AuthStatus` on success:
 
 ---
 
-## Remove Auth State
+## Remove auth state
 
 ```http
 DELETE /api/connections/{connectionId}/auth
@@ -134,7 +134,7 @@ Returns `204 No Content` on success.
 
 ---
 
-## Attach Secrets
+## Attach secrets
 
 ```http
 POST /api/connections/{connectionId}/secrets
