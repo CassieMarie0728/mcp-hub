@@ -65,14 +65,6 @@ Store the `state` value **server-side** (for example, in the user's session) and
   After the user completes the OAuth2 flow and your callback URL receives the authorization code, MCP Hub handles the token exchange automatically. Poll `GET /api/connections/{connectionId}/auth/status` to confirm authentication completed successfully. Access and refresh tokens are stored encrypted at rest by MCP Hub and are never returned to the client over the API.
 </Note>
 
-<Warning>
-  **Callback URL requirements.**
-
-  - Register an `https://` redirect URL with the OAuth provider for any non-localhost deployment.
-  - Make sure the registered URL is an **exact match** — including scheme, host, port, and trailing slash.
-  - Avoid open redirects, wildcard redirect URIs, and `http://` callbacks. Each one enables token interception.
-</Warning>
-
 ---
 
 ## Get Auth Status
@@ -167,11 +159,12 @@ Attaches secret references and plain environment variables to the connection. MC
 </ParamField>
 
 <Warning>
-  Values in `envVars` are transmitted as plaintext in the request body — always call this endpoint over HTTPS. Prefer `secretRefs` for production. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs. Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
   **Handling secret values.**
 
-  - Only call this endpoint over HTTPS — the request body sends secret values in plain text.
-  - Do not log request bodies or include them in error reports. For production credentials, prefer `secretRefs` (vault lookup) over `envVars`.
+  - Only call this endpoint over HTTPS — values in `envVars` are transmitted as plain text in the request body.
+  - For production credentials, prefer `secretRefs` over `envVars`. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs.
+  - Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
+  - Do not log request bodies or include them in error reports.
   - Use **least-privilege** tokens. Scope `GITHUB_TOKEN` to the specific repos and permissions the MCP server needs, and avoid full `repo` or `admin` scopes. Use scoped or project-restricted API keys for third-party services.
   - Rotate any secret that may have leaked through shell history, screenshots, or commit history. Provider-side revocation is the only guaranteed remediation.
 </Warning>
