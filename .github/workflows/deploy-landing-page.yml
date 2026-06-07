@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - 'landing-page/**'
       - 'landing/**'
       - '.github/workflows/deploy-landing-page.yml'
   workflow_dispatch:
@@ -31,10 +32,23 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: Resolve landing page directory
+        id: landing-page
+        shell: bash
+        run: |
+          if [ -d "landing-page" ]; then
+            echo "path=landing-page" >> "$GITHUB_OUTPUT"
+          elif [ -d "landing" ]; then
+            echo "path=landing" >> "$GITHUB_OUTPUT"
+          else
+            echo "No landing page directory found. Expected landing-page/ or landing/." >&2
+            exit 1
+          fi
+
       - name: Upload landing page artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'landing/'
+          path: ${{ steps.landing-page.outputs.path }}
 
       - name: Deploy to GitHub Pages
         id: deployment
