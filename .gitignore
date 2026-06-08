@@ -32,8 +32,12 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+.project-config.json
 
 # typescript
 *.tsbuildinfo
@@ -65,7 +69,3 @@ Thumbs.db
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
-
-# Environment secrets
-.env
-.project-config.json
