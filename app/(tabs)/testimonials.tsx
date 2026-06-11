@@ -105,7 +105,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
 
       {/* Testimonial Text */}
       <Text className="text-sm text-foreground mb-4 leading-relaxed italic">
-        "{testimonial.content}"
+        &quot;{testimonial.content}&quot;
       </Text>
 
       {/* Author */}

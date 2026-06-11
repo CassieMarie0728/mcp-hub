@@ -1,5 +1,7 @@
 import { Express, Request, Response } from "express";
 import { getAIAssistant } from "./ai-assistant.js";
+import { sdk } from "./sdk.js";
+import { HttpError } from "../../shared/_core/errors.js";
 
 export function setupAIRoutes(app: Express): void {
   /**
@@ -8,6 +10,9 @@ export function setupAIRoutes(app: Express): void {
    */
   app.post("/api/ai/chat", async (req: Request, res: Response) => {
     try {
+      // Authenticate user before processing request to prevent unauthorized OpenRouter API usage
+      await sdk.authenticateRequest(req);
+
       const { messages, context } = req.body;
 
       if (!messages || !Array.isArray(messages)) {
@@ -20,6 +25,10 @@ export function setupAIRoutes(app: Express): void {
 
       res.json({ response });
     } catch (err) {
+      if (err instanceof HttpError) {
+        res.status(err.statusCode).json({ error: err.message });
+        return;
+      }
       console.error("[ai-routes] Chat error:", err);
       res.status(500).json({
         error: err instanceof Error ? err.message : "Failed to get AI response",
@@ -33,6 +42,9 @@ export function setupAIRoutes(app: Express): void {
    */
   app.post("/api/ai/stream", async (req: Request, res: Response) => {
     try {
+      // Authenticate user before processing request to prevent unauthorized OpenRouter API usage
+      await sdk.authenticateRequest(req);
+
       const { messages, context } = req.body;
 
       if (!messages || !Array.isArray(messages)) {
@@ -54,6 +66,10 @@ export function setupAIRoutes(app: Express): void {
         res.status(500).json({ error: "Stream failed" });
       });
     } catch (err) {
+      if (err instanceof HttpError) {
+        res.status(err.statusCode).json({ error: err.message });
+        return;
+      }
       console.error("[ai-routes] Stream setup error:", err);
       res.status(500).json({
         error: err instanceof Error ? err.message : "Failed to start stream",

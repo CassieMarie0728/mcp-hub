@@ -221,7 +221,7 @@ export default function FAQScreen() {
         <View className="mx-6 mb-8 p-6 bg-surface rounded-lg border border-border">
           <Text className="text-lg font-bold text-foreground mb-2">Still have questions?</Text>
           <Text className="text-sm text-muted mb-4">
-            Can't find what you're looking for? Our support team is here to help.
+            Can&apos;t find what you&apos;re looking for? Our support team is here to help.
           </Text>
           <View className="gap-2">
             <Pressable className="flex-row items-center gap-2 py-2">
