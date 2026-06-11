@@ -206,7 +206,7 @@ export default function PricingScreen() {
             <View className="gap-2">
               <Text className="text-base font-bold text-foreground">What happens if I exceed limits?</Text>
               <Text className="text-sm text-muted">
-                We'll notify you before any overage charges. You can upgrade anytime or we'll gracefully degrade service.
+                We&apos;ll notify you before any overage charges. You can upgrade anytime or we&apos;ll gracefully degrade service.
               </Text>
             </View>
           </Card>
@@ -287,7 +287,7 @@ export default function PricingScreen() {
             <View className="flex-1">
               <Text className="text-base font-bold text-foreground mb-1">30-Day Money-Back Guarantee</Text>
               <Text className="text-sm text-muted">
-                Not satisfied? Get a full refund within 30 days. No questions asked. We're confident you'll love MCP Hub.
+                Not satisfied? Get a full refund within 30 days. No questions asked. We&apos;re confident you&apos;ll love MCP Hub.
               </Text>
             </View>
           </View>

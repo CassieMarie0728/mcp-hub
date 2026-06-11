@@ -246,7 +246,7 @@ export default function IntegrationsScreen() {
         {/* Request Integration */}
         <View className="mx-6 mb-8 p-6 bg-primary rounded-lg">
           <Text className="text-lg font-bold text-background mb-2 text-center">
-            Don't See Your Tool?
+            Don&apos;t See Your Tool?
           </Text>
           <Text className="text-sm text-background/90 text-center mb-4">
             Request a new integration or build your own using our API.
