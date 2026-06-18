@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { publicProcedure, router } from '../_core/trpc';
+import { publicProcedure, protectedProcedure, router } from '../_core/trpc';
 import { OAuthManager } from './oauth-manager';
 
 const ServerTypeEnum = z.enum(['github', 'slack', 'notion']);
@@ -79,7 +79,7 @@ export const oauthRouter = router({
   /**
    * Refresh access token
    */
-  refreshToken: publicProcedure
+  refreshToken: protectedProcedure
     .input(
       z.object({
         serverType: ServerTypeEnum,
@@ -109,7 +109,7 @@ export const oauthRouter = router({
   /**
    * Revoke access token
    */
-  revokeToken: publicProcedure
+  revokeToken: protectedProcedure
     .input(
       z.object({
         serverType: ServerTypeEnum,

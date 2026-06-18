@@ -2,7 +2,7 @@
  * Analytics tRPC Router
  */
 
-import { router, publicProcedure } from '../_core/trpc';
+import { router, protectedProcedure } from '../_core/trpc';
 import { z } from 'zod';
 import ExecutionAnalytics from './execution-analytics';
 
@@ -10,7 +10,7 @@ export const analyticsRouter = router({
   /**
    * Record an execution
    */
-  recordExecution: publicProcedure
+  recordExecution: protectedProcedure
     .input(
       z.object({
         toolName: z.string(),
@@ -40,7 +40,7 @@ export const analyticsRouter = router({
   /**
    * Get tool statistics
    */
-  getToolStats: publicProcedure
+  getToolStats: protectedProcedure
     .input(z.object({ toolName: z.string().optional() }))
     .query(({ input }) => {
       return ExecutionAnalytics.getToolStats(input.toolName);
@@ -49,7 +49,7 @@ export const analyticsRouter = router({
   /**
    * Get server statistics
    */
-  getServerStats: publicProcedure
+  getServerStats: protectedProcedure
     .input(z.object({ serverId: z.string().optional() }))
     .query(({ input }) => {
       return ExecutionAnalytics.getServerStats(input.serverId);
@@ -58,7 +58,7 @@ export const analyticsRouter = router({
   /**
    * Get execution history
    */
-  getExecutionHistory: publicProcedure
+  getExecutionHistory: protectedProcedure
     .input(
       z.object({
         toolName: z.string().optional(),
@@ -76,7 +76,7 @@ export const analyticsRouter = router({
   /**
    * Get error trends
    */
-  getErrorTrends: publicProcedure
+  getErrorTrends: protectedProcedure
     .input(
       z.object({
         startDate: z.date(),
@@ -90,7 +90,7 @@ export const analyticsRouter = router({
   /**
    * Get performance trends
    */
-  getPerformanceTrends: publicProcedure
+  getPerformanceTrends: protectedProcedure
     .input(
       z.object({
         startDate: z.date(),
@@ -104,7 +104,7 @@ export const analyticsRouter = router({
   /**
    * Generate analytics report
    */
-  generateReport: publicProcedure
+  generateReport: protectedProcedure
     .input(
       z.object({
         startDate: z.date(),
