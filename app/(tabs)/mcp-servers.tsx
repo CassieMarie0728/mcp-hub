@@ -14,11 +14,9 @@ export default function MCPServersScreen() {
   const [customName, setCustomName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
-  // Fetch available servers
   const availableServersQuery = trpc.mcpServers.getAvailableServers.useQuery();
   const registeredServersQuery = trpc.mcpServers.getRegisteredServers.useQuery();
 
-  // Mutations
   const validateTokenMutation = trpc.mcpServers.validateToken.useMutation();
   const registerServerMutation = trpc.mcpServers.registerRealServer.useMutation();
   const discoverToolsMutation = trpc.mcpServers.discoverServerTools.useMutation();
@@ -81,16 +79,15 @@ export default function MCPServersScreen() {
     <ScreenContainer className="flex-1 bg-background">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="flex-1 gap-6 p-4">
-          {/* Header */}
-          <View className="gap-2">
-            <Text className="text-3xl font-bold text-foreground">MCP Servers</Text>
-            <Text className="text-sm text-muted">
-              Connect to GitHub, Slack, Notion, and more
+          <View className="gap-2 bg-primary rounded-2xl p-5">
+            <Text className="text-xs font-bold tracking-widest text-background/70">SERVER RACK</Text>
+            <Text className="text-3xl font-bold text-background">Wire in your tools</Text>
+            <Text className="text-sm text-background/80 leading-relaxed">
+              Connect MCP servers, check their status, and discover the tools they can bring to the board.
             </Text>
           </View>
 
-          {/* Tab Navigation */}
-          <View className="flex-row gap-2 bg-surface rounded-lg p-1">
+          <View className="flex-row gap-2 bg-surface rounded-lg p-1 border border-border">
             <Pressable
               onPress={() => setActiveTab('available')}
               className={cn(
@@ -120,12 +117,11 @@ export default function MCPServersScreen() {
                   activeTab === 'registered' ? 'text-background' : 'text-foreground'
                 )}
               >
-                Registered ({registeredServersQuery.data?.length || 0})
+                Connected ({registeredServersQuery.data?.length || 0})
               </Text>
             </Pressable>
           </View>
 
-          {/* Available Servers Tab */}
           {activeTab === 'available' && (
             <View className="gap-4">
               {availableServersQuery.isLoading ? (
@@ -143,11 +139,7 @@ export default function MCPServersScreen() {
                     <View className="flex-row items-center justify-between mb-2">
                       <View className="flex-row items-center gap-3 flex-1">
                         <View className="w-10 h-10 bg-primary/20 rounded-lg items-center justify-center">
-                          <MaterialIcons
-                            name={server.icon as any}
-                            size={24}
-                            color={colors.primary}
-                          />
+                          <MaterialIcons name={server.icon as any} size={24} color={colors.primary} />
                         </View>
                         <View className="flex-1">
                           <Text className="font-semibold text-foreground">{server.name}</Text>
@@ -161,34 +153,22 @@ export default function MCPServersScreen() {
                       />
                     </View>
 
-                    {/* Registration Form */}
                     {selectedServer === server.id && (
                       <View className="gap-3 mt-4 pt-4 border-t border-border">
                         <View>
-                          <Text className="text-xs font-semibold text-muted mb-1">
-                            Authentication Token
-                          </Text>
+                          <Text className="text-xs font-semibold text-muted mb-1">Access credential</Text>
                           <View className="bg-background rounded-lg px-3 py-2 border border-border">
-                            <Text className="text-xs text-muted">
-                              Paste your {server.name} API token here
-                            </Text>
-                            <Text
-                              className="text-xs text-foreground mt-1 font-mono"
-                              numberOfLines={1}
-                            >
-                              {token ? '••••••••' : 'Token will appear here'}
+                            <Text className="text-xs text-muted">Paste the credential for {server.name}</Text>
+                            <Text className="text-xs text-foreground mt-1 font-mono" numberOfLines={1}>
+                              {token ? '••••••••' : 'Credential preview'}
                             </Text>
                           </View>
                         </View>
 
                         <View>
-                          <Text className="text-xs font-semibold text-muted mb-1">
-                            Custom Name (Optional)
-                          </Text>
+                          <Text className="text-xs font-semibold text-muted mb-1">Connection name</Text>
                           <View className="bg-background rounded-lg px-3 py-2 border border-border">
-                            <Text className="text-xs text-foreground">
-                              {customName || 'My ' + server.name}
-                            </Text>
+                            <Text className="text-xs text-foreground">{customName || 'My ' + server.name}</Text>
                           </View>
                         </View>
 
@@ -198,9 +178,7 @@ export default function MCPServersScreen() {
                             disabled={!token || isRegistering}
                             className={cn(
                               'flex-1 py-3 px-4 rounded-lg items-center justify-center',
-                              token && !isRegistering
-                                ? 'bg-primary'
-                                : 'bg-primary/50'
+                              token && !isRegistering ? 'bg-primary' : 'bg-primary/50'
                             )}
                           >
                             {isRegistering ? (
@@ -228,17 +206,16 @@ export default function MCPServersScreen() {
             </View>
           )}
 
-          {/* Registered Servers Tab */}
           {activeTab === 'registered' && (
             <View className="gap-4">
               {registeredServersQuery.isLoading ? (
                 <ActivityIndicator color={colors.primary} size="large" />
               ) : registeredServersQuery.data?.length === 0 ? (
-                <View className="bg-surface rounded-lg p-6 items-center justify-center">
+                <View className="bg-surface rounded-lg p-6 items-center justify-center border border-border">
                   <MaterialIcons name="cloud-off" size={48} color={colors.muted} />
-                  <Text className="text-foreground font-semibold mt-2">No Servers Connected</Text>
+                  <Text className="text-foreground font-semibold mt-2">No servers connected</Text>
                   <Text className="text-muted text-sm text-center mt-1">
-                    Register a server from the Available tab to get started
+                    Pick a server from Available and connect it when you are ready.
                   </Text>
                 </View>
               ) : (
@@ -258,45 +235,31 @@ export default function MCPServersScreen() {
                         </View>
                       </View>
                       <View className="flex-row gap-2">
-                        <Pressable
-                          onPress={() => handleTestConnection(server.id)}
-                          className="p-2"
-                        >
+                        <Pressable onPress={() => handleTestConnection(server.id)} className="p-2">
                           <MaterialIcons name="refresh" size={20} color={colors.primary} />
                         </Pressable>
-                        <Pressable
-                          onPress={() => handleUnregisterServer(server.id)}
-                          className="p-2"
-                        >
+                        <Pressable onPress={() => handleUnregisterServer(server.id)} className="p-2">
                           <MaterialIcons name="close" size={20} color={colors.error} />
                         </Pressable>
                       </View>
                     </View>
 
-                    {/* Server Stats */}
                     <View className="flex-row gap-4 mb-3">
-                      <View className="flex-1 bg-background rounded-lg p-2">
+                      <View className="flex-1 bg-background rounded-lg p-2 border border-border">
                         <Text className="text-xs text-muted">Tools</Text>
-                        <Text className="text-lg font-bold text-foreground">
-                          {server.toolCount}
-                        </Text>
+                        <Text className="text-lg font-bold text-foreground">{server.toolCount}</Text>
                       </View>
-                      <View className="flex-1 bg-background rounded-lg p-2">
+                      <View className="flex-1 bg-background rounded-lg p-2 border border-border">
                         <Text className="text-xs text-muted">Status</Text>
-                        <Text className="text-lg font-bold text-foreground capitalize">
-                          {server.status}
-                        </Text>
+                        <Text className="text-lg font-bold text-foreground capitalize">{server.status}</Text>
                       </View>
                     </View>
 
-                    {/* Actions */}
                     <Pressable
                       onPress={() => handleDiscoverTools(server.id)}
                       className="bg-primary/10 rounded-lg py-2 px-3 items-center justify-center"
                     >
-                      <Text className="text-sm font-semibold text-primary">
-                        Discover Tools
-                      </Text>
+                      <Text className="text-sm font-semibold text-primary">Discover tools</Text>
                     </Pressable>
                   </View>
                 ))
