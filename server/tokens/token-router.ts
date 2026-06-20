@@ -2,7 +2,7 @@
  * Token Management tRPC Router
  */
 
-import { router, publicProcedure } from '../_core/trpc';
+import { router, protectedProcedure } from '../_core/trpc';
 import { z } from 'zod';
 import TokenManager from './token-manager';
 
@@ -10,7 +10,7 @@ export const tokenRouter = router({
   /**
    * Store a new token securely
    */
-  storeToken: publicProcedure
+  storeToken: protectedProcedure
     .input(
       z.object({
         serverId: z.string(),
@@ -28,7 +28,7 @@ export const tokenRouter = router({
   /**
    * Get token metadata
    */
-  getTokenMetadata: publicProcedure
+  getTokenMetadata: protectedProcedure
     .input(z.object({ tokenId: z.string() }))
     .query(async ({ input }) => {
       return TokenManager.getTokenMetadata(input.tokenId);
@@ -37,7 +37,7 @@ export const tokenRouter = router({
   /**
    * List all tokens for a server
    */
-  listServerTokens: publicProcedure
+  listServerTokens: protectedProcedure
     .input(z.object({ serverId: z.string() }))
     .query(async ({ input }) => {
       return TokenManager.listServerTokens(input.serverId);
@@ -46,7 +46,7 @@ export const tokenRouter = router({
   /**
    * Revoke a token
    */
-  revokeToken: publicProcedure
+  revokeToken: protectedProcedure
     .input(z.object({ tokenId: z.string() }))
     .mutation(async ({ input }) => {
       return TokenManager.revokeToken(input.tokenId);
@@ -55,7 +55,7 @@ export const tokenRouter = router({
   /**
    * Rotate a token
    */
-  rotateToken: publicProcedure
+  rotateToken: protectedProcedure
     .input(z.object({ tokenId: z.string(), newToken: z.string() }))
     .mutation(async ({ input }) => {
       return TokenManager.rotateToken(input.tokenId, input.newToken);
@@ -64,21 +64,21 @@ export const tokenRouter = router({
   /**
    * Get expired tokens
    */
-  getExpiredTokens: publicProcedure.query(async () => {
+  getExpiredTokens: protectedProcedure.query(async () => {
     return TokenManager.getExpiredTokens();
   }),
 
   /**
    * Get token statistics
    */
-  getTokenStats: publicProcedure.query(async () => {
+  getTokenStats: protectedProcedure.query(async () => {
     return TokenManager.getTokenStats();
   }),
 
   /**
    * Validate token scopes
    */
-  validateScopes: publicProcedure
+  validateScopes: protectedProcedure
     .input(
       z.object({
         tokenScopes: z.array(z.string()).optional(),

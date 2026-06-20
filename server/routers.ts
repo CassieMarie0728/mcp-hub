@@ -4,6 +4,10 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { mcpRouter } from "./mcp/mcp-router";
 import { mcpExtendedRouter } from "./mcp/mcp-router-extended";
+import { tokenRouter } from "./tokens/token-router";
+import { webhooksRouter } from "./webhooks/webhooks-router";
+import { analyticsRouter } from "./analytics/analytics-router";
+import { oauthRouter } from "./auth/oauth-router";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -18,8 +22,12 @@ export const appRouter = router({
       } as const;
     }),
   }),
+  oauth: oauthRouter,
   mcp: mcpRouter,
   mcpServers: mcpExtendedRouter,
+  tokens: tokenRouter,
+  webhooks: webhooksRouter,
+  analytics: analyticsRouter,
 
   // TODO: add feature routers here, e.g.
   // todo: router({

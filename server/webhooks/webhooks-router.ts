@@ -3,14 +3,14 @@
  */
 
 import { z } from 'zod';
-import { publicProcedure, router } from '../_core/trpc';
+import { protectedProcedure, router } from '../_core/trpc';
 import { WebhookManager, type WebhookConfig } from './webhook-manager';
 
 export const webhooksRouter = router({
   /**
    * Create webhook
    */
-  createWebhook: publicProcedure
+  createWebhook: protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -47,7 +47,7 @@ export const webhooksRouter = router({
   /**
    * Get webhook
    */
-  getWebhook: publicProcedure
+  getWebhook: protectedProcedure
     .input(z.object({ webhookId: z.string() }))
     .query(({ input }) => {
       const webhook = WebhookManager.getWebhook(input.webhookId);
@@ -60,14 +60,14 @@ export const webhooksRouter = router({
   /**
    * List webhooks
    */
-  listWebhooks: publicProcedure.query(() => {
+  listWebhooks: protectedProcedure.query(() => {
     return WebhookManager.listWebhooks();
   }),
 
   /**
    * Update webhook
    */
-  updateWebhook: publicProcedure
+  updateWebhook: protectedProcedure
     .input(
       z.object({
         webhookId: z.string(),
@@ -87,7 +87,7 @@ export const webhooksRouter = router({
   /**
    * Delete webhook
    */
-  deleteWebhook: publicProcedure
+  deleteWebhook: protectedProcedure
     .input(z.object({ webhookId: z.string() }))
     .mutation(({ input }) => {
       WebhookManager.deleteWebhook(input.webhookId);
@@ -97,7 +97,7 @@ export const webhooksRouter = router({
   /**
    * Get webhook events
    */
-  getWebhookEvents: publicProcedure
+  getWebhookEvents: protectedProcedure
     .input(z.object({ webhookId: z.string(), limit: z.number().default(50) }))
     .query(({ input }) => {
       return WebhookManager.getWebhookEvents(input.webhookId, input.limit);
@@ -106,7 +106,7 @@ export const webhooksRouter = router({
   /**
    * Get webhook statistics
    */
-  getWebhookStats: publicProcedure
+  getWebhookStats: protectedProcedure
     .input(z.object({ webhookId: z.string() }))
     .query(({ input }) => {
       return WebhookManager.getWebhookStats(input.webhookId);
@@ -115,7 +115,7 @@ export const webhooksRouter = router({
   /**
    * Test webhook
    */
-  testWebhook: publicProcedure
+  testWebhook: protectedProcedure
     .input(
       z.object({
         webhookId: z.string(),
@@ -150,7 +150,7 @@ export const webhooksRouter = router({
   /**
    * Rotate webhook secret
    */
-  rotateSecret: publicProcedure
+  rotateSecret: protectedProcedure
     .input(z.object({ webhookId: z.string() }))
     .mutation(({ input }) => {
       const webhook = WebhookManager.getWebhook(input.webhookId);
@@ -173,7 +173,7 @@ export const webhooksRouter = router({
   /**
    * Verify webhook signature
    */
-  verifySignature: publicProcedure
+  verifySignature: protectedProcedure
     .input(
       z.object({
         webhookId: z.string(),
