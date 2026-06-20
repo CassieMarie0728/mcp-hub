@@ -27,97 +27,19 @@ export default function TabLayout() {
         },
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="mcp-servers"
-        options={{
-          title: "Servers",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="macro-builder"
-        options={{
-          title: "Builder",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="onboarding"
-        options={{
-          title: "Onboarding",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="execution-debugger"
-        options={{
-          title: "Debug",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="team-workspace"
-        options={{
-          title: "Team",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="schedule-workflow"
-        options={{
-          title: "Schedule",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="faq"
-        options={{
-          title: "FAQ",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.right" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="testimonials"
-        options={{
-          title: "Reviews",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="use-cases"
-        options={{
-          title: "Use Cases",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="pricing"
-        options={{
-          title: "Pricing",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="integrations"
-        options={{
-          title: "Integrations",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="blog"
-        options={{
-          title: "Blog",
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
+      <Tabs.Screen name="index" options={{ title: "Hub", tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} /> }} />
+      <Tabs.Screen name="mcp-servers" options={{ title: "Servers", tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} /> }} />
+      <Tabs.Screen name="macro-builder" options={{ title: "Builder", tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} /> }} />
+      <Tabs.Screen name="onboarding" options={{ title: "Setup", tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} /> }} />
+      <Tabs.Screen name="execution-debugger" options={{ title: "Debug", tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} /> }} />
+      <Tabs.Screen name="team-workspace" options={{ title: "Team", tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} /> }} />
+      <Tabs.Screen name="schedule-workflow" options={{ title: "Schedule", tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} /> }} />
+      <Tabs.Screen name="faq" options={{ title: "Manual", tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.right" color={color} /> }} />
+      <Tabs.Screen name="testimonials" options={{ title: "Receipts", tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} /> }} />
+      <Tabs.Screen name="use-cases" options={{ title: "Missions", tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} /> }} />
+      <Tabs.Screen name="pricing" options={{ title: "Plans", tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} /> }} />
+      <Tabs.Screen name="integrations" options={{ title: "Wires", tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} /> }} />
+      <Tabs.Screen name="blog" options={{ title: "Logs", tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} /> }} />
     </Tabs>
   );
 }
