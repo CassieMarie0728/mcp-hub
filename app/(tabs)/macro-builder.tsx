@@ -1,8 +1,3 @@
-/**
- * Visual Macro Builder Screen
- * Drag-and-drop workflow editor with conditional blocks and loops
- */
-
 import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
@@ -45,10 +40,10 @@ interface Workflow {
 }
 
 const STEP_TYPES = [
-  { id: 'tool', name: 'Tool', icon: 'build', color: '#0a7ea4' },
+  { id: 'tool', name: 'Tool', icon: 'build', color: '#981518' },
   { id: 'condition', name: 'Condition', icon: 'call-split', color: '#22C55E' },
   { id: 'loop', name: 'Loop', icon: 'repeat', color: '#F59E0B' },
-  { id: 'parallel', name: 'Parallel', icon: 'shuffle', color: '#8B5CF6' },
+  { id: 'parallel', name: 'Parallel', icon: 'shuffle', color: '#a8a9ad' },
 ];
 
 export default function MacroBuilderScreen() {
@@ -75,7 +70,7 @@ export default function MacroBuilderScreen() {
 
   const handleCreateWorkflow = async () => {
     if (!newWorkflowName) {
-      Alert.alert('Error', 'Please enter a workflow name');
+      Alert.alert('Name required', 'Give the workflow a name before building it.');
       return;
     }
 
@@ -100,7 +95,7 @@ export default function MacroBuilderScreen() {
       setShowNewModal(false);
       refetch();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to create workflow');
+      Alert.alert('Workflow not created', error.message || 'The workflow could not be created.');
     }
   };
 
@@ -121,9 +116,7 @@ export default function MacroBuilderScreen() {
     };
 
     setSelectedWorkflow(updatedWorkflow);
-    setWorkflows(
-      workflows.map((w) => (w.id === updatedWorkflow.id ? updatedWorkflow : w))
-    );
+    setWorkflows(workflows.map((w) => (w.id === updatedWorkflow.id ? updatedWorkflow : w)));
     setShowStepPicker(false);
   };
 
@@ -137,14 +130,12 @@ export default function MacroBuilderScreen() {
     };
 
     setSelectedWorkflow(updatedWorkflow);
-    setWorkflows(
-      workflows.map((w) => (w.id === updatedWorkflow.id ? updatedWorkflow : w))
-    );
+    setWorkflows(workflows.map((w) => (w.id === updatedWorkflow.id ? updatedWorkflow : w)));
   };
 
   const handleSaveWorkflow = async () => {
     if (!selectedWorkflow || selectedWorkflow.steps.length === 0) {
-      Alert.alert('Error', 'Workflow must have at least one step');
+      Alert.alert('Add at least one step', 'A workflow needs at least one move before it can be saved.');
       return;
     }
 
@@ -155,62 +146,33 @@ export default function MacroBuilderScreen() {
         description: selectedWorkflow.description,
         steps: selectedWorkflow.steps,
       });
-      Alert.alert('Success', `Workflow "${selectedWorkflow.name}" saved successfully`);
+      Alert.alert('Workflow saved', `Saved "${selectedWorkflow.name}".`);
       refetch();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to save workflow');
+      Alert.alert('Workflow not saved', error.message || 'The workflow could not be saved.');
     }
   };
 
-  const getStepTypeInfo = (type: string) => {
-    return STEP_TYPES.find((s) => s.id === type);
-  };
+  const getStepTypeInfo = (type: string) => STEP_TYPES.find((s) => s.id === type);
 
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
+  const formatDate = (date: Date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
   return (
     <ScreenContainer className="bg-background">
-      {/* Tab Navigation */}
       <View className="flex-row border-b border-border mb-4">
         <TouchableOpacity
           onPress={() => setActiveTab('list')}
-          className={cn(
-            'flex-1 py-3 px-4 border-b-2',
-            activeTab === 'list' ? 'border-primary' : 'border-transparent'
-          )}
+          className={cn('flex-1 py-3 px-4 border-b-2', activeTab === 'list' ? 'border-primary' : 'border-transparent')}
         >
-          <Text
-            className={cn(
-              'text-center font-semibold',
-              activeTab === 'list' ? 'text-primary' : 'text-muted'
-            )}
-          >
-            My Workflows
-          </Text>
+          <Text className={cn('text-center font-semibold', activeTab === 'list' ? 'text-primary' : 'text-muted')}>Workflows</Text>
         </TouchableOpacity>
 
         {selectedWorkflow && (
           <TouchableOpacity
             onPress={() => setActiveTab('editor')}
-            className={cn(
-              'flex-1 py-3 px-4 border-b-2',
-              activeTab === 'editor' ? 'border-primary' : 'border-transparent'
-            )}
+            className={cn('flex-1 py-3 px-4 border-b-2', activeTab === 'editor' ? 'border-primary' : 'border-transparent')}
           >
-            <Text
-              className={cn(
-                'text-center font-semibold',
-                activeTab === 'editor' ? 'text-primary' : 'text-muted'
-              )}
-            >
-              Editor
-            </Text>
+            <Text className={cn('text-center font-semibold', activeTab === 'editor' ? 'text-primary' : 'text-muted')}>Forge</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -218,13 +180,19 @@ export default function MacroBuilderScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         {activeTab === 'list' ? (
           <View className="flex-1">
+            <View className="bg-primary rounded-2xl p-5 mb-4">
+              <Text className="text-xs font-bold tracking-widest text-background/70">WORKFLOW FORGE</Text>
+              <Text className="text-3xl font-bold text-background">Build the repeatable moves</Text>
+              <Text className="text-sm text-background/80 leading-relaxed mt-2">
+                Turn the jobs you repeat into saved workflows with clear steps and fewer loose ends.
+              </Text>
+            </View>
+
             {workflows.length === 0 ? (
-              <View className="flex-1 items-center justify-center py-8">
-                <MaterialIcons name={"build" as any} size={48} color={colors.muted} />
-                <Text className="text-foreground font-semibold mt-4">No Workflows Yet</Text>
-                <Text className="text-muted text-center mt-2 px-4">
-                  Create your first workflow to automate tasks
-                </Text>
+              <View className="flex-1 items-center justify-center py-8 bg-surface rounded-2xl border border-border">
+                <MaterialIcons name={'build' as any} size={48} color={colors.muted} />
+                <Text className="text-foreground font-semibold mt-4">No workflows yet</Text>
+                <Text className="text-muted text-center mt-2 px-4">Create the first repeatable move and start building your system.</Text>
               </View>
             ) : (
               <View className="gap-3">
@@ -240,33 +208,20 @@ export default function MacroBuilderScreen() {
                   >
                     <View className="flex-row items-center justify-between mb-2">
                       <View className="flex-1">
-                        <Text className="text-foreground font-semibold text-lg">
-                          {workflow.name}
-                        </Text>
-                        {workflow.description && (
-                          <Text className="text-muted text-sm mt-1">{workflow.description}</Text>
-                        )}
+                        <Text className="text-foreground font-semibold text-lg">{workflow.name}</Text>
+                        {workflow.description && <Text className="text-muted text-sm mt-1">{workflow.description}</Text>}
                       </View>
                       <View className="bg-primary/10 rounded-full px-3 py-1">
-                        <Text className="text-primary text-xs font-semibold">
-                          {workflow.steps.length} steps
-                        </Text>
+                        <Text className="text-primary text-xs font-semibold">{workflow.steps.length} steps</Text>
                       </View>
                     </View>
-
-                    <Text className="text-muted text-xs">
-                      Modified: {formatDate(workflow.lastModified)}
-                    </Text>
+                    <Text className="text-muted text-xs">Modified: {formatDate(workflow.lastModified)}</Text>
                   </Pressable>
                 ))}
               </View>
             )}
 
-            {/* Create Workflow Button */}
-            <TouchableOpacity
-              onPress={() => setShowNewModal(true)}
-              className="mt-6 bg-primary rounded-lg py-4 items-center"
-            >
+            <TouchableOpacity onPress={() => setShowNewModal(true)} className="mt-6 bg-primary rounded-lg py-4 items-center">
               <View className="flex-row items-center gap-2">
                 <MaterialIcons name="add" size={24} color="white" />
                 <Text className="text-background font-semibold">Create Workflow</Text>
@@ -275,22 +230,15 @@ export default function MacroBuilderScreen() {
           </View>
         ) : (
           <View className="flex-1">
-            {/* Workflow Editor */}
-            <View className="mb-4">
+            <View className="mb-4 bg-surface rounded-2xl p-4 border border-border">
               <Text className="text-foreground font-bold text-lg mb-2">{selectedWorkflow?.name}</Text>
-              {selectedWorkflow?.description && (
-                <Text className="text-muted text-sm">{selectedWorkflow.description}</Text>
-              )}
+              {selectedWorkflow?.description && <Text className="text-muted text-sm">{selectedWorkflow.description}</Text>}
             </View>
 
-            {/* Steps List */}
             <View className="bg-surface rounded-lg p-4 mb-4 border border-border">
               <View className="flex-row items-center justify-between mb-3">
-                <Text className="text-foreground font-semibold">Workflow Steps</Text>
-                <TouchableOpacity
-                  onPress={() => setShowStepPicker(true)}
-                  className="bg-primary rounded px-3 py-1"
-                >
+                <Text className="text-foreground font-semibold">Workflow steps</Text>
+                <TouchableOpacity onPress={() => setShowStepPicker(true)} className="bg-primary rounded px-3 py-1">
                   <View className="flex-row items-center gap-1">
                     <MaterialIcons name="add" size={16} color="white" />
                     <Text className="text-background text-xs font-semibold">Add Step</Text>
@@ -309,32 +257,17 @@ export default function MacroBuilderScreen() {
                     const stepInfo = getStepTypeInfo(step.type);
                     return (
                       <View key={step.id}>
-                        <View
-                          className="bg-background rounded p-3 border border-border flex-row items-center justify-between"
-                          style={{ borderLeftWidth: 4, borderLeftColor: stepInfo?.color }}
-                        >
+                        <View className="bg-background rounded p-3 border border-border flex-row items-center justify-between" style={{ borderLeftWidth: 4, borderLeftColor: stepInfo?.color }}>
                           <View className="flex-row items-center flex-1 gap-3">
-                            <View
-                              className="w-8 h-8 rounded-full items-center justify-center"
-                              style={{ backgroundColor: (stepInfo?.color || colors.primary) + '20' }}
-                            >
-                              <MaterialIcons
-                                name={stepInfo?.icon as any}
-                                size={16}
-                                color={stepInfo?.color || colors.primary}
-                              />
+                            <View className="w-8 h-8 rounded-full items-center justify-center" style={{ backgroundColor: (stepInfo?.color || colors.primary) + '20' }}>
+                              <MaterialIcons name={stepInfo?.icon as any} size={16} color={stepInfo?.color || colors.primary} />
                             </View>
                             <View className="flex-1">
-                              <Text className="text-foreground font-semibold text-sm">
-                                {step.name}
-                              </Text>
+                              <Text className="text-foreground font-semibold text-sm">{step.name}</Text>
                               <Text className="text-muted text-xs">{stepInfo?.name}</Text>
                             </View>
                           </View>
-                          <TouchableOpacity
-                            onPress={() => handleDeleteStep(step.id)}
-                            className="p-2"
-                          >
+                          <TouchableOpacity onPress={() => handleDeleteStep(step.id)} className="p-2">
                             <MaterialIcons name="close" size={20} color={colors.error} />
                           </TouchableOpacity>
                         </View>
@@ -351,12 +284,7 @@ export default function MacroBuilderScreen() {
               )}
             </View>
 
-            {/* Save Button */}
-            <TouchableOpacity
-              onPress={handleSaveWorkflow}
-              disabled={loading}
-              className="bg-primary rounded-lg py-4 items-center"
-            >
+            <TouchableOpacity onPress={handleSaveWorkflow} disabled={loading} className="bg-primary rounded-lg py-4 items-center">
               {loading ? (
                 <ActivityIndicator color="white" />
               ) : (
@@ -370,7 +298,6 @@ export default function MacroBuilderScreen() {
         )}
       </ScrollView>
 
-      {/* Create Workflow Modal */}
       <Modal visible={showNewModal} transparent animationType="slide">
         <View className="flex-1 bg-black/50 justify-end">
           <View className="bg-background rounded-t-2xl p-6 gap-4">
@@ -382,9 +309,9 @@ export default function MacroBuilderScreen() {
             </View>
 
             <View>
-              <Text className="text-muted text-xs mb-1">Workflow Name</Text>
+              <Text className="text-muted text-xs mb-1">Workflow name</Text>
               <TextInput
-                placeholder="e.g., Create Issue and Notify"
+                placeholder="Example: Morning repo check"
                 value={newWorkflowName}
                 onChangeText={setNewWorkflowName}
                 className="bg-surface border border-border rounded px-3 py-2 text-foreground"
@@ -393,9 +320,9 @@ export default function MacroBuilderScreen() {
             </View>
 
             <View>
-              <Text className="text-muted text-xs mb-1">Description (Optional)</Text>
+              <Text className="text-muted text-xs mb-1">Description</Text>
               <TextInput
-                placeholder="What does this workflow do?"
+                placeholder="What repeatable job should this handle?"
                 value={newWorkflowDesc}
                 onChangeText={setNewWorkflowDesc}
                 multiline
@@ -406,16 +333,10 @@ export default function MacroBuilderScreen() {
             </View>
 
             <View className="flex-row gap-2">
-              <TouchableOpacity
-                onPress={() => setShowNewModal(false)}
-                className="flex-1 bg-muted/10 rounded py-3 items-center"
-              >
+              <TouchableOpacity onPress={() => setShowNewModal(false)} className="flex-1 bg-muted/10 rounded py-3 items-center">
                 <Text className="text-muted font-semibold">Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleCreateWorkflow}
-                className="flex-1 bg-primary rounded py-3 items-center"
-              >
+              <TouchableOpacity onPress={handleCreateWorkflow} className="flex-1 bg-primary rounded py-3 items-center">
                 <Text className="text-background font-semibold">Create</Text>
               </TouchableOpacity>
             </View>
@@ -423,7 +344,6 @@ export default function MacroBuilderScreen() {
         </View>
       </Modal>
 
-      {/* Step Picker Modal */}
       <Modal visible={showStepPicker} transparent animationType="slide">
         <View className="flex-1 bg-black/50 justify-end">
           <View className="bg-background rounded-t-2xl p-6 gap-4">
@@ -436,31 +356,20 @@ export default function MacroBuilderScreen() {
 
             <View className="gap-2 max-h-96">
               {STEP_TYPES.map((stepType) => (
-                <TouchableOpacity
-                  key={stepType.id}
-                  onPress={() => handleAddStep(stepType.id)}
-                  className="bg-surface rounded-lg p-4 border border-border flex-row items-center gap-3"
-                >
-                  <View
-                    className="w-10 h-10 rounded-full items-center justify-center"
-                    style={{ backgroundColor: stepType.color + '20' }}
-                  >
-                    <MaterialIcons
-                      name={stepType.icon as any}
-                      size={20}
-                      color={stepType.color}
-                    />
+                <TouchableOpacity key={stepType.id} onPress={() => handleAddStep(stepType.id)} className="bg-surface rounded-lg p-4 border border-border flex-row items-center gap-3">
+                  <View className="w-10 h-10 rounded-full items-center justify-center" style={{ backgroundColor: stepType.color + '20' }}>
+                    <MaterialIcons name={stepType.icon as any} size={20} color={stepType.color} />
                   </View>
                   <View className="flex-1">
                     <Text className="text-foreground font-semibold">{stepType.name}</Text>
                     <Text className="text-muted text-xs">
                       {stepType.id === 'tool'
-                        ? 'Execute a tool'
+                        ? 'Run a connected tool'
                         : stepType.id === 'condition'
-                        ? 'Branch based on condition'
+                        ? 'Branch when a rule matches'
                         : stepType.id === 'loop'
-                        ? 'Repeat steps'
-                        : 'Run steps in parallel'}
+                        ? 'Repeat a set of steps'
+                        : 'Run steps side by side'}
                     </Text>
                   </View>
                   <MaterialIcons name="arrow-forward" size={20} color={colors.muted} />
