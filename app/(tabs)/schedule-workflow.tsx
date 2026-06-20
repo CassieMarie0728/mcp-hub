@@ -5,20 +5,20 @@ import { useState } from "react";
 
 export default function ScheduleWorkflowScreen() {
   const colors = useColors();
-  const [schedules, setSchedules] = useState([
+  const [schedules] = useState([
     {
       id: "1",
-      workflow: "GitHub → Slack",
+      workflow: "Morning repo check",
       cron: "0 9 * * 1-5",
-      nextRun: "Monday 9:00 AM",
-      status: "active",
+      nextRun: "Weekdays at 9:00 AM",
+      status: "example",
     },
     {
       id: "2",
-      workflow: "Slack → Notion",
+      workflow: "End-of-day summary",
       cron: "0 17 * * *",
-      nextRun: "Daily 5:00 PM",
-      status: "active",
+      nextRun: "Daily at 5:00 PM",
+      status: "example",
     },
   ]);
   const [cronExpression, setCronExpression] = useState("");
@@ -34,90 +34,58 @@ export default function ScheduleWorkflowScreen() {
     <ScreenContainer className="p-6">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="flex-1 gap-6">
-          {/* Header */}
-          <View className="gap-2">
-            <Text className="text-2xl font-bold text-foreground">
-              Schedule Workflows
-            </Text>
-            <Text className="text-sm text-muted">
-              Set up recurring automation
+          <View className="gap-2 bg-primary rounded-2xl p-5">
+            <Text className="text-xs font-bold tracking-widest text-background/70">SCHEDULES</Text>
+            <Text className="text-3xl font-bold text-background">Put repeat work on rails</Text>
+            <Text className="text-sm text-background/80 leading-relaxed">
+              Build recurring workflow runs with clear timing, readable examples, and no mystery automation.
             </Text>
           </View>
 
-          {/* Cron Expression Input */}
-          <View className="gap-3 bg-surface rounded-2xl p-4">
-            <Text className="text-sm font-semibold text-foreground">
-              Cron Expression
-            </Text>
+          <View className="gap-3 bg-surface rounded-2xl p-4 border border-border">
+            <Text className="text-sm font-semibold text-foreground">Cron expression</Text>
             <TextInput
               placeholder="0 9 * * 1-5"
               value={cronExpression}
               onChangeText={setCronExpression}
-              className="bg-background text-foreground p-3 rounded-lg font-mono"
+              className="bg-background text-foreground p-3 rounded-lg font-mono border border-border"
               placeholderTextColor={colors.muted}
             />
-            <Text className="text-xs text-muted">
-              Format: minute hour day month day-of-week
-            </Text>
+            <Text className="text-xs text-muted">Format: minute hour day month day-of-week</Text>
           </View>
 
-          {/* Quick Examples */}
           <View className="gap-3">
-            <Text className="text-sm font-semibold text-foreground">
-              Quick Examples
-            </Text>
+            <Text className="text-sm font-semibold text-foreground">Quick timing examples</Text>
             {cronExamples.map((example) => (
               <Pressable
                 key={example.value}
                 onPress={() => setCronExpression(example.value)}
-                className="bg-surface rounded-xl p-3 flex-row items-center justify-between"
+                className="bg-surface rounded-xl p-3 flex-row items-center justify-between border border-border"
               >
                 <Text className="text-sm text-foreground">{example.label}</Text>
-                <Text className="text-xs text-muted font-mono">
-                  {example.value}
-                </Text>
+                <Text className="text-xs text-muted font-mono">{example.value}</Text>
               </Pressable>
             ))}
           </View>
 
-          {/* Active Schedules */}
           <View className="gap-3">
-            <Text className="text-sm font-semibold text-foreground">
-              Active Schedules
-            </Text>
+            <Text className="text-sm font-semibold text-foreground">Example schedules</Text>
             {schedules.map((schedule) => (
-              <View
-                key={schedule.id}
-                className="bg-surface rounded-xl p-4 gap-2"
-              >
+              <View key={schedule.id} className="bg-surface rounded-xl p-4 gap-2 border border-border">
                 <View className="flex-row items-center justify-between">
-                  <Text className="font-semibold text-foreground">
-                    {schedule.workflow}
-                  </Text>
-                  <View className="bg-success/20 px-2 py-1 rounded">
-                    <Text className="text-xs font-semibold text-success">
-                      Active
-                    </Text>
+                  <Text className="font-semibold text-foreground">{schedule.workflow}</Text>
+                  <View className="bg-primary/10 px-2 py-1 rounded">
+                    <Text className="text-xs font-semibold text-primary">Example</Text>
                   </View>
                 </View>
-                <Text className="text-xs text-muted font-mono">
-                  {schedule.cron}
-                </Text>
-                <Text className="text-xs text-muted">
-                  Next run: {schedule.nextRun}
-                </Text>
+                <Text className="text-xs text-muted font-mono">{schedule.cron}</Text>
+                <Text className="text-xs text-muted">Runs: {schedule.nextRun}</Text>
               </View>
             ))}
           </View>
 
-          {/* Create Schedule Button */}
-          <Pressable
-            style={{ backgroundColor: colors.primary }}
-            className="py-4 rounded-full items-center mt-4"
-          >
-            <Text className="text-background font-semibold text-lg">
-              Create Schedule
-            </Text>
+          <Pressable style={{ backgroundColor: colors.primary }} className="py-4 rounded-full items-center mt-4">
+            <Text className="text-background font-semibold text-lg">Create Schedule</Text>
           </Pressable>
         </View>
       </ScrollView>
