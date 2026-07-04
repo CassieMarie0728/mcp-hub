@@ -13,10 +13,12 @@ import { useColors } from '@/hooks/use-colors';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useOnboarding } from '@/lib/onboarding-context';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { settings, updateSettings, clearExecutionHistory } = useApp();
+  const { resetOnboarding, hasCompletedOnboarding } = useOnboarding();
   const colorScheme = useColorScheme();
   const colors = useColors();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme === 'dark');
@@ -212,6 +214,26 @@ export default function SettingsScreen() {
             <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
           </TouchableOpacity>
         </View>
+
+        {/* Onboarding Section */}
+        {hasCompletedOnboarding && (
+          <View className="mb-8">
+            <Text className="text-lg font-semibold text-foreground mb-4">Help & Learning</Text>
+            <TouchableOpacity
+              onPress={resetOnboarding}
+              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
+            >
+              <View className="flex-row items-center gap-3">
+                <MaterialIcons name="play-circle" size={20} color={colors.primary} />
+                <View>
+                  <Text className="text-foreground font-medium">Replay Onboarding</Text>
+                  <Text className="text-xs text-muted mt-1">Walk through the feature tour again</Text>
+                </View>
+              </View>
+              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* About Section */}
         <View className="mb-12">
