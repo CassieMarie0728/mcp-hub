@@ -1,8 +1,7 @@
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, Text, Pressable } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/use-colors';
-import { Text } from 'react-native';
 import { Card } from '@/components/ui/card';
 
 const PLAN_AREAS = [

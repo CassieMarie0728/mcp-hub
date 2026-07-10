@@ -48,7 +48,7 @@ export default function ServerDetailScreen() {
         </View>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, router]);
 
   const server = servers.find((s) => s.id === id);
   const tools = server ? getServerTools(server.id) : [];

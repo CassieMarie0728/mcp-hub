@@ -50,7 +50,7 @@ export default function ToolDetailScreen() {
         </View>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, router]);
 
   const server = servers.find((s) => s.id === serverId);
   const tools = server ? getServerTools(server.id) : [];
