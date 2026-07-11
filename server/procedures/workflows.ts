@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { publicProcedure, router } from '../_core/trpc';
+import { protectedProcedure, router } from '../_core/trpc';
 import { WorkflowEngine } from '../macros/workflow-engine';
 
 // Input validation schemas
@@ -55,7 +55,7 @@ export const workflowsProcedures = router({
   /**
    * List all workflows for the current user
    */
-  list: publicProcedure.query(async () => {
+  list: protectedProcedure.query(async () => {
     try {
       const workflows = Array.from(workflowStore.values());
       return workflows.map((wf) => ({
@@ -76,7 +76,7 @@ export const workflowsProcedures = router({
   /**
    * Get a specific workflow by ID
    */
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.string())
     .query(async ({ input: workflowId }: { input: string }) => {
       try {
@@ -103,7 +103,7 @@ export const workflowsProcedures = router({
   /**
    * Create a new workflow
    */
-  create: publicProcedure
+  create: protectedProcedure
     .input(CreateWorkflowInput)
     .mutation(async ({ input }: { input: z.infer<typeof CreateWorkflowInput> }) => {
       try {
@@ -137,7 +137,7 @@ export const workflowsProcedures = router({
   /**
    * Save/update a workflow
    */
-  save: publicProcedure
+  save: protectedProcedure
     .input(SaveWorkflowInput)
     .mutation(async ({ input }: { input: z.infer<typeof SaveWorkflowInput> }) => {
       try {
@@ -168,7 +168,7 @@ export const workflowsProcedures = router({
   /**
    * Execute a workflow (real or dry-run)
    */
-  execute: publicProcedure
+  execute: protectedProcedure
     .input(ExecuteWorkflowInput)
     .mutation(async ({ input }: { input: z.infer<typeof ExecuteWorkflowInput> }) => {
       try {
@@ -210,7 +210,7 @@ export const workflowsProcedures = router({
   /**
    * Delete a workflow
    */
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(DeleteWorkflowInput)
     .mutation(async ({ input: workflowId }: { input: string }) => {
       try {

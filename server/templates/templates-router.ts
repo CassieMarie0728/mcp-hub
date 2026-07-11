@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { publicProcedure, router } from '../_core/trpc';
+import { publicProcedure, protectedProcedure, router } from '../_core/trpc';
 import { WorkflowTemplateManager, type TemplateCloneInput } from './workflow-templates';
 
 export const templatesRouter = router({
@@ -30,7 +30,7 @@ export const templatesRouter = router({
   /**
    * Clone a template
    */
-  cloneTemplate: publicProcedure
+  cloneTemplate: protectedProcedure
     .input(
       z.object({
         templateId: z.string(),
