@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable, TextInput, Alert, FlatList } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
-import { useRouter } from 'expo-router';
+// import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
 
@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
  * Manage permissions, invitations, and share links
  */
 export default function MacroSharingScreen() {
-  const router = useRouter();
+  // const router = useRouter();
   const colors = useColors();
 
   const [tab, setTab] = useState<'permissions' | 'invitations' | 'links'>('permissions');
@@ -276,7 +276,7 @@ export default function MacroSharingScreen() {
 
           {/* Back Button */}
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => Alert.alert('Go back', 'Navigation not available in this view')}
             className="bg-surface border border-border rounded-lg p-4 active:opacity-80 mt-4"
           >
             <Text className="text-center font-semibold text-foreground">Back</Text>

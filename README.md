@@ -46,6 +46,8 @@ Because nobody likes scrolling aimlessly. (Except maybe for those endless social
 9.  [License (The Fine Print, You Know, For Lawyers)](#license-the-fine-print-you-know-for-lawyers)
 10. [Contact (If You Must)](#contact-if-you-must)
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CassieMarie0728/mcp-hub)
+
 ---
 
 ## 1. WHAT THE HELL IS THIS? (INTRODUCTION)

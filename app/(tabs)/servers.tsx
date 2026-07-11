@@ -1,4 +1,4 @@
-import { ScrollView, Text, View, TouchableOpacity, FlatList, Alert, TextInput } from 'react-native';
+import { Text, View, TouchableOpacity, FlatList, Alert, TextInput } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useRouter } from 'expo-router';

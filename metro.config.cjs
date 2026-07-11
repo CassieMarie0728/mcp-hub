@@ -4,6 +4,9 @@ const path = require("path");
 
 const config = getDefaultConfig(__dirname);
 
+// Add 'web' to platforms so .web.js files are resolved correctly
+config.resolver.platforms = ['ios', 'android', 'web'];
+
 // Support .mjs and .cjs files
 config.resolver.sourceExts = [
   ...config.resolver.sourceExts,
