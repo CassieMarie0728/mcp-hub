@@ -37,6 +37,7 @@ flowchart TB
 - **Responsibilities**:
   - Validate inputs with Zod schemas.
   - Invoke `MCPServerManager` methods.
+  - Redact sensitive credentials (`token`, `password`) from server configurations before returning them to clients.
   - Wrap calls in `try/catch` to return structured error responses.
 
 **Procedures Overview**
