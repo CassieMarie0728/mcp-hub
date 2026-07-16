@@ -6,14 +6,14 @@ This section is the main index for the repository documentation set. Use it to n
 
 The `docs/` directory groups technical material by domain:
 
-| Section | Focus |
-|---|---|
-| [`api/`](./api/README.md) | Current backend/runtime entry points and API scope |
-| [`architecture/`](./architecture/README.md) | System design, runtime layers, and data model context |
-| [`deployment/`](./deployment/README.md) | Local, container, and Kubernetes deployment workflows |
-| [`development/`](./development/README.md) | Contributor setup and local development guidance |
-| [`maintenance/`](./maintenance/README.md) | Operational checks, release process, and incident response |
-| [`user-guides/`](./user-guides/README.md) | Practical workflows for people using MCP Hub surfaces |
+| Section                                     | Focus                                                      |
+| ------------------------------------------- | ---------------------------------------------------------- |
+| [`api/`](./api/README.md)                   | Current backend/runtime entry points and API scope         |
+| [`architecture/`](./architecture/README.md) | System design, runtime layers, and data model context      |
+| [`deployment/`](./deployment/README.md)     | Local, container, and Kubernetes deployment workflows      |
+| [`development/`](./development/README.md)   | Contributor setup and local development guidance           |
+| [`maintenance/`](./maintenance/README.md)   | Operational checks, release process, and incident response |
+| [`user-guides/`](./user-guides/README.md)   | Practical workflows for people using MCP Hub surfaces      |
 
 ## Navigate by audience
 

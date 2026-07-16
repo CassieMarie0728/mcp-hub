@@ -36,19 +36,22 @@ const OAUTH_CONFIGS: Record<string, OAuthConfig> = {
   github: {
     clientId: process.env.GITHUB_OAUTH_CLIENT_ID || '',
     clientSecret: process.env.GITHUB_OAUTH_CLIENT_SECRET || '',
-    redirectUri: process.env.GITHUB_OAUTH_REDIRECT_URI || 'http://localhost:3000/oauth/github/callback',
+    redirectUri:
+      process.env.GITHUB_OAUTH_REDIRECT_URI || 'http://localhost:3000/oauth/github/callback',
     scopes: ['repo', 'user', 'gist'],
   },
   slack: {
     clientId: process.env.SLACK_OAUTH_CLIENT_ID || '',
     clientSecret: process.env.SLACK_OAUTH_CLIENT_SECRET || '',
-    redirectUri: process.env.SLACK_OAUTH_REDIRECT_URI || 'http://localhost:3000/oauth/slack/callback',
+    redirectUri:
+      process.env.SLACK_OAUTH_REDIRECT_URI || 'http://localhost:3000/oauth/slack/callback',
     scopes: ['chat:write', 'channels:read', 'users:read'],
   },
   notion: {
     clientId: process.env.NOTION_OAUTH_CLIENT_ID || '',
     clientSecret: process.env.NOTION_OAUTH_CLIENT_SECRET || '',
-    redirectUri: process.env.NOTION_OAUTH_REDIRECT_URI || 'http://localhost:3000/oauth/notion/callback',
+    redirectUri:
+      process.env.NOTION_OAUTH_REDIRECT_URI || 'http://localhost:3000/oauth/notion/callback',
     scopes: ['read', 'write'],
   },
 };
@@ -59,7 +62,7 @@ export class OAuthManager {
    */
   static generateAuthorizationUrl(
     serverType: 'github' | 'slack' | 'notion',
-    serverId: string
+    serverId: string,
   ): { url: string; state: string } {
     const config = OAUTH_CONFIGS[serverType];
     if (!config.clientId) {
@@ -123,7 +126,7 @@ export class OAuthManager {
    */
   static async exchangeCodeForToken(
     serverType: 'github' | 'slack' | 'notion',
-    code: string
+    code: string,
   ): Promise<OAuthToken> {
     const config = OAUTH_CONFIGS[serverType];
 
@@ -151,7 +154,7 @@ export class OAuthManager {
         body: params.toString(),
       });
 
-      const data = await response.json() as any;
+      const data = (await response.json()) as any;
 
       if (!response.ok) {
         throw new Error(`OAuth token exchange failed: ${data.error || 'Unknown error'}`);
@@ -204,7 +207,7 @@ export class OAuthManager {
    */
   static async refreshAccessToken(
     serverType: 'github' | 'slack' | 'notion',
-    refreshToken: string
+    refreshToken: string,
   ): Promise<OAuthToken> {
     const config = OAUTH_CONFIGS[serverType];
 
@@ -235,7 +238,7 @@ export class OAuthManager {
         body: params.toString(),
       });
 
-      const data = await response.json() as any;
+      const data = (await response.json()) as any;
 
       if (!response.ok) {
         throw new Error(`Token refresh failed: ${data.error || 'Unknown error'}`);
@@ -262,7 +265,7 @@ export class OAuthManager {
    */
   static async revokeToken(
     serverType: 'github' | 'slack' | 'notion',
-    token: string
+    token: string,
   ): Promise<boolean> {
     const config = OAUTH_CONFIGS[serverType];
 

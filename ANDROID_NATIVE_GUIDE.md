@@ -5,6 +5,7 @@ This is your complete guide to transitioning from Expo to full native Android St
 ## What's Been Prepared
 
 ✅ **Native Android Project Generated**
+
 - Full Android project structure in `/android/` directory
 - Gradle build system configured and ready
 - All necessary gradle files (build.gradle, settings.gradle, gradle.properties)
@@ -12,11 +13,13 @@ This is your complete guide to transitioning from Expo to full native Android St
 - AndroidManifest.xml with all required permissions and configurations
 
 ✅ **Native Source Code**
+
 - `MainActivity.kt` — Main activity (entry point)
 - `MainApplication.kt` — Application initialization
 - All React Native integration code
 
 ✅ **Build Configuration**
+
 - Debug and Release build types
 - Hermes engine enabled for better performance
 - New Architecture (Fabric + TurboModules) enabled
@@ -24,6 +27,7 @@ This is your complete guide to transitioning from Expo to full native Android St
 - WebP and GIF image support
 
 ✅ **Documentation**
+
 - `ANDROID_STUDIO_SETUP.md` — Step-by-step setup guide
 - `ANDROID_DEVELOPMENT.md` — Development workflow and debugging
 - `ANDROID_PROJECT_STRUCTURE.md` — Directory structure and file reference
@@ -45,6 +49,7 @@ Download from: https://developer.android.com/studio
 ### 3. Build and Run
 
 **Debug Build (for testing):**
+
 ```bash
 cd /home/ubuntu/mcp-hub/android
 ./gradlew assembleDebug
@@ -53,6 +58,7 @@ cd /home/ubuntu/mcp-hub/android
 APK will be in: `android/app/build/outputs/apk/debug/app-debug.apk`
 
 **Or from Android Studio:**
+
 1. Connect an Android device or start an emulator
 2. Click the **Run** button (green play icon)
 3. Select your device
@@ -123,6 +129,7 @@ mcp-hub/
 ### When You Add Dependencies
 
 **JavaScript/React Native:**
+
 ```bash
 pnpm add some-package
 pnpm run dev:metro  # Rebuild bundle
@@ -130,28 +137,30 @@ cd android && ./gradlew assembleDebug
 ```
 
 **Android/Gradle:**
+
 1. Edit `android/app/build.gradle`
 2. Add dependency to `dependencies` block
 3. In Android Studio: **File** → **Sync Now**
 
 ## Key Files Reference
 
-| File | Purpose | Edit When |
-|------|---------|-----------|
-| `android/app/build.gradle` | App build config | Adding dependencies, changing SDK versions |
-| `android/gradle.properties` | Build properties | Changing JVM memory, enabling features |
-| `android/app/src/main/AndroidManifest.xml` | App metadata | Adding permissions, activities, services |
-| `android/app/src/main/java/.../MainActivity.kt` | Main activity | Adding custom activity logic |
-| `android/app/src/main/java/.../MainApplication.kt` | App initialization | Setting up global state, analytics |
-| `android/app/proguard-rules.pro` | Code obfuscation | Adding classes to keep, suppressing warnings |
-| `android/app/src/main/res/values/strings.xml` | String resources | Adding user-facing text |
-| `android/app/src/main/res/values/colors.xml` | Color definitions | Customizing app colors |
+| File                                               | Purpose            | Edit When                                    |
+| -------------------------------------------------- | ------------------ | -------------------------------------------- |
+| `android/app/build.gradle`                         | App build config   | Adding dependencies, changing SDK versions   |
+| `android/gradle.properties`                        | Build properties   | Changing JVM memory, enabling features       |
+| `android/app/src/main/AndroidManifest.xml`         | App metadata       | Adding permissions, activities, services     |
+| `android/app/src/main/java/.../MainActivity.kt`    | Main activity      | Adding custom activity logic                 |
+| `android/app/src/main/java/.../MainApplication.kt` | App initialization | Setting up global state, analytics           |
+| `android/app/proguard-rules.pro`                   | Code obfuscation   | Adding classes to keep, suppressing warnings |
+| `android/app/src/main/res/values/strings.xml`      | String resources   | Adding user-facing text                      |
+| `android/app/src/main/res/values/colors.xml`       | Color definitions  | Customizing app colors                       |
 
 ## Common Tasks
 
 ### Change App Name
 
 Edit `android/app/src/main/res/values/strings.xml`:
+
 ```xml
 <string name="app_name">My New App Name</string>
 ```
@@ -159,6 +168,7 @@ Edit `android/app/src/main/res/values/strings.xml`:
 ### Change App Icon
 
 Replace files in `android/app/src/main/res/mipmap-*/`:
+
 - `mipmap-mdpi/ic_launcher.png` (48×48)
 - `mipmap-hdpi/ic_launcher.png` (72×72)
 - `mipmap-xhdpi/ic_launcher.png` (96×96)
@@ -168,6 +178,7 @@ Replace files in `android/app/src/main/res/mipmap-*/`:
 ### Add Permissions
 
 Edit `android/app/src/main/AndroidManifest.xml`:
+
 ```xml
 <uses-permission android:name="android.permission.CAMERA"/>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -189,6 +200,7 @@ See [React Native Native Modules](https://reactnative.dev/docs/native-modules-an
 ### View Logs
 
 In Android Studio:
+
 1. **View** → **Tool Windows** → **Logcat**
 2. Filter by package: `space.manus.mcp.hub`
 3. View real-time logs
@@ -209,11 +221,11 @@ In Android Studio:
 
 ## Build Variants
 
-| Variant | Purpose | Command |
-|---------|---------|---------|
-| `debug` | Development with debugging | `./gradlew assembleDebug` |
+| Variant          | Purpose                        | Command                            |
+| ---------------- | ------------------------------ | ---------------------------------- |
+| `debug`          | Development with debugging     | `./gradlew assembleDebug`          |
 | `debugOptimized` | Development with optimizations | `./gradlew assembleDebugOptimized` |
-| `release` | Production (signed) | `./gradlew assembleRelease` |
+| `release`        | Production (signed)            | `./gradlew assembleRelease`        |
 
 Switch in Android Studio: **Build** → **Select Build Variant**
 
@@ -247,6 +259,7 @@ cd android
 ## Troubleshooting
 
 ### Gradle Sync Fails
+
 ```bash
 # Clear cache and resync
 cd android
@@ -255,6 +268,7 @@ rm -rf .gradle build
 ```
 
 ### Build Fails with "Cannot find symbol"
+
 ```bash
 # Rebuild dependencies
 pnpm install
@@ -263,6 +277,7 @@ cd android && ./gradlew clean build
 ```
 
 ### Device Not Detected
+
 ```bash
 # Check ADB connection
 adb devices
@@ -274,7 +289,9 @@ adb kill-server && adb start-server
 ```
 
 ### Out of Memory Error
+
 Edit `android/gradle.properties`:
+
 ```properties
 org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m
 ```

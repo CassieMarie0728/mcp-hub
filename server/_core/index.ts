@@ -1,15 +1,15 @@
-import "dotenv/config";
-import express from "express";
-import { createServer } from "http";
-import net from "net";
-import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { registerOAuthRoutes } from "./oauth";
-import { appRouter } from "../routers";
-import { createContext } from "./context";
-import path from "path";
-import { fileURLToPath } from "url";
-import { globalLimiter, apiLimiter } from "./rate-limiter";
-import { setupAIRoutes } from "./ai-routes.js";
+import 'dotenv/config';
+import express from 'express';
+import { createServer } from 'http';
+import net from 'net';
+import { createExpressMiddleware } from '@trpc/server/adapters/express';
+import { registerOAuthRoutes } from './oauth';
+import { appRouter } from '../routers';
+import { createContext } from './context';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { globalLimiter, apiLimiter } from './rate-limiter';
+import { setupAIRoutes } from './ai-routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,7 +20,7 @@ function isPortAvailable(port: number): Promise<boolean> {
     server.listen(port, () => {
       server.close(() => resolve(true));
     });
-    server.on("error", () => resolve(false));
+    server.on('error', () => resolve(false));
   });
 }
 
@@ -41,34 +41,34 @@ async function startServer() {
   app.use((req, res, next) => {
     const origin = req.headers.origin as string;
     const allowedOrigins = [
-      "http://localhost:8081",
-      "http://localhost:3000",
+      'http://localhost:8081',
+      'http://localhost:3000',
       process.env.EXPO_WEB_PREVIEW_URL,
       process.env.EXPO_PACKAGER_PROXY_URL,
     ].filter(Boolean) as string[];
 
     if (origin && allowedOrigins.includes(origin)) {
-      res.header("Access-Control-Allow-Origin", origin);
-      res.header("Vary", "Origin");
+      res.header('Access-Control-Allow-Origin', origin);
+      res.header('Vary', 'Origin');
     }
 
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
     );
-    res.header("Access-Control-Allow-Credentials", "true");
+    res.header('Access-Control-Allow-Credentials', 'true');
 
     // Standard Security Headers
-    res.header("X-Frame-Options", "DENY");
-    res.header("X-Content-Type-Options", "nosniff");
-    res.header("X-XSS-Protection", "1; mode=block");
-    if (process.env.NODE_ENV === "production") {
-      res.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    res.header('X-Frame-Options', 'DENY');
+    res.header('X-Content-Type-Options', 'nosniff');
+    res.header('X-XSS-Protection', '1; mode=block');
+    if (process.env.NODE_ENV === 'production') {
+      res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     }
 
     // Handle preflight requests
-    if (req.method === "OPTIONS") {
+    if (req.method === 'OPTIONS') {
       res.sendStatus(200);
       return;
     }
@@ -78,36 +78,36 @@ async function startServer() {
   // Apply global rate limiter to all requests
   app.use(globalLimiter);
 
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   // Serve landing page at root
-  app.get("/", (_req, res) => {
-    res.sendFile(path.join(__dirname, "../../landing/index.html"));
+  app.get('/', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../../landing/index.html'));
   });
 
   // Serve landing assets (CSS, JS, images, demos)
-  app.use(express.static(path.join(__dirname, "../../landing")));
+  app.use(express.static(path.join(__dirname, '../../landing')));
 
   registerOAuthRoutes(app);
   setupAIRoutes(app);
 
-  app.get("/api/health", (_req, res) => {
-    res.json({ ok: true, timestamp: Date.now(), version: "1.0.0" });
+  app.get('/api/health', (_req, res) => {
+    res.json({ ok: true, timestamp: Date.now(), version: '1.0.0' });
   });
 
   // Apply API rate limiter to tRPC endpoint
-  app.use("/api/trpc", apiLimiter);
+  app.use('/api/trpc', apiLimiter);
 
   app.use(
-    "/api/trpc",
+    '/api/trpc',
     createExpressMiddleware({
       router: appRouter,
       createContext,
     }),
   );
 
-  const preferredPort = parseInt(process.env.PORT || "3000");
+  const preferredPort = parseInt(process.env.PORT || '3000');
   const port = await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {

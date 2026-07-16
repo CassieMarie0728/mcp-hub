@@ -7,14 +7,14 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const ICON_MAP: Record<string, string> = {
-  'rocket': 'rocket',
-  'server': 'server',
-  'flash': 'flash',
-  'history': 'history',
-  'sparkles': 'sparkles',
-  'layers': 'layers',
+  rocket: 'rocket',
+  server: 'server',
+  flash: 'flash',
+  history: 'history',
+  sparkles: 'sparkles',
+  layers: 'layers',
   'shopping-bag': 'shopping-bag',
-  'settings': 'settings',
+  settings: 'settings',
 };
 
 export function OnboardingModal() {
@@ -67,19 +67,13 @@ export function OnboardingModal() {
             borderTopRightRadius: 24,
           }}
         >
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            showsVerticalScrollIndicator={false}
-          >
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
             {/* Header with Close Button */}
             <View className="flex-row items-center justify-between p-6 border-b border-border">
               <Text className="text-lg font-bold text-foreground flex-1">
                 Step {currentStepIndex + 1} of 8
               </Text>
-              <Pressable
-                onPress={skipOnboarding}
-                className="p-2 active:opacity-70"
-              >
+              <Pressable onPress={skipOnboarding} className="p-2 active:opacity-70">
                 <Ionicons name="close" size={24} color={colors.foreground} />
               </Pressable>
             </View>
@@ -120,9 +114,7 @@ export function OnboardingModal() {
 
             {/* Tips Section */}
             <View className="px-6 pb-6">
-              <Text className="text-sm font-semibold text-foreground mb-3">
-                💡 Quick Tips
-              </Text>
+              <Text className="text-sm font-semibold text-foreground mb-3">💡 Quick Tips</Text>
               <View className="gap-2">
                 {stepData.tips.map((tip, index) => (
                   <View key={index} className="flex-row gap-3 items-start">
@@ -130,13 +122,9 @@ export function OnboardingModal() {
                       className="w-6 h-6 rounded-full items-center justify-center mt-0.5"
                       style={{ backgroundColor: colors.primary + '30' }}
                     >
-                      <Text className="text-xs font-bold text-primary">
-                        {index + 1}
-                      </Text>
+                      <Text className="text-xs font-bold text-primary">{index + 1}</Text>
                     </View>
-                    <Text className="flex-1 text-sm text-muted leading-relaxed">
-                      {tip}
-                    </Text>
+                    <Text className="flex-1 text-sm text-muted leading-relaxed">{tip}</Text>
                   </View>
                 ))}
               </View>
@@ -144,12 +132,7 @@ export function OnboardingModal() {
 
             {/* Action Button */}
             <View className="px-6 pb-4">
-              <Button
-                variant="primary"
-                size="large"
-                onPress={handleNext}
-                className="w-full"
-              >
+              <Button variant="primary" size="large" onPress={handleNext} className="w-full">
                 {isLastStep ? '🎉 Complete Onboarding' : `${stepData.action} →`}
               </Button>
             </View>
@@ -165,12 +148,7 @@ export function OnboardingModal() {
               >
                 ← Back
               </Button>
-              <Button
-                variant="tertiary"
-                size="medium"
-                onPress={skipOnboarding}
-                className="flex-1"
-              >
+              <Button variant="tertiary" size="medium" onPress={skipOnboarding} className="flex-1">
                 Skip All
               </Button>
             </View>
@@ -195,17 +173,9 @@ export function OnboardingModal() {
                     // Commented out for now - can enable if you want users to jump around
                     // useOnboarding().goToStep(steps[index]);
                   }}
-                  className={cn(
-                    'h-2 rounded-full',
-                    index <= currentStepIndex
-                      ? 'w-6'
-                      : 'w-2'
-                  )}
+                  className={cn('h-2 rounded-full', index <= currentStepIndex ? 'w-6' : 'w-2')}
                   style={{
-                    backgroundColor:
-                      index <= currentStepIndex
-                        ? colors.primary
-                        : colors.border,
+                    backgroundColor: index <= currentStepIndex ? colors.primary : colors.border,
                   }}
                 />
               ))}

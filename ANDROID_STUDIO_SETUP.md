@@ -49,6 +49,7 @@ mcp-hub/
 ### Step 2: Wait for Gradle Sync
 
 Android Studio will automatically:
+
 - Detect the Gradle project
 - Sync dependencies
 - Download required SDKs and build tools
@@ -165,6 +166,7 @@ The signed APK will be in `android/app/build/outputs/apk/release/app-release.apk
 **Problem:** "Failed to sync Gradle"
 
 **Solution:**
+
 1. Click **File** → **Invalidate Caches** → **Invalidate and Restart**
 2. Delete `android/.gradle` directory
 3. Run `./gradlew clean` from the `android/` directory
@@ -175,6 +177,7 @@ The signed APK will be in `android/app/build/outputs/apk/release/app-release.apk
 **Problem:** Compilation errors about missing classes
 
 **Solution:**
+
 1. Ensure all dependencies are up-to-date: `./gradlew dependencies`
 2. Check that `node_modules/` is populated: `pnpm install` from project root
 3. Rebuild the Metro bundle: `pnpm run dev:metro`
@@ -184,6 +187,7 @@ The signed APK will be in `android/app/build/outputs/apk/release/app-release.apk
 **Problem:** "No devices found" when trying to run
 
 **Solution:**
+
 1. Ensure USB debugging is enabled on your device
 2. Run `adb devices` to check connection
 3. Install Android Debug Bridge (ADB): `sudo apt-get install android-tools-adb`

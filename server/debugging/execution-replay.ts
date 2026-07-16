@@ -25,7 +25,14 @@ export interface Breakpoint {
 }
 
 export class ExecutionReplayEngine {
-  static captureSnapshot(stepId: string, stepName: string, input: Record<string, unknown>, output: Record<string, unknown>, variables: Record<string, unknown>, duration: number): ExecutionSnapshot {
+  static captureSnapshot(
+    stepId: string,
+    stepName: string,
+    input: Record<string, unknown>,
+    output: Record<string, unknown>,
+    variables: Record<string, unknown>,
+    duration: number,
+  ): ExecutionSnapshot {
     return {
       stepId,
       stepName,
@@ -58,7 +65,10 @@ export class ExecutionReplayEngine {
     return replay.snapshots[index] || null;
   }
 
-  static compareSnapshots(snapshot1: ExecutionSnapshot, snapshot2: ExecutionSnapshot): Record<string, unknown> {
+  static compareSnapshots(
+    snapshot1: ExecutionSnapshot,
+    snapshot2: ExecutionSnapshot,
+  ): Record<string, unknown> {
     return {
       inputDiff: this.getDiff(snapshot1.input, snapshot2.input),
       outputDiff: this.getDiff(snapshot1.output, snapshot2.output),
@@ -67,7 +77,10 @@ export class ExecutionReplayEngine {
     };
   }
 
-  private static getDiff(obj1: Record<string, unknown>, obj2: Record<string, unknown>): Record<string, unknown> {
+  private static getDiff(
+    obj1: Record<string, unknown>,
+    obj2: Record<string, unknown>,
+  ): Record<string, unknown> {
     const diff: Record<string, unknown> = {};
     for (const key in obj1) {
       if (obj1[key] !== obj2[key]) {

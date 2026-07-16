@@ -55,7 +55,7 @@ export class WebhookTemplateManager {
   ];
 
   static getTemplate(id: string): WebhookTemplate | undefined {
-    return this.TEMPLATES.find(t => t.id === id);
+    return this.TEMPLATES.find((t) => t.id === id);
   }
 
   static listTemplates(): WebhookTemplate[] {
@@ -63,6 +63,6 @@ export class WebhookTemplateManager {
   }
 
   static listByServer(serverType: string): WebhookTemplate[] {
-    return this.TEMPLATES.filter(t => t.serverType === serverType);
+    return this.TEMPLATES.filter((t) => t.serverType === serverType);
   }
 }

@@ -29,9 +29,7 @@ export default function ExportImportScreen() {
    * Toggle macro selection
    */
   const toggleMacro = (id: string) => {
-    setSelectedMacros((prev) =>
-      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
-    );
+    setSelectedMacros((prev) => (prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]));
   };
 
   /**
@@ -62,7 +60,10 @@ export default function ExportImportScreen() {
     const json = JSON.stringify(exportedData, null, 2);
 
     // Copy to clipboard (in real app, use Share API)
-    Alert.alert('Export Successful', `Exported ${selectedMacros.length} macro(s). Data copied to clipboard.`);
+    Alert.alert(
+      'Export Successful',
+      `Exported ${selectedMacros.length} macro(s). Data copied to clipboard.`,
+    );
   };
 
   /**
@@ -105,13 +106,13 @@ export default function ExportImportScreen() {
               onPress={() => setTab('export')}
               className={cn(
                 'flex-1 rounded-md p-3 active:opacity-80',
-                tab === 'export' ? 'bg-primary' : 'bg-transparent'
+                tab === 'export' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  tab === 'export' ? 'text-background' : 'text-foreground'
+                  tab === 'export' ? 'text-background' : 'text-foreground',
                 )}
               >
                 📤 Export
@@ -122,13 +123,13 @@ export default function ExportImportScreen() {
               onPress={() => setTab('import')}
               className={cn(
                 'flex-1 rounded-md p-3 active:opacity-80',
-                tab === 'import' ? 'bg-primary' : 'bg-transparent'
+                tab === 'import' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  tab === 'import' ? 'text-background' : 'text-foreground'
+                  tab === 'import' ? 'text-background' : 'text-foreground',
                 )}
               >
                 📥 Import
@@ -147,13 +148,13 @@ export default function ExportImportScreen() {
                     onPress={() => setExportFormat('json')}
                     className={cn(
                       'flex-1 rounded-lg p-3 active:opacity-80',
-                      exportFormat === 'json' ? 'bg-primary' : 'bg-surface border border-border'
+                      exportFormat === 'json' ? 'bg-primary' : 'bg-surface border border-border',
                     )}
                   >
                     <Text
                       className={cn(
                         'text-center font-semibold text-sm',
-                        exportFormat === 'json' ? 'text-background' : 'text-foreground'
+                        exportFormat === 'json' ? 'text-background' : 'text-foreground',
                       )}
                     >
                       Single Macro
@@ -164,13 +165,13 @@ export default function ExportImportScreen() {
                     onPress={() => setExportFormat('bundle')}
                     className={cn(
                       'flex-1 rounded-lg p-3 active:opacity-80',
-                      exportFormat === 'bundle' ? 'bg-primary' : 'bg-surface border border-border'
+                      exportFormat === 'bundle' ? 'bg-primary' : 'bg-surface border border-border',
                     )}
                   >
                     <Text
                       className={cn(
                         'text-center font-semibold text-sm',
-                        exportFormat === 'bundle' ? 'text-background' : 'text-foreground'
+                        exportFormat === 'bundle' ? 'text-background' : 'text-foreground',
                       )}
                     >
                       Bundle
@@ -196,7 +197,7 @@ export default function ExportImportScreen() {
                       'flex-row items-center gap-3 p-3 rounded-lg border active:opacity-80',
                       selectedMacros.includes(macro.id)
                         ? 'bg-primary/10 border-primary'
-                        : 'bg-surface border-border'
+                        : 'bg-surface border-border',
                     )}
                   >
                     <View
@@ -204,7 +205,7 @@ export default function ExportImportScreen() {
                         'w-5 h-5 rounded border-2',
                         selectedMacros.includes(macro.id)
                           ? 'bg-primary border-primary'
-                          : 'border-border'
+                          : 'border-border',
                       )}
                     >
                       {selectedMacros.includes(macro.id) && (

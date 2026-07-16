@@ -53,7 +53,9 @@ export class MacroSharingEngine {
 
       return filePath;
     } catch (error) {
-      throw new Error(`Failed to export macros: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to export macros: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -73,7 +75,9 @@ export class MacroSharingEngine {
         dialogTitle: 'Share Macros',
       });
     } catch (error) {
-      throw new Error(`Failed to share macros: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to share macros: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -105,7 +109,7 @@ export class MacroSharingEngine {
       const [currentMajor] = this.SHARE_VERSION.split('.');
       if (majorVersion !== currentMajor) {
         result.errors.push(
-          `Version mismatch: package is v${sharePackage.version}, app is v${this.SHARE_VERSION}`
+          `Version mismatch: package is v${sharePackage.version}, app is v${this.SHARE_VERSION}`,
         );
       }
 
@@ -142,14 +146,16 @@ export class MacroSharingEngine {
         } catch (error) {
           result.skipped++;
           result.errors.push(
-            `Failed to import macro: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Failed to import macro: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
 
       return result;
     } catch (error) {
-      throw new Error(`Failed to import macros: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to import macros: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 
@@ -169,7 +175,9 @@ export class MacroSharingEngine {
       const encoded = btoa(JSON.stringify(data));
       return `mcphub://share/${encoded}`;
     } catch (error) {
-      throw new Error(`Failed to generate share link: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to generate share link: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     }
   }
 

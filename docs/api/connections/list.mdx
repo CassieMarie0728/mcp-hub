@@ -1,7 +1,7 @@
 ---
-title: "List and Fetch MCP Connections — GET /api/connections"
-sidebarTitle: "List Connections"
-description: "GET /api/connections returns a paginated array of MCP server connections. GET /api/connections/{connectionId} retrieves a single connection by ID."
+title: 'List and Fetch MCP Connections — GET /api/connections'
+sidebarTitle: 'List Connections'
+description: 'GET /api/connections returns a paginated array of MCP server connections. GET /api/connections/{connectionId} retrieves a single connection by ID.'
 ---
 
 Use these endpoints to list all MCP server connections registered in MCP Hub and to fetch the full details of a single connection by its ID. Both endpoints require authentication.
@@ -23,7 +23,8 @@ Returns an array of [`ConnectionSummary`](/api/connections/create) objects for a
 </ParamField>
 
 <ParamField query="offset" type="integer" default={0}>
-  The number of connections to skip before returning results. Use together with `limit` to paginate through all connections.
+  The number of connections to skip before returning results. Use together with `limit` to paginate
+  through all connections.
 </ParamField>
 
 ### Response
@@ -55,7 +56,8 @@ Each object in the array is a `ConnectionSummary` with the following fields:
 </ResponseField>
 
 <ResponseField name="status" type="string">
-  The current high-level connection status. Possible values: `disconnected`, `connecting`, `connected`, `initialized`, `error`.
+  The current high-level connection status. Possible values: `disconnected`, `connecting`,
+  `connected`, `initialized`, `error`.
 </ResponseField>
 
 <ResponseField name="transportType" type="string">
@@ -63,7 +65,8 @@ Each object in the array is a `ConnectionSummary` with the following fields:
 </ResponseField>
 
 <ResponseField name="lastSeenAt" type="string (date-time)">
-  ISO 8601 timestamp of the most recent successful communication with the server. `null` if the connection has never been active.
+  ISO 8601 timestamp of the most recent successful communication with the server. `null` if the
+  connection has never been active.
 </ResponseField>
 
 ---
@@ -116,7 +119,8 @@ The full `Connection` object extends `ConnectionSummary` with these additional f
 </ResponseField>
 
 <ResponseField name="serverInfo" type="object">
-  Normalized server info JSON reported by the server during initialization, or `null` before initialization.
+  Normalized server info JSON reported by the server during initialization, or `null` before
+  initialization.
 </ResponseField>
 
 <ResponseField name="serverCapabilities" type="object">

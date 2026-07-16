@@ -61,86 +61,80 @@ All procedures in this router use protectedProcedure, so clients must supply a v
 - **Purpose:** Central registry of supported MCP server types and factory for server configs.
 - **Key Methods:**
 
-| Method | Description | Returns |  |
-| --- | --- | --- | --- |
-| `getAllServers()` | List all supported server definitions | `ServerDefinition[]` |  |
-| `getServerDefinition(type)` | Retrieve definition for a given server type | `ServerDefinition \ | null` |
-| `getServerTools(type)` | Get tool metadata without live connection | `any[]` |  |
-| `validateToken(type, token)` | Verify a token’s validity against the service’s OAuth/JWT API | `Promise<boolean>` |  |
-| `createServerConfig(type, token)` | Build an `MCPServerConfig` for manager registration | `MCPServerConfig \ | null` |
-
+| Method                            | Description                                                   | Returns              |       |
+| --------------------------------- | ------------------------------------------------------------- | -------------------- | ----- |
+| `getAllServers()`                 | List all supported server definitions                         | `ServerDefinition[]` |       |
+| `getServerDefinition(type)`       | Retrieve definition for a given server type                   | `ServerDefinition \  | null` |
+| `getServerTools(type)`            | Get tool metadata without live connection                     | `any[]`              |       |
+| `validateToken(type, token)`      | Verify a token’s validity against the service’s OAuth/JWT API | `Promise<boolean>`   |       |
+| `createServerConfig(type, token)` | Build an `MCPServerConfig` for manager registration           | `MCPServerConfig \   | null` |
 
 #### **MCPServerManager** ()
 
 - **Purpose:** Manage MCP server lifecycles, caching, status tracking, and tool operations.
 - **Key Methods:**
 
-| Method | Description | Returns |
-| --- | --- | --- |
-| `registerServer(config)` | Store config and initialize HTTP/SSE/Stdio client | `void` |
-| `getAllServers()` | List all registered server configs | `MCPServerConfig[]` |
-| `getAllServerStatuses()` | Get status (connected, error, toolCount) for each server | `ServerStatus[]` |
-| `testConnection(serverId)` | Check `/health` endpoint reachability | `Promise<boolean>` |
-| `discoverTools(serverId)` | Fetch and cache tools from a registered server | `Promise<MCPTool[]>` |
-| `executeTool(serverId, name, parameters)` | Invoke a tool on the server | `Promise<MCPToolResult>` |
-| `removeServer(serverId)` | Unregister server, clear client and cache | `void` |
-| `clearToolCache(serverId)` | Invalidate cached tools for a server | `void` |
-| `clearAllCaches()` | Purge all tool caches | `void` |
-
+| Method                                    | Description                                              | Returns                  |
+| ----------------------------------------- | -------------------------------------------------------- | ------------------------ |
+| `registerServer(config)`                  | Store config and initialize HTTP/SSE/Stdio client        | `void`                   |
+| `getAllServers()`                         | List all registered server configs                       | `MCPServerConfig[]`      |
+| `getAllServerStatuses()`                  | Get status (connected, error, toolCount) for each server | `ServerStatus[]`         |
+| `testConnection(serverId)`                | Check `/health` endpoint reachability                    | `Promise<boolean>`       |
+| `discoverTools(serverId)`                 | Fetch and cache tools from a registered server           | `Promise<MCPTool[]>`     |
+| `executeTool(serverId, name, parameters)` | Invoke a tool on the server                              | `Promise<MCPToolResult>` |
+| `removeServer(serverId)`                  | Unregister server, clear client and cache                | `void`                   |
+| `clearToolCache(serverId)`                | Invalidate cached tools for a server                     | `void`                   |
+| `clearAllCaches()`                        | Purge all tool caches                                    | `void`                   |
 
 ## Data Models
 
 #### ServerType
 
-| Value | Description |
-| --- | --- |
+| Value    | Description       |
+| -------- | ----------------- |
 | `github` | GitHub MCP server |
-| `slack` | Slack MCP server |
+| `slack`  | Slack MCP server  |
 | `notion` | Notion MCP server |
-
 
 #### ServerDefinition
 
-| Property | Type | Description |  |  |
-| --- | --- | --- | --- | --- |
-| `id` | `ServerType` | Unique type identifier |  |  |
-| `name` | `string` | Display name |  |  |
-| `description` | `string` | Brief description |  |  |
-| `icon` | `string` | Icon identifier |  |  |
-| `docs` | `string` | Documentation URL |  |  |
-| `requiredScopes?` | `string[]` | OAuth scopes |  |  |
-| `authMethod` | `'bearer' \ | 'api-key' \ | 'basic'` | Authentication mechanism |
-
+| Property          | Type         | Description            |          |                          |
+| ----------------- | ------------ | ---------------------- | -------- | ------------------------ |
+| `id`              | `ServerType` | Unique type identifier |          |                          |
+| `name`            | `string`     | Display name           |          |                          |
+| `description`     | `string`     | Brief description      |          |                          |
+| `icon`            | `string`     | Icon identifier        |          |                          |
+| `docs`            | `string`     | Documentation URL      |          |                          |
+| `requiredScopes?` | `string[]`   | OAuth scopes           |          |                          |
+| `authMethod`      | `'bearer' \  | 'api-key' \            | 'basic'` | Authentication mechanism |
 
 #### MCPServerConfig
 
-| Property | Type | Description |  |  |
-| --- | --- | --- | --- | --- |
-| `id` | `string` | Unique server ID |  |  |
-| `name` | `string` | Human-readable server name |  |  |
-| `url` | `string` (URL) | Base endpoint for MCP JSON-RPC |  |  |
-| `type` | `'http' \ | 'websocket' \ | 'stdio'` | Transport layer |
-| `headers?` | `Record<string, unknown>` | Custom HTTP headers |  |  |
-| `auth?` | `{ type: …; token?; username?; password? }` | Authentication details |  |  |
-| `timeout?` | `number` | Request timeout in ms |  |  |
-| `retryAttempts?` | `number` | Number of retry attempts on failure |  |  |
-
+| Property         | Type                                        | Description                         |          |                 |
+| ---------------- | ------------------------------------------- | ----------------------------------- | -------- | --------------- |
+| `id`             | `string`                                    | Unique server ID                    |          |                 |
+| `name`           | `string`                                    | Human-readable server name          |          |                 |
+| `url`            | `string` (URL)                              | Base endpoint for MCP JSON-RPC      |          |                 |
+| `type`           | `'http' \                                   | 'websocket' \                       | 'stdio'` | Transport layer |
+| `headers?`       | `Record<string, unknown>`                   | Custom HTTP headers                 |          |                 |
+| `auth?`          | `{ type: …; token?; username?; password? }` | Authentication details              |          |                 |
+| `timeout?`       | `number`                                    | Request timeout in ms               |          |                 |
+| `retryAttempts?` | `number`                                    | Number of retry attempts on failure |          |                 |
 
 #### Procedure Inputs & Responses
 
-| Procedure | Input Model | Response Model |  |
-| --- | --- | --- | --- |
-| getAvailableServers |  | `ServerDefinition[]` |  |
-| getServerDefinition | `{ type: string }` | `ServerDefinition \ | { error: string }` |
-| getServerTools | `{ type: string }` | `{ success: boolean; tools: any[]; count: number }` |  |
-| validateToken | `{ type: string; token: string }` | `{ success: boolean; valid: boolean; error?: string }` |  |
-| registerRealServer | `{ type: string; token: string; customName?: string }` | `{ success: boolean; serverId?: string; serverName?: string; connected?: boolean; error?: string }` |  |
-| getRegisteredServers |  | `Array<{ id; name; type; status; toolCount; lastConnected?; lastError? }>` |  |
-| discoverServerTools | `{ serverId: string }` | `{ success: boolean; tools: any[]; count: number; error?: string }` |  |
-| executeServerTool | `{ serverId: string; toolName: string; parameters: Record<string, any> }` | `{ success: boolean; data?: any; error?: string }` |  |
-| testServerConnection | `{ serverId: string }` | `{ success: boolean; connected: boolean; error?: string }` |  |
-| unregisterServer | `{ serverId: string }` | `{ success: boolean }` |  |
-
+| Procedure            | Input Model                                                               | Response Model                                                                                      |                    |
+| -------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------ |
+| getAvailableServers  |                                                                           | `ServerDefinition[]`                                                                                |                    |
+| getServerDefinition  | `{ type: string }`                                                        | `ServerDefinition \                                                                                 | { error: string }` |
+| getServerTools       | `{ type: string }`                                                        | `{ success: boolean; tools: any[]; count: number }`                                                 |                    |
+| validateToken        | `{ type: string; token: string }`                                         | `{ success: boolean; valid: boolean; error?: string }`                                              |                    |
+| registerRealServer   | `{ type: string; token: string; customName?: string }`                    | `{ success: boolean; serverId?: string; serverName?: string; connected?: boolean; error?: string }` |                    |
+| getRegisteredServers |                                                                           | `Array<{ id; name; type; status; toolCount; lastConnected?; lastError? }>`                          |                    |
+| discoverServerTools  | `{ serverId: string }`                                                    | `{ success: boolean; tools: any[]; count: number; error?: string }`                                 |                    |
+| executeServerTool    | `{ serverId: string; toolName: string; parameters: Record<string, any> }` | `{ success: boolean; data?: any; error?: string }`                                                  |                    |
+| testServerConnection | `{ serverId: string }`                                                    | `{ success: boolean; connected: boolean; error?: string }`                                          |                    |
+| unregisterServer     | `{ serverId: string }`                                                    | `{ success: boolean }`                                                                              |                    |
 
 ## API Integration
 
@@ -529,18 +523,17 @@ sequenceDiagram
 All mutations wrap calls in `try/catch` and return a structured error response:
 
 ```js
-protectedProcedure
-  .mutation(async ({ input }) => {
-    try {
-      // ...operation
-      return { success: true, /* data */ };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
-    }
-  });
+protectedProcedure.mutation(async ({ input }) => {
+  try {
+    // ...operation
+    return { success: true /* data */ };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+});
 ```
 
 ## Dependencies
@@ -552,14 +545,13 @@ protectedProcedure
 
 ## Key Classes Reference
 
-| Class | Location | Responsibility |
-| --- | --- | --- |
-| `mcpExtendedRouter` |  | Defines extended tRPC procedures |
-| `MCPServerRegistry` |  | Registry of server definitions and factories |
-| `MCPServerManager` |  | Manages server connections, tools, and status |
-| `ServerType` |  | Enumeration of supported server types |
-| `ServerDefinition` |  | Type for server metadata |
-
+| Class               | Location | Responsibility                                |
+| ------------------- | -------- | --------------------------------------------- |
+| `mcpExtendedRouter` |          | Defines extended tRPC procedures              |
+| `MCPServerRegistry` |          | Registry of server definitions and factories  |
+| `MCPServerManager`  |          | Manages server connections, tools, and status |
+| `ServerType`        |          | Enumeration of supported server types         |
+| `ServerDefinition`  |          | Type for server metadata                      |
 
 ## Testing Considerations
 

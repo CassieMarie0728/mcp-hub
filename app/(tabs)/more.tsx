@@ -6,14 +6,44 @@ import { Card } from '@/components/ui/card';
 import { useColors } from '@/hooks/use-colors';
 
 const MORE_ROUTES = [
-  { title: 'Setup', description: 'Onboarding and first connection steps.', href: '/onboarding', icon: 'flag' },
-  { title: 'Team', description: 'Workspace members, roles, and access.', href: '/team-workspace', icon: 'people' },
-  { title: 'Schedules', description: 'Recurring workflow timing.', href: '/schedule-workflow', icon: 'time' },
+  {
+    title: 'Setup',
+    description: 'Onboarding and first connection steps.',
+    href: '/onboarding',
+    icon: 'flag',
+  },
+  {
+    title: 'Team',
+    description: 'Workspace members, roles, and access.',
+    href: '/team-workspace',
+    icon: 'people',
+  },
+  {
+    title: 'Schedules',
+    description: 'Recurring workflow timing.',
+    href: '/schedule-workflow',
+    icon: 'time',
+  },
   { title: 'Manual', description: 'Field guide and current FAQ.', href: '/faq', icon: 'book' },
-  { title: 'Receipts', description: 'Proof and evidence placeholders.', href: '/testimonials', icon: 'receipt' },
-  { title: 'Missions', description: 'Practical workflow use cases.', href: '/use-cases', icon: 'compass' },
+  {
+    title: 'Receipts',
+    description: 'Proof and evidence placeholders.',
+    href: '/testimonials',
+    icon: 'receipt',
+  },
+  {
+    title: 'Missions',
+    description: 'Practical workflow use cases.',
+    href: '/use-cases',
+    icon: 'compass',
+  },
   { title: 'Plans', description: 'Pricing and packaging roadmap.', href: '/pricing', icon: 'map' },
-  { title: 'Wires', description: 'Connection map and integrations.', href: '/integrations', icon: 'git-network' },
+  {
+    title: 'Wires',
+    description: 'Connection map and integrations.',
+    href: '/integrations',
+    icon: 'git-network',
+  },
 ];
 
 export default function MoreScreen() {

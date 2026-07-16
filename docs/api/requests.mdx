@@ -1,7 +1,7 @@
 ---
-title: "Inspect, Track, and Cancel In-Flight MCP Requests"
-sidebarTitle: "Requests"
-description: "Inspect full request records for MCP tool calls and resource reads. Cancel pending operations and check status, payloads, and timing information."
+title: 'Inspect, Track, and Cancel In-Flight MCP Requests'
+sidebarTitle: 'Requests'
+description: 'Inspect full request records for MCP tool calls and resource reads. Cancel pending operations and check status, payloads, and timing information.'
 ---
 
 Every MCP tool call and resource read creates a request record you can inspect. Each record captures the full JSON-RPC method and payload, the server response, any error details, and timing information. For long-running operations, you can cancel an in-flight request before it completes.
@@ -39,7 +39,8 @@ Fetch the full record for a specific request, including its current status, payl
 </ResponseField>
 
 <ResponseField name="responsePayload" type="object | null">
-  The server's response, populated once the request reaches `completed` status. `null` for all other statuses.
+  The server's response, populated once the request reaches `completed` status. `null` for all other
+  statuses.
 </ResponseField>
 
 <ResponseField name="errorPayload" type="object | null">
@@ -47,11 +48,13 @@ Fetch the full record for a specific request, including its current status, payl
 </ResponseField>
 
 <ResponseField name="progressToken" type="string | null">
-  The progress token associated with this request, if one was supplied at call time. `null` otherwise.
+  The progress token associated with this request, if one was supplied at call time. `null`
+  otherwise.
 </ResponseField>
 
 <ResponseField name="durationMs" type="integer | null">
-  Total execution time in milliseconds from creation to completion. `null` if the request has not yet finished.
+  Total execution time in milliseconds from creation to completion. `null` if the request has not
+  yet finished.
 </ResponseField>
 
 <ResponseField name="createdAt" type="string" required>
@@ -90,12 +93,12 @@ Fetch the full record for a specific request, including its current status, payl
 
 ### Request status values
 
-| Status      | Description                                                              |
-|-------------|--------------------------------------------------------------------------|
-| `pending`   | The request is currently in flight and awaiting a response.              |
-| `completed` | The request finished successfully and a response was received.           |
-| `failed`    | The request encountered an error; see `errorPayload` for details.        |
-| `cancelled` | The request was cancelled before the server returned a response.         |
+| Status      | Description                                                       |
+| ----------- | ----------------------------------------------------------------- |
+| `pending`   | The request is currently in flight and awaiting a response.       |
+| `completed` | The request finished successfully and a response was received.    |
+| `failed`    | The request encountered an error; see `errorPayload` for details. |
+| `cancelled` | The request was cancelled before the server returned a response.  |
 
 ---
 
@@ -112,5 +115,7 @@ Send a cancellation signal for a request that is currently `pending`. No request
 After a successful cancellation, the request record's `status` transitions to `cancelled` and no `responsePayload` is populated.
 
 <Note>
-  Cancellation is best-effort. If the MCP server has already processed the request by the time the cancellation signal arrives, the operation may still complete server-side. Always verify the final `status` of the request record after calling this endpoint.
+  Cancellation is best-effort. If the MCP server has already processed the request by the time the
+  cancellation signal arrives, the operation may still complete server-side. Always verify the final
+  `status` of the request record after calling this endpoint.
 </Note>

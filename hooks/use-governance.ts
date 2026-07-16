@@ -117,7 +117,7 @@ export function useGovernance() {
         return '';
       }
     },
-    []
+    [],
   );
 
   /**
@@ -143,25 +143,22 @@ export function useGovernance() {
   /**
    * Deny consent
    */
-  const denyConsent = useCallback(
-    async (requestId: string, reason?: string): Promise<boolean> => {
-      if (Platform.OS !== 'android' || !GovernanceBridge) {
-        return false;
-      }
+  const denyConsent = useCallback(async (requestId: string, reason?: string): Promise<boolean> => {
+    if (Platform.OS !== 'android' || !GovernanceBridge) {
+      return false;
+    }
 
-      try {
-        const denied = await GovernanceBridge.denyConsent(requestId, reason);
-        await getGovernanceStatus();
-        return denied;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : String(err);
-        setError(errorMessage);
-        console.error('Error denying consent:', err);
-        return false;
-      }
-    },
-    []
-  );
+    try {
+      const denied = await GovernanceBridge.denyConsent(requestId, reason);
+      await getGovernanceStatus();
+      return denied;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
+      console.error('Error denying consent:', err);
+      return false;
+    }
+  }, []);
 
   /**
    * Get pending consents
@@ -191,7 +188,7 @@ export function useGovernance() {
       agent: string,
       tool: string,
       status: string,
-      duration: number
+      duration: number,
     ): Promise<string> => {
       if (Platform.OS !== 'android' || !GovernanceBridge) {
         return '';
@@ -203,7 +200,7 @@ export function useGovernance() {
           agent,
           tool,
           status,
-          duration
+          duration,
         );
         return entryId;
       } catch (err) {
@@ -213,7 +210,7 @@ export function useGovernance() {
         return '';
       }
     },
-    []
+    [],
   );
 
   /**

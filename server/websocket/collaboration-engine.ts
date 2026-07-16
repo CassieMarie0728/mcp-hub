@@ -66,7 +66,7 @@ export class CollaborationEngine extends EventEmitter {
       JSON.stringify({
         type: 'session_state',
         data: session.getState(),
-      })
+      }),
     );
 
     // Notify other users
@@ -268,7 +268,7 @@ export class CollaborationEngine extends EventEmitter {
             type: 'lock_failed',
             actionIndex,
             lockedBy: session.getActionLock(actionIndex),
-          })
+          }),
         );
       }
     }

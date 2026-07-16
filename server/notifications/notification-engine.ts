@@ -63,7 +63,8 @@ export class NotificationEngine extends EventEmitter {
     }
     this.subscribers.get(userId)!.add(connectionId);
 
-    if (process.env.NODE_ENV === 'development') console.log(`User ${userId} subscribed with connection ${connectionId}`);
+    if (process.env.NODE_ENV === 'development')
+      console.log(`User ${userId} subscribed with connection ${connectionId}`);
     this.emit('user_subscribed', { userId, connectionId });
   }
 
@@ -78,7 +79,8 @@ export class NotificationEngine extends EventEmitter {
       if (connections.size === 0) {
         this.subscribers.delete(userId);
       }
-      if (process.env.NODE_ENV === 'development') console.log(`User ${userId} unsubscribed from connection ${connectionId}`);
+      if (process.env.NODE_ENV === 'development')
+        console.log(`User ${userId} unsubscribed from connection ${connectionId}`);
       this.emit('user_unsubscribed', { userId, connectionId });
     }
   }

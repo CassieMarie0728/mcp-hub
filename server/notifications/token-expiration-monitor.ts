@@ -30,13 +30,15 @@ export class TokenExpirationMonitor {
   /**
    * Check all tokens for expiration
    */
-  static async checkTokenExpiration(tokens: Array<{
-    id: string;
-    serverId: string;
-    serverType: string;
-    name: string;
-    expiresAt?: Date;
-  }>): Promise<ExpirationCheckResult> {
+  static async checkTokenExpiration(
+    tokens: Array<{
+      id: string;
+      serverId: string;
+      serverType: string;
+      name: string;
+      expiresAt?: Date;
+    }>,
+  ): Promise<ExpirationCheckResult> {
     const now = new Date();
     const alerts: TokenExpirationAlert[] = [];
     const expiredTokens: string[] = [];
@@ -48,7 +50,7 @@ export class TokenExpirationMonitor {
       }
 
       const daysUntilExpiration = Math.ceil(
-        (token.expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+        (token.expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
       );
 
       // Check if expired
@@ -106,9 +108,7 @@ export class TokenExpirationMonitor {
   /**
    * Send push notification for token expiration
    */
-  static async sendExpirationNotification(
-    alert: TokenExpirationAlert
-  ): Promise<void> {
+  static async sendExpirationNotification(alert: TokenExpirationAlert): Promise<void> {
     const title = this.getNotificationTitle(alert.alertLevel);
     const body = this.getNotificationBody(alert);
 
@@ -130,18 +130,14 @@ export class TokenExpirationMonitor {
         trigger: null, // Send immediately
       });
     } catch (error: any) {
-      console.error(
-        `Failed to send notification for token ${alert.tokenId}: ${error.message}`
-      );
+      console.error(`Failed to send notification for token ${alert.tokenId}: ${error.message}`);
     }
   }
 
   /**
    * Send batch notifications for multiple alerts
    */
-  static async sendBatchNotifications(
-    alerts: TokenExpirationAlert[]
-  ): Promise<void> {
+  static async sendBatchNotifications(alerts: TokenExpirationAlert[]): Promise<void> {
     // Group by alert level
     const criticalAlerts = alerts.filter((a) => a.alertLevel === 'critical');
     const warningAlerts = alerts.filter((a) => a.alertLevel === 'warning');
@@ -162,7 +158,7 @@ export class TokenExpirationMonitor {
    * Schedule periodic expiration checks
    */
   static schedulePeriodicChecks(
-    checkFn: () => Promise<ExpirationCheckResult>
+    checkFn: () => Promise<ExpirationCheckResult>,
   ): ReturnType<typeof setInterval> {
     // Run check immediately
     checkFn().catch((error) => {
@@ -231,9 +227,7 @@ export class TokenExpirationMonitor {
    */
   static daysUntilExpiration(expiresAt: Date): number {
     const now = new Date();
-    return Math.ceil(
-      (expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    return Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   }
 
   /**

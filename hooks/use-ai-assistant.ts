@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from 'react';
 
 interface AIAssistantContextType {
   isOpen: boolean;
@@ -12,7 +12,7 @@ const AIAssistantContext = createContext<AIAssistantContextType | undefined>(und
 export function useAIAssistant(): AIAssistantContextType {
   const context = useContext(AIAssistantContext);
   if (!context) {
-    throw new Error("useAIAssistant must be used within AIAssistantProvider");
+    throw new Error('useAIAssistant must be used within AIAssistantProvider');
   }
   return context;
 }
@@ -35,9 +35,5 @@ export function AIAssistantProvider(props: AIAssistantProviderProps): React.Reac
     toggleAssistant,
   };
 
-  return React.createElement(
-    AIAssistantContext.Provider,
-    { value },
-    props.children
-  );
+  return React.createElement(AIAssistantContext.Provider, { value }, props.children);
 }

@@ -14,7 +14,7 @@ export default function PerformanceProfilerScreen() {
   const colors = useColors();
 
   const [activeTab, setActiveTab] = useState<'timeline' | 'bottlenecks' | 'suggestions'>(
-    'timeline'
+    'timeline',
   );
 
   // Mock performance data
@@ -92,14 +92,13 @@ export default function PerformanceProfilerScreen() {
     <View key={item.action} className="gap-1 mb-3">
       <View className="flex-row items-center justify-between">
         <Text className="text-sm font-semibold text-foreground">{item.action}</Text>
-        <Text className="text-xs text-muted">{item.duration}ms ({item.percent}%)</Text>
+        <Text className="text-xs text-muted">
+          {item.duration}ms ({item.percent}%)
+        </Text>
       </View>
 
       <View className="h-2 bg-surface rounded-full border border-border overflow-hidden">
-        <View
-          className="h-full bg-primary rounded-full"
-          style={{ width: `${item.percent}%` }}
-        />
+        <View className="h-full bg-primary rounded-full" style={{ width: `${item.percent}%` }} />
       </View>
     </View>
   );
@@ -120,7 +119,7 @@ export default function PerformanceProfilerScreen() {
             'rounded-full px-2 py-1',
             item.severity === 'critical' && 'bg-error/20',
             item.severity === 'high' && 'bg-warning/20',
-            item.severity === 'medium' && 'bg-primary/20'
+            item.severity === 'medium' && 'bg-primary/20',
           )}
         >
           <Text
@@ -128,7 +127,7 @@ export default function PerformanceProfilerScreen() {
               'text-xs font-bold',
               item.severity === 'critical' && 'text-error',
               item.severity === 'high' && 'text-warning',
-              item.severity === 'medium' && 'text-primary'
+              item.severity === 'medium' && 'text-primary',
             )}
           >
             {item.severity.toUpperCase()}
@@ -144,7 +143,7 @@ export default function PerformanceProfilerScreen() {
               'h-full rounded-full',
               item.severity === 'critical' && 'bg-error',
               item.severity === 'high' && 'bg-warning',
-              item.severity === 'medium' && 'bg-primary'
+              item.severity === 'medium' && 'bg-primary',
             )}
             style={{ width: `${item.percent}%` }}
           />
@@ -230,13 +229,13 @@ export default function PerformanceProfilerScreen() {
               onPress={() => setActiveTab('timeline')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'timeline' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'timeline' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'timeline' ? 'text-background' : 'text-foreground'
+                  activeTab === 'timeline' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Timeline
@@ -247,13 +246,13 @@ export default function PerformanceProfilerScreen() {
               onPress={() => setActiveTab('bottlenecks')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'bottlenecks' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'bottlenecks' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'bottlenecks' ? 'text-background' : 'text-foreground'
+                  activeTab === 'bottlenecks' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Bottlenecks
@@ -264,13 +263,13 @@ export default function PerformanceProfilerScreen() {
               onPress={() => setActiveTab('suggestions')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'suggestions' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'suggestions' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'suggestions' ? 'text-background' : 'text-foreground'
+                  activeTab === 'suggestions' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Suggestions

@@ -16,13 +16,62 @@ interface Integration {
 }
 
 const INTEGRATIONS: Integration[] = [
-  { id: 'github', name: 'GitHub', category: 'Code', icon: 'code', description: 'Repositories, issues, pull requests, and workflow runs.', status: 'ready' },
-  { id: 'slack', name: 'Slack', category: 'Messaging', icon: 'chat', description: 'Team updates, alerts, and workflow notifications.', status: 'next' },
-  { id: 'notion', name: 'Notion', category: 'Workspace', icon: 'description', description: 'Pages, databases, notes, and project knowledge.', status: 'next' },
-  { id: 'aws', name: 'AWS', category: 'Cloud', icon: 'cloud', description: 'Cloud actions and infrastructure checks once configured.', status: 'planned' },
-  { id: 'docker', name: 'Docker', category: 'Containers', icon: 'inventory-2', description: 'Container workflows and deployment chores.', status: 'planned' },
-  { id: 'database', name: 'Databases', category: 'Data', icon: 'storage', description: 'Query and inspect connected data sources through MCP.', status: 'planned' },
-  { id: 'openai', name: 'AI Providers', category: 'AI', icon: 'auto-awesome', description: 'Model-backed tools, assistant actions, and generated workflow help.', status: 'planned' },
+  {
+    id: 'github',
+    name: 'GitHub',
+    category: 'Code',
+    icon: 'code',
+    description: 'Repositories, issues, pull requests, and workflow runs.',
+    status: 'ready',
+  },
+  {
+    id: 'slack',
+    name: 'Slack',
+    category: 'Messaging',
+    icon: 'chat',
+    description: 'Team updates, alerts, and workflow notifications.',
+    status: 'next',
+  },
+  {
+    id: 'notion',
+    name: 'Notion',
+    category: 'Workspace',
+    icon: 'description',
+    description: 'Pages, databases, notes, and project knowledge.',
+    status: 'next',
+  },
+  {
+    id: 'aws',
+    name: 'AWS',
+    category: 'Cloud',
+    icon: 'cloud',
+    description: 'Cloud actions and infrastructure checks once configured.',
+    status: 'planned',
+  },
+  {
+    id: 'docker',
+    name: 'Docker',
+    category: 'Containers',
+    icon: 'inventory-2',
+    description: 'Container workflows and deployment chores.',
+    status: 'planned',
+  },
+  {
+    id: 'database',
+    name: 'Databases',
+    category: 'Data',
+    icon: 'storage',
+    description: 'Query and inspect connected data sources through MCP.',
+    status: 'planned',
+  },
+  {
+    id: 'openai',
+    name: 'AI Providers',
+    category: 'AI',
+    icon: 'auto-awesome',
+    description: 'Model-backed tools, assistant actions, and generated workflow help.',
+    status: 'planned',
+  },
 ];
 
 const IntegrationCard = ({ integration }: { integration: Integration }) => {
@@ -48,7 +97,9 @@ const IntegrationCard = ({ integration }: { integration: Integration }) => {
           </View>
         </View>
         <View className="px-2 py-1 rounded-full" style={{ backgroundColor: `${status.color}20` }}>
-          <Text className="text-xs font-semibold" style={{ color: status.color }}>{status.label}</Text>
+          <Text className="text-xs font-semibold" style={{ color: status.color }}>
+            {status.label}
+          </Text>
         </View>
       </View>
     </Card>
@@ -68,15 +119,31 @@ export default function IntegrationsScreen() {
           <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">WIRES</Text>
           <Text className="text-4xl font-bold text-background mb-2">Connection Map</Text>
           <Text className="text-base text-background/90 leading-relaxed">
-            A cleaner view of what can connect now, what should come next, and what belongs on the roadmap.
+            A cleaner view of what can connect now, what should come next, and what belongs on the
+            roadmap.
           </Text>
         </View>
 
         <View className="px-6 py-8 gap-3">
           <View className="flex-row gap-3">
-            <Card variant="elevated" className="flex-1 border border-border"><View className="items-center gap-1"><Text className="text-2xl font-bold text-foreground">{readyCount}</Text><Text className="text-xs text-muted text-center">Ready</Text></View></Card>
-            <Card variant="elevated" className="flex-1 border border-border"><View className="items-center gap-1"><Text className="text-2xl font-bold text-foreground">{nextCount}</Text><Text className="text-xs text-muted text-center">Next</Text></View></Card>
-            <Card variant="elevated" className="flex-1 border border-border"><View className="items-center gap-1"><Text className="text-2xl font-bold text-foreground">{plannedCount}</Text><Text className="text-xs text-muted text-center">Planned</Text></View></Card>
+            <Card variant="elevated" className="flex-1 border border-border">
+              <View className="items-center gap-1">
+                <Text className="text-2xl font-bold text-foreground">{readyCount}</Text>
+                <Text className="text-xs text-muted text-center">Ready</Text>
+              </View>
+            </Card>
+            <Card variant="elevated" className="flex-1 border border-border">
+              <View className="items-center gap-1">
+                <Text className="text-2xl font-bold text-foreground">{nextCount}</Text>
+                <Text className="text-xs text-muted text-center">Next</Text>
+              </View>
+            </Card>
+            <Card variant="elevated" className="flex-1 border border-border">
+              <View className="items-center gap-1">
+                <Text className="text-2xl font-bold text-foreground">{plannedCount}</Text>
+                <Text className="text-xs text-muted text-center">Planned</Text>
+              </View>
+            </Card>
           </View>
         </View>
 
@@ -93,18 +160,23 @@ export default function IntegrationsScreen() {
             <View className="flex-1">
               <Text className="text-base font-bold text-foreground">Custom MCP servers</Text>
               <Text className="text-sm text-muted mt-1 leading-relaxed">
-                The long-term win is simple: any well-behaved MCP server should be able to join the board without making setup miserable.
+                The long-term win is simple: any well-behaved MCP server should be able to join the
+                board without making setup miserable.
               </Text>
             </View>
           </View>
         </View>
 
         <View className="mx-6 mb-8 p-6 bg-primary rounded-lg">
-          <Text className="text-lg font-bold text-background mb-2 text-center">Do not see your tool?</Text>
+          <Text className="text-lg font-bold text-background mb-2 text-center">
+            Do not see your tool?
+          </Text>
           <Text className="text-sm text-background/90 text-center mb-4">
             Add it to the roadmap or wire it in as a custom MCP server when support is ready.
           </Text>
-          <Button variant="secondary" size="large" className="w-full">Add to Roadmap</Button>
+          <Button variant="secondary" size="large" className="w-full">
+            Add to Roadmap
+          </Button>
         </View>
       </ScrollView>
     </ScreenContainer>

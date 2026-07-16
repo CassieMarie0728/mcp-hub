@@ -166,7 +166,9 @@ export class MacroManager {
   /**
    * Create a new macro
    */
-  static async createMacro(macro: Omit<Macro, 'id' | 'createdAt' | 'updatedAt' | 'version'>): Promise<Macro> {
+  static async createMacro(
+    macro: Omit<Macro, 'id' | 'createdAt' | 'updatedAt' | 'version'>,
+  ): Promise<Macro> {
     try {
       const now = Date.now();
       const newMacro: Macro = {
@@ -240,7 +242,7 @@ export class MacroManager {
   static async createFromExecutionHistory(
     executionIds: string[],
     name: string,
-    description?: string
+    description?: string,
   ): Promise<Macro> {
     try {
       const AsyncStorage = require('@react-native-async-storage/async-storage').default;

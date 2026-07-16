@@ -1,7 +1,7 @@
 ---
-title: "List and Inspect Tools Exposed by an MCP Connection"
-sidebarTitle: "List Tools"
-description: "List tools cached from a connected MCP server, inspect individual tool schemas, and use cursor-based pagination or force a live refresh from the server."
+title: 'List and Inspect Tools Exposed by an MCP Connection'
+sidebarTitle: 'List Tools'
+description: 'List tools cached from a connected MCP server, inspect individual tool schemas, and use cursor-based pagination or force a live refresh from the server.'
 ---
 
 Retrieve all tools discovered from a connected MCP server. Tools are cached after the first discovery; use the `refresh` parameter to force re-fetch from the server.
@@ -35,7 +35,8 @@ An array of `ToolMetadata` objects.
 </ResponseField>
 
 <ResponseField name="schema" type="object">
-  JSON Schema describing the tool's input arguments, including types, constraints, and required fields.
+  JSON Schema describing the tool's input arguments, including types, constraints, and required
+  fields.
 </ResponseField>
 
 <ResponseField name="lastDiscoveredAt" type="string">
@@ -89,7 +90,8 @@ Retrieve metadata for one specific tool by name. Use this to inspect the tool's 
 </ResponseField>
 
 <ResponseField name="schema" type="object">
-  JSON Schema object describing all accepted input arguments, including types, constraints, and required fields.
+  JSON Schema object describing all accepted input arguments, including types, constraints, and
+  required fields.
 </ResponseField>
 
 <ResponseField name="lastDiscoveredAt" type="string">
@@ -113,5 +115,6 @@ Retrieve metadata for one specific tool by name. Use this to inspect the tool's 
 ```
 
 <Note>
-  Tool schemas are defined by the MCP server. Always read the `schema` field before constructing a call — required fields and value constraints vary per tool.
+  Tool schemas are defined by the MCP server. Always read the `schema` field before constructing a
+  call — required fields and value constraints vary per tool.
 </Note>

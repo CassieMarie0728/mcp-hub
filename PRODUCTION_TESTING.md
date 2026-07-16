@@ -457,8 +457,8 @@ curl https://api.mcp-hub.com/health
 
 ## Sign-Off
 
-- [ ] QA Lead: _________________ Date: _______
-- [ ] DevOps Lead: _________________ Date: _______
-- [ ] Product Manager: _________________ Date: _______
+- [ ] QA Lead: ********\_******** Date: **\_\_\_**
+- [ ] DevOps Lead: ********\_******** Date: **\_\_\_**
+- [ ] Product Manager: ********\_******** Date: **\_\_\_**
 
 **Status:** [ ] Ready for Production [ ] Needs Fixes [ ] Blocked

@@ -1,35 +1,35 @@
-import "@/global.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import "react-native-reanimated";
-import { Platform } from "react-native";
-import "@/lib/_core/nativewind-pressable";
-import { ThemeProvider } from "@/lib/theme-provider";
-import { AppProvider } from "@/lib/app-context";
+import '@/global.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-reanimated';
+import { Platform } from 'react-native';
+import '@/lib/_core/nativewind-pressable';
+import { ThemeProvider } from '@/lib/theme-provider';
+import { AppProvider } from '@/lib/app-context';
 import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
   SafeAreaProvider,
   initialWindowMetrics,
-} from "react-native-safe-area-context";
-import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
+} from 'react-native-safe-area-context';
+import type { EdgeInsets, Metrics, Rect } from 'react-native-safe-area-context';
 
-import { trpc, createTRPCClient } from "@/lib/trpc";
-import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
-import { usePushNotifications } from "@/hooks/use-push-notifications";
-import { AIAssistantProvider } from "@/hooks/use-ai-assistant";
-import { OnboardingProvider } from "@/lib/onboarding-context";
-import { OnboardingModal } from "@/components/onboarding-modal";
-import { LinkingOptions } from "@react-navigation/native";
+import { trpc, createTRPCClient } from '@/lib/trpc';
+import { initManusRuntime, subscribeSafeAreaInsets } from '@/lib/_core/manus-runtime';
+import { usePushNotifications } from '@/hooks/use-push-notifications';
+import { AIAssistantProvider } from '@/hooks/use-ai-assistant';
+import { OnboardingProvider } from '@/lib/onboarding-context';
+import { OnboardingModal } from '@/components/onboarding-modal';
+import { LinkingOptions } from '@react-navigation/native';
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
 
 export const unstable_settings = {
-  anchor: "(tabs)",
+  anchor: '(tabs)',
 };
 
 export default function RootLayout() {
@@ -53,7 +53,7 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (Platform.OS !== "web") return;
+    if (Platform.OS !== 'web') return;
     const unsubscribe = subscribeSafeAreaInsets(handleSafeAreaUpdate);
     return () => unsubscribe();
   }, [handleSafeAreaUpdate]);
@@ -119,7 +119,7 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 
-  const shouldOverrideSafeArea = Platform.OS === "web";
+  const shouldOverrideSafeArea = Platform.OS === 'web';
 
   if (shouldOverrideSafeArea) {
     return (

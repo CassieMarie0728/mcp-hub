@@ -32,7 +32,7 @@ class WebhookLogger {
     executionTime: number,
     success: boolean,
     error?: string,
-    retryCount: number = 0
+    retryCount: number = 0,
   ): WebhookLog {
     const log: WebhookLog = {
       id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -63,7 +63,7 @@ class WebhookLogger {
   static getExecutionLogs(
     webhookId: string,
     limit: number = 100,
-    offset: number = 0
+    offset: number = 0,
   ): WebhookLog[] {
     const instance = new WebhookLogger();
     const logs = instance.logs.get(webhookId) || [];
@@ -118,7 +118,10 @@ class WebhookLogger {
   /**
    * Get error trends
    */
-  static getErrorTrends(webhookId: string, hours: number = 24): {
+  static getErrorTrends(
+    webhookId: string,
+    hours: number = 24,
+  ): {
     timestamp: Date;
     errorCount: number;
     totalCount: number;
@@ -175,11 +178,7 @@ class WebhookLogger {
   /**
    * Search logs by event
    */
-  static searchLogs(
-    webhookId: string,
-    event: string,
-    limit: number = 50
-  ): WebhookLog[] {
+  static searchLogs(webhookId: string, event: string, limit: number = 50): WebhookLog[] {
     const instance = new WebhookLogger();
     const logs = instance.logs.get(webhookId) || [];
     return logs

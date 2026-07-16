@@ -51,9 +51,9 @@ export interface ExecutionState {
  * Hook for executing tools
  */
 export function useToolExecution() {
-  const [executionStates, setExecutionStates] = useState<
-    Map<string, Map<string, ExecutionState>>
-  >(new Map());
+  const [executionStates, setExecutionStates] = useState<Map<string, Map<string, ExecutionState>>>(
+    new Map(),
+  );
   const [globalError, setGlobalError] = useState<string | null>(null);
 
   /**
@@ -64,7 +64,7 @@ export function useToolExecution() {
       serverId: string,
       toolName: string,
       parameters: Record<string, any>,
-      timeoutMs: number = 60000
+      timeoutMs: number = 60000,
     ): Promise<ToolExecutionResult> => {
       try {
         // Update execution state
@@ -83,7 +83,7 @@ export function useToolExecution() {
           serverId,
           toolName,
           parameters,
-          timeoutMs
+          timeoutMs,
         );
 
         const executionResult: ToolExecutionResult = {
@@ -130,7 +130,7 @@ export function useToolExecution() {
         throw err;
       }
     },
-    []
+    [],
   );
 
   /**
@@ -140,13 +140,13 @@ export function useToolExecution() {
     async (
       serverId: string,
       toolName: string,
-      parameters: Record<string, any>
+      parameters: Record<string, any>,
     ): Promise<ValidationResult> => {
       try {
         const result = await MCPServerBridgeExtended.validateToolParameters(
           serverId,
           toolName,
-          parameters
+          parameters,
         );
 
         return {
@@ -161,7 +161,7 @@ export function useToolExecution() {
         };
       }
     },
-    []
+    [],
   );
 
   /**
@@ -171,7 +171,7 @@ export function useToolExecution() {
     (serverId: string, toolName: string): ExecutionState | undefined => {
       return executionStates.get(serverId)?.get(toolName);
     },
-    [executionStates]
+    [executionStates],
   );
 
   /**
@@ -181,7 +181,7 @@ export function useToolExecution() {
     (serverId: string, toolName: string): ToolExecutionResult | undefined => {
       return getExecutionState(serverId, toolName)?.result;
     },
-    [getExecutionState]
+    [getExecutionState],
   );
 
   /**
@@ -220,7 +220,7 @@ export function useToolExecution() {
       const serverMap = executionStates.get(serverId);
       return serverMap ? Array.from(serverMap.values()) : [];
     },
-    [executionStates]
+    [executionStates],
   );
 
   /**
@@ -232,7 +232,7 @@ export function useToolExecution() {
       if (!serverMap) return false;
       return Array.from(serverMap.values()).some((state) => state.isExecuting);
     },
-    [executionStates]
+    [executionStates],
   );
 
   return {

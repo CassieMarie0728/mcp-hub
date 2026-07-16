@@ -1,7 +1,7 @@
 ---
-title: "List MCP Resources, Prompts, and Subscriptions"
-sidebarTitle: "List Resources"
-description: "List resources and templates from an MCP server, subscribe to change notifications, and discover and retrieve MCP prompts from a connection."
+title: 'List MCP Resources, Prompts, and Subscriptions'
+sidebarTitle: 'List Resources'
+description: 'List resources and templates from an MCP server, subscribe to change notifications, and discover and retrieve MCP prompts from a connection.'
 ---
 
 MCP servers can expose resources — data sources identified by URI, like files, database views, or live feeds. Use these endpoints to discover and subscribe to resources from a connected server. Resources are cached after the first discovery; use the `refresh` parameter to pull the latest list directly from the server.
@@ -78,7 +78,8 @@ An array of `ResourceTemplate` objects.
 </ResponseField>
 
 <ResponseField name="schema" type="object">
-  Schema describing how to construct the URI. Includes a `uriTemplate` string with named placeholders.
+  Schema describing how to construct the URI. Includes a `uriTemplate` string with named
+  placeholders.
 </ResponseField>
 
 ```json Example response
@@ -227,7 +228,8 @@ Retrieve the full details of a specific prompt, optionally passing arguments to 
 ### Request body
 
 <ParamField body="args" type="object">
-  Optional key-value arguments to pass to the prompt. The accepted keys depend on the prompt's schema defined by the server.
+  Optional key-value arguments to pass to the prompt. The accepted keys depend on the prompt's
+  schema defined by the server.
 </ParamField>
 
 ```json Example request

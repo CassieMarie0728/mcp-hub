@@ -1,11 +1,4 @@
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  Switch,
-  Alert,
-} from 'react-native';
+import { ScrollView, Text, View, TouchableOpacity, Switch, Alert } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useRouter } from 'expo-router';
 import { useState, useLayoutEffect, useEffect } from 'react';

@@ -34,7 +34,8 @@ describe('Onboarding Feature', () => {
       const stepData = {
         id: 'welcome',
         title: 'Welcome to MCP Hub',
-        description: 'Your unified control center for managing MCP servers and executing tools across all your workflows.',
+        description:
+          'Your unified control center for managing MCP servers and executing tools across all your workflows.',
         icon: 'rocket',
         action: 'Get Started',
         tips: [
@@ -43,7 +44,7 @@ describe('Onboarding Feature', () => {
           'Track all your tool executions in one place',
         ],
       };
-      
+
       expect(stepData).toHaveProperty('id');
       expect(stepData).toHaveProperty('title');
       expect(stepData).toHaveProperty('description');
@@ -61,7 +62,7 @@ describe('Onboarding Feature', () => {
       (AsyncStorage.setItem as any).mockImplementation(mockSetItem);
 
       await AsyncStorage.setItem('onboarding_completed', 'true');
-      
+
       expect(mockSetItem).toHaveBeenCalledWith('onboarding_completed', 'true');
     });
 
@@ -70,12 +71,13 @@ describe('Onboarding Feature', () => {
       (AsyncStorage.setItem as any).mockImplementation(mockSetItem);
 
       await AsyncStorage.setItem('onboarding_current_step', 'connect-server');
-      
+
       expect(mockSetItem).toHaveBeenCalledWith('onboarding_current_step', 'connect-server');
     });
 
     it('should load onboarding state from storage', async () => {
-      const mockGetItem = vi.fn()
+      const mockGetItem = vi
+        .fn()
         .mockResolvedValueOnce('true') // onboarding_completed
         .mockResolvedValueOnce('connect-server'); // onboarding_current_step
 
@@ -83,7 +85,7 @@ describe('Onboarding Feature', () => {
 
       const completed = await AsyncStorage.getItem('onboarding_completed');
       const currentStep = await AsyncStorage.getItem('onboarding_current_step');
-      
+
       expect(completed).toBe('true');
       expect(currentStep).toBe('connect-server');
     });
@@ -94,7 +96,7 @@ describe('Onboarding Feature', () => {
 
       await AsyncStorage.removeItem('onboarding_completed');
       await AsyncStorage.removeItem('onboarding_current_step');
-      
+
       expect(mockRemoveItem).toHaveBeenCalledWith('onboarding_completed');
       expect(mockRemoveItem).toHaveBeenCalledWith('onboarding_current_step');
     });
@@ -104,7 +106,7 @@ describe('Onboarding Feature', () => {
     it('should navigate to next step', () => {
       const currentStepIndex = 0;
       const totalSteps = 8;
-      
+
       expect(currentStepIndex < totalSteps - 1).toBe(true);
       const nextStepIndex = currentStepIndex + 1;
       expect(nextStepIndex).toBe(1);
@@ -112,7 +114,7 @@ describe('Onboarding Feature', () => {
 
     it('should navigate to previous step', () => {
       const currentStepIndex = 3;
-      
+
       expect(currentStepIndex > 0).toBe(true);
       const prevStepIndex = currentStepIndex - 1;
       expect(prevStepIndex).toBe(2);
@@ -121,13 +123,13 @@ describe('Onboarding Feature', () => {
     it('should not go beyond last step', () => {
       const currentStepIndex = 7; // Last step (8 total)
       const totalSteps = 8;
-      
+
       expect(currentStepIndex < totalSteps - 1).toBe(false);
     });
 
     it('should not go before first step', () => {
       const currentStepIndex = 0;
-      
+
       expect(currentStepIndex > 0).toBe(false);
     });
 
@@ -143,8 +145,8 @@ describe('Onboarding Feature', () => {
         'explore-marketplace',
         'settings',
       ];
-      
-      const stepIndex = steps.findIndex(s => s === targetStep);
+
+      const stepIndex = steps.findIndex((s) => s === targetStep);
       expect(stepIndex).toBe(4);
     });
   });
@@ -155,7 +157,7 @@ describe('Onboarding Feature', () => {
       (AsyncStorage.setItem as any).mockImplementation(mockSetItem);
 
       await AsyncStorage.setItem('onboarding_completed', 'true');
-      
+
       expect(mockSetItem).toHaveBeenCalled();
     });
 
@@ -164,7 +166,7 @@ describe('Onboarding Feature', () => {
       (AsyncStorage.setItem as any).mockImplementation(mockSetItem);
 
       await AsyncStorage.setItem('onboarding_completed', 'true');
-      
+
       expect(mockSetItem).toHaveBeenCalledWith('onboarding_completed', 'true');
     });
 
@@ -174,7 +176,7 @@ describe('Onboarding Feature', () => {
 
       await AsyncStorage.removeItem('onboarding_completed');
       await AsyncStorage.removeItem('onboarding_current_step');
-      
+
       expect(mockRemoveItem).toHaveBeenCalledTimes(2);
     });
   });
@@ -182,13 +184,13 @@ describe('Onboarding Feature', () => {
   describe('Settings Screen Integration', () => {
     it('should show replay onboarding option after completion', () => {
       const hasCompletedOnboarding = true;
-      
+
       expect(hasCompletedOnboarding).toBe(true);
     });
 
     it('should hide replay onboarding option before completion', () => {
       const hasCompletedOnboarding = false;
-      
+
       expect(hasCompletedOnboarding).toBe(false);
     });
 
@@ -199,7 +201,7 @@ describe('Onboarding Feature', () => {
       // Simulate clicking replay button
       await AsyncStorage.removeItem('onboarding_completed');
       await AsyncStorage.removeItem('onboarding_current_step');
-      
+
       expect(mockRemoveItem).toHaveBeenCalledWith('onboarding_completed');
       expect(mockRemoveItem).toHaveBeenCalledWith('onboarding_current_step');
     });
@@ -208,13 +210,13 @@ describe('Onboarding Feature', () => {
   describe('Onboarding Modal', () => {
     it('should display onboarding modal when isOnboarding is true', () => {
       const isOnboarding = true;
-      
+
       expect(isOnboarding).toBe(true);
     });
 
     it('should hide onboarding modal when isOnboarding is false', () => {
       const isOnboarding = false;
-      
+
       expect(isOnboarding).toBe(false);
     });
 
@@ -227,7 +229,7 @@ describe('Onboarding Feature', () => {
         action: 'Get Started',
         tips: ['Tip 1', 'Tip 2', 'Tip 3'],
       };
-      
+
       expect(currentStep.title).toBeDefined();
       expect(currentStep.description).toBeDefined();
       expect(currentStep.action).toBeDefined();
@@ -238,7 +240,7 @@ describe('Onboarding Feature', () => {
       const canGoNext = true;
       const canGoPrevious = false;
       const canSkip = true;
-      
+
       expect(canGoNext).toBe(true);
       expect(canGoPrevious).toBe(false);
       expect(canSkip).toBe(true);
@@ -259,7 +261,7 @@ describe('Onboarding Feature', () => {
         resetOnboarding: () => {},
         goToStep: () => {},
       };
-      
+
       expect(contextValue).toHaveProperty('currentStep');
       expect(contextValue).toHaveProperty('isOnboarding');
       expect(contextValue).toHaveProperty('hasCompletedOnboarding');
@@ -276,14 +278,15 @@ describe('Onboarding Feature', () => {
         isOnboarding: true,
         hasCompletedOnboarding: false,
       };
-      
+
       expect(initialState.currentStep).toBe('welcome');
       expect(initialState.isOnboarding).toBe(true);
       expect(initialState.hasCompletedOnboarding).toBe(false);
     });
 
     it('should load persisted state on mount', async () => {
-      const mockGetItem = vi.fn()
+      const mockGetItem = vi
+        .fn()
         .mockResolvedValueOnce('true')
         .mockResolvedValueOnce('connect-server');
 
@@ -291,7 +294,7 @@ describe('Onboarding Feature', () => {
 
       const completed = await AsyncStorage.getItem('onboarding_completed');
       const step = await AsyncStorage.getItem('onboarding_current_step');
-      
+
       expect(completed).toBe('true');
       expect(step).toBe('connect-server');
     });

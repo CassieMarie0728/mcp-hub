@@ -60,7 +60,7 @@ export function Input({
           'flex-row items-center border rounded-lg px-3 py-2 gap-2',
           focused ? 'border-primary border-2' : 'border-border',
           error ? 'border-error border-2' : '',
-          disabled ? 'opacity-50 bg-muted/10' : 'bg-background'
+          disabled ? 'opacity-50 bg-muted/10' : 'bg-background',
         )}
       >
         <TextInput
@@ -84,17 +84,11 @@ export function Input({
             onPress={() => setShowPassword(!showPassword)}
             className="p-2 active:opacity-70"
           >
-            <Ionicons
-              name={showPassword ? 'eye-off' : 'eye'}
-              size={20}
-              color={colors.foreground}
-            />
+            <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={20} color={colors.foreground} />
           </Pressable>
         )}
 
-        {variant === 'search' && (
-          <Ionicons name="search" size={20} color={colors.muted} />
-        )}
+        {variant === 'search' && <Ionicons name="search" size={20} color={colors.muted} />}
       </View>
 
       {error && <Text className="text-xs font-semibold text-error">{error}</Text>}
@@ -143,17 +137,13 @@ export function Select({
         className={cn(
           'flex-row items-center justify-between border rounded-lg px-3 py-3 gap-2',
           error ? 'border-error' : 'border-border',
-          disabled ? 'opacity-50 bg-muted/10' : 'bg-background'
+          disabled ? 'opacity-50 bg-muted/10' : 'bg-background',
         )}
       >
         <Text className={cn('text-base', value ? 'text-foreground' : 'text-muted')}>
           {selectedLabel}
         </Text>
-        <Ionicons
-          name={open ? 'chevron-up' : 'chevron-down'}
-          size={20}
-          color={colors.foreground}
-        />
+        <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={20} color={colors.foreground} />
       </Pressable>
 
       {open && (
@@ -167,13 +157,13 @@ export function Select({
               }}
               className={cn(
                 'px-3 py-3 border-b border-border last:border-b-0',
-                value === option.value ? 'bg-primary/10' : ''
+                value === option.value ? 'bg-primary/10' : '',
               )}
             >
               <Text
                 className={cn(
                   'text-base',
-                  value === option.value ? 'text-primary font-semibold' : 'text-foreground'
+                  value === option.value ? 'text-primary font-semibold' : 'text-foreground',
                 )}
               >
                 {option.label}
@@ -211,18 +201,13 @@ export function Toggle({ value, onValueChange, label, disabled = false }: Toggle
         className={cn(
           'w-12 h-7 rounded-full flex items-center justify-start px-1',
           value ? 'bg-primary' : 'bg-border',
-          disabled ? 'opacity-50' : ''
+          disabled ? 'opacity-50' : '',
         )}
         style={{
           backgroundColor: value ? colors.primary : colors.border,
         }}
       >
-        <View
-          className={cn(
-            'w-5 h-5 rounded-full bg-background',
-            value ? 'ml-auto' : ''
-          )}
-        />
+        <View className={cn('w-5 h-5 rounded-full bg-background', value ? 'ml-auto' : '')} />
       </Pressable>
     </View>
   );

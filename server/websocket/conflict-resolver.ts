@@ -10,7 +10,7 @@ export class ConflictResolver {
   static resolveConflicts(
     localOps: Operation[],
     remoteOps: Operation[],
-    baseVersion: number
+    baseVersion: number,
   ): ResolvedConflicts {
     const resolved: ResolvedConflicts = {
       transformedLocal: [],
@@ -100,7 +100,11 @@ export class ConflictResolver {
   /**
    * Transform operation against another operation
    */
-  static transformOperation(op: Operation, against: Operation, side: 'local' | 'remote'): Operation {
+  static transformOperation(
+    op: Operation,
+    against: Operation,
+    side: 'local' | 'remote',
+  ): Operation {
     const transformed = { ...op };
 
     // Adjust index based on insertions/deletions before this operation

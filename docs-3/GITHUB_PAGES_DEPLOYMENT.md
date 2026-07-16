@@ -26,6 +26,7 @@ The landing page is automatically deployed to GitHub Pages whenever changes are 
 ### 3. Deploy
 
 The workflow will automatically trigger when:
+
 - Changes are pushed to `landing/` directory on `main` branch
 - The workflow file itself is modified
 - You manually trigger it via "Run workflow"
@@ -35,16 +36,19 @@ The workflow will automatically trigger when:
 **File**: `.github/workflows/deploy-landing-page.yml`
 
 **Triggers**:
+
 - Push to `main` with changes in `landing/**` or `.github/workflows/deploy-landing-page.yml`
 - Manual dispatch via GitHub Actions UI
 
 **Steps**:
+
 1. Checkout repository code
 2. Configure GitHub Pages environment
 3. Upload `landing/` directory as artifact
 4. Deploy to GitHub Pages
 
 **Permissions Required**:
+
 - `contents: read` - Read repository contents
 - `pages: write` - Write to GitHub Pages
 - `id-token: write` - OIDC token for deployment
@@ -68,9 +72,10 @@ https://<username>.github.io/<repository>/
 ```
 
 For example:
+
 - If your GitHub username is `cassandra` and repo is `mcp-hub`:
   - Landing page: `https://cassandra.github.io/mcp-hub/`
-  - Demos: 
+  - Demos:
     - `https://cassandra.github.io/mcp-hub/demo-workflow-builder.html`
     - `https://cassandra.github.io/mcp-hub/demo-execution-simulator.html`
     - `https://cassandra.github.io/mcp-hub/demo-features.html`
@@ -115,6 +120,7 @@ See [GitHub's custom domain documentation](https://docs.github.com/en/pages/conf
 3. View deployment history and logs
 
 Each deployment shows:
+
 - Commit hash and message
 - Deployment status (success/failure)
 - Deployment URL

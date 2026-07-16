@@ -1,7 +1,7 @@
 ---
-title: "Read MCP Resource Contents and Manage Client Roots"
-sidebarTitle: "Read Resource"
-description: "Fetch resource content by URI from a connected MCP server. Also covers listing and replacing client roots that scope server access to the filesystem."
+title: 'Read MCP Resource Contents and Manage Client Roots'
+sidebarTitle: 'Read Resource'
+description: 'Fetch resource content by URI from a connected MCP server. Also covers listing and replacing client roots that scope server access to the filesystem.'
 ---
 
 Read the content of a specific resource from a connected MCP server. Provide the resource URI, and MCP Hub fetches and returns its contents. Depending on the resource type, each content object contains either a `text` field for human-readable content or a `blob` field carrying base64-encoded binary data.
@@ -19,7 +19,8 @@ Read the content of a specific resource from a connected MCP server. Provide the
 ### Request body
 
 <ParamField body="resourceUri" type="string" required>
-  URI of the resource to read. Obtain valid URIs from [List Resources](/api/resources/list) or by constructing one from a [resource template](/api/resources/list#list-resource-templates).
+  URI of the resource to read. Obtain valid URIs from [List Resources](/api/resources/list) or by
+  constructing one from a [resource template](/api/resources/list#list-resource-templates).
 </ParamField>
 
 ```json Example request
@@ -29,7 +30,8 @@ Read the content of a specific resource from a connected MCP server. Provide the
 ### Response
 
 <ResponseField name="requestId" type="string">
-  UUID of the request record created for this read operation. Use [GET /api/requests/{requestId}](/api/requests) to inspect the full record.
+  UUID of the request record created for this read operation. Use [GET /api/requests/{requestId}
+  ](/api/requests) to inspect the full record.
 </ResponseField>
 
 <ResponseField name="contents" type="array">
@@ -74,19 +76,22 @@ Read the content of a specific resource from a connected MCP server. Provide the
 
 ### Text vs. binary resources
 
-| Response field | Content type    | How to use                          |
-|----------------|-----------------|-------------------------------------|
-| `text`         | Text / JSON     | Read directly as a UTF-8 string     |
-| `blob`         | Binary / images | Base64-decode before processing     |
+| Response field | Content type    | How to use                      |
+| -------------- | --------------- | ------------------------------- |
+| `text`         | Text / JSON     | Read directly as a UTF-8 string |
+| `blob`         | Binary / images | Base64-decode before processing |
 
 Each content object contains either `text` or `blob`, never both.
 
 <Tip>
-  Use **GET /api/connections/{connectionId}/resources/cache** to inspect cached resource metadata — including URI, name, and last-fetched timestamp — without triggering a live fetch from the MCP server.
+  Use **GET /api/connections/{connectionId}/resources/cache** to inspect cached resource metadata —
+  including URI, name, and last-fetched timestamp — without triggering a live fetch from the MCP
+  server.
 </Tip>
 
 <Warning>
-  Reading a resource URI that no longer exists on the MCP server will return a non-200 error. Refresh the resource list with `?refresh=true` to ensure the URI is still valid before reading.
+  Reading a resource URI that no longer exists on the MCP server will return a non-200 error.
+  Refresh the resource list with `?refresh=true` to ensure the URI is still valid before reading.
 </Warning>
 
 ---
@@ -185,5 +190,6 @@ Send a JSON array of `Root` objects. All current roots for the connection are re
 ```
 
 <Note>
-  Replacing roots immediately notifies the MCP server of the updated list. Removing a root that the server is actively using may cause resource reads or tool calls referencing that path to fail.
+  Replacing roots immediately notifies the MCP server of the updated list. Removing a root that the
+  server is actively using may cause resource reads or tool calls referencing that path to fail.
 </Note>

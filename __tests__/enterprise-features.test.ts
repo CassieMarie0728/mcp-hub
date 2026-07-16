@@ -241,9 +241,7 @@ describe('Enterprise Features', () => {
     });
 
     it('should detect anomalies', () => {
-      const anomalies = [
-        { type: 'high_failure_rate', macroId: 'macro_1', severity: 'high' },
-      ];
+      const anomalies = [{ type: 'high_failure_rate', macroId: 'macro_1', severity: 'high' }];
       expect(anomalies).toHaveLength(1);
     });
 

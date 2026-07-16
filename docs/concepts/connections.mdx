@@ -1,7 +1,7 @@
 ---
-title: "MCP Server Connections: Transports & Auth in MCP Hub"
-sidebarTitle: "Connections"
-description: "Understand how MCP Hub manages server connections, connection states, transport types, and authentication modes for MCP server integrations."
+title: 'MCP Server Connections: Transports & Auth in MCP Hub'
+sidebarTitle: 'Connections'
+description: 'Understand how MCP Hub manages server connections, connection states, transport types, and authentication modes for MCP server integrations.'
 ---
 
 A connection in MCP Hub represents a managed link to a single MCP server. Each connection tracks its transport configuration, authentication credentials, lifecycle state, and the protocol capabilities the server advertises. You can add as many connections as you need — MCP Hub maintains a separate MCP client for each one and lets you connect, disconnect, and reconnect them independently.
@@ -10,13 +10,13 @@ A connection in MCP Hub represents a managed link to a single MCP server. Each c
 
 Every connection moves through a defined set of states. MCP Hub surfaces the current state in the server list so you always know what is happening.
 
-| State | Meaning |
-|---|---|
-| `disconnected` | The connection is not active. The server is ready to attempt a new connection when you tap **Connect**. |
-| `connecting` | The transport handshake is in progress. MCP Hub is establishing the channel and sending the `initialize` request. |
-| `connected` | The transport is open. MCP Hub has confirmed the channel and is ready to complete the MCP initialization handshake. |
-| `initialized` | The connection is fully active. Capability negotiation is complete and the server's tools, resources, and prompts are discoverable and executable. |
-| `error` | The connection failed. MCP Hub stores the error message so you can diagnose the problem and retry. |
+| State          | Meaning                                                                                                                                            |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disconnected` | The connection is not active. The server is ready to attempt a new connection when you tap **Connect**.                                            |
+| `connecting`   | The transport handshake is in progress. MCP Hub is establishing the channel and sending the `initialize` request.                                  |
+| `connected`    | The transport is open. MCP Hub has confirmed the channel and is ready to complete the MCP initialization handshake.                                |
+| `initialized`  | The connection is fully active. Capability negotiation is complete and the server's tools, resources, and prompts are discoverable and executable. |
+| `error`        | The connection failed. MCP Hub stores the error message so you can diagnose the problem and retry.                                                 |
 
 ## Transport Configuration
 
@@ -73,5 +73,7 @@ After a successful connection, MCP Hub completes capability negotiation as part 
 MCP Hub uses these capabilities to decide which UI features to enable for each connection. If a server does not advertise prompt support, the Prompts tab is hidden for that server.
 
 <Tip>
-  Save frequently used server configurations as presets in the app for quick reconnection. Tap the **⋯** menu on any server and choose **Save as Preset** to store the transport config and auth settings so you can restore the connection with a single tap.
+  Save frequently used server configurations as presets in the app for quick reconnection. Tap the
+  **⋯** menu on any server and choose **Save as Preset** to store the transport config and auth
+  settings so you can restore the connection with a single tap.
 </Tip>

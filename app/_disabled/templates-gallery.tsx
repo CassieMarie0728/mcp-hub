@@ -182,13 +182,13 @@ export default function TemplatesGalleryScreen() {
                 onPress={() => setSelectedCategory(null)}
                 className={cn(
                   'rounded-full px-4 py-2 active:opacity-80',
-                  selectedCategory === null ? 'bg-primary' : 'bg-surface border border-border'
+                  selectedCategory === null ? 'bg-primary' : 'bg-surface border border-border',
                 )}
               >
                 <Text
                   className={cn(
                     'font-semibold text-sm',
-                    selectedCategory === null ? 'text-background' : 'text-foreground'
+                    selectedCategory === null ? 'text-background' : 'text-foreground',
                   )}
                 >
                   All
@@ -201,13 +201,13 @@ export default function TemplatesGalleryScreen() {
                   onPress={() => setSelectedCategory(cat)}
                   className={cn(
                     'rounded-full px-4 py-2 active:opacity-80',
-                    selectedCategory === cat ? 'bg-primary' : 'bg-surface border border-border'
+                    selectedCategory === cat ? 'bg-primary' : 'bg-surface border border-border',
                   )}
                 >
                   <Text
                     className={cn(
                       'font-semibold text-sm capitalize',
-                      selectedCategory === cat ? 'text-background' : 'text-foreground'
+                      selectedCategory === cat ? 'text-background' : 'text-foreground',
                     )}
                   >
                     {cat}
@@ -223,13 +223,13 @@ export default function TemplatesGalleryScreen() {
               onPress={() => setSortBy('downloads')}
               className={cn(
                 'flex-1 rounded-lg p-2 active:opacity-80',
-                sortBy === 'downloads' ? 'bg-primary' : 'bg-surface border border-border'
+                sortBy === 'downloads' ? 'bg-primary' : 'bg-surface border border-border',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  sortBy === 'downloads' ? 'text-background' : 'text-foreground'
+                  sortBy === 'downloads' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Most Downloaded
@@ -240,13 +240,13 @@ export default function TemplatesGalleryScreen() {
               onPress={() => setSortBy('rating')}
               className={cn(
                 'flex-1 rounded-lg p-2 active:opacity-80',
-                sortBy === 'rating' ? 'bg-primary' : 'bg-surface border border-border'
+                sortBy === 'rating' ? 'bg-primary' : 'bg-surface border border-border',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  sortBy === 'rating' ? 'text-background' : 'text-foreground'
+                  sortBy === 'rating' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Top Rated

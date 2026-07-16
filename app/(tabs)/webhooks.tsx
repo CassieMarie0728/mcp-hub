@@ -82,9 +82,7 @@ export default function WebhooksScreen() {
   };
 
   const handleCopyUrl = (url: string) => {
-    Alert.alert('Webhook URL', url, [
-      { text: 'Close', onPress: () => {} },
-    ]);
+    Alert.alert('Webhook URL', url, [{ text: 'Close', onPress: () => {} }]);
   };
 
   const handleToggleEvent = (event: string) => {
@@ -145,9 +143,7 @@ export default function WebhooksScreen() {
 
           <View className="flex-row items-center gap-2">
             <MaterialIcons name="event" size={14} color={colors.muted} />
-            <Text className="text-xs text-muted">
-              {item.events.join(', ')}
-            </Text>
+            <Text className="text-xs text-muted">{item.events.join(', ')}</Text>
           </View>
 
           <View className="flex-row items-center justify-between">
@@ -235,7 +231,9 @@ export default function WebhooksScreen() {
                         selectedEvents.includes(event) ? 'bg-primary' : ''
                       }`}
                       style={{
-                        borderColor: selectedEvents.includes(event) ? colors.primary : colors.border,
+                        borderColor: selectedEvents.includes(event)
+                          ? colors.primary
+                          : colors.border,
                         backgroundColor: selectedEvents.includes(event)
                           ? colors.primary
                           : colors.background,
@@ -243,7 +241,9 @@ export default function WebhooksScreen() {
                     >
                       <Text
                         style={{
-                          color: selectedEvents.includes(event) ? colors.background : colors.foreground,
+                          color: selectedEvents.includes(event)
+                            ? colors.background
+                            : colors.foreground,
                         }}
                         className="text-xs font-semibold"
                       >

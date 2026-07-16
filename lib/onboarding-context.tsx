@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export type OnboardingStep = 
+export type OnboardingStep =
   | 'welcome'
   | 'connect-server'
   | 'execute-tool'
@@ -26,7 +26,8 @@ const ONBOARDING_STEPS: OnboardingStepData[] = [
   {
     id: 'welcome',
     title: 'Welcome to MCP Hub',
-    description: 'Your unified control center for managing MCP servers and executing tools across all your workflows.',
+    description:
+      'Your unified control center for managing MCP servers and executing tools across all your workflows.',
     icon: 'rocket',
     action: 'Get Started',
     tips: [
@@ -38,7 +39,8 @@ const ONBOARDING_STEPS: OnboardingStepData[] = [
   {
     id: 'connect-server',
     title: 'Connect Your First Server',
-    description: 'Add an MCP server to start managing tools. You can connect multiple servers and switch between them.',
+    description:
+      'Add an MCP server to start managing tools. You can connect multiple servers and switch between them.',
     icon: 'server',
     action: 'Add Server',
     tips: [
@@ -51,7 +53,8 @@ const ONBOARDING_STEPS: OnboardingStepData[] = [
   {
     id: 'execute-tool',
     title: 'Execute Your First Tool',
-    description: 'Browse available tools from your connected servers and execute them with custom parameters.',
+    description:
+      'Browse available tools from your connected servers and execute them with custom parameters.',
     icon: 'flash',
     action: 'Explore Tools',
     tips: [
@@ -64,7 +67,8 @@ const ONBOARDING_STEPS: OnboardingStepData[] = [
   {
     id: 'view-history',
     title: 'Track Execution History',
-    description: 'Every tool execution is logged. Review results, debug issues, and learn from past runs.',
+    description:
+      'Every tool execution is logged. Review results, debug issues, and learn from past runs.',
     icon: 'history',
     action: 'View History',
     tips: [
@@ -77,7 +81,8 @@ const ONBOARDING_STEPS: OnboardingStepData[] = [
   {
     id: 'ai-assistant',
     title: 'Meet Your AI Assistant',
-    description: 'Get intelligent suggestions, help with tool parameters, and answers to your questions about MCP Hub.',
+    description:
+      'Get intelligent suggestions, help with tool parameters, and answers to your questions about MCP Hub.',
     icon: 'sparkles',
     action: 'Open Assistant',
     tips: [
@@ -90,7 +95,8 @@ const ONBOARDING_STEPS: OnboardingStepData[] = [
   {
     id: 'manage-macros',
     title: 'Create Macros',
-    description: 'Save sequences of tool executions as macros to automate repetitive workflows and save time.',
+    description:
+      'Save sequences of tool executions as macros to automate repetitive workflows and save time.',
     icon: 'layers',
     action: 'Create Macro',
     tips: [
@@ -116,7 +122,8 @@ const ONBOARDING_STEPS: OnboardingStepData[] = [
   {
     id: 'settings',
     title: 'Customize Your Experience',
-    description: 'Configure notifications, security, integrations, and preferences to match your workflow.',
+    description:
+      'Configure notifications, security, integrations, and preferences to match your workflow.',
     icon: 'settings',
     action: 'Open Settings',
     tips: [
@@ -156,7 +163,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
       try {
         const completed = await AsyncStorage.getItem('onboarding_completed');
         const savedStep = await AsyncStorage.getItem('onboarding_current_step');
-        
+
         if (completed === 'true') {
           setHasCompletedOnboarding(true);
           setIsOnboarding(false);
@@ -189,7 +196,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
     }
   }, [currentStep, isLoading]);
 
-  const currentStepIndex = ONBOARDING_STEPS.findIndex(s => s.id === currentStep);
+  const currentStepIndex = ONBOARDING_STEPS.findIndex((s) => s.id === currentStep);
   const stepData = ONBOARDING_STEPS[currentStepIndex] || ONBOARDING_STEPS[0];
 
   const nextStep = () => {

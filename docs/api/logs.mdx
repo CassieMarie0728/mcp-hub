@@ -1,7 +1,7 @@
 ---
-title: "Query and Set Log Verbosity for an MCP Connection"
-sidebarTitle: "Logs"
-description: "Query persisted logs for a connection by severity level and time range. Adjust log verbosity dynamically using POST /logging/level without restarting."
+title: 'Query and Set Log Verbosity for an MCP Connection'
+sidebarTitle: 'Logs'
+description: 'Query persisted logs for a connection by severity level and time range. Adjust log verbosity dynamically using POST /logging/level without restarting.'
 ---
 
 MCP Hub persists log messages from each server connection. Use the logs endpoint to query connection logs for debugging, auditing, or monitoring purposes. You can filter by severity level and time range, and adjust the verbosity of log capture at any time without restarting the connection.
@@ -15,15 +15,19 @@ Retrieve log entries for a specific connection. Apply filters to focus on the se
 ### Query parameters
 
 <ParamField query="level" type="string">
-  Return only log entries at or above this severity level. Accepted values: `debug`, `info`, `warn`, `error`, `fatal`. For example, specifying `warn` returns `warn`, `error`, and `fatal` entries but omits `debug` and `info`.
+  Return only log entries at or above this severity level. Accepted values: `debug`, `info`, `warn`,
+  `error`, `fatal`. For example, specifying `warn` returns `warn`, `error`, and `fatal` entries but
+  omits `debug` and `info`.
 </ParamField>
 
 <ParamField query="since" type="string">
-  Return only log entries recorded after this timestamp. Must be a valid ISO 8601 datetime string, e.g. `2025-01-15T10:00:00Z`.
+  Return only log entries recorded after this timestamp. Must be a valid ISO 8601 datetime string,
+  e.g. `2025-01-15T10:00:00Z`.
 </ParamField>
 
 <ParamField query="until" type="string">
-  Return only log entries recorded before this timestamp. Must be a valid ISO 8601 datetime string, e.g. `2025-01-15T11:00:00Z`.
+  Return only log entries recorded before this timestamp. Must be a valid ISO 8601 datetime string,
+  e.g. `2025-01-15T11:00:00Z`.
 </ParamField>
 
 <ParamField query="limit" type="integer" default="100">
@@ -64,5 +68,7 @@ Control how much detail MCP Hub captures for a connection by setting its active 
 Valid levels in descending order of verbosity: `debug` > `info` > `warn` > `error` > `fatal`. Setting a lower verbosity level (e.g. `debug`) captures all log messages, including those at higher levels. Setting a higher level (e.g. `error`) captures only `error` and `fatal` messages.
 
 <Tip>
-  Set the log level to `debug` temporarily when troubleshooting a failing tool call, then switch back to `info` once you have the information you need. This keeps log volume manageable during normal operation.
+  Set the log level to `debug` temporarily when troubleshooting a failing tool call, then switch
+  back to `info` once you have the information you need. This keeps log volume manageable during
+  normal operation.
 </Tip>

@@ -13,19 +13,11 @@
         "groups": [
           {
             "group": "Get Started",
-            "pages": [
-              "introduction",
-              "quickstart",
-              "configuration"
-            ]
+            "pages": ["introduction", "quickstart", "configuration"]
           },
           {
             "group": "Core Concepts",
-            "pages": [
-              "concepts/mcp-protocol",
-              "concepts/connections",
-              "concepts/tools-resources"
-            ]
+            "pages": ["concepts/mcp-protocol", "concepts/connections", "concepts/tools-resources"]
           },
           {
             "group": "Guides",
@@ -40,10 +32,7 @@
           },
           {
             "group": "Reference",
-            "pages": [
-              "reference/environment-variables",
-              "reference/troubleshooting"
-            ]
+            "pages": ["reference/environment-variables", "reference/troubleshooting"]
           }
         ]
       },
@@ -52,9 +41,7 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": [
-              "api/overview"
-            ]
+            "pages": ["api/overview"]
           },
           {
             "group": "Connections",
@@ -76,11 +63,7 @@
           },
           {
             "group": "Events & Logs",
-            "pages": [
-              "api/events",
-              "api/logs",
-              "api/requests"
-            ]
+            "pages": ["api/events", "api/logs", "api/requests"]
           }
         ]
       }

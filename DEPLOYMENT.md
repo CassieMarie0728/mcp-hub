@@ -283,11 +283,13 @@ DATABASE_CONNECTION_TIMEOUT=5000
 If issues occur after deployment:
 
 1. **Immediate Rollback**: Revert to previous version
+
    ```bash
    pm2 restart mcp-hub
    ```
 
 2. **Database Rollback**: Restore from backup
+
    ```bash
    pg_restore -h db.example.com -U mcp_hub_user -d mcp_hub /backups/mcp_hub_previous.dump
    ```

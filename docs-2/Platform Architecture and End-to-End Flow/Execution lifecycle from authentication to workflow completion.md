@@ -234,47 +234,44 @@ sequenceDiagram
 
 ### `useMCPBridge`
 
-*`lib/hooks/useMCPBridge.ts`*
+_`lib/hooks/useMCPBridge.ts`_
 
 This hook is the Android-native bridge for server connectivity, tool discovery, tool execution, and execution history. It listens to native events and keeps client state synchronized with the bridge lifecycle.
 
 #### Properties
 
-| Property | Type | Description |  |
-| --- | --- | --- | --- |
-| `isReady` | `boolean` | Indicates whether the native bridge is ready. |  |
-| `connectionStatus` | `Record<string, string>` | Per-server connection status map keyed by `serverId`. |  |
-| `discoveredTools` | `Record<string, Tool[]>` | Cached discovered tools per server. |  |
-| `executionHistory` | `any[]` | Client-side execution history returned by the bridge. |  |
-| `error` | `string \ | null` | Last bridge or event error message. |
-
+| Property           | Type                     | Description                                           |                                     |
+| ------------------ | ------------------------ | ----------------------------------------------------- | ----------------------------------- |
+| `isReady`          | `boolean`                | Indicates whether the native bridge is ready.         |                                     |
+| `connectionStatus` | `Record<string, string>` | Per-server connection status map keyed by `serverId`. |                                     |
+| `discoveredTools`  | `Record<string, Tool[]>` | Cached discovered tools per server.                   |                                     |
+| `executionHistory` | `any[]`                  | Client-side execution history returned by the bridge. |                                     |
+| `error`            | `string \                | null`                                                 | Last bridge or event error message. |
 
 #### Hook Helpers
 
-| Type | Description |
-| --- | --- |
+| Type               | Description                                                                                |
+| ------------------ | ------------------------------------------------------------------------------------------ |
 | `ConnectionConfig` | Server connection inputs: `serverId`, `host`, `port`, `transport`, `authToken`, `timeout`. |
-| `ExecutionResult` | Normalized tool execution result returned to the UI. |
-| `ValidationResult` | Parameter validation response with `valid` and `errors`. |
-| `Tool` | Tool shape with `name`, `description`, and `schema`. |
-
+| `ExecutionResult`  | Normalized tool execution result returned to the UI.                                       |
+| `ValidationResult` | Parameter validation response with `valid` and `errors`.                                   |
+| `Tool`             | Tool shape with `name`, `description`, and `schema`.                                       |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `connectToServer` | Connects to a server through `MCPBridge.connectToServer`. |
-| `disconnectServer` | Disconnects a server through `MCPBridge.disconnectServer`. |
-| `getConnectionStatus` | Reads the current connection status for a server. |
-| `discoverTools` | Fetches tools from the bridge and stores them by `serverId`. |
-| `executeTool` | Executes a tool and normalizes the result shape for the client. |
-| `validateParameters` | Validates tool parameters through the bridge. |
-| `getToolSchema` | Retrieves and parses a tool schema JSON string. |
-| `retryExecution` | Retries a failed execution by execution ID. |
-| `getExecutionHistory` | Fetches execution history and updates local state. |
-| `clearExecutionHistory` | Clears stored execution history for a server. |
-| `setError` | Updates the current hook error state. |
-
+| Method                  | Description                                                     |
+| ----------------------- | --------------------------------------------------------------- |
+| `connectToServer`       | Connects to a server through `MCPBridge.connectToServer`.       |
+| `disconnectServer`      | Disconnects a server through `MCPBridge.disconnectServer`.      |
+| `getConnectionStatus`   | Reads the current connection status for a server.               |
+| `discoverTools`         | Fetches tools from the bridge and stores them by `serverId`.    |
+| `executeTool`           | Executes a tool and normalizes the result shape for the client. |
+| `validateParameters`    | Validates tool parameters through the bridge.                   |
+| `getToolSchema`         | Retrieves and parses a tool schema JSON string.                 |
+| `retryExecution`        | Retries a failed execution by execution ID.                     |
+| `getExecutionHistory`   | Fetches execution history and updates local state.              |
+| `clearExecutionHistory` | Clears stored execution history for a server.                   |
+| `setError`              | Updates the current hook error state.                           |
 
 #### Event Lifecycle
 
@@ -285,68 +282,64 @@ This hook is the Android-native bridge for server connectivity, tool discovery, 
 
 ### `useToolExecution`
 
-*`lib/hooks/useToolExecution.ts`*
+_`lib/hooks/useToolExecution.ts`_
 
 This hook tracks per-tool execution state around the native `MCPServerBridgeExtended` bridge. It keeps a nested map of server IDs and tool names so the UI can render live execution progress, results, and failures.
 
 #### Properties
 
-| Property | Type | Description |  |
-| --- | --- | --- | --- |
-|  | `executionStates` | `Map<string, Map<string, ExecutionState>>` | Nested execution state keyed by server and tool. |
-| `globalError` | `string \ | null` | Current hook-level error message. |
-
+| Property      | Type              | Description                                |                                                  |
+| ------------- | ----------------- | ------------------------------------------ | ------------------------------------------------ |
+|               | `executionStates` | `Map<string, Map<string, ExecutionState>>` | Nested execution state keyed by server and tool. |
+| `globalError` | `string \         | null`                                      | Current hook-level error message.                |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `executeTool` | Starts tool execution, updates state, and captures the result. |
-| `validateParameters` | Validates tool parameters through the native bridge. |
-| `getExecutionState` | Returns the current state for a server tool pair. |
-| `getLastResult` | Returns the last execution result for a server tool pair. |
-| `clearExecutionHistory` | Clears execution history and removes stored state for a server. |
-| `getExecutionHistory` | Retrieves execution history from the native bridge. |
-| `getServerExecutionStates` | Returns all execution states for a server. |
-| `isAnyExecuting` | Checks whether any tool is currently executing on a server. |
-
+| Method                     | Description                                                     |
+| -------------------------- | --------------------------------------------------------------- |
+| `executeTool`              | Starts tool execution, updates state, and captures the result.  |
+| `validateParameters`       | Validates tool parameters through the native bridge.            |
+| `getExecutionState`        | Returns the current state for a server tool pair.               |
+| `getLastResult`            | Returns the last execution result for a server tool pair.       |
+| `clearExecutionHistory`    | Clears execution history and removes stored state for a server. |
+| `getExecutionHistory`      | Retrieves execution history from the native bridge.             |
+| `getServerExecutionStates` | Returns all execution states for a server.                      |
+| `isAnyExecuting`           | Checks whether any tool is currently executing on a server.     |
 
 ### `useMacroExecution`
 
-*`lib/hooks/useMacroExecution.ts`*
+_`lib/hooks/useMacroExecution.ts`_
 
 This hook orchestrates macro creation, execution, and history management on the client. It uses `MacroExecutionEngine` for playback and `MacroManager` for storage and history operations.
 
 #### Properties
 
-| Property | Type | Description |  |
-| --- | --- | --- | --- |
-| `macros` | `Macro[]` | Loaded macros. |  |
-| `currentExecution` | `MacroExecution \ | null` | Current macro execution record. |
-| `isExecuting` | `boolean` | Indicates active macro playback. |  |
-| `isPaused` | `boolean` | Indicates paused playback. |  |
-| `error` | `string \ | null` | Last macro execution or storage error. |
-| `progress` | `number` | Current execution progress percentage. |  |
-
+| Property           | Type               | Description                            |                                        |
+| ------------------ | ------------------ | -------------------------------------- | -------------------------------------- |
+| `macros`           | `Macro[]`          | Loaded macros.                         |                                        |
+| `currentExecution` | `MacroExecution \  | null`                                  | Current macro execution record.        |
+| `isExecuting`      | `boolean`          | Indicates active macro playback.       |                                        |
+| `isPaused`         | `boolean`          | Indicates paused playback.             |                                        |
+| `error`            | `string \          | null`                                  | Last macro execution or storage error. |
+| `progress`         | `number`           | Current execution progress percentage. |                                        |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `loadMacros` | Loads all macros from `MacroManager`. |
-| `createFromHistory` | Creates a macro from execution history entries. |
-| `createFromExecutionHistory` | Alias for `createFromHistory`. |
-| `createFromTemplate` | Creates a macro from a template key. |
-| `executeMacro` | Executes a macro and records the result. |
-| `pauseExecution` | Pauses the engine and marks the hook as paused. |
-| `resumeExecution` | Resumes the engine and clears paused state. |
-| `cancelExecution` | Cancels the execution and sets the error message. |
-| `deleteMacro` | Deletes a macro and removes it from local state. |
-| `toggleFavorite` | Toggles favorite status and refreshes the macro entry. |
-| `getExecutionHistory` | Retrieves execution history for a macro. |
-| `exportMacro` | Exports a macro to a serialized form. |
-| `importMacro` | Imports a macro from JSON and appends it to state. |
-
+| Method                       | Description                                            |
+| ---------------------------- | ------------------------------------------------------ |
+| `loadMacros`                 | Loads all macros from `MacroManager`.                  |
+| `createFromHistory`          | Creates a macro from execution history entries.        |
+| `createFromExecutionHistory` | Alias for `createFromHistory`.                         |
+| `createFromTemplate`         | Creates a macro from a template key.                   |
+| `executeMacro`               | Executes a macro and records the result.               |
+| `pauseExecution`             | Pauses the engine and marks the hook as paused.        |
+| `resumeExecution`            | Resumes the engine and clears paused state.            |
+| `cancelExecution`            | Cancels the execution and sets the error message.      |
+| `deleteMacro`                | Deletes a macro and removes it from local state.       |
+| `toggleFavorite`             | Toggles favorite status and refreshes the macro entry. |
+| `getExecutionHistory`        | Retrieves execution history for a macro.               |
+| `exportMacro`                | Exports a macro to a serialized form.                  |
+| `importMacro`                | Imports a macro from JSON and appends it to state.     |
 
 #### Execution Flow
 
@@ -358,27 +351,25 @@ This hook orchestrates macro creation, execution, and history management on the 
 
 ### `useMCPServerConnection`
 
-*`lib/hooks/useMCPServerConnection.ts`*
+_`lib/hooks/useMCPServerConnection.ts`_
 
 This hook manages server connection state through the native MCP bridge and listens for connection status updates using a `NativeEventEmitter`.
 
 #### Properties
 
-| Property | Type | Description |  |
-| --- | --- | --- | --- |
-| `connections` | `Map<string, ConnectionState>` | Connection state keyed by server ID. |  |
-| `isLoading` | `boolean` | Indicates an in-progress connection call. |  |
-| `error` | `string \ | null` | Current connection error. |
-| `eventEmitterRef` | `NativeEventEmitter \ | null` | Cached native event emitter instance. |
-
+| Property          | Type                           | Description                               |                                       |
+| ----------------- | ------------------------------ | ----------------------------------------- | ------------------------------------- |
+| `connections`     | `Map<string, ConnectionState>` | Connection state keyed by server ID.      |                                       |
+| `isLoading`       | `boolean`                      | Indicates an in-progress connection call. |                                       |
+| `error`           | `string \                      | null`                                     | Current connection error.             |
+| `eventEmitterRef` | `NativeEventEmitter \          | null`                                     | Cached native event emitter instance. |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `handleConnectionStatusChanged` | Updates local state after a native connection status event. |
-| `connectToServer` | Connects a server through `MCPServerBridgeExtended.connectToServer`. |
-
+| Method                          | Description                                                          |
+| ------------------------------- | -------------------------------------------------------------------- |
+| `handleConnectionStatusChanged` | Updates local state after a native connection status event.          |
+| `connectToServer`               | Connects a server through `MCPServerBridgeExtended.connectToServer`. |
 
 #### Event Lifecycle
 
@@ -391,98 +382,91 @@ This hook manages server connection state through the native MCP bridge and list
 
 ### OAuth Router
 
-*`server/auth/oauth-router.ts`*
+_`server/auth/oauth-router.ts`_
 
 This router exposes the OAuth entry points used by the client to begin and complete authorization for GitHub, Slack, and Notion.
 
 #### Procedures
 
-| Procedure | Description |
-| --- | --- |
-| `getAuthorizationUrl` | Generates an authorization URL and `state` value for a server type and server ID. |
-| `exchangeCode` | Verifies `state`, exchanges the code for a token, and returns the token payload with `serverId`. |
-| `refreshToken` | Exchanges a refresh token for a new access token payload. |
-| `revokeToken` | Public router procedure for token revocation. |
-
+| Procedure             | Description                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------ |
+| `getAuthorizationUrl` | Generates an authorization URL and `state` value for a server type and server ID.                |
+| `exchangeCode`        | Verifies `state`, exchanges the code for a token, and returns the token payload with `serverId`. |
+| `refreshToken`        | Exchanges a refresh token for a new access token payload.                                        |
+| `revokeToken`         | Public router procedure for token revocation.                                                    |
 
 #### Request Shape
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `serverType` | `ServerTypeEnum` | Target integration type. |
-| `serverId` | `string` | Server identifier used to bind the OAuth state. |
-| `code` | `string` | Authorization code returned by the provider. |
-| `state` | `string` | CSRF protection value created during initiation. |
-| `refreshToken` | `string` | Provider refresh token for renewal. |
-
+| Property       | Type             | Description                                      |
+| -------------- | ---------------- | ------------------------------------------------ |
+| `serverType`   | `ServerTypeEnum` | Target integration type.                         |
+| `serverId`     | `string`         | Server identifier used to bind the OAuth state.  |
+| `code`         | `string`         | Authorization code returned by the provider.     |
+| `state`        | `string`         | CSRF protection value created during initiation. |
+| `refreshToken` | `string`         | Provider refresh token for renewal.              |
 
 ### Token Manager
 
 The router uses publicProcedure for OAuth operations, so the auth flow itself is not wrapped in protectedProcedure.
 
-*`server/tokens/token-manager.ts`*
+_`server/tokens/token-manager.ts`_
 
 `TokenManager` encrypts token material, stores token metadata, and supports retrieval, revocation, and rotation.
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `storeToken` | Encrypts a token, stores its encrypted payload and metadata, and returns the metadata. |
-| `getToken` | Decrypts and returns the token string while updating `lastUsedAt`. |
-| `getTokenMetadata` | Returns metadata without decrypting the token. |
-| `listServerTokens` | Returns active token metadata for a server. |
-| `revokeToken` | Marks a token inactive. |
-| `rotateToken` | Revokes the old token and stores a replacement token. |
-| `isTokenExpired` | Checks whether `expiresAt` is in the past. |
-
+| Method             | Description                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| `storeToken`       | Encrypts a token, stores its encrypted payload and metadata, and returns the metadata. |
+| `getToken`         | Decrypts and returns the token string while updating `lastUsedAt`.                     |
+| `getTokenMetadata` | Returns metadata without decrypting the token.                                         |
+| `listServerTokens` | Returns active token metadata for a server.                                            |
+| `revokeToken`      | Marks a token inactive.                                                                |
+| `rotateToken`      | Revokes the old token and stores a replacement token.                                  |
+| `isTokenExpired`   | Checks whether `expiresAt` is in the past.                                             |
 
 #### Stored Token Payload
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `encrypted` | `string` | Encrypted token payload. |
-| `iv` | `string` | Initialization vector used during encryption. |
-| `authTag` | `string` | Authentication tag for the encrypted payload. |
-| `metadata` | `TokenMetadata` | Token metadata returned to the caller. |
-
+| Property    | Type            | Description                                   |
+| ----------- | --------------- | --------------------------------------------- |
+| `encrypted` | `string`        | Encrypted token payload.                      |
+| `iv`        | `string`        | Initialization vector used during encryption. |
+| `authTag`   | `string`        | Authentication tag for the encrypted payload. |
+| `metadata`  | `TokenMetadata` | Token metadata returned to the caller.        |
 
 ### Token Expiration Monitor
 
-*`server/notifications/token-expiration-monitor.ts`*
+_`server/notifications/token-expiration-monitor.ts`_
 
 This monitor scans token expiration windows, emits alerts, and schedules push notifications through `expo-notifications`.
 
 #### Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `checkIntervalMs` | `number` | Interval between periodic checks, set to one hour. |
-| `criticalThresholdDays` | `number` | Threshold for critical alerts, set to one day. |
-| `warningThresholdDays` | `number` | Threshold for warning alerts, set to seven days. |
-| `refreshThresholdMs` | `number` | Refresh threshold constant, set to five minutes. |
-
+| Property                | Type     | Description                                        |
+| ----------------------- | -------- | -------------------------------------------------- |
+| `checkIntervalMs`       | `number` | Interval between periodic checks, set to one hour. |
+| `criticalThresholdDays` | `number` | Threshold for critical alerts, set to one day.     |
+| `warningThresholdDays`  | `number` | Threshold for warning alerts, set to seven days.   |
+| `refreshThresholdMs`    | `number` | Refresh threshold constant, set to five minutes.   |
 
 #### Interfaces
 
-| Interface | Properties |
-| --- | --- |
-| `TokenExpirationAlert` | `tokenId`, `serverId`, `serverType`, `tokenName`, `expiresAt`, `daysUntilExpiration`, `alertLevel` |
-| `ExpirationCheckResult` | `alerts`, `expiredTokens`, `tokensNeedingRefresh` |
-
+| Interface               | Properties                                                                                         |
+| ----------------------- | -------------------------------------------------------------------------------------------------- |
+| `TokenExpirationAlert`  | `tokenId`, `serverId`, `serverType`, `tokenName`, `expiresAt`, `daysUntilExpiration`, `alertLevel` |
+| `ExpirationCheckResult` | `alerts`, `expiredTokens`, `tokensNeedingRefresh`                                                  |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `checkTokenExpiration` | Scans token inputs and returns alerts, expired tokens, and refresh candidates. |
-| `sendExpirationNotification` | Schedules an immediate push notification for one alert. |
-| `sendBatchNotifications` | Sends critical alerts first and warning alerts with a short delay. |
-| `schedulePeriodicChecks` | Runs an initial check and then repeats every hour. |
-| `daysUntilExpiration` | Returns whole days remaining until token expiry. |
-| `needsImmediateRefresh` | Checks whether the token expires within five minutes. |
-| `getTimeUntilNextCheck` | Returns the configured check interval. |
-
+| Method                       | Description                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| `checkTokenExpiration`       | Scans token inputs and returns alerts, expired tokens, and refresh candidates. |
+| `sendExpirationNotification` | Schedules an immediate push notification for one alert.                        |
+| `sendBatchNotifications`     | Sends critical alerts first and warning alerts with a short delay.             |
+| `schedulePeriodicChecks`     | Runs an initial check and then repeats every hour.                             |
+| `daysUntilExpiration`        | Returns whole days remaining until token expiry.                               |
+| `needsImmediateRefresh`      | Checks whether the token expires within five minutes.                          |
+| `getTimeUntilNextCheck`      | Returns the configured check interval.                                         |
 
 ## MCP Runtime and Workflow Engine
 
@@ -490,72 +474,67 @@ This monitor scans token expiration windows, emits alerts, and schedules push no
 
 refreshThresholdMs is defined as 300000, but checkTokenExpiration uses a hardcoded five-minute comparison instead of the constant.
 
-*`lib/mcp-client.ts`*
+_`lib/mcp-client.ts`_
 
 `MCPClient` manages direct JSON-RPC style communication with a single MCP server, including initialization, tool discovery, and tool execution.
 
 #### Properties
 
-| Property | Type | Description |  |
-| --- | --- | --- | --- |
-| `config` | `MCPClientConfig` | Connection and transport settings for the server. |  |
-| `messageId` | `number` | Incrementing JSON-RPC request identifier. |  |
-| `pendingRequests` | `Map<number, (response: JSONRPCResponse) => void>` | Pending response callbacks keyed by request ID. |  |
-| `capabilities` | `ServerCapabilities \ | null` | Capabilities returned during initialization. |
-| `isConnected` | `boolean` | Current connection flag. |  |
-
+| Property          | Type                                               | Description                                       |                                              |
+| ----------------- | -------------------------------------------------- | ------------------------------------------------- | -------------------------------------------- |
+| `config`          | `MCPClientConfig`                                  | Connection and transport settings for the server. |                                              |
+| `messageId`       | `number`                                           | Incrementing JSON-RPC request identifier.         |                                              |
+| `pendingRequests` | `Map<number, (response: JSONRPCResponse) => void>` | Pending response callbacks keyed by request ID.   |                                              |
+| `capabilities`    | `ServerCapabilities \                              | null`                                             | Capabilities returned during initialization. |
+| `isConnected`     | `boolean`                                          | Current connection flag.                          |                                              |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `initialize` | Sends the `initialize` JSON-RPC request and stores server capabilities. |
-| `discoverTools` | Calls `tools/list` and maps remote tools into `MCPTool` records. |
-| `executeTool` | Executes a named tool with arguments and returns content plus error state. |
-| `sendViaHttp` | Sends JSON-RPC requests through `fetch` using `Content-Type: application/json`. |
-| `close` | Clears pending requests and marks the client disconnected. |
-| `getIsConnected` | Returns the current connection state. |
-| `getCapabilities` | Returns the last stored server capabilities. |
-
+| Method            | Description                                                                     |
+| ----------------- | ------------------------------------------------------------------------------- |
+| `initialize`      | Sends the `initialize` JSON-RPC request and stores server capabilities.         |
+| `discoverTools`   | Calls `tools/list` and maps remote tools into `MCPTool` records.                |
+| `executeTool`     | Executes a named tool with arguments and returns content plus error state.      |
+| `sendViaHttp`     | Sends JSON-RPC requests through `fetch` using `Content-Type: application/json`. |
+| `close`           | Clears pending requests and marks the client disconnected.                      |
+| `getIsConnected`  | Returns the current connection state.                                           |
+| `getCapabilities` | Returns the last stored server capabilities.                                    |
 
 #### Initialization Payload
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `protocolVersion` | `string` | Protocol version sent during initialization. |
-| `capabilities.tools` | `object` | Tool capability declaration. |
-| `capabilities.resources` | `object` | Resource capability declaration. |
-| `capabilities.prompts` | `object` | Prompt capability declaration. |
-| `clientInfo.name` | `string` | Client name sent to the server. |
-| `clientInfo.version` | `string` | Client version sent to the server. |
-
+| Property                 | Type     | Description                                  |
+| ------------------------ | -------- | -------------------------------------------- |
+| `protocolVersion`        | `string` | Protocol version sent during initialization. |
+| `capabilities.tools`     | `object` | Tool capability declaration.                 |
+| `capabilities.resources` | `object` | Resource capability declaration.             |
+| `capabilities.prompts`   | `object` | Prompt capability declaration.               |
+| `clientInfo.name`        | `string` | Client name sent to the server.              |
+| `clientInfo.version`     | `string` | Client version sent to the server.           |
 
 ### MCP Server Manager
 
-*`server/mcp/mcp-server-manager.ts`*
+_`server/mcp/mcp-server-manager.ts`_
 
 This manager holds per-server Axios clients, tool caches, and connection status records. It is the backend-facing discovery and execution layer used by the tRPC routers.
 
 #### Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `servers` | `Map<string, MCPServerConfigWithUnknownHeaders>` | Registered server configurations. |
-| `clients` | `Map<string, AxiosInstance>` | Axios client per server. |
-| `toolCache` | `Map<string, MCPTool[]>` | Tool cache keyed by `serverId`. |
-| `serverStatus` | `Map<string, ServerStatus>` | Connection and error status per server. |
-
+| Property       | Type                                             | Description                             |
+| -------------- | ------------------------------------------------ | --------------------------------------- |
+| `servers`      | `Map<string, MCPServerConfigWithUnknownHeaders>` | Registered server configurations.       |
+| `clients`      | `Map<string, AxiosInstance>`                     | Axios client per server.                |
+| `toolCache`    | `Map<string, MCPTool[]>`                         | Tool cache keyed by `serverId`.         |
+| `serverStatus` | `Map<string, ServerStatus>`                      | Connection and error status per server. |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `registerServer` | Stores the config, creates the Axios client, and initializes a disconnected status. |
-| `discoverTools` | Fetches tools, populates the cache, and updates server status. |
-| `executeTool` | Calls the remote MCP tool endpoint and returns success or error. |
-| `getServerStatus` | Returns the current status for one server. |
-| `getAllServerStatuses` | Returns status records for all servers. |
-
+| Method                 | Description                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `registerServer`       | Stores the config, creates the Axios client, and initializes a disconnected status. |
+| `discoverTools`        | Fetches tools, populates the cache, and updates server status.                      |
+| `executeTool`          | Calls the remote MCP tool endpoint and returns success or error.                    |
+| `getServerStatus`      | Returns the current status for one server.                                          |
+| `getAllServerStatuses` | Returns status records for all servers.                                             |
 
 #### Header Construction
 
@@ -573,51 +552,48 @@ This manager holds per-server Axios clients, tool caches, and connection status 
 
 ### Workflow Engine
 
-*`server/macros/workflow-engine.ts`*
+_`server/macros/workflow-engine.ts`_
 
 This engine is the server-side execution coordinator for workflow steps, conditions, loops, parallel branches, and delays. It records step-level execution history and errors in `WorkflowContext`.
 
 #### Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `context` | `WorkflowContext` | Current workflow state and execution records. |
-| `steps` | `Map<string, WorkflowStep>` | Registered steps keyed by step ID. |
-| `conditions` | `Map<string, WorkflowCondition>` | Conditional branches keyed by condition ID. |
-| `loops` | `Map<string, WorkflowLoop>` | Loop definitions keyed by loop ID. |
-
+| Property     | Type                             | Description                                   |
+| ------------ | -------------------------------- | --------------------------------------------- |
+| `context`    | `WorkflowContext`                | Current workflow state and execution records. |
+| `steps`      | `Map<string, WorkflowStep>`      | Registered steps keyed by step ID.            |
+| `conditions` | `Map<string, WorkflowCondition>` | Conditional branches keyed by condition ID.   |
+| `loops`      | `Map<string, WorkflowLoop>`      | Loop definitions keyed by loop ID.            |
 
 #### Interfaces
 
-| Interface | Properties |
-| --- | --- |
-| `WorkflowStep` | `id`, `type`, `name`, `config`, `nextStepId`, `onErrorStepId` |
-| `WorkflowCondition` | `variable`, `operator`, `value`, `trueBranchId`, `falseBranchId` |
-| `WorkflowLoop` | `variableName`, `iterableVariable`, `bodyStepId`, `nextStepId` |
-| `WorkflowContext` | `variables`, `executionHistory`, `currentStepId`, `isRunning`, `isPaused`, `errors` |
-| `ExecutionRecord` | `stepId`, `stepName`, `type`, `startTime`, `endTime`, `duration`, `status`, `result`, `error` |
-| `WorkflowError` | `stepId`, `message`, `timestamp`, `recoverable` |
-
+| Interface           | Properties                                                                                    |
+| ------------------- | --------------------------------------------------------------------------------------------- |
+| `WorkflowStep`      | `id`, `type`, `name`, `config`, `nextStepId`, `onErrorStepId`                                 |
+| `WorkflowCondition` | `variable`, `operator`, `value`, `trueBranchId`, `falseBranchId`                              |
+| `WorkflowLoop`      | `variableName`, `iterableVariable`, `bodyStepId`, `nextStepId`                                |
+| `WorkflowContext`   | `variables`, `executionHistory`, `currentStepId`, `isRunning`, `isPaused`, `errors`           |
+| `ExecutionRecord`   | `stepId`, `stepName`, `type`, `startTime`, `endTime`, `duration`, `status`, `result`, `error` |
+| `WorkflowError`     | `stepId`, `message`, `timestamp`, `recoverable`                                               |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `registerStep` | Registers a workflow step in the step map. |
-| `registerCondition` | Registers a condition branch definition. |
-| `registerLoop` | Registers a loop definition. |
-| `setVariable` | Sets a workflow variable in the current context. |
-| `getVariable` | Reads a workflow variable from the current context. |
-| `executeStep` | Executes one registered step and records success or failure. |
-| `executeWorkflow` | Walks the workflow from a start step until execution stops. |
-| `pauseWorkflow` | Sets the paused flag in the current context. |
-| `resumeWorkflow` | Clears the paused flag in the current context. |
-| `stopWorkflow` | Stops the current execution loop. |
-| `getContext` | Returns the current workflow context. |
-| `getExecutionHistory` | Returns the recorded execution history. |
-| `getErrors` | Returns recorded workflow errors. |
-| `reset` | Clears context, history, and errors. |
-
+| Method                | Description                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| `registerStep`        | Registers a workflow step in the step map.                   |
+| `registerCondition`   | Registers a condition branch definition.                     |
+| `registerLoop`        | Registers a loop definition.                                 |
+| `setVariable`         | Sets a workflow variable in the current context.             |
+| `getVariable`         | Reads a workflow variable from the current context.          |
+| `executeStep`         | Executes one registered step and records success or failure. |
+| `executeWorkflow`     | Walks the workflow from a start step until execution stops.  |
+| `pauseWorkflow`       | Sets the paused flag in the current context.                 |
+| `resumeWorkflow`      | Clears the paused flag in the current context.               |
+| `stopWorkflow`        | Stops the current execution loop.                            |
+| `getContext`          | Returns the current workflow context.                        |
+| `getExecutionHistory` | Returns the recorded execution history.                      |
+| `getErrors`           | Returns recorded workflow errors.                            |
+| `reset`               | Clears context, history, and errors.                         |
 
 #### Execution Behavior
 
@@ -648,18 +624,16 @@ stateDiagram-v2
 
 executeWorkflow overwrites this.context.currentStepId with step.nextStepId after each step, so the branch selection written by executeCondition and executeLoop does not persist in the shown control loop. pauseWorkflow and resumeWorkflow only flip flags; executeWorkflow does not read isPaused.
 
-*`server/mcp/servers/github-mcp.ts`*
+_`server/mcp/servers/github-mcp.ts`_
 
-| Property | Type | Description |
-| --- | --- | --- |
+| Property | Type           | Description                                         |
+| -------- | -------------- | --------------------------------------------------- |
 | `config` | `GitHubConfig` | GitHub connection settings with a default base URL. |
 
-
-| Method | Description |
-| --- | --- |
-| `getMCPConfig` | Returns the MCP server config for GitHub. |
+| Method              | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `getMCPConfig`      | Returns the MCP server config for GitHub.          |
 | `getAvailableTools` | Returns GitHub tool definitions and input schemas. |
-
 
 `getMCPConfig` builds:
 
@@ -671,57 +645,51 @@ executeWorkflow overwrites this.context.currentStepId with step.nextStepId after
 
 #### Slack MCP Server
 
-*`server/mcp/servers/slack-mcp.ts`*
+_`server/mcp/servers/slack-mcp.ts`_
 
-| Property | Type | Description |
-| --- | --- | --- |
+| Property | Type          | Description                                        |
+| -------- | ------------- | -------------------------------------------------- |
 | `config` | `SlackConfig` | Slack connection settings with a default base URL. |
 
-
-| Method | Description |
-| --- | --- |
-| `getMCPConfig` | Returns the MCP server config for Slack. |
+| Method              | Description                                       |
+| ------------------- | ------------------------------------------------- |
+| `getMCPConfig`      | Returns the MCP server config for Slack.          |
 | `getAvailableTools` | Returns Slack tool definitions and input schemas. |
-
 
 #### Notion MCP Server
 
-*`server/mcp/servers/notion-mcp.ts`*
+_`server/mcp/servers/notion-mcp.ts`_
 
-| Property | Type | Description |
-| --- | --- | --- |
+| Property | Type           | Description                                         |
+| -------- | -------------- | --------------------------------------------------- |
 | `config` | `NotionConfig` | Notion connection settings with a default base URL. |
 
-
-| Method | Description |
-| --- | --- |
-| `getMCPConfig` | Returns the MCP server config for Notion. |
+| Method              | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `getMCPConfig`      | Returns the MCP server config for Notion.          |
 | `getAvailableTools` | Returns Notion tool definitions and input schemas. |
-| `validateToken` | Verifies the Notion token by calling `/users/me`. |
-
+| `validateToken`     | Verifies the Notion token by calling `/users/me`.  |
 
 ## Analytics and Telemetry
 
 ### Execution Analytics
 
-*`server/analytics/execution-analytics.ts`*
+_`server/analytics/execution-analytics.ts`_
 
 This service records execution metrics and aggregates per-tool and per-server statistics.
 
 #### Interfaces
 
-| Interface | Properties |
-| --- | --- |
-| `ExecutionMetrics` | `toolName`, `serverId`, `executionTime`, `status`, `timestamp`, `errorMessage`, `parameters`, `result` |
-| `ServerStats` | `serverId`, `serverType`, `totalExecutions`, `successfulExecutions`, `failedExecutions`, `averageExecutionTime`, `successRate`, `toolsUsed`, `lastActivityAt` |
-
+| Interface          | Properties                                                                                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ExecutionMetrics` | `toolName`, `serverId`, `executionTime`, `status`, `timestamp`, `errorMessage`, `parameters`, `result`                                                        |
+| `ServerStats`      | `serverId`, `serverType`, `totalExecutions`, `successfulExecutions`, `failedExecutions`, `averageExecutionTime`, `successRate`, `toolsUsed`, `lastActivityAt` |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
+| Method            | Description                                                      |
+| ----------------- | ---------------------------------------------------------------- |
 | `recordExecution` | Stores the metric record and updates tool and server statistics. |
-
 
 `updateToolStats` tracks:
 
@@ -735,25 +703,23 @@ This service records execution metrics and aggregates per-tool and per-server st
 
 ### Macro Analytics
 
-*`server/analytics/macro-analytics.ts`*
+_`server/analytics/macro-analytics.ts`_
 
 `MacroAnalytics` extends `EventEmitter` and records macro-level execution metrics, user-level metrics, and global aggregates.
 
 #### Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `metrics` | `Map<string, MacroMetrics>` | Macro-level metrics keyed by macro ID. |
-| `userMetrics` | `Map<string, UserMetrics>` | User-level metrics keyed by user ID. |
-| `globalMetrics` | `GlobalMetrics` | Platform-wide aggregate metrics. |
-
+| Property        | Type                        | Description                            |
+| --------------- | --------------------------- | -------------------------------------- |
+| `metrics`       | `Map<string, MacroMetrics>` | Macro-level metrics keyed by macro ID. |
+| `userMetrics`   | `Map<string, UserMetrics>`  | User-level metrics keyed by user ID.   |
+| `globalMetrics` | `GlobalMetrics`             | Platform-wide aggregate metrics.       |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
+| Method            | Description                                                             |
+| ----------------- | ----------------------------------------------------------------------- |
 | `recordExecution` | Updates macro, user, and global metrics and emits `execution_recorded`. |
-
 
 #### Emitted Events
 
@@ -761,29 +727,27 @@ This service records execution metrics and aggregates per-tool and per-server st
 
 ### Trending Analytics Engine
 
-*`server/analytics/trending-analytics.ts`*
+_`server/analytics/trending-analytics.ts`_
 
 This engine maintains trending-related counters and a cached trending snapshot.
 
 #### Properties
 
-| Property | Type | Description |  |
-| --- | --- | --- | --- |
-| `macroMetrics` | `Map<string, MacroMetrics>` | Macro trending metrics keyed by macro ID. |  |
-| `forkMetrics` | `Map<string, ForkMetrics>` | Fork metrics keyed by fork ID. |  |
-| `versionMetrics` | `Map<string, VersionMetrics>` | Version metrics keyed by version ID. |  |
-| `trendingCache` | `TrendingData \ | null` | Cached trending snapshot. |
-| `cacheExpiry` | `number` | Expiration timestamp for cached trending data. |  |
-
+| Property         | Type                          | Description                                    |                           |
+| ---------------- | ----------------------------- | ---------------------------------------------- | ------------------------- |
+| `macroMetrics`   | `Map<string, MacroMetrics>`   | Macro trending metrics keyed by macro ID.      |                           |
+| `forkMetrics`    | `Map<string, ForkMetrics>`    | Fork metrics keyed by fork ID.                 |                           |
+| `versionMetrics` | `Map<string, VersionMetrics>` | Version metrics keyed by version ID.           |                           |
+| `trendingCache`  | `TrendingData \               | null`                                          | Cached trending snapshot. |
+| `cacheExpiry`    | `number`                      | Expiration timestamp for cached trending data. |                           |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
+| Method                 | Description                                                   |
+| ---------------------- | ------------------------------------------------------------- |
 | `recordMacroExecution` | Updates execution metrics and invalidates the trending cache. |
-| `recordMacroDownload` | Increments download metrics and invalidates the cache. |
-| `recordMacroView` | Increments view metrics and invalidates the cache. |
-
+| `recordMacroDownload`  | Increments download metrics and invalidates the cache.        |
+| `recordMacroView`      | Increments view metrics and invalidates the cache.            |
 
 #### Cache Strategy
 
@@ -795,52 +759,49 @@ This engine maintains trending-related counters and a cached trending snapshot.
 
 ### Notification Engine
 
-*`server/notifications/notification-engine.ts`*
+_`server/notifications/notification-engine.ts`_
 
 `NotificationEngine` is the real-time notification bus. It stores notifications in memory, tracks subscribers by user, queues pending notifications, and emits delivery events.
 
 #### Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `notifications` | `Map<string, Notification[]>` | Notifications per user. |
-| `subscribers` | `Map<string, Set<string>>` | Active connection IDs per user. |
+| Property             | Type                          | Description                      |
+| -------------------- | ----------------------------- | -------------------------------- |
+| `notifications`      | `Map<string, Notification[]>` | Notifications per user.          |
+| `subscribers`        | `Map<string, Set<string>>`    | Active connection IDs per user.  |
 | `notificationQueues` | `Map<string, Notification[]>` | Pending delivery queue per user. |
-| `deliveryLog` | `DeliveryLog[]` | Delivery attempts and outcomes. |
-
+| `deliveryLog`        | `DeliveryLog[]`               | Delivery attempts and outcomes.  |
 
 #### Interfaces
 
-| Interface | Properties |
-| --- | --- |
-| `Notification` | `id`, `userId`, `type`, `title`, `message`, `data`, `priority`, `timestamp`, `read`, `delivered`, `deliveryAttempts`, `maxRetries` |
-| `NotificationType` | `collaboration_update`, `schedule_trigger`, `macro_execution`, `fork_notification`, `version_update`, `anomaly_alert`, `system_alert`, `user_mention`, `macro_comment`, `download_complete` |
-| `DeliveryLog` | `notificationId`, `status`, `userId`, `timestamp` |
-| `NotificationStats` | `totalNotifications`, `totalRead`, `totalUnread`, `totalDelivered`, `totalSubscribers`, `successfulDeliveries`, `failedDeliveries`, `deliverySuccessRate` |
-| `UserNotificationStats` | `userId`, `totalNotifications`, `unreadCount`, `readCount`, `deliveredCount`, `isConnected`, `connectionCount` |
-
+| Interface               | Properties                                                                                                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Notification`          | `id`, `userId`, `type`, `title`, `message`, `data`, `priority`, `timestamp`, `read`, `delivered`, `deliveryAttempts`, `maxRetries`                                                          |
+| `NotificationType`      | `collaboration_update`, `schedule_trigger`, `macro_execution`, `fork_notification`, `version_update`, `anomaly_alert`, `system_alert`, `user_mention`, `macro_comment`, `download_complete` |
+| `DeliveryLog`           | `notificationId`, `status`, `userId`, `timestamp`                                                                                                                                           |
+| `NotificationStats`     | `totalNotifications`, `totalRead`, `totalUnread`, `totalDelivered`, `totalSubscribers`, `successfulDeliveries`, `failedDeliveries`, `deliverySuccessRate`                                   |
+| `UserNotificationStats` | `userId`, `totalNotifications`, `unreadCount`, `readCount`, `deliveredCount`, `isConnected`, `connectionCount`                                                                              |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `createNotification` | Creates, stores, and queues a notification, then emits `notification_created`. |
-| `subscribe` | Adds a connection ID for a user and emits `user_subscribed`. |
-| `unsubscribe` | Removes a connection ID for a user and emits `user_unsubscribed`. |
-| `deliverNotification` | Emits delivery events for each connection and marks the notification delivered. |
-| `deliverPendingNotifications` | Drains the pending queue while delivery succeeds. |
-| `markAsRead` | Marks one notification as read and emits `notification_read`. |
-| `markAllAsRead` | Marks all notifications for a user as read and emits `notifications_read`. |
-| `getNotifications` | Returns recent notifications with optional unread filtering. |
-| `getUnreadCount` | Returns unread notification count for a user. |
-| `deleteNotification` | Removes one notification and emits `notification_deleted`. |
-| `deleteAllNotifications` | Removes all notifications for a user and emits `notifications_deleted`. |
-| `broadcastNotification` | Creates a notification for each target user. |
-| `getDeliveryLog` | Returns recent delivery log entries. |
-| `getStatistics` | Computes platform-wide notification statistics. |
-| `getUserStatistics` | Computes per-user notification statistics. |
-| `cleanupOldNotifications` | Removes notifications older than the requested retention window. |
-
+| Method                        | Description                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| `createNotification`          | Creates, stores, and queues a notification, then emits `notification_created`.  |
+| `subscribe`                   | Adds a connection ID for a user and emits `user_subscribed`.                    |
+| `unsubscribe`                 | Removes a connection ID for a user and emits `user_unsubscribed`.               |
+| `deliverNotification`         | Emits delivery events for each connection and marks the notification delivered. |
+| `deliverPendingNotifications` | Drains the pending queue while delivery succeeds.                               |
+| `markAsRead`                  | Marks one notification as read and emits `notification_read`.                   |
+| `markAllAsRead`               | Marks all notifications for a user as read and emits `notifications_read`.      |
+| `getNotifications`            | Returns recent notifications with optional unread filtering.                    |
+| `getUnreadCount`              | Returns unread notification count for a user.                                   |
+| `deleteNotification`          | Removes one notification and emits `notification_deleted`.                      |
+| `deleteAllNotifications`      | Removes all notifications for a user and emits `notifications_deleted`.         |
+| `broadcastNotification`       | Creates a notification for each target user.                                    |
+| `getDeliveryLog`              | Returns recent delivery log entries.                                            |
+| `getStatistics`               | Computes platform-wide notification statistics.                                 |
+| `getUserStatistics`           | Computes per-user notification statistics.                                      |
+| `cleanupOldNotifications`     | Removes notifications older than the requested retention window.                |
 
 #### Emitted Events
 
@@ -862,78 +823,73 @@ This engine maintains trending-related counters and a cached trending snapshot.
 
 ### Notification Dispatcher
 
-*`server/notifications/notification-dispatcher.ts`*
+_`server/notifications/notification-dispatcher.ts`_
 
 `NotificationDispatcher` is a thin facade over `NotificationEngine` for typed notification creation.
 
 #### Constructor Dependencies
 
-| Type | Description |
-| --- | --- |
+| Type                 | Description                                                            |
+| -------------------- | ---------------------------------------------------------------------- |
 | `NotificationEngine` | Creates the underlying notification records and emits delivery events. |
-
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `dispatchCollaborationUpdate` | Sends a collaboration update notification. |
-| `dispatchScheduleTrigger` | Sends a scheduled-run notification with status-specific text. |
-| `dispatchMacroExecution` | Sends a macro execution notification with success or failure text. |
-
+| Method                        | Description                                                        |
+| ----------------------------- | ------------------------------------------------------------------ |
+| `dispatchCollaborationUpdate` | Sends a collaboration update notification.                         |
+| `dispatchScheduleTrigger`     | Sends a scheduled-run notification with status-specific text.      |
+| `dispatchMacroExecution`      | Sends a macro execution notification with success or failure text. |
 
 ### Notification Preferences System
 
-*`server/notifications/notification-preferences.ts`*
+_`server/notifications/notification-preferences.ts`_
 
 This service stores notification preferences per user and determines whether a given notification should be delivered through a specific channel.
 
 #### Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `userPreferences` | `Map<string, UserNotificationPreferences>` | Preferences per user. |
-| `deliveryMethods` | `Map<string, DeliveryMethod[]>` | Delivery methods per user. |
-
+| Property          | Type                                       | Description                |
+| ----------------- | ------------------------------------------ | -------------------------- |
+| `userPreferences` | `Map<string, UserNotificationPreferences>` | Preferences per user.      |
+| `deliveryMethods` | `Map<string, DeliveryMethod[]>`            | Delivery methods per user. |
 
 #### Interfaces
 
-| Interface | Properties |
-| --- | --- |
-| `UserNotificationPreferences` | `userId`, `createdAt`, `updatedAt`, `notificationTypes`, `deliveryMethods`, `quietHours`, `frequency`, `privacy` |
-| `NotificationTypePreference` | `enabled`, `inApp`, `push`, `email` |
-| `DeliveryMethodPreference` | `enabled`, `retryAttempts`, `retryDelayMs` |
-| `QuietHours` | `enabled`, `startTime`, `endTime`, `timezone` |
-| `FrequencyPreference` | `batchNotifications`, `batchIntervalMinutes`, `maxNotificationsPerDay` |
-| `PrivacyPreference` | `trackingEnabled`, `analyticsEnabled`, `dataRetentionDays` |
-| `DeliveryMethod` | `name`, `enabled`, `config` |
-| `RetryConfiguration` | `maxAttempts`, `delayMs` |
-| `PreferencesStatistics` | `totalUsers`, `inAppEnabled`, `pushEnabled`, `emailEnabled`, `quietHoursEnabled`, `batchingEnabled`, `avgNotificationTypesEnabled` |
-
+| Interface                     | Properties                                                                                                                         |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `UserNotificationPreferences` | `userId`, `createdAt`, `updatedAt`, `notificationTypes`, `deliveryMethods`, `quietHours`, `frequency`, `privacy`                   |
+| `NotificationTypePreference`  | `enabled`, `inApp`, `push`, `email`                                                                                                |
+| `DeliveryMethodPreference`    | `enabled`, `retryAttempts`, `retryDelayMs`                                                                                         |
+| `QuietHours`                  | `enabled`, `startTime`, `endTime`, `timezone`                                                                                      |
+| `FrequencyPreference`         | `batchNotifications`, `batchIntervalMinutes`, `maxNotificationsPerDay`                                                             |
+| `PrivacyPreference`           | `trackingEnabled`, `analyticsEnabled`, `dataRetentionDays`                                                                         |
+| `DeliveryMethod`              | `name`, `enabled`, `config`                                                                                                        |
+| `RetryConfiguration`          | `maxAttempts`, `delayMs`                                                                                                           |
+| `PreferencesStatistics`       | `totalUsers`, `inAppEnabled`, `pushEnabled`, `emailEnabled`, `quietHoursEnabled`, `batchingEnabled`, `avgNotificationTypesEnabled` |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `createDefaultPreferences` | Creates the full preference object for a user. |
-| `getUserPreferences` | Returns the current preference record. |
-| `updateNotificationTypePreference` | Updates one notification type entry. |
-| `updateDeliveryMethodPreference` | Updates a delivery method entry. |
-| `updateQuietHours` | Updates quiet hours settings. |
-| `updateFrequencyPreferences` | Updates batching and daily limit settings. |
-| `updatePrivacyPreferences` | Updates privacy-related settings. |
-| `shouldDeliverNotification` | Evaluates type, channel, global, and quiet-hour constraints. |
-| `getDeliveryMethods` | Returns the enabled delivery methods for one notification type. |
-| `getRetryConfiguration` | Returns retry settings for one delivery method. |
-| `shouldBatchNotifications` | Returns the batching flag for the user. |
-| `getBatchIntervalMs` | Returns the batch interval in milliseconds. |
-| `checkDailyLimit` | Checks whether the daily limit has been reached. |
-| `exportPreferences` | Serializes preferences to JSON. |
-| `importPreferences` | Imports preferences from JSON if the `userId` matches. |
-| `resetToDefaults` | Clears current preferences and recreates defaults. |
-| `getAllUsersWithPreferences` | Returns all users with stored preferences. |
-| `getPreferencesStatistics` | Returns platform-level preference statistics. |
-
+| Method                             | Description                                                     |
+| ---------------------------------- | --------------------------------------------------------------- |
+| `createDefaultPreferences`         | Creates the full preference object for a user.                  |
+| `getUserPreferences`               | Returns the current preference record.                          |
+| `updateNotificationTypePreference` | Updates one notification type entry.                            |
+| `updateDeliveryMethodPreference`   | Updates a delivery method entry.                                |
+| `updateQuietHours`                 | Updates quiet hours settings.                                   |
+| `updateFrequencyPreferences`       | Updates batching and daily limit settings.                      |
+| `updatePrivacyPreferences`         | Updates privacy-related settings.                               |
+| `shouldDeliverNotification`        | Evaluates type, channel, global, and quiet-hour constraints.    |
+| `getDeliveryMethods`               | Returns the enabled delivery methods for one notification type. |
+| `getRetryConfiguration`            | Returns retry settings for one delivery method.                 |
+| `shouldBatchNotifications`         | Returns the batching flag for the user.                         |
+| `getBatchIntervalMs`               | Returns the batch interval in milliseconds.                     |
+| `checkDailyLimit`                  | Checks whether the daily limit has been reached.                |
+| `exportPreferences`                | Serializes preferences to JSON.                                 |
+| `importPreferences`                | Imports preferences from JSON if the `userId` matches.          |
+| `resetToDefaults`                  | Clears current preferences and recreates defaults.              |
+| `getAllUsersWithPreferences`       | Returns all users with stored preferences.                      |
+| `getPreferencesStatistics`         | Returns platform-level preference statistics.                   |
 
 ### Token Expiration Alerts and Push Delivery
 
@@ -943,138 +899,129 @@ This service stores notification preferences per user and determines whether a g
 
 ### Webhook Manager
 
-*`server/webhooks/webhook-manager.ts`*
+_`server/webhooks/webhook-manager.ts`_
 
 `WebhookManager` handles webhook configuration, HMAC signatures, event recording, and webhook statistics.
 
 #### Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `webhooks` | `Map<string, WebhookConfig>` | Stored webhook configurations. |
-| `events` | `Map<string, WebhookEvent>` | Recorded webhook events. |
-| `rateLimitMap` | `Map<string, number[]>` | Timestamp buckets for rate limiting. |
-
+| Property       | Type                         | Description                          |
+| -------------- | ---------------------------- | ------------------------------------ |
+| `webhooks`     | `Map<string, WebhookConfig>` | Stored webhook configurations.       |
+| `events`       | `Map<string, WebhookEvent>`  | Recorded webhook events.             |
+| `rateLimitMap` | `Map<string, number[]>`      | Timestamp buckets for rate limiting. |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `generateSecret` | Creates a 32-byte hex secret. |
+| Method               | Description                                                           |
+| -------------------- | --------------------------------------------------------------------- |
+| `generateSecret`     | Creates a 32-byte hex secret.                                         |
 | `generateWebhookUrl` | Builds a webhook URL from `WEBHOOK_BASE_URL` or the default API base. |
-| `createSignature` | Creates an HMAC-SHA256 signature for a payload. |
-| `verifySignature` | Compares an expected signature against a supplied signature. |
-| `createWebhook` | Creates a webhook record with generated ID, timestamps, and counters. |
-| `getWebhook` | Returns a webhook by ID. |
-| `listWebhooks` | Returns all stored webhooks. |
-| `updateWebhook` | Applies partial updates to a webhook. |
-| `deleteWebhook` | Removes a webhook. |
-| `recordEvent` | Records a webhook event. |
-| `getWebhookEvents` | Returns recent events for a webhook. |
-| `getWebhookStats` | Returns execution and failure counts for a webhook. |
-
+| `createSignature`    | Creates an HMAC-SHA256 signature for a payload.                       |
+| `verifySignature`    | Compares an expected signature against a supplied signature.          |
+| `createWebhook`      | Creates a webhook record with generated ID, timestamps, and counters. |
+| `getWebhook`         | Returns a webhook by ID.                                              |
+| `listWebhooks`       | Returns all stored webhooks.                                          |
+| `updateWebhook`      | Applies partial updates to a webhook.                                 |
+| `deleteWebhook`      | Removes a webhook.                                                    |
+| `recordEvent`        | Records a webhook event.                                              |
+| `getWebhookEvents`   | Returns recent events for a webhook.                                  |
+| `getWebhookStats`    | Returns execution and failure counts for a webhook.                   |
 
 ### Webhook Logger
 
 The static methods instantiate WebhookManager inside each call, while the webhooks, events, and rateLimitMap collections are instance fields. In the shown code, webhook state does not persist across separate static calls.
 
-*`server/webhooks/webhook-logger.ts`*
+_`server/webhooks/webhook-logger.ts`_
 
 `WebhookLogger` stores execution logs and derived statistics for webhook activity.
 
 #### Properties
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `logs` | `Map<string, WebhookLog[]>` | Log entries grouped by webhook ID. |
-
+| Property | Type                        | Description                        |
+| -------- | --------------------------- | ---------------------------------- |
+| `logs`   | `Map<string, WebhookLog[]>` | Log entries grouped by webhook ID. |
 
 #### Interfaces
 
-| Interface | Properties |
-| --- | --- |
+| Interface    | Properties                                                                                                                                     |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `WebhookLog` | `id`, `webhookId`, `timestamp`, `event`, `requestPayload`, `responseStatus`, `responseBody`, `executionTime`, `success`, `error`, `retryCount` |
-
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `logExecution` | Creates and stores a log entry. |
-| `getExecutionLogs` | Returns logs sorted newest first. |
-| `getExecutionStats` | Returns counts, rates, and last-execution details. |
-| `getErrorTrends` | Returns hourly failure trends for the requested window. |
-| `clearOldLogs` | Deletes logs older than the retention window. |
-| `searchLogs` | Filters logs by event name. |
-| `getFailedExecutions` | Returns failed log entries. |
-
+| Method                | Description                                             |
+| --------------------- | ------------------------------------------------------- |
+| `logExecution`        | Creates and stores a log entry.                         |
+| `getExecutionLogs`    | Returns logs sorted newest first.                       |
+| `getExecutionStats`   | Returns counts, rates, and last-execution details.      |
+| `getErrorTrends`      | Returns hourly failure trends for the requested window. |
+| `clearOldLogs`        | Deletes logs older than the retention window.           |
+| `searchLogs`          | Filters logs by event name.                             |
+| `getFailedExecutions` | Returns failed log entries.                             |
 
 ### Webhooks Router
 
 logExecution, getExecutionLogs, and the other static methods create a new WebhookLogger instance each time. Because logs is instance state, the visible code does not preserve log history across calls.
 
-*`server/webhooks/webhooks-router.ts`*
+_`server/webhooks/webhooks-router.ts`_
 
 This router exposes webhook lifecycle operations as `publicProcedure` calls.
 
 #### Procedures
 
-| Procedure | Description |
-| --- | --- |
-| `createWebhook` | Creates a webhook, generates a secret, and updates the URL to include the new webhook ID. |
-| `getWebhook` | Returns one webhook by ID. |
-| `listWebhooks` | Returns all webhooks. |
-| `updateWebhook` | Applies partial updates to a webhook. |
-| `deleteWebhook` | Deletes a webhook and returns success. |
-| `getWebhookEvents` | Returns events for a webhook. |
-| `getWebhookStats` | Returns webhook statistics. |
-| `testWebhook` | Records a pending event and returns the generated signature. |
-| `rotateSecret` | Generates and stores a new webhook secret. |
-| `verifySignature` | Verifies a request payload against the stored secret. |
-
+| Procedure          | Description                                                                               |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| `createWebhook`    | Creates a webhook, generates a secret, and updates the URL to include the new webhook ID. |
+| `getWebhook`       | Returns one webhook by ID.                                                                |
+| `listWebhooks`     | Returns all webhooks.                                                                     |
+| `updateWebhook`    | Applies partial updates to a webhook.                                                     |
+| `deleteWebhook`    | Deletes a webhook and returns success.                                                    |
+| `getWebhookEvents` | Returns events for a webhook.                                                             |
+| `getWebhookStats`  | Returns webhook statistics.                                                               |
+| `testWebhook`      | Records a pending event and returns the generated signature.                              |
+| `rotateSecret`     | Generates and stores a new webhook secret.                                                |
+| `verifySignature`  | Verifies a request payload against the stored secret.                                     |
 
 #### Request Shape
 
-| Property | Type | Description |  |
-| --- | --- | --- | --- |
-| `name` | `string` | Webhook name. |  |
-| `events` | `string[]` | Events to subscribe to. |  |
-| `rateLimit` | `number` | Per-webhook rate limit. |  |
-| `ipWhitelist` | `string[] \ | undefined` | Optional allowlist. |
-| `ipBlacklist` | `string[] \ | undefined` | Optional denylist. |
-| `retryPolicy.maxRetries` | `number` | Retry count. |  |
-| `retryPolicy.backoffMs` | `number` | Retry backoff in milliseconds. |  |
-| `webhookId` | `string` | Target webhook ID. |  |
-| `payload` | `Record<string, any>` | Test or signature payload. |  |
-| `signature` | `string` | Signature supplied for verification. |  |
-| `limit` | `number` | Result limit for log or event queries. |  |
-
+| Property                 | Type                  | Description                            |                     |
+| ------------------------ | --------------------- | -------------------------------------- | ------------------- |
+| `name`                   | `string`              | Webhook name.                          |                     |
+| `events`                 | `string[]`            | Events to subscribe to.                |                     |
+| `rateLimit`              | `number`              | Per-webhook rate limit.                |                     |
+| `ipWhitelist`            | `string[] \           | undefined`                             | Optional allowlist. |
+| `ipBlacklist`            | `string[] \           | undefined`                             | Optional denylist.  |
+| `retryPolicy.maxRetries` | `number`              | Retry count.                           |                     |
+| `retryPolicy.backoffMs`  | `number`              | Retry backoff in milliseconds.         |                     |
+| `webhookId`              | `string`              | Target webhook ID.                     |                     |
+| `payload`                | `Record<string, any>` | Test or signature payload.             |                     |
+| `signature`              | `string`              | Signature supplied for verification.   |                     |
+| `limit`                  | `number`              | Result limit for log or event queries. |                     |
 
 ### Webhook Templates
 
 The router uses publicProcedure for all shown webhook procedures. The visible runtime code does not enforce JWT authentication at the router boundary, even though the API docs describe authenticated requests.
 
-*`server/webhooks/webhook-templates.ts`*
+_`server/webhooks/webhook-templates.ts`_
 
-| Interface | Properties |
-| --- | --- |
+| Interface         | Properties                                                                                          |
+| ----------------- | --------------------------------------------------------------------------------------------------- |
 | `WebhookTemplate` | `id`, `name`, `description`, `serverType`, `eventType`, `payloadMapping`, `workflowId`, `createdAt` |
-
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `getTemplate` | Returns one predefined template by ID. |
-| `listTemplates` | Returns all predefined templates. |
-| `listByServer` | Returns templates filtered by server type. |
-
+| Method          | Description                                |
+| --------------- | ------------------------------------------ |
+| `getTemplate`   | Returns one predefined template by ID.     |
+| `listTemplates` | Returns all predefined templates.          |
+| `listByServer`  | Returns templates filtered by server type. |
 
 ## WebSocket Sync and Conflict Resolution
 
 ### Conflict Resolver
 
-*`server/websocket/conflict-resolver.ts`*
+_`server/websocket/conflict-resolver.ts`_
 
 This service resolves simultaneous edits using operational transformation, last-write-wins, or custom merge strategies.
 
@@ -1084,32 +1031,30 @@ This utility is implemented as static methods and does not maintain instance fie
 
 #### Interfaces
 
-| Interface | Properties |
-| --- | --- |
-| `Operation` | `type`, `index`, `data`, `length`, `version`, `timestamp`, `userId` |
-| `Conflict` | `op1`, `op2`, `type`, `severity` |
-| `ResolvedConflicts` | `transformedLocal`, `transformedRemote`, `conflicts` |
-| `ValidationResult` | `valid`, `errors` |
-| `OperationHistory` | `total`, `byType`, `byUser`, `timeline` |
-| `MergeStrategy` | `local_priority`, `remote_priority`, `combine`, `lww` |
-
+| Interface           | Properties                                                          |
+| ------------------- | ------------------------------------------------------------------- |
+| `Operation`         | `type`, `index`, `data`, `length`, `version`, `timestamp`, `userId` |
+| `Conflict`          | `op1`, `op2`, `type`, `severity`                                    |
+| `ResolvedConflicts` | `transformedLocal`, `transformedRemote`, `conflicts`                |
+| `ValidationResult`  | `valid`, `errors`                                                   |
+| `OperationHistory`  | `total`, `byType`, `byUser`, `timeline`                             |
+| `MergeStrategy`     | `local_priority`, `remote_priority`, `combine`, `lww`               |
 
 #### Methods
 
-| Method | Description |
-| --- | --- |
-| `resolveConflicts` | Transforms local and remote operations against each other. |
-| `detectConflict` | Detects index, range, and delete-modify conflicts. |
-| `rangesOverlap` | Tests whether two operation ranges overlap. |
-| `transformOperation` | Adjusts an operation against another operation. |
-| `mergeWithLWW` | Returns the newer of two operations. |
-| `mergeCustom` | Applies one of the custom merge strategies. |
-| `combineOperations` | Merges compatible modification data. |
-| `validateConsistency` | Verifies version continuity and operation validity. |
-| `isValidOperation` | Validates operation type and required fields. |
-| `rebaseOperations` | Rebases operations onto a base operation list. |
-| `getOperationHistory` | Summarizes operations by type, user, and time. |
-
+| Method                | Description                                                |
+| --------------------- | ---------------------------------------------------------- |
+| `resolveConflicts`    | Transforms local and remote operations against each other. |
+| `detectConflict`      | Detects index, range, and delete-modify conflicts.         |
+| `rangesOverlap`       | Tests whether two operation ranges overlap.                |
+| `transformOperation`  | Adjusts an operation against another operation.            |
+| `mergeWithLWW`        | Returns the newer of two operations.                       |
+| `mergeCustom`         | Applies one of the custom merge strategies.                |
+| `combineOperations`   | Merges compatible modification data.                       |
+| `validateConsistency` | Verifies version continuity and operation validity.        |
+| `isValidOperation`    | Validates operation type and required fields.              |
+| `rebaseOperations`    | Rebases operations onto a base operation list.             |
+| `getOperationHistory` | Summarizes operations by type, user, and time.             |
 
 #### Real-Time Sync Note
 
@@ -1117,7 +1062,7 @@ This utility is implemented as static methods and does not maintain instance fie
 
 ### Client Hook State
 
-The architecture docs describe Socket.io for real-time sync, while the visible WebSocket implementation in  imports ws. The code path shown here follows the ws-based implementation and the client-side NativeEventEmitter hooks.
+The architecture docs describe Socket.io for real-time sync, while the visible WebSocket implementation in imports ws. The code path shown here follows the ws-based implementation and the client-side NativeEventEmitter hooks.
 
 - `useMCPBridge` stores connection, discovery, execution, and error state per server ID.
 - `useToolExecution` stores nested tool execution state by server and tool.
@@ -1185,29 +1130,29 @@ The architecture docs describe Socket.io for real-time sync, while the visible W
 
 ## Key Classes Reference
 
-| Class | Responsibility |
-| --- | --- |
-| `useMCPBridge.ts` | Native server connection, discovery, execution, and bridge event handling. |
-| `useToolExecution.ts` | Per-tool execution state and native bridge orchestration. |
-| `useMacroExecution.ts` | Client-side macro playback, history recording, and progress updates. |
-| `useMCPServerConnection.ts` | Native connection state tracking and status updates. |
-| `oauth-router.ts` | OAuth authorization, code exchange, token refresh, and token revocation flow. |
-| `token-manager.ts` | Secure token encryption, storage, retrieval, rotation, and revocation. |
-| `token-expiration-monitor.ts` | Token expiry checks and push notification alerts. |
-| `mcp-client.ts` | Direct MCP JSON-RPC client for initialization, discovery, and execution. |
-| `mcp-server-manager.ts` | Backend server registry, request client creation, caching, and status tracking. |
-| `workflow-engine.ts` | Workflow step execution, branching, looping, and execution history. |
-| `github-mcp.ts` | GitHub MCP configuration and tool schema definitions. |
-| `slack-mcp.ts` | Slack MCP configuration and tool schema definitions. |
-| `notion-mcp.ts` | Notion MCP configuration, tool schemas, and token validation. |
-| `execution-analytics.ts` | Tool and server execution metrics aggregation. |
-| `macro-analytics.ts` | Macro-level analytics and event emission. |
-| `trending-analytics.ts` | Trending macro metrics and cache invalidation. |
-| `notification-engine.ts` | Notification queuing, delivery, subscription, and read tracking. |
-| `notification-dispatcher.ts` | Typed notification facade over `NotificationEngine`. |
-| `notification-preferences.ts` | User delivery preferences, quiet hours, batching, and retry rules. |
-| `webhook-manager.ts` | Webhook configuration, signatures, events, and statistics. |
-| `webhook-logger.ts` | Webhook execution logging and derived metrics. |
-| `webhooks-router.ts` | Public webhook lifecycle procedures. |
-| `webhook-templates.ts` | Predefined webhook templates and lookup helpers. |
-| `conflict-resolver.ts` | Concurrent edit conflict detection and transformation. |
+| Class                         | Responsibility                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| `useMCPBridge.ts`             | Native server connection, discovery, execution, and bridge event handling.      |
+| `useToolExecution.ts`         | Per-tool execution state and native bridge orchestration.                       |
+| `useMacroExecution.ts`        | Client-side macro playback, history recording, and progress updates.            |
+| `useMCPServerConnection.ts`   | Native connection state tracking and status updates.                            |
+| `oauth-router.ts`             | OAuth authorization, code exchange, token refresh, and token revocation flow.   |
+| `token-manager.ts`            | Secure token encryption, storage, retrieval, rotation, and revocation.          |
+| `token-expiration-monitor.ts` | Token expiry checks and push notification alerts.                               |
+| `mcp-client.ts`               | Direct MCP JSON-RPC client for initialization, discovery, and execution.        |
+| `mcp-server-manager.ts`       | Backend server registry, request client creation, caching, and status tracking. |
+| `workflow-engine.ts`          | Workflow step execution, branching, looping, and execution history.             |
+| `github-mcp.ts`               | GitHub MCP configuration and tool schema definitions.                           |
+| `slack-mcp.ts`                | Slack MCP configuration and tool schema definitions.                            |
+| `notion-mcp.ts`               | Notion MCP configuration, tool schemas, and token validation.                   |
+| `execution-analytics.ts`      | Tool and server execution metrics aggregation.                                  |
+| `macro-analytics.ts`          | Macro-level analytics and event emission.                                       |
+| `trending-analytics.ts`       | Trending macro metrics and cache invalidation.                                  |
+| `notification-engine.ts`      | Notification queuing, delivery, subscription, and read tracking.                |
+| `notification-dispatcher.ts`  | Typed notification facade over `NotificationEngine`.                            |
+| `notification-preferences.ts` | User delivery preferences, quiet hours, batching, and retry rules.              |
+| `webhook-manager.ts`          | Webhook configuration, signatures, events, and statistics.                      |
+| `webhook-logger.ts`           | Webhook execution logging and derived metrics.                                  |
+| `webhooks-router.ts`          | Public webhook lifecycle procedures.                                            |
+| `webhook-templates.ts`        | Predefined webhook templates and lookup helpers.                                |
+| `conflict-resolver.ts`        | Concurrent edit conflict detection and transformation.                          |

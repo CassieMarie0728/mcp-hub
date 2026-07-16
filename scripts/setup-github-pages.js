@@ -2,14 +2,14 @@
 
 /**
  * GitHub Pages Setup Automation Script (Node.js Version)
- * 
+ *
  * This script automates the setup of GitHub Pages for the MCP Hub landing page.
  * It requires GitHub CLI (gh) to be installed and authenticated.
- * 
+ *
  * Usage:
  *   node scripts/setup-github-pages.js [options]
  *   npm run setup:github-pages [options]
- * 
+ *
  * Options:
  *   --repo OWNER/REPO         GitHub repository (default: auto-detect from git remote)
  *   --custom-domain DOMAIN    Set custom domain (optional)
@@ -70,7 +70,7 @@ function exec(cmd, options = {}) {
  */
 function parseArgs() {
   const args = process.argv.slice(2);
-  
+
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
       case '--repo':
@@ -233,10 +233,9 @@ function enableWorkflowPermissions() {
   log.info('Configuring workflow permissions...');
 
   try {
-    exec(
-      `gh api repos/${config.repo} -X PATCH -f "actions_default_workflow_permissions=write"`,
-      { throwError: false }
-    );
+    exec(`gh api repos/${config.repo} -X PATCH -f "actions_default_workflow_permissions=write"`, {
+      throwError: false,
+    });
     log.success('Workflow permissions configured');
   } catch (error) {
     log.warning('Could not configure workflow permissions');
@@ -260,8 +259,8 @@ function setCustomDomain() {
     });
 
     log.success(`Custom domain set to: ${config.customDomain}`);
-    log.warning('Update your domain\'s DNS records to point to GitHub Pages');
-    console.log('  A records: Point to GitHub\'s IP addresses');
+    log.warning("Update your domain's DNS records to point to GitHub Pages");
+    console.log("  A records: Point to GitHub's IP addresses");
     console.log('    185.199.108.153');
     console.log('    185.199.109.153');
     console.log('    185.199.110.153');
@@ -305,7 +304,7 @@ function checkWorkflowStatus() {
   try {
     const runsInfo = exec(
       `gh api repos/${config.repo}/actions/workflows/deploy-landing-page.yml/runs`,
-      { silent: true }
+      { silent: true },
     );
     const runs = JSON.parse(runsInfo);
 
@@ -331,9 +330,13 @@ function checkWorkflowStatus() {
  */
 function printSummary() {
   console.log('');
-  console.log(`${colors.green}═══════════════════════════════════════════════════════════${colors.reset}`);
+  console.log(
+    `${colors.green}═══════════════════════════════════════════════════════════${colors.reset}`,
+  );
   console.log(`${colors.green}GitHub Pages Setup Complete!${colors.reset}`);
-  console.log(`${colors.green}═══════════════════════════════════════════════════════════${colors.reset}`);
+  console.log(
+    `${colors.green}═══════════════════════════════════════════════════════════${colors.reset}`,
+  );
   console.log('');
   console.log(`Repository: ${config.repo}`);
   console.log('Workflow: .github/workflows/deploy-landing-page.yml');

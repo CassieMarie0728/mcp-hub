@@ -1,7 +1,7 @@
 ---
-title: "Get Started with MCP Hub in Minutes"
-sidebarTitle: "Quick Start"
-description: "Install MCP Hub, run the server, and connect your first MCP server in under 5 minutes. Prerequisites: Node.js 20+, pnpm, and a MySQL database."
+title: 'Get Started with MCP Hub in Minutes'
+sidebarTitle: 'Quick Start'
+description: 'Install MCP Hub, run the server, and connect your first MCP server in under 5 minutes. Prerequisites: Node.js 20+, pnpm, and a MySQL database.'
 ---
 
 This guide walks you through installing MCP Hub, starting the backend server, and connecting your first MCP server. By the end you will have the full application running locally and at least one MCP server listed in your dashboard.
@@ -9,14 +9,15 @@ This guide walks you through installing MCP Hub, starting the backend server, an
 <Tip>
   Want a quick MySQL instance without a local install? Use Docker (development only — do not expose this container or reuse this command in production):
 
-  ```bash
-  docker run -d -p 127.0.0.1:3306:3306 \
-    -e MYSQL_ROOT_PASSWORD="$(openssl rand -hex 24)" \
-    -e MYSQL_DATABASE=mcp_hub \
-    mysql:8
-  ```
+```bash
+docker run -d -p 127.0.0.1:3306:3306 \
+  -e MYSQL_ROOT_PASSWORD="$(openssl rand -hex 24)" \
+  -e MYSQL_DATABASE=mcp_hub \
+  mysql:8
+```
 
-  Binding to `127.0.0.1` keeps the database off your local network, and generating a random root password avoids the well-known `password` default.
+Binding to `127.0.0.1` keeps the database off your local network, and generating a random root password avoids the well-known `password` default.
+
 </Tip>
 
 <Steps>
@@ -41,6 +42,7 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     node --version   # should print v20.x.x or higher
     pnpm --version   # should print 9.12.x or higher
     ```
+
   </Step>
 
   <Step title="Clone and Install">
@@ -51,6 +53,7 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     ```
 
     pnpm will install dependencies for the backend, frontend, and any shared packages defined in the monorepo workspace.
+
   </Step>
 
   <Step title="Configure Environment">
@@ -101,6 +104,7 @@ This guide walks you through installing MCP Hub, starting the backend server, an
       - Enforce TLS on the database connection.
       - Serve the app over HTTPS.
     </Warning>
+
   </Step>
 
   <Step title="Initialize the Database">
@@ -115,6 +119,7 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     ```
     [✓] Changes applied
     ```
+
   </Step>
 
   <Step title="Start the App">
@@ -129,6 +134,7 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     - **Expo / web frontend** on `http://localhost:8081`
 
     You will see log output from both processes in the same terminal, prefixed so you can tell them apart.
+
   </Step>
 
   <Step title="Open in Browser or Expo Go">
@@ -139,6 +145,7 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     </Warning>
 
     **iOS / Android:** Install the [Expo Go](https://expo.dev/go) app on your device, then scan the QR code printed in the terminal after `pnpm dev` starts. Your device and development machine must be on the same network.
+
   </Step>
 
   <Step title="Connect Your First MCP Server">
@@ -152,6 +159,7 @@ This guide walks you through installing MCP Hub, starting the backend server, an
     6. Tap **Save**.
 
     MCP Hub immediately attempts to connect and runs `tools/list`. Navigate to the **Tool Discovery** tab to browse every tool your server exposes and start executing them.
+
   </Step>
 </Steps>
 

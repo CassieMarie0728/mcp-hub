@@ -1,6 +1,6 @@
-import { themeColors } from "@/theme.config";
+import { themeColors } from '@/theme.config';
 
-export type ColorScheme = "light" | "dark";
+export type ColorScheme = 'light' | 'dark';
 
 export const ThemeColors = themeColors;
 
@@ -30,9 +30,9 @@ const schemePalette = buildSchemePalette(ThemeColors);
 export const Colors: Record<ColorScheme, SchemePaletteItem> = schemePalette;
 
 export const Fonts = {
-  heading: "System",
-  body: "System",
-  mono: "System",
+  heading: 'System',
+  body: 'System',
+  mono: 'System',
 };
 
 export const SchemeColors = schemePalette;

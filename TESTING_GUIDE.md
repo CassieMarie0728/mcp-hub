@@ -6,49 +6,54 @@ This document describes the testing strategy, frameworks, and best practices for
 
 ## Testing Frameworks
 
-| Framework | Purpose | Location |
-|-----------|---------|----------|
-| **Vitest** | Unit & integration tests | `lib/__tests__/`, `tests/` |
-| **React Testing Library** | Component testing | (Ready to add) |
-| **Expo Testing Library** | Native component testing | (Ready to add) |
+| Framework                 | Purpose                  | Location                   |
+| ------------------------- | ------------------------ | -------------------------- |
+| **Vitest**                | Unit & integration tests | `lib/__tests__/`, `tests/` |
+| **React Testing Library** | Component testing        | (Ready to add)             |
+| **Expo Testing Library**  | Native component testing | (Ready to add)             |
 
 ## Running Tests
 
 ### Run All Tests
+
 ```bash
 pnpm test
 ```
 
 ### Run Tests in Watch Mode
+
 ```bash
 pnpm test --watch
 ```
 
 ### Run Specific Test File
+
 ```bash
 pnpm test onboarding.test.ts
 ```
 
 ### Run Tests with Coverage
+
 ```bash
 pnpm test --coverage
 ```
 
 ## Current Test Coverage
 
-| Category | Tests | Status |
-|----------|-------|--------|
-| **Onboarding** | 24 | ✅ Passing |
-| **MCP Client** | 7 | ✅ Passing |
-| **New Features** | 10 | ✅ Passing |
-| **AI Security** | 2 | ✅ Passing |
-| **Router Security** | 6 | ✅ Passing |
-| **Auth** | 1 | ⏭️ Skipped |
-| **Total** | 50 | ✅ 49 Passing |
+| Category            | Tests | Status        |
+| ------------------- | ----- | ------------- |
+| **Onboarding**      | 24    | ✅ Passing    |
+| **MCP Client**      | 7     | ✅ Passing    |
+| **New Features**    | 10    | ✅ Passing    |
+| **AI Security**     | 2     | ✅ Passing    |
+| **Router Security** | 6     | ✅ Passing    |
+| **Auth**            | 1     | ⏭️ Skipped    |
+| **Total**           | 50    | ✅ 49 Passing |
 
 ## Test Structure
 
 ### Unit Tests (`lib/__tests__/`)
+
 Test individual functions and utilities in isolation.
 
 ```typescript
@@ -58,10 +63,10 @@ describe('Feature Name', () => {
   it('should do something specific', () => {
     // Arrange
     const input = 'test';
-    
+
     // Act
     const result = myFunction(input);
-    
+
     // Assert
     expect(result).toBe('expected');
   });
@@ -69,6 +74,7 @@ describe('Feature Name', () => {
 ```
 
 ### Integration Tests (`tests/`)
+
 Test how multiple components work together.
 
 ```typescript
@@ -88,33 +94,36 @@ describe('API Integration', () => {
 ## Testing Best Practices
 
 ### 1. **Test Naming**
+
 Use descriptive names that explain what is being tested:
 
 ```typescript
 // ✅ Good
-it('should return error when server connection fails')
+it('should return error when server connection fails');
 
 // ❌ Bad
-it('should handle error')
+it('should handle error');
 ```
 
 ### 2. **Arrange-Act-Assert Pattern**
+
 Structure tests with clear setup, execution, and verification:
 
 ```typescript
 it('should calculate total correctly', () => {
   // Arrange
   const items = [1, 2, 3];
-  
+
   // Act
   const total = calculateTotal(items);
-  
+
   // Assert
   expect(total).toBe(6);
 });
 ```
 
 ### 3. **Mock External Dependencies**
+
 Mock API calls, storage, and external services:
 
 ```typescript
@@ -127,6 +136,7 @@ vi.mock('@react-native-async-storage/async-storage', () => ({
 ```
 
 ### 4. **Test Edge Cases**
+
 Include tests for error conditions and edge cases:
 
 ```typescript
@@ -140,6 +150,7 @@ it('should throw error for invalid input', () => {
 ```
 
 ### 5. **Keep Tests Focused**
+
 Each test should verify one specific behavior:
 
 ```typescript
@@ -158,16 +169,17 @@ it('should update state', () => {
 
 ## Coverage Goals
 
-| Category | Target | Current |
-|----------|--------|---------|
-| **Statements** | 80% | 40% |
-| **Branches** | 75% | 30% |
-| **Functions** | 80% | 35% |
-| **Lines** | 80% | 40% |
+| Category       | Target | Current |
+| -------------- | ------ | ------- |
+| **Statements** | 80%    | 40%     |
+| **Branches**   | 75%    | 30%     |
+| **Functions**  | 80%    | 35%     |
+| **Lines**      | 80%    | 40%     |
 
 ## Missing Test Coverage
 
 ### High Priority
+
 - [ ] Settings screen functionality
 - [ ] Theme provider behavior
 - [ ] App context state management
@@ -175,6 +187,7 @@ it('should update state', () => {
 - [ ] API error handling
 
 ### Medium Priority
+
 - [ ] Authentication flows
 - [ ] File upload/download
 - [ ] Notification system
@@ -182,6 +195,7 @@ it('should update state', () => {
 - [ ] Tool discovery
 
 ### Low Priority
+
 - [ ] Analytics integration
 - [ ] Performance monitoring
 - [ ] Crash reporting
@@ -189,6 +203,7 @@ it('should update state', () => {
 ## Writing New Tests
 
 ### 1. Create Test File
+
 ```bash
 # For lib utilities
 touch lib/__tests__/my-feature.test.ts
@@ -198,6 +213,7 @@ touch tests/my-feature.test.ts
 ```
 
 ### 2. Write Test
+
 ```typescript
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { myFunction } from '@/lib/my-feature';
@@ -219,6 +235,7 @@ describe('My Feature', () => {
 ```
 
 ### 3. Run Tests
+
 ```bash
 pnpm test
 ```
@@ -226,6 +243,7 @@ pnpm test
 ## Continuous Integration
 
 ### GitHub Actions (Recommended)
+
 ```yaml
 name: Tests
 on: [push, pull_request]
@@ -247,16 +265,19 @@ jobs:
 ## Debugging Tests
 
 ### Run Single Test
+
 ```bash
 pnpm test --grep "test name"
 ```
 
 ### Debug Mode
+
 ```bash
 node --inspect-brk ./node_modules/.bin/vitest
 ```
 
 ### Console Logging
+
 ```typescript
 it('should debug', () => {
   console.log('Debug info:', data);
@@ -267,6 +288,7 @@ it('should debug', () => {
 ## Common Testing Patterns
 
 ### Testing Async Functions
+
 ```typescript
 it('should fetch data', async () => {
   const data = await fetchData();
@@ -275,6 +297,7 @@ it('should fetch data', async () => {
 ```
 
 ### Testing Error Handling
+
 ```typescript
 it('should throw error', async () => {
   await expect(failingFunction()).rejects.toThrow('Error message');
@@ -282,6 +305,7 @@ it('should throw error', async () => {
 ```
 
 ### Testing State Updates
+
 ```typescript
 it('should update state', () => {
   const { result } = renderHook(() => useState(0));
@@ -293,6 +317,7 @@ it('should update state', () => {
 ```
 
 ### Testing Context
+
 ```typescript
 it('should provide context value', () => {
   const wrapper = ({ children }) => (
@@ -306,6 +331,7 @@ it('should provide context value', () => {
 ## Performance Testing
 
 ### Measure Execution Time
+
 ```typescript
 it('should execute quickly', () => {
   const start = performance.now();
@@ -318,6 +344,7 @@ it('should execute quickly', () => {
 ## Troubleshooting
 
 ### Tests Not Running
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules pnpm-lock.yaml
@@ -326,12 +353,14 @@ pnpm test
 ```
 
 ### Import Errors
+
 ```bash
 # Check tsconfig.json paths
 # Ensure all imports use @ alias correctly
 ```
 
 ### Timeout Errors
+
 ```typescript
 // Increase timeout for slow tests
 it('should complete', async () => {

@@ -96,7 +96,8 @@ export const defaultAlertRules: AlertRule[] = [
     name: 'High Error Rate',
     description: 'Error rate exceeds 10% of total executions',
     condition: (metrics) => {
-      const errorRate = (metrics.workflowMetrics.failedExecutions / metrics.workflowMetrics.totalExecutions) * 100;
+      const errorRate =
+        (metrics.workflowMetrics.failedExecutions / metrics.workflowMetrics.totalExecutions) * 100;
       return errorRate > 10;
     },
     severity: 'critical',
@@ -189,7 +190,12 @@ export class SlackNotificationChannel implements NotificationChannel {
 
   async send(alert: any): Promise<void> {
     try {
-      const color = alert.severity === 'critical' ? '#FF0000' : alert.severity === 'warning' ? '#FFA500' : '#0099FF';
+      const color =
+        alert.severity === 'critical'
+          ? '#FF0000'
+          : alert.severity === 'warning'
+            ? '#FFA500'
+            : '#0099FF';
 
       await fetch(this.webhookUrl, {
         method: 'POST',
@@ -218,7 +224,9 @@ export class EmailNotificationChannel implements NotificationChannel {
   async send(alert: any): Promise<void> {
     try {
       // TODO: Implement email sending via nodemailer or similar
-      logger.info(`Email notification would be sent to ${this.recipients.join(', ')}: ${alert.message}`);
+      logger.info(
+        `Email notification would be sent to ${this.recipients.join(', ')}: ${alert.message}`,
+      );
     } catch (error) {
       logger.error('Failed to send email notification:', error);
     }

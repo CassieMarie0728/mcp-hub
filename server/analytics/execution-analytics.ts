@@ -180,9 +180,7 @@ export class ExecutionAnalytics {
       return stats ? [stats] : [];
     }
 
-    return Array.from(toolStats.values()).sort(
-      (a, b) => b.totalExecutions - a.totalExecutions
-    );
+    return Array.from(toolStats.values()).sort((a, b) => b.totalExecutions - a.totalExecutions);
   }
 
   /**
@@ -194,24 +192,20 @@ export class ExecutionAnalytics {
       return stats ? [stats] : [];
     }
 
-    return Array.from(serverStats.values()).sort(
-      (a, b) => b.totalExecutions - a.totalExecutions
-    );
+    return Array.from(serverStats.values()).sort((a, b) => b.totalExecutions - a.totalExecutions);
   }
 
   /**
    * Get execution history
    */
-  static getExecutionHistory(
-    filters?: {
-      toolName?: string;
-      serverId?: string;
-      status?: string;
-      startDate?: Date;
-      endDate?: Date;
-      limit?: number;
-    }
-  ): ExecutionMetrics[] {
+  static getExecutionHistory(filters?: {
+    toolName?: string;
+    serverId?: string;
+    status?: string;
+    startDate?: Date;
+    endDate?: Date;
+    limit?: number;
+  }): ExecutionMetrics[] {
     let results = [...executionMetrics];
 
     if (filters?.toolName) {

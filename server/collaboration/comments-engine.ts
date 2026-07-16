@@ -16,7 +16,7 @@ export class MacroCommentsEngine {
     lineNumber: number,
     userId: string,
     content: string,
-    parentCommentId?: string
+    parentCommentId?: string,
   ): Comment {
     const commentId = `${macroId}:${Date.now()}:${Math.random()}`;
 
@@ -166,10 +166,7 @@ export class MacroCommentsEngine {
     // Mark all comments in thread as resolved
     this.comments.forEach((comments) => {
       comments.forEach((comment) => {
-        if (
-          comment.id === commentId ||
-          thread.replies.includes(comment.id)
-        ) {
+        if (comment.id === commentId || thread.replies.includes(comment.id)) {
           comment.resolved = true;
         }
       });
@@ -190,10 +187,7 @@ export class MacroCommentsEngine {
     // Mark all comments in thread as unresolved
     this.comments.forEach((comments) => {
       comments.forEach((comment) => {
-        if (
-          comment.id === commentId ||
-          thread.replies.includes(comment.id)
-        ) {
+        if (comment.id === commentId || thread.replies.includes(comment.id)) {
           comment.resolved = false;
         }
       });
@@ -212,7 +206,7 @@ export class MacroCommentsEngine {
       const comment = comments.find((c) => c.id === commentId);
       if (comment) {
         const existingReaction = comment.reactions.find(
-          (r) => r.userId === userId && r.emoji === emoji
+          (r) => r.userId === userId && r.emoji === emoji,
         );
 
         if (!existingReaction) {
@@ -239,9 +233,7 @@ export class MacroCommentsEngine {
     this.comments.forEach((comments) => {
       const comment = comments.find((c) => c.id === commentId);
       if (comment) {
-        const index = comment.reactions.findIndex(
-          (r) => r.userId === userId && r.emoji === emoji
-        );
+        const index = comment.reactions.findIndex((r) => r.userId === userId && r.emoji === emoji);
 
         if (index !== -1) {
           comment.reactions.splice(index, 1);
@@ -315,9 +307,7 @@ export class MacroCommentsEngine {
     const mentionedComments: Comment[] = [];
 
     this.comments.forEach((comments) => {
-      mentionedComments.push(
-        ...comments.filter((c) => c.mentions.includes(userId))
-      );
+      mentionedComments.push(...comments.filter((c) => c.mentions.includes(userId)));
     });
 
     return mentionedComments;
@@ -337,23 +327,18 @@ export class MacroCommentsEngine {
       commentsByLine.set(comment.lineNumber, count + 1);
     });
 
-    const mostCommentedLine = Array.from(commentsByLine.entries()).sort(
-      (a, b) => b[1] - a[1]
-    )[0];
+    const mostCommentedLine = Array.from(commentsByLine.entries()).sort((a, b) => b[1] - a[1])[0];
 
     return {
       totalComments: allComments.length,
       unresolvedComments: unresolved.length,
       resolvedComments: resolved.length,
-      totalThreads: Array.from(this.threads.values()).filter(
-        (t) => t.macroId === macroId
-      ).length,
+      totalThreads: Array.from(this.threads.values()).filter((t) => t.macroId === macroId).length,
       mostCommentedLine: mostCommentedLine ? mostCommentedLine[0] : -1,
       commentsByLine: Object.fromEntries(commentsByLine),
       averageReactionsPerComment:
         allComments.length > 0
-          ? allComments.reduce((sum, c) => sum + c.reactions.length, 0) /
-            allComments.length
+          ? allComments.reduce((sum, c) => sum + c.reactions.length, 0) / allComments.length
           : 0,
     };
   }
@@ -363,9 +348,7 @@ export class MacroCommentsEngine {
    */
   exportComments(macroId: string): string {
     const allComments = this.getAllComments(macroId);
-    const threads = Array.from(this.threads.values()).filter(
-      (t) => t.macroId === macroId
-    );
+    const threads = Array.from(this.threads.values()).filter((t) => t.macroId === macroId);
 
     return JSON.stringify(
       {
@@ -374,7 +357,7 @@ export class MacroCommentsEngine {
         statistics: this.getCommentStatistics(macroId),
       },
       null,
-      2
+      2,
     );
   }
 

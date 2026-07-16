@@ -104,7 +104,9 @@ export class ServerPresetManager {
   /**
    * Create a new preset
    */
-  static async createPreset(preset: Omit<ServerPreset, 'id' | 'createdAt' | 'updatedAt'>): Promise<ServerPreset> {
+  static async createPreset(
+    preset: Omit<ServerPreset, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<ServerPreset> {
     try {
       const id = `preset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const now = Date.now();
@@ -130,7 +132,10 @@ export class ServerPresetManager {
   /**
    * Create preset from template
    */
-  static async createFromTemplate(templateKey: string, overrides?: Partial<ServerPreset>): Promise<ServerPreset> {
+  static async createFromTemplate(
+    templateKey: string,
+    overrides?: Partial<ServerPreset>,
+  ): Promise<ServerPreset> {
     try {
       const template = SERVER_PRESET_TEMPLATES[templateKey];
       if (!template) {
@@ -184,7 +189,7 @@ export class ServerPresetManager {
           (p) =>
             p.name.toLowerCase().includes(search) ||
             (p.description && p.description.toLowerCase().includes(search)) ||
-            p.host.toLowerCase().includes(search)
+            p.host.toLowerCase().includes(search),
         );
       }
 

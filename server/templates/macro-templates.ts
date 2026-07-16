@@ -171,7 +171,7 @@ export class MacroTemplatesSystem {
    */
   public deleteUserTemplate(userId: string, templateId: string): void {
     const userTemplates = this.userTemplates.get(userId) || [];
-    const filtered = userTemplates.filter(t => t.id !== templateId);
+    const filtered = userTemplates.filter((t) => t.id !== templateId);
     this.userTemplates.set(userId, filtered);
   }
 }

@@ -128,7 +128,7 @@ export class NotificationPreferencesSystem {
   updateNotificationTypePreference(
     userId: string,
     notificationType: string,
-    preference: Partial<NotificationTypePreference>
+    preference: Partial<NotificationTypePreference>,
   ): boolean {
     let prefs = this.userPreferences.get(userId);
 
@@ -155,7 +155,7 @@ export class NotificationPreferencesSystem {
   updateDeliveryMethodPreference(
     userId: string,
     method: 'inApp' | 'push' | 'email',
-    preference: Partial<DeliveryMethodPreference>
+    preference: Partial<DeliveryMethodPreference>,
   ): boolean {
     let prefs = this.userPreferences.get(userId);
 
@@ -232,7 +232,11 @@ export class NotificationPreferencesSystem {
   /**
    * Check if notification should be delivered
    */
-  shouldDeliverNotification(userId: string, notificationType: string, deliveryMethod: string): boolean {
+  shouldDeliverNotification(
+    userId: string,
+    notificationType: string,
+    deliveryMethod: string,
+  ): boolean {
     const prefs = this.userPreferences.get(userId);
 
     if (!prefs) {
@@ -240,7 +244,8 @@ export class NotificationPreferencesSystem {
     }
 
     // Check if notification type is enabled
-    const typePrefs = prefs.notificationTypes[notificationType as keyof typeof prefs.notificationTypes];
+    const typePrefs =
+      prefs.notificationTypes[notificationType as keyof typeof prefs.notificationTypes];
     if (!typePrefs || !typePrefs.enabled) {
       return false;
     }
@@ -286,7 +291,8 @@ export class NotificationPreferencesSystem {
       return ['inApp', 'push'];
     }
 
-    const typePrefs = prefs.notificationTypes[notificationType as keyof typeof prefs.notificationTypes];
+    const typePrefs =
+      prefs.notificationTypes[notificationType as keyof typeof prefs.notificationTypes];
     if (!typePrefs || !typePrefs.enabled) {
       return [];
     }
@@ -424,14 +430,13 @@ export class NotificationPreferencesSystem {
       emailEnabled,
       quietHoursEnabled,
       batchingEnabled,
-      avgNotificationTypesEnabled: allPrefs.length > 0
-        ? allPrefs.reduce(
-            (sum, p) =>
-              sum +
-              Object.values(p.notificationTypes).filter((t) => t.enabled).length,
-            0
-          ) / allPrefs.length
-        : 0,
+      avgNotificationTypesEnabled:
+        allPrefs.length > 0
+          ? allPrefs.reduce(
+              (sum, p) => sum + Object.values(p.notificationTypes).filter((t) => t.enabled).length,
+              0,
+            ) / allPrefs.length
+          : 0,
     };
   }
 }

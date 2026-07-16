@@ -20,7 +20,7 @@ export const analyticsRouter = router({
         errorMessage: z.string().optional(),
         parameters: z.record(z.string(), z.any()).optional(),
         result: z.any().optional(),
-      })
+      }),
     )
     .mutation(({ input }) => {
       const metrics = {
@@ -67,7 +67,7 @@ export const analyticsRouter = router({
         startDate: z.date().optional(),
         endDate: z.date().optional(),
         limit: z.number().optional(),
-      })
+      }),
     )
     .query(({ input }) => {
       return ExecutionAnalytics.getExecutionHistory(input);
@@ -81,7 +81,7 @@ export const analyticsRouter = router({
       z.object({
         startDate: z.date(),
         endDate: z.date(),
-      })
+      }),
     )
     .query(({ input }) => {
       return ExecutionAnalytics.getErrorTrends(input.startDate, input.endDate);
@@ -95,7 +95,7 @@ export const analyticsRouter = router({
       z.object({
         startDate: z.date(),
         endDate: z.date(),
-      })
+      }),
     )
     .query(({ input }) => {
       return ExecutionAnalytics.getPerformanceTrends(input.startDate, input.endDate);
@@ -109,7 +109,7 @@ export const analyticsRouter = router({
       z.object({
         startDate: z.date(),
         endDate: z.date(),
-      })
+      }),
     )
     .query(({ input }) => {
       return ExecutionAnalytics.generateReport(input.startDate, input.endDate);

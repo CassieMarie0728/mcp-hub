@@ -1,7 +1,7 @@
 ---
-title: "MCP Hub Troubleshooting: Fix Common Problems and Errors"
-sidebarTitle: "Troubleshooting"
-description: "Diagnose and fix common MCP Hub problems: connection failures, tool execution errors, database issues, port conflicts, and authentication problems."
+title: 'MCP Hub Troubleshooting: Fix Common Problems and Errors'
+sidebarTitle: 'Troubleshooting'
+description: 'Diagnose and fix common MCP Hub problems: connection failures, tool execution errors, database issues, port conflicts, and authentication problems.'
 ---
 
 This guide covers the most common issues users encounter with MCP Hub and their solutions. For each problem, start with the quick fix and escalate to more involved solutions if needed.
@@ -20,6 +20,7 @@ This guide covers the most common issues users encounter with MCP Hub and their 
       - `UNREACHABLE` — the server cannot be reached at all. Check your network and confirm the server process is running.
       - `ERROR` — tap **View Error** to read the specific error message and act on it.
     - **Try reconnecting.** Pull down to refresh the server list, or open the server and tap **Reconnect**.
+
   </Accordion>
 
   <Accordion title="Tool Execution Fails">
@@ -37,6 +38,7 @@ This guide covers the most common issues users encounter with MCP Hub and their 
     <Tip>
       Tap the error badge on any tool result to copy the full error message to your clipboard — useful when filing a bug report.
     </Tip>
+
   </Accordion>
 
   <Accordion title="Database Connection Error">
@@ -72,6 +74,7 @@ This guide covers the most common issues users encounter with MCP Hub and their 
     <Note>
       If your password contains special characters, percent-encode them in the URL. For example, `p@ss` becomes `p%40ss`. See the [Database URL Format](/reference/environment-variables#database-url-format) section for details.
     </Note>
+
   </Accordion>
 
   <Accordion title="Port Already in Use">
@@ -106,6 +109,7 @@ This guide covers the most common issues users encounter with MCP Hub and their 
     <Tip>
       After changing `PORT`, update `MCP_SERVER_URL` (or the URL your mobile app uses) to match — otherwise the frontend will still try to connect on the old port.
     </Tip>
+
   </Accordion>
 
   <Accordion title="Authentication Issues">
@@ -131,6 +135,7 @@ This guide covers the most common issues users encounter with MCP Hub and their 
     **JWT errors in API responses**
 
     - A `JWT_SECRET` mismatch between processes (e.g., after a rolling restart with different values) will cause all tokens to fail validation. Set a single stable value in `.env` and redeploy.
+
   </Accordion>
 
   <Accordion title="Expo / Mobile App Issues">
@@ -166,6 +171,7 @@ This guide covers the most common issues users encounter with MCP Hub and their 
     ```
 
     Fix any errors before building a production release, as the production build will fail on type errors.
+
   </Accordion>
 
 </AccordionGroup>

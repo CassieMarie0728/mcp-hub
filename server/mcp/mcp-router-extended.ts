@@ -29,16 +29,14 @@ export const mcpExtendedRouter = router({
   /**
    * Get available tools for a server type (without connecting)
    */
-  getServerTools: protectedProcedure
-    .input(z.object({ type: z.string() }))
-    .query(({ input }) => {
-      const tools = MCPServerRegistry.getServerTools(input.type as ServerType);
-      return {
-        success: true,
-        tools,
-        count: tools.length,
-      };
-    }),
+  getServerTools: protectedProcedure.input(z.object({ type: z.string() })).query(({ input }) => {
+    const tools = MCPServerRegistry.getServerTools(input.type as ServerType);
+    return {
+      success: true,
+      tools,
+      count: tools.length,
+    };
+  }),
 
   /**
    * Validate token for a server type
@@ -48,13 +46,13 @@ export const mcpExtendedRouter = router({
       z.object({
         type: z.string(),
         token: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       try {
         const isValid = await MCPServerRegistry.validateToken(
           input.type as ServerType,
-          input.token
+          input.token,
         );
         return {
           success: true,
@@ -78,14 +76,14 @@ export const mcpExtendedRouter = router({
         type: z.string(),
         token: z.string(),
         customName: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
         // Validate token first
         const isValid = await MCPServerRegistry.validateToken(
           input.type as ServerType,
-          input.token
+          input.token,
         );
 
         if (!isValid) {
@@ -96,10 +94,7 @@ export const mcpExtendedRouter = router({
         }
 
         // Create server config
-        const config = MCPServerRegistry.createServerConfig(
-          input.type as ServerType,
-          input.token
-        );
+        const config = MCPServerRegistry.createServerConfig(input.type as ServerType, input.token);
 
         if (!config) {
           return {
@@ -186,14 +181,14 @@ export const mcpExtendedRouter = router({
         serverId: z.string(),
         toolName: z.string(),
         parameters: z.record(z.string(), z.any()),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       try {
         const result = await mcpServerManager.executeTool(
           input.serverId,
           input.toolName,
-          input.parameters
+          input.parameters,
         );
 
         return {

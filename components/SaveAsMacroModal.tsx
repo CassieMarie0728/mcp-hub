@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  Modal,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
+import { View, Text, TextInput, Pressable, Modal, ActivityIndicator, Alert } from 'react-native';
 import { useColors } from '@/hooks/use-colors';
 
 export interface SaveAsMacroModalProps {
@@ -55,11 +47,7 @@ export function SaveAsMacroModal({
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-    >
+    <Modal visible={visible} transparent animationType="fade">
       {/* Backdrop */}
       <Pressable
         onPress={handleCancel}

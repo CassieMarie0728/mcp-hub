@@ -17,7 +17,7 @@ export class MacroScheduler extends EventEmitter {
     macroId: string,
     userId: string,
     cronExpression: string,
-    options: ScheduleOptions = {}
+    options: ScheduleOptions = {},
   ): ScheduledMacro {
     // Validate cron expression
     if (!this.isValidCronExpression(cronExpression)) {
@@ -66,7 +66,7 @@ export class MacroScheduler extends EventEmitter {
     macroId: string,
     userId: string,
     intervalMs: number,
-    options: ScheduleOptions = {}
+    options: ScheduleOptions = {},
   ): ScheduledMacro {
     if (intervalMs < 1000) {
       throw new Error('Minimum interval is 1000ms (1 second)');
@@ -115,7 +115,7 @@ export class MacroScheduler extends EventEmitter {
     macroId: string,
     userId: string,
     executeAt: Date,
-    options: ScheduleOptions = {}
+    options: ScheduleOptions = {},
   ): ScheduledMacro {
     // Stop existing schedule if any
     this.stopSchedule(macroId);
@@ -337,18 +337,20 @@ export class MacroScheduler extends EventEmitter {
     const successfulRuns = history.filter((r) => r.status === 'success');
     const failedRuns = history.filter((r) => r.status === 'failure');
 
-    const avgDuration = successfulRuns.length > 0
-      ? successfulRuns.reduce((sum, r) => sum + r.duration, 0) / successfulRuns.length
-      : 0;
+    const avgDuration =
+      successfulRuns.length > 0
+        ? successfulRuns.reduce((sum, r) => sum + r.duration, 0) / successfulRuns.length
+        : 0;
 
     return {
       macroId,
       totalExecutions: scheduled.executionCount,
       successfulExecutions: scheduled.successCount,
       failedExecutions: scheduled.failureCount,
-      successRate: scheduled.executionCount > 0
-        ? (scheduled.successCount / scheduled.executionCount) * 100
-        : 0,
+      successRate:
+        scheduled.executionCount > 0
+          ? (scheduled.successCount / scheduled.executionCount) * 100
+          : 0,
       averageDuration: avgDuration,
       totalDuration: scheduled.totalDuration,
       lastRun: scheduled.lastRun,

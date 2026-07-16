@@ -21,12 +21,14 @@ For our mobile app, the app itself acts as the MCP Host, creating one MCP Client
 MCP consists of two layers:
 
 **Data Layer**: Implements JSON-RPC 2.0 based exchange protocol including:
+
 - Lifecycle management (connection initialization, capability negotiation, termination)
 - Server features (tools, resources, prompts)
 - Client features (sampling, elicitation, logging)
 - Utility features (notifications, progress tracking)
 
 **Transport Layer**: Manages communication channels and authentication:
+
 - **Stdio transport**: Uses standard input/output for direct process communication (local servers)
 - **Streamable HTTP transport**: Uses HTTP POST for messages with optional Server-Sent Events (remote servers)
 
@@ -151,24 +153,28 @@ Key principles for our mobile app:
 ## Implementation Strategy for Mobile App
 
 ### Phase 1: Core Connection Management
+
 - Implement MCP client for connecting to servers
 - Support stdio transport (for local servers)
 - Support HTTP transport (for remote servers)
 - Handle connection lifecycle (init, negotiate, ready, close)
 
 ### Phase 2: Tool Discovery
+
 - Implement `tools/list` request handling
 - Parse tool schemas from server responses
 - Store tool metadata locally
 - Display tools in UI with descriptions and parameters
 
 ### Phase 3: Tool Execution
+
 - Build dynamic parameter input forms from JSON schemas
 - Implement `tools/call` request handling
 - Display results in formatted view
 - Handle errors gracefully
 
 ### Phase 4: Advanced Features
+
 - Support pagination for large tool lists
 - Handle streaming responses
 - Implement tool execution history

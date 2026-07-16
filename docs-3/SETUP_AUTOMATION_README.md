@@ -36,7 +36,7 @@ Or with options:
 ✅ Configures workflow permissions  
 ✅ Sets custom domain (optional)  
 ✅ Verifies setup completion  
-✅ Checks workflow status  
+✅ Checks workflow status
 
 ## Prerequisites
 
@@ -59,6 +59,7 @@ gh auth login
 **File**: `scripts/setup-github-pages.js`
 
 **Advantages**:
+
 - Cross-platform (Windows, macOS, Linux)
 - Integrated with npm
 - Better error handling
@@ -85,6 +86,7 @@ node scripts/setup-github-pages.js --help
 **File**: `scripts/setup-github-pages.sh`
 
 **Advantages**:
+
 - Lightweight
 - No Node.js required
 - Traditional shell script
@@ -126,6 +128,7 @@ npm run setup:github-pages -- --custom-domain mcphub.io
 ```
 
 The script will:
+
 1. Configure the domain in GitHub Pages
 2. Display DNS configuration instructions
 3. Explain how to update your domain's DNS records
@@ -246,6 +249,7 @@ https://<username>.github.io/mcp-hub/
 ```
 
 For example:
+
 - Landing page: `https://cassandra.github.io/mcp-hub/`
 - Workflow builder demo: `https://cassandra.github.io/mcp-hub/demo-workflow-builder.html`
 - Execution simulator: `https://cassandra.github.io/mcp-hub/demo-execution-simulator.html`
@@ -266,6 +270,7 @@ npm run setup:github-pages -- --custom-domain mcphub.io
 The script will display your DNS configuration instructions. Typically:
 
 **A Records** (point to GitHub's servers):
+
 ```
 185.199.108.153
 185.199.109.153
@@ -274,6 +279,7 @@ The script will display your DNS configuration instructions. Typically:
 ```
 
 **CNAME Record** (alternative):
+
 ```
 <username>.github.io
 ```
@@ -289,6 +295,7 @@ DNS changes can take 5-10 minutes to propagate. GitHub will automatically provis
 3. View deployment history and logs
 
 Each deployment shows:
+
 - Commit hash and message
 - Deployment status (success/failure)
 - Deployment URL

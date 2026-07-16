@@ -309,7 +309,10 @@ export class MacroVersionEngine {
       if (typeof source === 'object' && source !== null) {
         for (const key in source) {
           if (typeof source[key] === 'object' && source[key] !== null) {
-            target[key] = applyChanges((target[key] as Record<string, unknown>) || {}, source[key] as Record<string, unknown>);
+            target[key] = applyChanges(
+              (target[key] as Record<string, unknown>) || {},
+              source[key] as Record<string, unknown>,
+            );
           } else {
             target[key] = source[key];
           }

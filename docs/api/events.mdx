@@ -1,7 +1,7 @@
 ---
-title: "Stream and Query MCP Connection Events — MCP Hub"
-sidebarTitle: "Events"
-description: "Query historical MCP connection events by type and time range, or subscribe to a live event stream via Server-Sent Events for real-time monitoring."
+title: 'Stream and Query MCP Connection Events — MCP Hub'
+sidebarTitle: 'Events'
+description: 'Query historical MCP connection events by type and time range, or subscribe to a live event stream via Server-Sent Events for real-time monitoring.'
 ---
 
 MCP Hub records all events — tool calls, connection state changes, errors, and notifications — for each connection. You can query historical events by time range and type, or subscribe to a real-time event stream using Server-Sent Events (SSE) for live monitoring and automation.
@@ -15,19 +15,23 @@ Retrieve a paginated list of past events for a specific connection. Use the quer
 ### Query parameters
 
 <ParamField query="eventType" type="string">
-  Filter events by type. Common values include `tool_call`, `connection_state_change`, and `error`. Omit to return all event types.
+  Filter events by type. Common values include `tool_call`, `connection_state_change`, and `error`.
+  Omit to return all event types.
 </ParamField>
 
 <ParamField query="since" type="string">
-  Return only events that occurred after this timestamp. Must be a valid ISO 8601 datetime string, e.g. `2025-01-15T10:00:00Z`.
+  Return only events that occurred after this timestamp. Must be a valid ISO 8601 datetime string,
+  e.g. `2025-01-15T10:00:00Z`.
 </ParamField>
 
 <ParamField query="until" type="string">
-  Return only events that occurred before this timestamp. Must be a valid ISO 8601 datetime string, e.g. `2025-01-15T11:00:00Z`.
+  Return only events that occurred before this timestamp. Must be a valid ISO 8601 datetime string,
+  e.g. `2025-01-15T11:00:00Z`.
 </ParamField>
 
 <ParamField query="limit" type="integer" default="50">
-  Maximum number of events to return in a single response. Reduce this value when querying high-frequency connections.
+  Maximum number of events to return in a single response. Reduce this value when querying
+  high-frequency connections.
 </ParamField>
 
 ### Response example
@@ -60,10 +64,9 @@ Use this endpoint to build live dashboards, trigger client-side automation, or m
 ### Browser / JavaScript example
 
 ```javascript
-const eventSource = new EventSource(
-  '/api/connections/conn_01h.../stream',
-  { withCredentials: true }
-);
+const eventSource = new EventSource('/api/connections/conn_01h.../stream', {
+  withCredentials: true,
+});
 
 eventSource.onmessage = (event) => {
   const data = JSON.parse(event.data);
@@ -78,5 +81,7 @@ eventSource.onerror = () => {
 Each message dispatched by the server is a JSON-encoded `EventRecord` with the fields `id`, `eventType`, `eventPayload`, and `timestamp`.
 
 <Note>
-  SSE connections automatically reconnect if the connection drops. Pass the `Last-Event-ID` request header when reconnecting to resume the stream from a specific event and avoid missing messages during the gap.
+  SSE connections automatically reconnect if the connection drops. Pass the `Last-Event-ID` request
+  header when reconnecting to resume the stream from a specific event and avoid missing messages
+  during the gap.
 </Note>

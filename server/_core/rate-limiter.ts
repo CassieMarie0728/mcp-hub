@@ -1,5 +1,5 @@
-import rateLimit from "express-rate-limit";
-import type { Request, Response } from "express";
+import rateLimit from 'express-rate-limit';
+import type { Request, Response } from 'express';
 
 /**
  * Rate Limiting Configuration
@@ -10,12 +10,12 @@ import type { Request, Response } from "express";
 export const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 1000, // Limit each IP to 1000 requests per windowMs
-  message: "Too many requests from this IP, please try again later.",
+  message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
   skip: (req: Request) => {
     // Skip rate limiting for health checks
-    return req.path === "/api/health";
+    return req.path === '/api/health';
   },
 });
 
@@ -23,7 +23,7 @@ export const globalLimiter = rateLimit({
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 requests per windowMs
-  message: "Too many authentication attempts, please try again later.",
+  message: 'Too many authentication attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true, // Don't count successful requests
@@ -33,7 +33,7 @@ export const authLimiter = rateLimit({
 export const apiLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 100, // Limit each IP to 100 requests per windowMs
-  message: "Too many API requests, please try again later.",
+  message: 'Too many API requests, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -42,7 +42,7 @@ export const apiLimiter = rateLimit({
 export const workflowLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 20, // Limit each IP to 20 workflow executions per minute
-  message: "Too many workflow executions, please try again later.",
+  message: 'Too many workflow executions, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -51,7 +51,7 @@ export const workflowLimiter = rateLimit({
 export const uploadLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 10, // Limit each IP to 10 uploads per minute
-  message: "Too many file uploads, please try again later.",
+  message: 'Too many file uploads, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -62,11 +62,7 @@ export const uploadLimiter = rateLimit({
  * @param max - Maximum requests per window
  * @param message - Error message
  */
-export function createCustomLimiter(
-  windowMs: number,
-  max: number,
-  message: string
-) {
+export function createCustomLimiter(windowMs: number, max: number, message: string) {
   return rateLimit({
     windowMs,
     max,
@@ -80,17 +76,13 @@ export function createCustomLimiter(
  * Rate limiter handler that returns JSON response
  * Useful for API endpoints that expect JSON responses
  */
-export const jsonErrorHandler = (
-  req: Request,
-  res: Response,
-  next: Function
-) => {
+export const jsonErrorHandler = (req: Request, res: Response, next: Function) => {
   // Check if rate limit was exceeded
   if (res.statusCode === 429) {
     return res.status(429).json({
-      error: "Too many requests",
-      message: "Rate limit exceeded. Please try again later.",
-      retryAfter: res.getHeader("Retry-After"),
+      error: 'Too many requests',
+      message: 'Rate limit exceeded. Please try again later.',
+      retryAfter: res.getHeader('Retry-After'),
     });
   }
   next();
