@@ -712,8 +712,8 @@ _server/mcp/mcp-router.ts_
     "rawBody": "",
     "responses": {
         "200": {
-            "description": "Registered servers",
-            "body": "[\n    {\n        \"id\": \"github-prod\",\n        \"name\": \"GitHub Production\",\n        \"url\": \"https://api.github.com/mcp\",\n        \"type\": \"http\",\n        \"headers\": {\n            \"Content-Type\": \"application/json\"\n        },\n        \"auth\": {\n            \"type\": \"bearer\",\n            \"token\": \"ghp_example_token\"\n        },\n        \"timeout\": 30000,\n        \"retryAttempts\": 3\n    }\n]"
+            "description": "Registered servers (sensitive fields redacted)",
+            "body": "[\n    {\n        \"id\": \"github-prod\",\n        \"name\": \"GitHub Production\",\n        \"url\": \"https://api.github.com/mcp\",\n        \"type\": \"http\",\n        \"headers\": {\n            \"Content-Type\": \"application/json\"\n        },\n        \"auth\": {\n            \"type\": \"bearer\"\n        },\n        \"timeout\": 30000,\n        \"retryAttempts\": 3\n    }\n]"
         }
     }
 }
@@ -750,8 +750,8 @@ _server/mcp/mcp-router.ts_
     "rawBody": "",
     "responses": {
         "200": {
-            "description": "Server configuration",
-            "body": "{\n    \"id\": \"github-prod\",\n    \"name\": \"GitHub Production\",\n    \"url\": \"https://api.github.com/mcp\",\n    \"type\": \"http\",\n    \"headers\": {\n        \"Content-Type\": \"application/json\"\n    },\n    \"auth\": {\n        \"type\": \"bearer\",\n        \"token\": \"ghp_example_token\"\n    },\n    \"timeout\": 30000,\n    \"retryAttempts\": 3\n}"
+            "description": "Server configuration (sensitive fields redacted)",
+            "body": "{\n    \"id\": \"github-prod\",\n    \"name\": \"GitHub Production\",\n    \"url\": \"https://api.github.com/mcp\",\n    \"type\": \"http\",\n    \"headers\": {\n        \"Content-Type\": \"application/json\"\n    },\n    \"auth\": {\n        \"type\": \"bearer\"\n    },\n    \"timeout\": 30000,\n    \"retryAttempts\": 3\n}"
         }
     }
 }

@@ -373,8 +373,8 @@ Each tRPC procedure is exposed via `POST` to `/api/trpc/{router}.{procedure}`. A
   "bodyType": "none",
   "responses": {
     "200": {
-      "description": "Registered server configurations",
-      "body": "[\n  {\n    \"id\": \"server1\",\n    \"name\": \"My Server\",\n    \"url\": \"https://example.com\",\n    \"type\": \"http\",\n    \"headers\": {\"X-Custom\": \"value\"},\n    \"auth\": {\"type\": \"bearer\", \"token\": \"abc123\"},\n    \"timeout\": 30000,\n    \"retryAttempts\": 3\n  }\n]"
+      "description": "Registered server configurations (sensitive fields redacted)",
+      "body": "[\n  {\n    \"id\": \"server1\",\n    \"name\": \"My Server\",\n    \"url\": \"https://example.com\",\n    \"type\": \"http\",\n    \"headers\": {\"X-Custom\": \"value\"},\n    \"auth\": {\"type\": \"bearer\"},\n    \"timeout\": 30000,\n    \"retryAttempts\": 3\n  }\n]"
     }
   }
 }
@@ -385,7 +385,7 @@ Each tRPC procedure is exposed via `POST` to `/api/trpc/{router}.{procedure}`. A
 ```api
 {
   "title": "Get Server",
-  "description": "Retrieve configuration for a specific MCP server",
+  "description": "Retrieve configuration for a specific MCP server (sensitive fields redacted)",
   "method": "POST",
   "baseUrl": "http://localhost:3000",
   "endpoint": "/api/trpc/mcp.getServer",
@@ -400,7 +400,7 @@ Each tRPC procedure is exposed via `POST` to `/api/trpc/{router}.{procedure}`. A
   "responses": {
     "200": {
       "description": "Server configuration retrieved",
-      "body": "{\n  \"id\": \"server1\",\n  \"name\": \"My Server\",\n  \"url\": \"https://example.com\",\n  \"type\": \"http\",\n  \"headers\": {\"X-Custom\": \"value\"},\n  \"auth\": {\"type\": \"bearer\", \"token\": \"abc123\"},\n  \"timeout\": 30000,\n  \"retryAttempts\": 3\n}"
+      "body": "{\n  \"id\": \"server1\",\n  \"name\": \"My Server\",\n  \"url\": \"https://example.com\",\n  \"type\": \"http\",\n  \"headers\": {\"X-Custom\": \"value\"},\n  \"auth\": {\"type\": \"bearer\"},\n  \"timeout\": 30000,\n  \"retryAttempts\": 3\n}"
     }
   }
 }
