@@ -95,8 +95,8 @@ _server/mcp/mcp-router.ts_
 | `clearToolCache`       | Clears the cached tool list for a server                                   |
 | `clearAllCaches`       | Clears all cached tool lists                                               |
 | `removeServer`         | Removes a server and all of its manager state                              |
-| `getAllServers`        | Returns all registered server configurations                               |
-| `getServer`            | Returns a single registered server configuration                           |
+| `getAllServers`        | Returns all registered server configurations (sensitive fields redacted)  |
+| `getServer`            | Returns a single registered server configuration (sensitive fields redacted)|
 
 ####
 

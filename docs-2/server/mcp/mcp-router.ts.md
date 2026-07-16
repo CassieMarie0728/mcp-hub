@@ -51,9 +51,9 @@ flowchart TB
 | testConnection       | Mutation | `{ serverId: string }`                                           | Test connection to a server       | `{ success:boolean; connected:boolean; error?:string }`            |
 | clearToolCache       | Mutation | `{ serverId: string }`                                           | Clear cached tools for one server | `{ success:boolean }`                                              |
 | clearAllCaches       | Mutation | _none_                                                           | Clear all tool caches             | `{ success:boolean }`                                              |
-| removeServer         | Mutation | `{ serverId: string }`                                           | Unregister a server               | `{ success:boolean }`                                              |
-| getAllServers        | Query    | _none_                                                           | List all registered servers       | `MCPServerConfig[]`                                                |
-| getServer            | Query    | `{ serverId: string }`                                           | Get config of a specific server   | `MCPServerConfig \| { error:string }`                              |
+| removeServer         | Mutation | `{ serverId: string }`                                           | Unregister a server                               | `{ success:boolean }`                                              |
+| getAllServers        | Query    | _none_                                                           | List all registered servers (redacted)            | `MCPServerConfig[]`                                                |
+| getServer            | Query    | `{ serverId: string }`                                           | Get config of a specific server (redacted)        | `MCPServerConfig \| { error:string }`                              |
 
 ### 2. Business Layer
 
