@@ -400,7 +400,7 @@ Each tRPC procedure is exposed via `POST` to `/api/trpc/{router}.{procedure}`. A
   "requestBody": "{\n  \"input\": { \"serverId\": \"server1\" }\n}",
   "responses": {
     "200": {
-      "description": "Server configuration retrieved",
+      "description": "Server configuration retrieved (sensitive fields redacted)",
       "body": "{\n  \"id\": \"server1\",\n  \"name\": \"My Server\",\n  \"url\": \"https://example.com\",\n  \"type\": \"http\",\n  \"headers\": {\"X-Custom\": \"value\"},\n  \"auth\": {\"type\": \"bearer\"},\n  \"timeout\": 30000,\n  \"retryAttempts\": 3\n}"
     }
   }
