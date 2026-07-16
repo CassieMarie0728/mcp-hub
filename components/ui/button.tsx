@@ -90,7 +90,7 @@ export function Button({
         sizeStyles[size],
         variantStyles[variant],
         (disabled || loading) && 'opacity-50',
-        className
+        className,
       )}
       style={({ pressed }) => [
         {

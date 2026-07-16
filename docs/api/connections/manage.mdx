@@ -1,7 +1,7 @@
 ---
-title: "Manage MCP Connection Lifecycle — Connect to Disconnect"
-sidebarTitle: "Manage Connections"
-description: "Open, initialize, ping, and disconnect MCP server connections. Covers status, capabilities, server info, and DELETE endpoints for full lifecycle control."
+title: 'Manage MCP Connection Lifecycle — Connect to Disconnect'
+sidebarTitle: 'Manage Connections'
+description: 'Open, initialize, ping, and disconnect MCP server connections. Covers status, capabilities, server info, and DELETE endpoints for full lifecycle control.'
 ---
 
 After creating a connection, use these endpoints to control its lifecycle: open the transport, run the MCP initialization handshake, check status, ping, and disconnect. Always follow the sequence — connect, then initialize — before calling tools or reading resources on that connection.
@@ -29,7 +29,8 @@ A successful response returns `200 OK` with a `ConnectionStatus` object:
 ```
 
 <Warning>
-  You must call `/connect` before `/initialize`. Calling `/initialize` on a connection whose transport is not yet open returns `400 Bad Request`.
+  You must call `/connect` before `/initialize`. Calling `/initialize` on a connection whose
+  transport is not yet open returns `400 Bad Request`.
 </Warning>
 
 ---
@@ -73,7 +74,8 @@ Returns an `InitializationResult`:
 </ResponseField>
 
 <ResponseField name="serverCapabilities" type="object">
-  The capabilities the server advertised during the handshake (e.g. `tools`, `resources`, `prompts`).
+  The capabilities the server advertised during the handshake (e.g. `tools`, `resources`,
+  `prompts`).
 </ResponseField>
 
 <ResponseField name="clientCapabilities" type="object">
@@ -143,13 +145,13 @@ Returns the full status of the connection across all state dimensions: transport
 }
 ```
 
-| Field | Description |
-|---|---|
-| `transportState` | Low-level transport state: `disconnected`, `connecting`, `connected`, `error` |
-| `lifecycleState` | MCP lifecycle state: `created`, `connected`, `initialized`, `disconnected` |
-| `authState` | Authentication state: `unauthenticated`, `authenticating`, `authenticated`, `failed` |
-| `protocolVersion` | The negotiated MCP protocol version, set after initialization; `null` before |
-| `lastError` | An object with `code` and `message` fields describing the most recent error, or `null` if none |
+| Field             | Description                                                                                    |
+| ----------------- | ---------------------------------------------------------------------------------------------- |
+| `transportState`  | Low-level transport state: `disconnected`, `connecting`, `connected`, `error`                  |
+| `lifecycleState`  | MCP lifecycle state: `created`, `connected`, `initialized`, `disconnected`                     |
+| `authState`       | Authentication state: `unauthenticated`, `authenticating`, `authenticated`, `failed`           |
+| `protocolVersion` | The negotiated MCP protocol version, set after initialization; `null` before                   |
+| `lastError`       | An object with `code` and `message` fields describing the most recent error, or `null` if none |
 
 ---
 
@@ -181,7 +183,8 @@ Returns the negotiated protocol version and capabilities object agreed upon duri
 </ResponseField>
 
 <Note>
-  Capabilities are only populated after you have successfully called `/initialize`. Before that, this endpoint returns an empty object.
+  Capabilities are only populated after you have successfully called `/initialize`. Before that,
+  this endpoint returns an empty object.
 </Note>
 
 ---
@@ -216,5 +219,6 @@ Deletes the connection record from MCP Hub. If the connection is currently open,
 Returns `204 No Content` on success.
 
 <Warning>
-  Deleting a connection removes all stored configuration, auth tokens, and secrets associated with it. You will need to recreate and re-authenticate the connection from scratch.
+  Deleting a connection removes all stored configuration, auth tokens, and secrets associated with
+  it. You will need to recreate and re-authenticate the connection from scratch.
 </Warning>

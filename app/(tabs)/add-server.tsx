@@ -1,10 +1,4 @@
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { ScrollView, Text, View, TouchableOpacity, Alert } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useRouter } from 'expo-router';
@@ -70,14 +64,14 @@ export default function AddServerScreen() {
 
   const handleImportJSON = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
+      const result = (await DocumentPicker.getDocumentAsync({
         type: 'application/json',
         copyToCacheDirectory: true,
-      }) as any;
+      })) as any;
 
       if (result.type === 'success') {
         const fileUri = result.uri;
-        const fileContent = await fetch(fileUri).then(r => r.text());
+        const fileContent = await fetch(fileUri).then((r) => r.text());
         const config = JSON.parse(fileContent);
 
         if (!config.name || !config.connectionType) {
@@ -159,7 +153,7 @@ export default function AddServerScreen() {
               text: 'OK',
               onPress: () => router.push('/(tabs)/servers' as any),
             },
-          ]
+          ],
         );
       }
     } catch (error) {
@@ -176,7 +170,9 @@ export default function AddServerScreen() {
       <View className="bg-gradient-to-b from-primary to-primary/80 px-6 pt-6 pb-8 flex-row items-center justify-between">
         <View className="flex-1">
           <Text className="text-4xl font-bold text-background">Add Server</Text>
-          <Text className="text-sm text-background/80 mt-2">Configure a new MCP server connection</Text>
+          <Text className="text-sm text-background/80 mt-2">
+            Configure a new MCP server connection
+          </Text>
         </View>
         <TouchableOpacity onPress={() => router.back()} className="p-2">
           <Ionicons name="close" size={28} color={colors.background} />
@@ -236,9 +232,7 @@ export default function AddServerScreen() {
               >
                 <View
                   className={`w-6 h-6 rounded-full border-2 items-center justify-center ${
-                    connectionType === type
-                      ? 'bg-primary border-primary'
-                      : 'border-border'
+                    connectionType === type ? 'bg-primary border-primary' : 'border-border'
                   }`}
                 >
                   {connectionType === type && (
@@ -264,7 +258,11 @@ export default function AddServerScreen() {
         <Card variant="elevated" className="mb-6">
           <CardHeader
             title={connectionType === 'stdio' ? 'Command' : 'Server URL'}
-            subtitle={connectionType === 'stdio' ? 'The command to start your server' : 'The URL of your remote server'}
+            subtitle={
+              connectionType === 'stdio'
+                ? 'The command to start your server'
+                : 'The URL of your remote server'
+            }
           />
           <CardContent>
             {connectionType === 'stdio' ? (

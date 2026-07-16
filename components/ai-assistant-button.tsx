@@ -1,19 +1,19 @@
-import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
-import { useColors } from "@/hooks/use-colors";
-import { useAIAssistant } from "@/hooks/use-ai-assistant";
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { TouchableOpacity, Text, View } from 'react-native';
+import { useColors } from '@/hooks/use-colors';
+import { useAIAssistant } from '@/hooks/use-ai-assistant';
+import { cn } from '@/lib/utils';
 
 interface AIAssistantButtonProps {
-  variant?: "floating" | "header" | "inline";
+  variant?: 'floating' | 'header' | 'inline';
   className?: string;
 }
 
-export function AIAssistantButton({ variant = "header", className }: AIAssistantButtonProps) {
+export function AIAssistantButton({ variant = 'header', className }: AIAssistantButtonProps) {
   const colors = useColors();
   const { openAssistant } = useAIAssistant();
 
-  if (variant === "floating") {
+  if (variant === 'floating') {
     return (
       <TouchableOpacity
         onPress={openAssistant}
@@ -25,14 +25,11 @@ export function AIAssistantButton({ variant = "header", className }: AIAssistant
     );
   }
 
-  if (variant === "header") {
+  if (variant === 'header') {
     return (
       <TouchableOpacity
         onPress={openAssistant}
-        className={cn(
-          "px-3 py-2 rounded-lg items-center justify-center",
-          className
-        )}
+        className={cn('px-3 py-2 rounded-lg items-center justify-center', className)}
         style={{ backgroundColor: colors.surface }}
       >
         <Text className="text-lg">✨</Text>
@@ -43,10 +40,7 @@ export function AIAssistantButton({ variant = "header", className }: AIAssistant
   return (
     <TouchableOpacity
       onPress={openAssistant}
-      className={cn(
-        "flex-row items-center gap-2 px-3 py-2 rounded-lg",
-        className
-      )}
+      className={cn('flex-row items-center gap-2 px-3 py-2 rounded-lg', className)}
       style={{ backgroundColor: colors.primary }}
     >
       <Text className="text-lg">✨</Text>

@@ -370,7 +370,7 @@ class WorkflowTemplateManager {
             }
             return acc;
           },
-          {} as Record<string, unknown>
+          {} as Record<string, unknown>,
         ),
       }));
     }

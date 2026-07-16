@@ -1,7 +1,7 @@
 ---
-title: "Configure Incoming Webhooks to Trigger MCP Workflows"
-sidebarTitle: "Webhooks"
-description: "Set up incoming webhooks in MCP Hub to trigger automation workflows from external events. Configure webhook endpoints and map payloads to workflow inputs."
+title: 'Configure Incoming Webhooks to Trigger MCP Workflows'
+sidebarTitle: 'Webhooks'
+description: 'Set up incoming webhooks in MCP Hub to trigger automation workflows from external events. Configure webhook endpoints and map payloads to workflow inputs.'
 ---
 
 MCP Hub supports incoming webhooks, allowing external systems (GitHub, Slack, CI/CD pipelines, etc.) to trigger your automation workflows. When a webhook event arrives, MCP Hub executes the linked workflow with the event payload.
@@ -14,17 +14,17 @@ Set up a webhook endpoint in a few steps and hand the URL to whichever external 
   <Step title="Open the Webhooks screen">
     Navigate to **Settings → Webhooks** to see all your existing webhook endpoints.
   </Step>
-  <Step title="Add a new webhook">
-    Tap **Add Webhook** to open the webhook configuration form.
-  </Step>
+  <Step title="Add a new webhook">Tap **Add Webhook** to open the webhook configuration form.</Step>
   <Step title="Name it and select a workflow">
     Give the webhook a descriptive name and choose the workflow it should trigger from the dropdown.
   </Step>
   <Step title="Copy the generated URL">
-    MCP Hub generates a unique endpoint URL for this webhook. Copy it — you'll paste it into your external service.
+    MCP Hub generates a unique endpoint URL for this webhook. Copy it — you'll paste it into your
+    external service.
   </Step>
   <Step title="Set a secret (recommended)">
-    Optionally enter a secret string. MCP Hub uses it to verify that incoming requests are genuinely from your external service.
+    Optionally enter a secret string. MCP Hub uses it to verify that incoming requests are genuinely
+    from your external service.
   </Step>
   <Step title="Save the webhook">
     Tap **Save**. Your webhook is now live and ready to receive events.
@@ -47,11 +47,11 @@ Configure how fields from the incoming webhook payload map to your workflow's in
 
 For example, if a GitHub webhook sends a `push` event, you might map:
 
-| Payload field | Workflow input parameter |
-|---|---|
-| `payload.repository.full_name` | `repo` |
-| `payload.ref` | `branch` |
-| `payload.head_commit.id` | `commit_sha` |
+| Payload field                  | Workflow input parameter |
+| ------------------------------ | ------------------------ |
+| `payload.repository.full_name` | `repo`                   |
+| `payload.ref`                  | `branch`                 |
+| `payload.head_commit.id`       | `commit_sha`             |
 
 Mapped values are injected into the first stage of the workflow at execution time. Any unmapped payload fields are still accessible within workflow stages using the `webhook.payload` variable.
 
@@ -89,5 +89,7 @@ Webhooks unlock a wide range of event-driven automations:
 - Auto-reply via a Slack bot when a message matches a pattern
 
 <Warning>
-  Always use a webhook secret in production to prevent unauthorized workflow triggers from malicious requests. Without signature verification, anyone who discovers your webhook URL can trigger your workflows.
+  Always use a webhook secret in production to prevent unauthorized workflow triggers from malicious
+  requests. Without signature verification, anyone who discovers your webhook URL can trigger your
+  workflows.
 </Warning>

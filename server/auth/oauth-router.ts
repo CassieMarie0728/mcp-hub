@@ -18,13 +18,13 @@ export const oauthRouter = router({
       z.object({
         serverType: ServerTypeEnum,
         serverId: z.string(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       try {
         const { url, state } = OAuthManager.generateAuthorizationUrl(
           input.serverType,
-          input.serverId
+          input.serverId,
         );
 
         return {
@@ -46,7 +46,7 @@ export const oauthRouter = router({
         serverType: ServerTypeEnum,
         code: z.string(),
         state: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       try {
@@ -57,10 +57,7 @@ export const oauthRouter = router({
         }
 
         // Exchange code for token
-        const token = await OAuthManager.exchangeCodeForToken(
-          input.serverType,
-          input.code
-        );
+        const token = await OAuthManager.exchangeCodeForToken(input.serverType, input.code);
 
         return {
           success: true,
@@ -84,14 +81,11 @@ export const oauthRouter = router({
       z.object({
         serverType: ServerTypeEnum,
         refreshToken: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       try {
-        const token = await OAuthManager.refreshAccessToken(
-          input.serverType,
-          input.refreshToken
-        );
+        const token = await OAuthManager.refreshAccessToken(input.serverType, input.refreshToken);
 
         return {
           success: true,
@@ -114,14 +108,11 @@ export const oauthRouter = router({
       z.object({
         serverType: ServerTypeEnum,
         token: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       try {
-        const success = await OAuthManager.revokeToken(
-          input.serverType,
-          input.token
-        );
+        const success = await OAuthManager.revokeToken(input.serverType, input.token);
 
         return { success };
       } catch (error: any) {
@@ -136,7 +127,7 @@ export const oauthRouter = router({
     .input(
       z.object({
         expiresAt: z.date().optional(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       if (!input.expiresAt) {

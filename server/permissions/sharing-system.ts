@@ -28,7 +28,7 @@ export class MacroSharingSystem {
     invitedBy: string,
     invitedEmail: string,
     permissionLevel: string,
-    options: InvitationOptions = {}
+    options: InvitationOptions = {},
   ): MacroInvitation {
     const invitation: MacroInvitation = {
       id: `inv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -100,7 +100,7 @@ export class MacroSharingSystem {
     macroId: string,
     createdBy: string,
     permissionLevel: string,
-    options: ShareLinkOptions = {}
+    options: ShareLinkOptions = {},
   ): ShareLinkData {
     const link: ShareLinkData = {
       id: `link_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,

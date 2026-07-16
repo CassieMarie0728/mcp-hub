@@ -36,9 +36,9 @@ Because nobody likes scrolling aimlessly. (Except maybe for those endless social
 2.  [Why Would I Even Care? (Features)](#why-would-i-even-care-features)
 3.  [The Guts of the Machine (Technology Stack)](#the-guts-of-the-machine-technology-stack)
 4.  [Getting Started (Because You're Impatient)](#getting-started-because-youre-impatient)
-    *   [Prerequisites (The Stuff You Need)](#prerequisites-the-stuff-you-need)
-    *   [Installation (The Actual "Getting Started" Part)](#installation-the-actual-getting-started-part)
-    *   [Running the Beast (Development & Production)](#running-the-beast-development--production)
+    - [Prerequisites (The Stuff You Need)](#prerequisites-the-stuff-you-need)
+    - [Installation (The Actual "Getting Started" Part)](#installation-the-actual-getting-started-part)
+    - [Running the Beast (Development & Production)](#running-the-beast-development--production)
 5.  [Project Structure (Where Everything Lives)](#project-structure-where-everything-lives)
 6.  [Contributing (If You're Feeling Brave)](#contributing-if-youre-feeling-brave)
 7.  [Roadmap (Our Grand Plans, Subject to Change)](#roadmap-our-grand-plans-subject-to-change)
@@ -56,12 +56,12 @@ Welcome to **MCP Hub**, your new best friend in the relentless war against manua
 
 Think of it: a single pane of glass (or, you know, a phone screen) where you can:
 
-*   **Connect to servers:** Because SSHing from your phone is cool, but a proper UI is cooler.
-*   **Discover tools:** Find and integrate all those scattered utilities you use.
-*   **Execute commands:** Run scripts, deploy code, or just `rm -rf /` (please don't, but you *could*).
-*   **Track history:** Ever wonder what you ran last Tuesday? Now you'll know.
-*   **Create macros:** Automate those soul-crushing, multi-step tasks with a tap.
-*   **Build automation workflows:** Chain things together like a mad scientist, but for productivity.
+- **Connect to servers:** Because SSHing from your phone is cool, but a proper UI is cooler.
+- **Discover tools:** Find and integrate all those scattered utilities you use.
+- **Execute commands:** Run scripts, deploy code, or just `rm -rf /` (please don't, but you _could_).
+- **Track history:** Ever wonder what you ran last Tuesday? Now you'll know.
+- **Create macros:** Automate those soul-crushing, multi-step tasks with a tap.
+- **Build automation workflows:** Chain things together like a mad scientist, but for productivity.
 
 At its core, MCP Hub is built around the **Model-Context Protocol (MCP)**, a fancy way of saying it's standardizing how your tools and data talk to each other. Because frankly, the current state of tool interoperability is a dumpster fire. I'm here to put it out. Or at least give you a nice mobile app to watch it burn from.
 
@@ -71,16 +71,16 @@ At its core, MCP Hub is built around the **Model-Context Protocol (MCP)**, a fan
 
 Because your time is valuable, and repetitive tasks are not. Here's why MCP Hub isn't just another icon on your home screen:
 
-*   **Mobile-First Design:** Crafted with love (and `NativeWind`) for your phone, because who wants to be tethered to a desktop when you're trying to automate the world? (Also works great on tablets, for those of you with giant pockets.)
-*   **Unified Control Center:** Manage all your server connections, APIs, and tools from one place. No more app-switching gymnastics.
-*   **Tool Discovery & Integration:** Easily find, add, and configure your favorite development tools, CI/CD pipelines, or even your smart toaster. (Okay, maybe not the toaster *yet*.)
-*   **Command Execution & Scripting:** Run predefined commands, execute custom scripts, and watch the magic happen. Safely, of course.
-*   **Action History & Auditing:** Keep a meticulous record of every action performed. Great for debugging, even better for proving you actually did something when your boss asks.
-*   **Macro Recording & Playback:** Record a sequence of actions once, then play it back whenever needed. It's like a VCR for your workflow, but less clunky and with fewer tracking issues.
-*   **Advanced Workflow Automation:** Design complex, multi-step workflows with conditional logic and error handling. Because sometimes, things don't go according to plan, and you need a plan for that.
-*   **Cross-Platform Goodness:** Built with Expo, so it runs on iOS, Android, and potentially even web (though I'm focusing on mobile first, because, you know, "mobile-first").
-*   **Developer-Friendly Stack:** TypeScript, React Native, tRPC, Drizzle ORM, and Express. If these words make you tingle, you're in the right place.
-*   **Open Source:** Because sharing is caring, and also, I need your help to make this thing truly world-dominating. (MIT License, so you can pretty much do what you want, just don't blame me if you break something.)
+- **Mobile-First Design:** Crafted with love (and `NativeWind`) for your phone, because who wants to be tethered to a desktop when you're trying to automate the world? (Also works great on tablets, for those of you with giant pockets.)
+- **Unified Control Center:** Manage all your server connections, APIs, and tools from one place. No more app-switching gymnastics.
+- **Tool Discovery & Integration:** Easily find, add, and configure your favorite development tools, CI/CD pipelines, or even your smart toaster. (Okay, maybe not the toaster _yet_.)
+- **Command Execution & Scripting:** Run predefined commands, execute custom scripts, and watch the magic happen. Safely, of course.
+- **Action History & Auditing:** Keep a meticulous record of every action performed. Great for debugging, even better for proving you actually did something when your boss asks.
+- **Macro Recording & Playback:** Record a sequence of actions once, then play it back whenever needed. It's like a VCR for your workflow, but less clunky and with fewer tracking issues.
+- **Advanced Workflow Automation:** Design complex, multi-step workflows with conditional logic and error handling. Because sometimes, things don't go according to plan, and you need a plan for that.
+- **Cross-Platform Goodness:** Built with Expo, so it runs on iOS, Android, and potentially even web (though I'm focusing on mobile first, because, you know, "mobile-first").
+- **Developer-Friendly Stack:** TypeScript, React Native, tRPC, Drizzle ORM, and Express. If these words make you tingle, you're in the right place.
+- **Open Source:** Because sharing is caring, and also, I need your help to make this thing truly world-dominating. (MIT License, so you can pretty much do what you want, just don't blame me if you break something.)
 
 ---
 
@@ -88,27 +88,27 @@ Because your time is valuable, and repetitive tasks are not. Here's why MCP Hub 
 
 For the tech-savvy among you (or those just curious about what arcane incantations I used to summon this beast), here's the rundown:
 
-*   **Frontend (Mobile App):**
-    *   **React Native:** The framework that lets us write once, run (almost) everywhere.
-    *   **Expo:** The magical wrapper for React Native, handling all the build tools, native module headaches, and general deployment woes so I don't have to. (Seriously, Expo makes life so much easier.)
-    *   **Expo Router:** For slick, file-system-based navigation. Because configuring navigators manually is for masochists.
-    *   **TypeScript:** Because I like types, and I like catching errors *before* they hit production. (Most of the time.)
-    *   **NativeWind / Tailwind CSS:** For styling that's both beautiful and maintainable. Utility-first CSS, baby!
-    *   **tRPC Client:** For type-safe API calls from frontend to backend. No more guessing what data shape you're getting.
+- **Frontend (Mobile App):**
+  - **React Native:** The framework that lets us write once, run (almost) everywhere.
+  - **Expo:** The magical wrapper for React Native, handling all the build tools, native module headaches, and general deployment woes so I don't have to. (Seriously, Expo makes life so much easier.)
+  - **Expo Router:** For slick, file-system-based navigation. Because configuring navigators manually is for masochists.
+  - **TypeScript:** Because I like types, and I like catching errors _before_ they hit production. (Most of the time.)
+  - **NativeWind / Tailwind CSS:** For styling that's both beautiful and maintainable. Utility-first CSS, baby!
+  - **tRPC Client:** For type-safe API calls from frontend to backend. No more guessing what data shape you're getting.
 
-*   **Backend (Server):**
-    *   **Node.js / Express:** The trusty runtime and web framework for handling requests, logic, and general server-side shenanigans.
-    *   **TypeScript:** Again, types are good.
-    *   **tRPC Server:** The other half of the type-safe API communication. It's like GraphQL, but without all the boilerplate and "learning a new query language" crap.
-    *   **Drizzle ORM:** A modern, lightweight ORM for interacting with the database. Because raw SQL is fun, but sometimes you just want an object.
-    *   **MySQL:** The relational database of choice. Robust, reliable, and widely understood. (Though Drizzle makes swapping it out for PostgreSQL or SQLite pretty painless, if you're feeling adventurous.)
+- **Backend (Server):**
+  - **Node.js / Express:** The trusty runtime and web framework for handling requests, logic, and general server-side shenanigans.
+  - **TypeScript:** Again, types are good.
+  - **tRPC Server:** The other half of the type-safe API communication. It's like GraphQL, but without all the boilerplate and "learning a new query language" crap.
+  - **Drizzle ORM:** A modern, lightweight ORM for interacting with the database. Because raw SQL is fun, but sometimes you just want an object.
+  - **MySQL:** The relational database of choice. Robust, reliable, and widely understood. (Though Drizzle makes swapping it out for PostgreSQL or SQLite pretty painless, if you're feeling adventurous.)
 
-*   **Database:**
-    *   **MySQL:** (Yes, it gets its own bullet point, it's important!)
+- **Database:**
+  - **MySQL:** (Yes, it gets its own bullet point, it's important!)
 
-*   **Core Concepts:**
-    *   **Model-Context Protocol (MCP):** The underlying standard for how tools, data, and actions interact. This is where the real magic (and future extensibility) happens.
-    *   **Agent Tools:** The modular components that integrate with external services and perform specific actions. Think of them as plugins.
+- **Core Concepts:**
+  - **Model-Context Protocol (MCP):** The underlying standard for how tools, data, and actions interact. This is where the real magic (and future extensibility) happens.
+  - **Agent Tools:** The modular components that integrate with external services and perform specific actions. Think of them as plugins.
 
 ---
 
@@ -120,21 +120,22 @@ Alright, alright, settle down. Here's how to get this glorious piece of software
 
 Before you embark on this grand adventure, make sure you have the following installed:
 
-*   **Node.js:** v18.x or higher (LTS recommended, because who needs bleeding edge instability?)
-    *   Check with: `node -v`
-*   **npm** or **Yarn:** (npm comes with Node.js, Yarn is for the cool kids.)
-    *   Check with: `npm -v` or `yarn -v`
-*   **Git:** For cloning this repository (duh).
-    *   Check with: `git -v`
-*   **Docker** (Optional, but recommended for database setup): Makes running MySQL a breeze.
-    *   Check with: `docker -v`
-*   **Expo Go app:** On your mobile device (iOS or Android) if you want to test on a physical device without building a standalone app.
+- **Node.js:** v18.x or higher (LTS recommended, because who needs bleeding edge instability?)
+  - Check with: `node -v`
+- **npm** or **Yarn:** (npm comes with Node.js, Yarn is for the cool kids.)
+  - Check with: `npm -v` or `yarn -v`
+- **Git:** For cloning this repository (duh).
+  - Check with: `git -v`
+- **Docker** (Optional, but recommended for database setup): Makes running MySQL a breeze.
+  - Check with: `docker -v`
+- **Expo Go app:** On your mobile device (iOS or Android) if you want to test on a physical device without building a standalone app.
 
 ### Installation (The Actual "Getting Started" Part)
 
 Follow these steps, and try not to break anything.
 
 1.  **Clone the repository:**
+
     ```bash
     git clone https://github.com/CassieMarie0728/mcp-hub.git
     cd mcp-hub
@@ -142,17 +143,22 @@ Follow these steps, and try not to break anything.
 
 2.  **Install dependencies:**
     This is a monorepo, so we'll install dependencies for both the app and the server.
+
     ```bash
     yarn install # Or npm install, if you're old-school
     ```
+
     (Yes, I use `yarn` in the internal scripts, so it's generally recommended for consistency, but `npm` should work too. Don't @ me.)
 
 3.  **Set up environment variables:**
     Create a `.env` file in the root of the repository. You'll need to configure your database connection and any other secrets. A sample `.env.example` file should be present to guide you. Copy it:
+
     ```bash
     cp .env.example .env
     ```
+
     Then, open `.env` and fill in the blanks. At a minimum, you'll need:
+
     ```env
     # Database Configuration
     DATABASE_URL="mysql://user:password@localhost:3306/mcp_hub"
@@ -163,18 +169,20 @@ Follow these steps, and try not to break anything.
     # Optional: Expo specific variables
     # EXPO_PUBLIC_API_URL="http://localhost:3000" # Use your local IP for physical devices
     ```
+
     **Seriously, change `[YOUR_SUPER_SECRET_JWT_KEY_HERE]` to something unique and complex.** Don't be that person who leaves "password123" in production.
 
 4.  **Database Setup:**
     I recommend using Docker for a quick and isolated MySQL instance.
+    - **Using Docker (Recommended):**
 
-    *   **Using Docker (Recommended):**
-        ```bash
-        docker run --name mcp-hub-mysql -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=mcp_hub -p 3306:3306 -d mysql:8
-        ```
-        (This creates a MySQL 8 container with `root` user, password `rootpassword`, and a database `mcp_hub`. Adjust `DATABASE_URL` in `.env` accordingly if you change these.)
+      ```bash
+      docker run --name mcp-hub-mysql -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=mcp_hub -p 3306:3306 -d mysql:8
+      ```
 
-    *   **Manual MySQL:** If you prefer to install MySQL directly or use an existing instance, ensure you have a database named `mcp_hub` and the credentials match your `.env` file.
+      (This creates a MySQL 8 container with `root` user, password `rootpassword`, and a database `mcp_hub`. Adjust `DATABASE_URL` in `.env` accordingly if you change these.)
+
+    - **Manual MySQL:** If you prefer to install MySQL directly or use an existing instance, ensure you have a database named `mcp_hub` and the credentials match your `.env` file.
 
 5.  **Run Database Migrations:**
     Once your database is running and configured in `.env`, apply the Drizzle ORM migrations:
@@ -193,38 +201,45 @@ This will start both the backend server and the Expo development server for the 
 
 1.  **Start the backend server:**
     In a new terminal window, navigate to the project root and run:
+
     ```bash
     yarn dev:server # Or npm run dev:server
     ```
+
     This will start the Express server, typically on `http://localhost:3000`.
 
 2.  **Start the Expo development server:**
-    In *another* new terminal window, navigate to the project root and run:
+    In _another_ new terminal window, navigate to the project root and run:
+
     ```bash
     yarn dev:app # Or npm run dev:app
     ```
+
     This will launch the Expo development server. You'll get a QR code in your terminal.
+    - **To run on your phone:** Scan the QR code with the Expo Go app.
+    - **To run in a simulator/emulator:** Press `i` for iOS simulator or `a` for Android emulator in the terminal where `yarn dev:app` is running. (Make sure you have Xcode/Android Studio set up.)
 
-    *   **To run on your phone:** Scan the QR code with the Expo Go app.
-    *   **To run in a simulator/emulator:** Press `i` for iOS simulator or `a` for Android emulator in the terminal where `yarn dev:app` is running. (Make sure you have Xcode/Android Studio set up.)
-
-    **Important Note for Physical Devices:** If you're running on a physical device, ensure your `EXPO_PUBLIC_API_URL` in `.env` points to your machine's *local IP address*, not `localhost`. E.g., `http://192.168.1.100:3000`. Your phone needs to be on the same Wi-Fi network.
+    **Important Note for Physical Devices:** If you're running on a physical device, ensure your `EXPO_PUBLIC_API_URL` in `.env` points to your machine's _local IP address_, not `localhost`. E.g., `http://192.168.1.100:3000`. Your phone needs to be on the same Wi-Fi network.
 
 #### Production Build (For when you're serious)
 
 Deploying a mobile app is a whole can of worms, but here's the gist for building the server and the app.
 
 1.  **Build the backend server:**
+
     ```bash
     yarn build:server # Or npm run build:server
     ```
+
     This compiles the TypeScript server code into JavaScript in the `dist/server` directory. You can then run it with `node dist/server/index.js`.
 
 2.  **Build the mobile app:**
     For production, you'll typically want to build a standalone app.
+
     ```bash
     yarn build:app # Or npm run build:app
     ```
+
     This will trigger the Expo build process. You'll be prompted to sign in to your Expo account and choose your build targets (iOS, Android). This process can take a while, so grab a coffee. Or a nap.
 
     For more details on deploying Expo apps, refer to the [Expo documentation](https://docs.expo.dev/build/introduction/).
@@ -288,7 +303,7 @@ Here's the quick-and-dirty guide:
 6.  **Run tests** to ensure everything still works: `yarn test` (or `npm test`).
 7.  **Commit your changes** with a clear and concise commit message. (e.g., `feat: Add dark mode toggle` or `fix: Resolve login race condition`).
 8.  **Push your branch** to your fork.
-9.  **Open a Pull Request** to the `main` branch of this repository. Describe your changes clearly, explain *why* they're needed, and reference any relevant issues.
+9.  **Open a Pull Request** to the `main` branch of this repository. Describe your changes clearly, explain _why_ they're needed, and reference any relevant issues.
 
 I'll review your PR as quickly as possible. Be prepared for feedback, constructive criticism, and maybe a few out-of-left-field remarks. It's all part of the fun!
 
@@ -298,14 +313,14 @@ I'll review your PR as quickly as possible. Be prepared for feedback, constructi
 
 Because every project needs a vision, even if that vision is just "make it work better." Here's what I'm cooking up for the future (in no particular order, and with no guarantees, because life happens):
 
-*   **Enhanced Agent Tool Ecosystem:** More built-in integrations ALL of the fun things, or, you know, as close to it as we can get this thing, etc.) and a robust plugin architecture for community-contributed tools.
-*   **Visual Workflow Builder:** Drag-and-drop interface for designing complex automation workflows, because coding JSON is only fun for so long.
-*   **Real-time Server Monitoring:** Keep an eye on your connected servers directly from the app. CPU, memory, disk usage – the works.
-*   **Team Collaboration Features:** Share connections, tools, and workflows with your team.
-*   **Offline Mode:** Perform certain actions or view history even without an internet connection.
-*   **Desktop Client:** While mobile-first, a desktop client for power users is definitely on the radar.
-*   **Advanced AI Integration:** Leverage LLMs for intelligent tool discovery, command generation, and workflow optimization. (Because AI is the new black, apparently.)
-*   **More Database Support:** PostgreSQL, SQLite, MongoDB (if I'm feeling particularly masochistic).
+- **Enhanced Agent Tool Ecosystem:** More built-in integrations ALL of the fun things, or, you know, as close to it as we can get this thing, etc.) and a robust plugin architecture for community-contributed tools.
+- **Visual Workflow Builder:** Drag-and-drop interface for designing complex automation workflows, because coding JSON is only fun for so long.
+- **Real-time Server Monitoring:** Keep an eye on your connected servers directly from the app. CPU, memory, disk usage – the works.
+- **Team Collaboration Features:** Share connections, tools, and workflows with your team.
+- **Offline Mode:** Perform certain actions or view history even without an internet connection.
+- **Desktop Client:** While mobile-first, a desktop client for power users is definitely on the radar.
+- **Advanced AI Integration:** Leverage LLMs for intelligent tool discovery, command generation, and workflow optimization. (Because AI is the new black, apparently.)
+- **More Database Support:** PostgreSQL, SQLite, MongoDB (if I'm feeling particularly masochistic).
 
 Got an idea? Open an issue! I'm all ears (and occasionally, all thumbs).
 
@@ -315,32 +330,32 @@ Got an idea? Open an issue! I'm all ears (and occasionally, all thumbs).
 
 If you've made it this far without encountering an error, congratulations, you're either a wizard or you haven't actually tried running the code yet. For the rest of us mere mortals, here are some common issues and their solutions:
 
-*   **`Error: listen EADDRINUSE: address already in use :::3000`**:
-    *   **Meaning:** Something else is already hogging port 3000 (likely another instance of the server).
-    *   **Solution:** Find and kill the rogue process (e.g., `lsof -i :3000` then `kill -9 <PID>`) or change the server port in your `.env` file.
+- **`Error: listen EADDRINUSE: address already in use :::3000`**:
+  - **Meaning:** Something else is already hogging port 3000 (likely another instance of the server).
+  - **Solution:** Find and kill the rogue process (e.g., `lsof -i :3000` then `kill -9 <PID>`) or change the server port in your `.env` file.
 
-*   **`Cannot find module '...'` or similar dependency errors:**
-    *   **Meaning:** Dependencies weren't installed correctly.
-    *   **Solution:** Run `yarn install` (or `npm install`) again from the project root. If that fails, try deleting `node_modules` and `yarn.lock` (or `package-lock.json`) and reinstalling.
+- **`Cannot find module '...'` or similar dependency errors:**
+  - **Meaning:** Dependencies weren't installed correctly.
+  - **Solution:** Run `yarn install` (or `npm install`) again from the project root. If that fails, try deleting `node_modules` and `yarn.lock` (or `package-lock.json`) and reinstalling.
 
-*   **Database connection errors (e.g., `Access denied for user '...'` or `Can't connect to MySQL server on 'localhost' (111)`):**
-    *   **Meaning:** Your database isn't running, or your `DATABASE_URL` in `.env` is incorrect.
-    *   **Solution:**
-        1.  Ensure your MySQL Docker container is running (`docker ps`).
-        2.  Verify the username, password, host, and database name in your `DATABASE_URL` match your MySQL setup.
-        3.  Check if MySQL is accessible on port 3306.
+- **Database connection errors (e.g., `Access denied for user '...'` or `Can't connect to MySQL server on 'localhost' (111)`):**
+  - **Meaning:** Your database isn't running, or your `DATABASE_URL` in `.env` is incorrect.
+  - **Solution:**
+    1.  Ensure your MySQL Docker container is running (`docker ps`).
+    2.  Verify the username, password, host, and database name in your `DATABASE_URL` match your MySQL setup.
+    3.  Check if MySQL is accessible on port 3306.
 
-*   **Expo app shows "Network request failed" or "Could not connect to server":**
-    *   **Meaning:** The mobile app can't reach your backend server.
-    *   **Solution:**
-        1.  Make sure your backend server is running (`yarn dev:server`).
-        2.  If on a physical device, ensure `EXPO_PUBLIC_API_URL` in your `.env` is set to your machine's *local IP address* (e.g., `http://192.168.1.100:3000`), not `localhost`.
-        3.  Ensure your phone and computer are on the same Wi-Fi network.
-        4.  Check for firewall issues blocking port 3000.
+- **Expo app shows "Network request failed" or "Could not connect to server":**
+  - **Meaning:** The mobile app can't reach your backend server.
+  - **Solution:**
+    1.  Make sure your backend server is running (`yarn dev:server`).
+    2.  If on a physical device, ensure `EXPO_PUBLIC_API_URL` in your `.env` is set to your machine's _local IP address_ (e.g., `http://192.168.1.100:3000`), not `localhost`.
+    3.  Ensure your phone and computer are on the same Wi-Fi network.
+    4.  Check for firewall issues blocking port 3000.
 
-*   **TypeScript compilation errors:**
-    *   **Meaning:** You've introduced a type mismatch, or your editor isn't picking up the correct `tsconfig.json`.
-    *   **Solution:** Fix the type errors. Ensure your editor is using the monorepo's TypeScript configuration. Running `yarn build:server` or `yarn build:app` will often give more detailed errors.
+- **TypeScript compilation errors:**
+  - **Meaning:** You've introduced a type mismatch, or your editor isn't picking up the correct `tsconfig.json`.
+  - **Solution:** Fix the type errors. Ensure your editor is using the monorepo's TypeScript configuration. Running `yarn build:server` or `yarn build:app` will often give more detailed errors.
 
 If you're still stuck after trying these, feel free to [open an issue](https://github.com/CassieMarie0728/mcp-hub/issues). Provide as much detail as possible: your OS, Node.js version, exact error messages, and what you've already tried. Screenshots are also helpful (I'm a visual creature).
 
@@ -370,8 +385,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 Got questions, suggestions, or just want to tell me how awesome (or terrible) this project is? Feel free to reach out.
 
-*   **GitHub Issues:** The preferred method for bug reports and feature requests: [https://github.com/CassieMarie0728/mcp-hub/issues](https://github.com/CassieMarie0728/mcp-hub/issues)
-*   **Email:** [Contact Email](cmcrossno@gmail.com) (For more private inquiries, or if you just prefer old-school communication.)
-*   **Company Name:** MCP Hub (Because branding, right?)
+- **GitHub Issues:** The preferred method for bug reports and feature requests: [https://github.com/CassieMarie0728/mcp-hub/issues](https://github.com/CassieMarie0728/mcp-hub/issues)
+- **Email:** [Contact Email](cmcrossno@gmail.com) (For more private inquiries, or if you just prefer old-school communication.)
+- **Company Name:** MCP Hub (Because branding, right?)
 
 Thanks for stopping by. Now go forth and automate something!

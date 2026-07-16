@@ -14,7 +14,7 @@ export default function MacroDebuggerScreen() {
   const colors = useColors();
 
   const [debugTab, setDebugTab] = useState<'execution' | 'variables' | 'breakpoints' | 'watch'>(
-    'execution'
+    'execution',
   );
   const [isPaused, setIsPaused] = useState(true);
   const [currentLine, setCurrentLine] = useState(5);
@@ -53,7 +53,7 @@ export default function MacroDebuggerScreen() {
         'flex-row items-center gap-3 p-3 border-l-4 mb-2',
         item.status === 'current' && 'bg-primary/10 border-l-primary',
         item.status === 'completed' && 'bg-success/10 border-l-success',
-        item.status === 'pending' && 'bg-surface border-l-muted'
+        item.status === 'pending' && 'bg-surface border-l-muted',
       )}
       onPress={() => setCurrentLine(item.line)}
     >
@@ -66,7 +66,7 @@ export default function MacroDebuggerScreen() {
           'w-2 h-2 rounded-full',
           item.status === 'current' && 'bg-primary',
           item.status === 'completed' && 'bg-success',
-          item.status === 'pending' && 'bg-muted'
+          item.status === 'pending' && 'bg-muted',
         )}
       />
 
@@ -79,9 +79,7 @@ export default function MacroDebuggerScreen() {
       </View>
 
       {/* Breakpoint Indicator */}
-      {breakpoints.includes(item.line) && (
-        <View className="bg-error rounded-full w-3 h-3" />
-      )}
+      {breakpoints.includes(item.line) && <View className="bg-error rounded-full w-3 h-3" />}
     </Pressable>
   );
 
@@ -116,13 +114,13 @@ export default function MacroDebuggerScreen() {
               onPress={() => setIsPaused(!isPaused)}
               className={cn(
                 'flex-1 rounded-lg p-3 active:opacity-80',
-                isPaused ? 'bg-primary' : 'bg-surface border border-border'
+                isPaused ? 'bg-primary' : 'bg-surface border border-border',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  isPaused ? 'text-background' : 'text-foreground'
+                  isPaused ? 'text-background' : 'text-foreground',
                 )}
               >
                 {isPaused ? '▶ Continue' : '⏸ Pause'}
@@ -161,13 +159,13 @@ export default function MacroDebuggerScreen() {
                 onPress={() => setDebugTab(tab)}
                 className={cn(
                   'flex-1 rounded-md p-2 active:opacity-80',
-                  debugTab === tab ? 'bg-primary' : 'bg-transparent'
+                  debugTab === tab ? 'bg-primary' : 'bg-transparent',
                 )}
               >
                 <Text
                   className={cn(
                     'text-center font-semibold text-xs',
-                    debugTab === tab ? 'text-background' : 'text-foreground'
+                    debugTab === tab ? 'text-background' : 'text-foreground',
                   )}
                 >
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}

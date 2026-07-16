@@ -16,16 +16,16 @@ MCP Hub has been successfully configured for production deployment with a compre
 
 ### System Components
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **API Server** | Node.js + Express | REST API for workflow management |
-| **Database** | PostgreSQL 14+ | Persistent data storage with ACID compliance |
-| **Cache Layer** | Redis | Session management and rate limiting |
-| **Reverse Proxy** | Nginx | SSL termination and load balancing |
-| **Monitoring** | Prometheus | Metrics collection and time-series storage |
-| **Logging** | Winston + Daily Rotation | Structured application logging |
-| **Alerting** | Custom Rules Engine | Threshold-based alerts with multi-channel delivery |
-| **Admin Dashboard** | React Native | Real-time metrics visualization |
+| Component           | Technology               | Purpose                                            |
+| ------------------- | ------------------------ | -------------------------------------------------- |
+| **API Server**      | Node.js + Express        | REST API for workflow management                   |
+| **Database**        | PostgreSQL 14+           | Persistent data storage with ACID compliance       |
+| **Cache Layer**     | Redis                    | Session management and rate limiting               |
+| **Reverse Proxy**   | Nginx                    | SSL termination and load balancing                 |
+| **Monitoring**      | Prometheus               | Metrics collection and time-series storage         |
+| **Logging**         | Winston + Daily Rotation | Structured application logging                     |
+| **Alerting**        | Custom Rules Engine      | Threshold-based alerts with multi-channel delivery |
+| **Admin Dashboard** | React Native             | Real-time metrics visualization                    |
 
 ### Deployment Architecture
 
@@ -109,24 +109,29 @@ The application is containerized for:
 The production database includes 13 tables organized into logical domains:
 
 #### User & Workspace Management
+
 - **users:** User accounts with OAuth integration
 - **workspaces:** Isolated environments for teams
 - **workspace_members:** Role-based access control (admin/editor/viewer)
 
 #### MCP Server Integration
+
 - **mcp_servers:** Connected service configurations (GitHub, Slack, Notion, etc.)
 - **tokens:** Encrypted API tokens with lifecycle management
 
 #### Workflow Execution
+
 - **workflows:** Workflow definitions with step configurations
 - **workflow_executions:** Execution history with status tracking
 - **workflow_steps:** Individual step execution details and results
 
 #### Webhooks & Events
+
 - **webhooks:** Outbound webhook configurations
 - **webhook_events:** Event delivery tracking with retry logic
 
 #### Observability
+
 - **execution_metrics:** Performance data for each tool execution
 - **error_logs:** Error tracking with context and stack traces
 - **audit_logs:** Complete audit trail of all system actions
@@ -149,22 +154,22 @@ The schema includes:
 
 The system collects 15+ custom metrics:
 
-| Metric | Type | Purpose |
-|--------|------|---------|
-| `workflow_executions_total` | Counter | Total workflow executions by status |
-| `workflow_execution_duration_seconds` | Histogram | Execution time distribution |
-| `tool_executions_total` | Counter | Tool usage by type and server |
-| `tool_execution_duration_seconds` | Histogram | Tool performance metrics |
-| `errors_total` | Counter | Error count by type |
-| `tokens_total` | Gauge | Active token inventory |
-| `tokens_expiring_soon` | Gauge | Tokens expiring within 7 days |
-| `database_connection_pool_size` | Gauge | Connection pool utilization |
-| `database_query_duration_seconds` | Histogram | Query performance |
-| `websocket_connections_active` | Gauge | Real-time connection count |
-| `api_requests_total` | Counter | API request volume by endpoint |
-| `api_request_duration_seconds` | Histogram | API response time |
-| `webhook_events_total` | Counter | Webhook delivery status |
-| `webhook_delivery_duration_seconds` | Histogram | Webhook latency |
+| Metric                                | Type      | Purpose                             |
+| ------------------------------------- | --------- | ----------------------------------- |
+| `workflow_executions_total`           | Counter   | Total workflow executions by status |
+| `workflow_execution_duration_seconds` | Histogram | Execution time distribution         |
+| `tool_executions_total`               | Counter   | Tool usage by type and server       |
+| `tool_execution_duration_seconds`     | Histogram | Tool performance metrics            |
+| `errors_total`                        | Counter   | Error count by type                 |
+| `tokens_total`                        | Gauge     | Active token inventory              |
+| `tokens_expiring_soon`                | Gauge     | Tokens expiring within 7 days       |
+| `database_connection_pool_size`       | Gauge     | Connection pool utilization         |
+| `database_query_duration_seconds`     | Histogram | Query performance                   |
+| `websocket_connections_active`        | Gauge     | Real-time connection count          |
+| `api_requests_total`                  | Counter   | API request volume by endpoint      |
+| `api_request_duration_seconds`        | Histogram | API response time                   |
+| `webhook_events_total`                | Counter   | Webhook delivery status             |
+| `webhook_delivery_duration_seconds`   | Histogram | Webhook latency                     |
 
 ### Logging
 
@@ -201,6 +206,7 @@ The `/health` endpoint provides:
 The admin dashboard provides real-time visibility into system health and performance:
 
 #### Overview Tab
+
 - **System Health Status:** Visual indicator (green/yellow/red)
 - **Workflow Metrics:** Total executions, success rate, average duration
 - **Token Inventory:** Active tokens, expiring tokens by server
@@ -208,12 +214,14 @@ The admin dashboard provides real-time visibility into system health and perform
 - **Workspace Stats:** Total workspaces, active workspaces, workspaces with errors
 
 #### Workflows Tab
+
 - **Execution Statistics:** Detailed breakdown by status
 - **Performance Metrics:** Average duration, executions per minute
 - **Workspace Activity:** Workspace-level metrics and trends
 - **Tool Usage:** Top tools by execution count and success rate
 
 #### Errors Tab
+
 - **Error Metrics:** Total errors, error rate, top error types
 - **Error Trends:** 24-hour error trend visualization
 - **Error Distribution:** Breakdown by error type and severity
@@ -231,18 +239,18 @@ The admin dashboard provides real-time visibility into system health and perform
 
 ### Pre-Configured Alert Rules
 
-| Rule | Condition | Severity | Cooldown |
-|------|-----------|----------|----------|
-| High Error Rate | > 10% failures | Critical | 5 min |
-| Low Success Rate | < 90% success | Warning | 10 min |
-| High Memory Usage | > 80% heap | Warning | 5 min |
-| Database Disconnected | Connection lost | Critical | 1 min |
-| Tokens Expiring | Expires within 7 days | Warning | 24 hours |
-| Slow API Response | > 1000ms latency | Info | 5 min |
-| High Execution Duration | > 5s average | Warning | 10 min |
-| No Active Workflows | 0 executions/hour | Info | 30 min |
-| Workspace Errors | Errors detected | Warning | 10 min |
-| Cache Disconnected | Connection lost | Warning | 5 min |
+| Rule                    | Condition             | Severity | Cooldown |
+| ----------------------- | --------------------- | -------- | -------- |
+| High Error Rate         | > 10% failures        | Critical | 5 min    |
+| Low Success Rate        | < 90% success         | Warning  | 10 min   |
+| High Memory Usage       | > 80% heap            | Warning  | 5 min    |
+| Database Disconnected   | Connection lost       | Critical | 1 min    |
+| Tokens Expiring         | Expires within 7 days | Warning  | 24 hours |
+| Slow API Response       | > 1000ms latency      | Info     | 5 min    |
+| High Execution Duration | > 5s average          | Warning  | 10 min   |
+| No Active Workflows     | 0 executions/hour     | Info     | 30 min   |
+| Workspace Errors        | Errors detected       | Warning  | 10 min   |
+| Cache Disconnected      | Connection lost       | Warning  | 5 min    |
 
 ### Notification Channels
 
@@ -306,14 +314,14 @@ Alerts can be delivered via:
 
 ## Performance Targets
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| API Response Time (p95) | < 500ms | 287ms |
-| Workflow Execution Success Rate | > 95% | 94.96% |
-| Database Query Time (p95) | < 100ms | 87ms |
-| Error Rate | < 5% | 5.04% |
-| Uptime | > 99.9% | 99.95% |
-| Cache Hit Rate | > 80% | 82% |
+| Metric                          | Target  | Actual |
+| ------------------------------- | ------- | ------ |
+| API Response Time (p95)         | < 500ms | 287ms  |
+| Workflow Execution Success Rate | > 95%   | 94.96% |
+| Database Query Time (p95)       | < 100ms | 87ms   |
+| Error Rate                      | < 5%    | 5.04%  |
+| Uptime                          | > 99.9% | 99.95% |
+| Cache Hit Rate                  | > 80%   | 82%    |
 
 ---
 
@@ -362,23 +370,23 @@ Alerts can be delivered via:
 
 ## Support & Escalation
 
-| Issue | Owner | Response Time |
-|-------|-------|----------------|
-| Critical (System Down) | DevOps Lead | 15 minutes |
-| High (Degraded Performance) | Engineering Lead | 1 hour |
-| Medium (Feature Bug) | Product Team | 4 hours |
-| Low (Documentation) | Technical Writer | 24 hours |
+| Issue                       | Owner            | Response Time |
+| --------------------------- | ---------------- | ------------- |
+| Critical (System Down)      | DevOps Lead      | 15 minutes    |
+| High (Degraded Performance) | Engineering Lead | 1 hour        |
+| Medium (Feature Bug)        | Product Team     | 4 hours       |
+| Low (Documentation)         | Technical Writer | 24 hours      |
 
 ---
 
 ## Sign-Off
 
-| Role | Name | Signature | Date |
-|------|------|-----------|------|
-| DevOps Lead | _____________ | _____________ | _______ |
-| Engineering Lead | _____________ | _____________ | _______ |
-| Product Manager | _____________ | _____________ | _______ |
-| Security Officer | _____________ | _____________ | _______ |
+| Role             | Name           | Signature      | Date       |
+| ---------------- | -------------- | -------------- | ---------- |
+| DevOps Lead      | ******\_****** | ******\_****** | **\_\_\_** |
+| Engineering Lead | ******\_****** | ******\_****** | **\_\_\_** |
+| Product Manager  | ******\_****** | ******\_****** | **\_\_\_** |
+| Security Officer | ******\_****** | ******\_****** | **\_\_\_** |
 
 ---
 

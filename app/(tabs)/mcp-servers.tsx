@@ -80,10 +80,13 @@ export default function MCPServersScreen() {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="flex-1 gap-6 p-4">
           <View className="gap-2 bg-primary rounded-2xl p-5">
-            <Text className="text-xs font-bold tracking-widest text-background/70">SERVER RACK</Text>
+            <Text className="text-xs font-bold tracking-widest text-background/70">
+              SERVER RACK
+            </Text>
             <Text className="text-3xl font-bold text-background">Wire in your tools</Text>
             <Text className="text-sm text-background/80 leading-relaxed">
-              Connect MCP servers, check their status, and discover the tools they can bring to the board.
+              Connect MCP servers, check their status, and discover the tools they can bring to the
+              board.
             </Text>
           </View>
 
@@ -92,13 +95,13 @@ export default function MCPServersScreen() {
               onPress={() => setActiveTab('available')}
               className={cn(
                 'flex-1 py-2 px-3 rounded-md items-center justify-center',
-                activeTab === 'available' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'available' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'font-semibold text-sm',
-                  activeTab === 'available' ? 'text-background' : 'text-foreground'
+                  activeTab === 'available' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Available
@@ -108,13 +111,13 @@ export default function MCPServersScreen() {
               onPress={() => setActiveTab('registered')}
               className={cn(
                 'flex-1 py-2 px-3 rounded-md items-center justify-center',
-                activeTab === 'registered' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'registered' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'font-semibold text-sm',
-                  activeTab === 'registered' ? 'text-background' : 'text-foreground'
+                  activeTab === 'registered' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Connected ({registeredServersQuery.data?.length || 0})
@@ -130,16 +133,22 @@ export default function MCPServersScreen() {
                 availableServersQuery.data?.map((server) => (
                   <Pressable
                     key={server.id}
-                    onPress={() => setSelectedServer(selectedServer === server.id ? null : server.id)}
+                    onPress={() =>
+                      setSelectedServer(selectedServer === server.id ? null : server.id)
+                    }
                     className={cn(
                       'bg-surface rounded-lg p-4 border border-border',
-                      selectedServer === server.id && 'border-primary bg-primary/5'
+                      selectedServer === server.id && 'border-primary bg-primary/5',
                     )}
                   >
                     <View className="flex-row items-center justify-between mb-2">
                       <View className="flex-row items-center gap-3 flex-1">
                         <View className="w-10 h-10 bg-primary/20 rounded-lg items-center justify-center">
-                          <MaterialIcons name={server.icon as any} size={24} color={colors.primary} />
+                          <MaterialIcons
+                            name={server.icon as any}
+                            size={24}
+                            color={colors.primary}
+                          />
                         </View>
                         <View className="flex-1">
                           <Text className="font-semibold text-foreground">{server.name}</Text>
@@ -156,19 +165,30 @@ export default function MCPServersScreen() {
                     {selectedServer === server.id && (
                       <View className="gap-3 mt-4 pt-4 border-t border-border">
                         <View>
-                          <Text className="text-xs font-semibold text-muted mb-1">Access credential</Text>
+                          <Text className="text-xs font-semibold text-muted mb-1">
+                            Access credential
+                          </Text>
                           <View className="bg-background rounded-lg px-3 py-2 border border-border">
-                            <Text className="text-xs text-muted">Paste the credential for {server.name}</Text>
-                            <Text className="text-xs text-foreground mt-1 font-mono" numberOfLines={1}>
+                            <Text className="text-xs text-muted">
+                              Paste the credential for {server.name}
+                            </Text>
+                            <Text
+                              className="text-xs text-foreground mt-1 font-mono"
+                              numberOfLines={1}
+                            >
                               {token ? '••••••••' : 'Credential preview'}
                             </Text>
                           </View>
                         </View>
 
                         <View>
-                          <Text className="text-xs font-semibold text-muted mb-1">Connection name</Text>
+                          <Text className="text-xs font-semibold text-muted mb-1">
+                            Connection name
+                          </Text>
                           <View className="bg-background rounded-lg px-3 py-2 border border-border">
-                            <Text className="text-xs text-foreground">{customName || 'My ' + server.name}</Text>
+                            <Text className="text-xs text-foreground">
+                              {customName || 'My ' + server.name}
+                            </Text>
                           </View>
                         </View>
 
@@ -178,7 +198,7 @@ export default function MCPServersScreen() {
                             disabled={!token || isRegistering}
                             className={cn(
                               'flex-1 py-3 px-4 rounded-lg items-center justify-center',
-                              token && !isRegistering ? 'bg-primary' : 'bg-primary/50'
+                              token && !isRegistering ? 'bg-primary' : 'bg-primary/50',
                             )}
                           >
                             {isRegistering ? (
@@ -226,7 +246,7 @@ export default function MCPServersScreen() {
                         <View
                           className={cn(
                             'w-3 h-3 rounded-full',
-                            server.status === 'connected' ? 'bg-success' : 'bg-warning'
+                            server.status === 'connected' ? 'bg-success' : 'bg-warning',
                           )}
                         />
                         <View className="flex-1">
@@ -238,7 +258,10 @@ export default function MCPServersScreen() {
                         <Pressable onPress={() => handleTestConnection(server.id)} className="p-2">
                           <MaterialIcons name="refresh" size={20} color={colors.primary} />
                         </Pressable>
-                        <Pressable onPress={() => handleUnregisterServer(server.id)} className="p-2">
+                        <Pressable
+                          onPress={() => handleUnregisterServer(server.id)}
+                          className="p-2"
+                        >
                           <MaterialIcons name="close" size={20} color={colors.error} />
                         </Pressable>
                       </View>
@@ -247,11 +270,15 @@ export default function MCPServersScreen() {
                     <View className="flex-row gap-4 mb-3">
                       <View className="flex-1 bg-background rounded-lg p-2 border border-border">
                         <Text className="text-xs text-muted">Tools</Text>
-                        <Text className="text-lg font-bold text-foreground">{server.toolCount}</Text>
+                        <Text className="text-lg font-bold text-foreground">
+                          {server.toolCount}
+                        </Text>
                       </View>
                       <View className="flex-1 bg-background rounded-lg p-2 border border-border">
                         <Text className="text-xs text-muted">Status</Text>
-                        <Text className="text-lg font-bold text-foreground capitalize">{server.status}</Text>
+                        <Text className="text-lg font-bold text-foreground capitalize">
+                          {server.status}
+                        </Text>
                       </View>
                     </View>
 

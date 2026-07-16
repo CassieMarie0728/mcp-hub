@@ -72,18 +72,26 @@ export class AdminMetricsManager {
   /**
    * Get comprehensive system metrics
    */
-  async getSystemMetrics(timeRange: 'hour' | 'day' | 'week' | 'month' = 'day'): Promise<SystemMetrics> {
+  async getSystemMetrics(
+    timeRange: 'hour' | 'day' | 'week' | 'month' = 'day',
+  ): Promise<SystemMetrics> {
     const now = new Date();
 
-    const [workflowMetrics, errorMetrics, tokenMetrics, systemHealth, userMetrics, workspaceMetrics] =
-      await Promise.all([
-        this.getWorkflowMetrics(timeRange),
-        this.getErrorMetrics(timeRange),
-        this.getTokenMetrics(),
-        this.getSystemHealth(),
-        this.getUserMetrics(timeRange),
-        this.getWorkspaceMetrics(timeRange),
-      ]);
+    const [
+      workflowMetrics,
+      errorMetrics,
+      tokenMetrics,
+      systemHealth,
+      userMetrics,
+      workspaceMetrics,
+    ] = await Promise.all([
+      this.getWorkflowMetrics(timeRange),
+      this.getErrorMetrics(timeRange),
+      this.getTokenMetrics(),
+      this.getSystemHealth(),
+      this.getUserMetrics(timeRange),
+      this.getWorkspaceMetrics(timeRange),
+    ]);
 
     return {
       timestamp: new Date().toISOString(),
@@ -278,7 +286,10 @@ export class AdminMetricsManager {
   /**
    * Get execution statistics by tool
    */
-  async getExecutionStats(workspaceId?: string, timeRange: 'hour' | 'day' | 'week' | 'month' = 'day'): Promise<ExecutionStats[]> {
+  async getExecutionStats(
+    workspaceId?: string,
+    timeRange: 'hour' | 'day' | 'week' | 'month' = 'day',
+  ): Promise<ExecutionStats[]> {
     try {
       // TODO: Query from database when available
       // For now, return mock data
@@ -343,7 +354,10 @@ export class AdminMetricsManager {
   /**
    * Get error trends
    */
-  async getErrorTrends(workspaceId?: string, timeRange: 'hour' | 'day' | 'week' | 'month' = 'day'): Promise<ErrorTrend[]> {
+  async getErrorTrends(
+    workspaceId?: string,
+    timeRange: 'hour' | 'day' | 'week' | 'month' = 'day',
+  ): Promise<ErrorTrend[]> {
     try {
       // TODO: Query from database when available
       // For now, return mock data

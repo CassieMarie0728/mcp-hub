@@ -41,12 +41,12 @@ If you modify code in `android/app/src/main/java/`:
 
 ## Hot Reload vs. Full Rebuild
 
-| Scenario | Action | Time |
-|----------|--------|------|
-| React/TypeScript code change | Rebuild Metro bundle, then rebuild APK | 30-60s |
-| Native Kotlin/Java code change | Rebuild project in Android Studio | 20-40s |
-| Resource change (strings, colors, layouts) | Rebuild project | 10-20s |
-| Dependency change (package.json or build.gradle) | Clean build | 2-5 min |
+| Scenario                                         | Action                                 | Time    |
+| ------------------------------------------------ | -------------------------------------- | ------- |
+| React/TypeScript code change                     | Rebuild Metro bundle, then rebuild APK | 30-60s  |
+| Native Kotlin/Java code change                   | Rebuild project in Android Studio      | 20-40s  |
+| Resource change (strings, colors, layouts)       | Rebuild project                        | 10-20s  |
+| Dependency change (package.json or build.gradle) | Clean build                            | 2-5 min |
 
 ## Debugging
 
@@ -69,8 +69,9 @@ View app logs in real-time:
 React Native `console.log()` statements appear in Logcat with the tag `ReactNativeJS`.
 
 Example:
+
 ```typescript
-console.log("User clicked button");  // Appears in Logcat
+console.log('User clicked button'); // Appears in Logcat
 ```
 
 ## Profiling and Performance
@@ -112,6 +113,7 @@ class MainActivityTest {
 ```
 
 Run tests:
+
 ```bash
 ./gradlew test
 ```
@@ -141,6 +143,7 @@ class MainActivityInstrumentedTest {
 ```
 
 Run instrumented tests:
+
 ```bash
 ./gradlew connectedAndroidTest
 ```
@@ -149,13 +152,14 @@ Run instrumented tests:
 
 The project supports multiple build variants:
 
-| Variant | Purpose | Command |
-|---------|---------|---------|
-| `debug` | Development with debugging enabled | `./gradlew assembleDebug` |
-| `debugOptimized` | Development with optimizations | `./gradlew assembleDebugOptimized` |
-| `release` | Production build (signed) | `./gradlew assembleRelease` |
+| Variant          | Purpose                            | Command                            |
+| ---------------- | ---------------------------------- | ---------------------------------- |
+| `debug`          | Development with debugging enabled | `./gradlew assembleDebug`          |
+| `debugOptimized` | Development with optimizations     | `./gradlew assembleDebugOptimized` |
+| `release`        | Production build (signed)          | `./gradlew assembleRelease`        |
 
 Switch variants in Android Studio:
+
 1. **Build** → **Select Build Variant**
 2. Choose from the dropdown (e.g., `debug`, `release`)
 
@@ -168,7 +172,7 @@ Edit `android/app/build.gradle` to add custom build steps:
 ```gradle
 android {
     // ... existing config ...
-    
+
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             outputFileName = "mcp-hub-${variant.name}-${new Date().format('yyyyMMdd')}.apk"
@@ -192,6 +196,7 @@ task printBuildInfo {
 ```
 
 Run custom tasks:
+
 ```bash
 ./gradlew printBuildInfo
 ```
@@ -205,13 +210,14 @@ Edit `android/app/build.gradle`:
 ```gradle
 dependencies {
     // Existing dependencies...
-    
+
     // Add new dependency
     implementation 'com.example:library:1.0.0'
 }
 ```
 
 Then sync Gradle:
+
 ```bash
 ./gradlew build
 ```
@@ -234,7 +240,7 @@ dependencies {
     implementation('com.example:library:1.0.0') {
         force = true
     }
-    
+
     // Or exclude a transitive dependency
     implementation('com.example:library:1.0.0') {
         exclude group: 'com.conflicting', module: 'library'

@@ -1,11 +1,4 @@
-import {
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  Switch,
-  Alert,
-} from 'react-native';
+import { ScrollView, Text, View, TouchableOpacity, Switch, Alert } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -37,7 +30,7 @@ export default function SettingsScreen() {
             Alert.alert('Success', 'Execution history cleared');
           },
         },
-      ]
+      ],
     );
   };
 
@@ -82,9 +75,7 @@ export default function SettingsScreen() {
               </View>
               <Switch
                 value={settings.executionTimeoutEnabled}
-                onValueChange={(value) =>
-                  updateSettings({ executionTimeoutEnabled: value })
-                }
+                onValueChange={(value) => updateSettings({ executionTimeoutEnabled: value })}
                 trackColor={{ false: colors.border, true: colors.primary }}
                 thumbColor={colors.background}
               />
@@ -227,7 +218,9 @@ export default function SettingsScreen() {
                 <MaterialIcons name="play-circle" size={20} color={colors.primary} />
                 <View>
                   <Text className="text-foreground font-medium">Replay Onboarding</Text>
-                  <Text className="text-xs text-muted mt-1">Walk through the feature tour again</Text>
+                  <Text className="text-xs text-muted mt-1">
+                    Walk through the feature tour again
+                  </Text>
                 </View>
               </View>
               <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
@@ -263,9 +256,9 @@ export default function SettingsScreen() {
             <View className="flex-1">
               <Text className="text-foreground font-semibold mb-1">About MCP</Text>
               <Text className="text-xs text-muted leading-relaxed">
-                The Model Context Protocol enables seamless integration between AI applications
-                and external data sources and tools. MCP Hub provides a unified interface to
-                manage and interact with multiple MCP servers.
+                The Model Context Protocol enables seamless integration between AI applications and
+                external data sources and tools. MCP Hub provides a unified interface to manage and
+                interact with multiple MCP servers.
               </Text>
             </View>
           </View>

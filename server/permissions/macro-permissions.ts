@@ -43,7 +43,7 @@ export class MacroPermissionsEngine {
     grantedBy: string,
     grantedTo: string,
     level: PermissionLevel,
-    options: PermissionOptions = {}
+    options: PermissionOptions = {},
   ): MacroPermission {
     const permission: MacroPermission = {
       id: `perm_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -89,7 +89,7 @@ export class MacroPermissionsEngine {
     macroId: string,
     userId: string,
     requiredLevel: PermissionLevel,
-    context?: PermissionContext
+    context?: PermissionContext,
   ): boolean {
     const permissions = this.permissions.get(macroId) || [];
 
@@ -212,7 +212,7 @@ export class MacroPermissionsEngine {
   updatePermissionLevel(
     permissionId: string,
     newLevel: PermissionLevel,
-    updatedBy: string
+    updatedBy: string,
   ): MacroPermission | null {
     for (const [macroId, perms] of this.permissions.entries()) {
       const perm = perms.find((p) => p.id === permissionId);
@@ -340,7 +340,10 @@ export class MacroPermissionsEngine {
   /**
    * Check if permission level is sufficient
    */
-  private isLevelSufficient(grantedLevel: PermissionLevel, requiredLevel: PermissionLevel): boolean {
+  private isLevelSufficient(
+    grantedLevel: PermissionLevel,
+    requiredLevel: PermissionLevel,
+  ): boolean {
     const hierarchy: Record<PermissionLevel, number> = {
       view: 1,
       execute: 2,
@@ -357,7 +360,7 @@ export class MacroPermissionsEngine {
   generateShareLink(
     macroId: string,
     level: PermissionLevel,
-    options: PermissionOptions = {}
+    options: PermissionOptions = {},
   ): ShareLink {
     const token = this.generateToken();
 
@@ -395,7 +398,9 @@ export class MacroPermissionsEngine {
    */
   getPermissionStats(macroId: string): PermissionStats {
     const permissions = this.permissions.get(macroId) || [];
-    const active = permissions.filter((p) => !p.revokedAt && (!p.expiresAt || new Date() < p.expiresAt));
+    const active = permissions.filter(
+      (p) => !p.revokedAt && (!p.expiresAt || new Date() < p.expiresAt),
+    );
     const expired = permissions.filter((p) => p.expiresAt && new Date() > p.expiresAt);
     const revoked = permissions.filter((p) => p.revokedAt);
 

@@ -1,7 +1,7 @@
 ---
-title: "What Is the Model Context Protocol (MCP)? — MCP Hub"
-sidebarTitle: "MCP Protocol"
-description: "MCP is an open standard for connecting LLM applications to external tools and data. Learn how MCP Hub implements the protocol as a client host."
+title: 'What Is the Model Context Protocol (MCP)? — MCP Hub'
+sidebarTitle: 'MCP Protocol'
+description: 'MCP is an open standard for connecting LLM applications to external tools and data. Learn how MCP Hub implements the protocol as a client host.'
 ---
 
 The Model Context Protocol (MCP) is an open protocol that uses JSON-RPC 2.0 to connect LLM applications to external tools, data sources, and services. Instead of building one-off integrations, MCP defines a universal language that any client can speak with any server. MCP Hub acts as an **MCP client host**: it manages connections to MCP servers, negotiates capabilities, discovers available tools and resources, and lets you execute them — all from a single mobile-first interface.
@@ -12,13 +12,16 @@ MCP defines three roles that work together in every interaction.
 
 <CardGroup cols={3}>
   <Card title="MCP Host" icon="house">
-    Your MCP Hub app. The host coordinates one or more MCP clients, manages their lifecycle, and surfaces their capabilities to you in the UI.
+    Your MCP Hub app. The host coordinates one or more MCP clients, manages their lifecycle, and
+    surfaces their capabilities to you in the UI.
   </Card>
   <Card title="MCP Client" icon="plug">
-    A component inside MCP Hub that maintains a single, dedicated connection to one MCP server. Each server you add gets its own client.
+    A component inside MCP Hub that maintains a single, dedicated connection to one MCP server. Each
+    server you add gets its own client.
   </Card>
   <Card title="MCP Server" icon="server">
-    An external service — local or remote — that exposes tools, resources, and prompts over the MCP protocol. Examples include file-system helpers, GitHub integrations, and database query servers.
+    An external service — local or remote — that exposes tools, resources, and prompts over the MCP
+    protocol. Examples include file-system helpers, GitHub integrations, and database query servers.
   </Card>
 </CardGroup>
 
@@ -30,10 +33,10 @@ MCP Hub supports two transport mechanisms for communicating with MCP servers.
 
 **Streamable HTTP** connects to a remote endpoint over HTTP. MCP Hub sends requests as HTTP POST messages and optionally receives streaming responses via Server-Sent Events (SSE). Use this transport for hosted or cloud-based MCP servers that expose a public URL.
 
-| Transport | Best For | How It Works |
-|---|---|---|
-| `stdio` | Local tools and scripts | Spawns a child process; reads/writes via stdin/stdout |
-| `streamable_http` | Remote or hosted servers | HTTP POST for requests; SSE for streaming responses |
+| Transport         | Best For                 | How It Works                                          |
+| ----------------- | ------------------------ | ----------------------------------------------------- |
+| `stdio`           | Local tools and scripts  | Spawns a child process; reads/writes via stdin/stdout |
+| `streamable_http` | Remote or hosted servers | HTTP POST for requests; SSE for streaming responses   |
 
 ## The Three Primitives
 
@@ -51,22 +54,28 @@ Every MCP connection follows a defined sequence from startup to shutdown.
 
 <Steps>
   <Step title="Initialize">
-    MCP Hub sends an `initialize` request containing the protocol version and its own capabilities to the server.
+    MCP Hub sends an `initialize` request containing the protocol version and its own capabilities
+    to the server.
   </Step>
   <Step title="Negotiate Capabilities">
-    The server responds with the protocol version it supports and the features it exposes — tools, resources, prompts, streaming, and logging.
+    The server responds with the protocol version it supports and the features it exposes — tools,
+    resources, prompts, streaming, and logging.
   </Step>
   <Step title="Discover Tools, Resources, and Prompts">
-    MCP Hub calls `tools/list`, `resources/list`, and `prompts/list` to build a complete picture of what the server offers.
+    MCP Hub calls `tools/list`, `resources/list`, and `prompts/list` to build a complete picture of
+    what the server offers.
   </Step>
   <Step title="Execute">
-    You invoke tools with `tools/call`, read resources with `resources/read`, and retrieve prompts with `prompts/get`. Each call is a JSON-RPC 2.0 request/response exchange.
+    You invoke tools with `tools/call`, read resources with `resources/read`, and retrieve prompts
+    with `prompts/get`. Each call is a JSON-RPC 2.0 request/response exchange.
   </Step>
   <Step title="Terminate">
-    MCP Hub closes the transport (HTTP connection or stdio process) and marks the server as `disconnected`.
+    MCP Hub closes the transport (HTTP connection or stdio process) and marks the server as
+    `disconnected`.
   </Step>
 </Steps>
 
 <Note>
-  MCP is an open standard maintained by Anthropic and the community. Read the full specification and browse the server ecosystem at [modelcontextprotocol.io](https://modelcontextprotocol.io).
+  MCP is an open standard maintained by Anthropic and the community. Read the full specification and
+  browse the server ecosystem at [modelcontextprotocol.io](https://modelcontextprotocol.io).
 </Note>

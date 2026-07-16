@@ -26,7 +26,7 @@ export class MacroAnalytics extends EventEmitter {
     userId: string,
     status: 'success' | 'failure',
     duration: number,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ) {
     // Update macro metrics
     this.updateMacroMetrics(macroId, status, duration, metadata);
@@ -54,7 +54,7 @@ export class MacroAnalytics extends EventEmitter {
     macroId: string,
     status: 'success' | 'failure',
     duration: number,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ) {
     let metrics = this.metrics.get(macroId);
 
@@ -163,7 +163,8 @@ export class MacroAnalytics extends EventEmitter {
     }
 
     this.globalMetrics.totalDuration += duration;
-    this.globalMetrics.averageDuration = this.globalMetrics.totalDuration / this.globalMetrics.totalExecutions;
+    this.globalMetrics.averageDuration =
+      this.globalMetrics.totalDuration / this.globalMetrics.totalExecutions;
 
     // Update peak hour
     const hour = new Date().getHours();
@@ -372,12 +373,13 @@ export class MacroAnalytics extends EventEmitter {
           timestamp: new Date(),
         },
         null,
-        2
+        2,
       );
     }
 
     // CSV format
-    let csv = 'MacroID,TotalExecutions,SuccessfulExecutions,FailedExecutions,SuccessRate,AverageDuration\n';
+    let csv =
+      'MacroID,TotalExecutions,SuccessfulExecutions,FailedExecutions,SuccessRate,AverageDuration\n';
 
     for (const metrics of this.metrics.values()) {
       csv += `${metrics.macroId},${metrics.totalExecutions},${metrics.successfulExecutions},${metrics.failedExecutions},${metrics.successRate.toFixed(2)}%,${metrics.averageDuration.toFixed(2)}ms\n`;

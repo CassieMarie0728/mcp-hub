@@ -56,9 +56,7 @@
   "paths": {
     "/connections": {
       "get": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "List all MCP connections",
         "operationId": "listConnections",
         "parameters": [
@@ -106,9 +104,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Create a new MCP connection",
         "operationId": "createConnection",
         "requestBody": {
@@ -124,9 +120,7 @@
                     "transportConfig": {
                       "type": "stdio",
                       "stdioCommand": "/usr/local/bin/mcp-server",
-                      "stdioArgs": [
-                        "--flag"
-                      ]
+                      "stdioArgs": ["--flag"]
                     },
                     "authMode": "secret_env",
                     "metadata": {
@@ -161,9 +155,7 @@
     },
     "/connections/{connectionId}": {
       "get": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Get details of a specific MCP connection",
         "operationId": "getConnection",
         "parameters": [
@@ -198,9 +190,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Delete or archive an MCP connection",
         "operationId": "deleteConnection",
         "parameters": [
@@ -230,9 +220,7 @@
     },
     "/connections/{connectionId}/connect": {
       "post": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Open transport and start handshake for MCP connection",
         "operationId": "connectConnection",
         "parameters": [
@@ -272,9 +260,7 @@
     },
     "/connections/{connectionId}/initialize": {
       "post": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Run MCP initialize lifecycle step",
         "operationId": "initializeConnection",
         "parameters": [
@@ -314,9 +300,7 @@
     },
     "/connections/{connectionId}/disconnect": {
       "post": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Gracefully disconnect MCP connection",
         "operationId": "disconnectConnection",
         "parameters": [
@@ -353,9 +337,7 @@
     },
     "/connections/{connectionId}/ping": {
       "post": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Send MCP ping to connection",
         "operationId": "pingConnection",
         "parameters": [
@@ -392,9 +374,7 @@
     },
     "/connections/{connectionId}/status": {
       "get": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Get transport, lifecycle, auth, and protocol status of connection",
         "operationId": "getConnectionStatus",
         "parameters": [
@@ -431,9 +411,7 @@
     },
     "/connections/{connectionId}/capabilities": {
       "get": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Get negotiated protocol version and capabilities",
         "operationId": "getConnectionCapabilities",
         "parameters": [
@@ -470,9 +448,7 @@
     },
     "/connections/{connectionId}/server-info": {
       "get": {
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "summary": "Get normalized server info and instructions",
         "operationId": "getServerInfo",
         "parameters": [
@@ -509,9 +485,7 @@
     },
     "/connections/{connectionId}/auth/start": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Start OAuth2 or bearer token authentication flow",
         "operationId": "startAuthFlow",
         "parameters": [
@@ -558,9 +532,7 @@
     },
     "/connections/{connectionId}/auth/status": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Get current authentication state",
         "operationId": "getAuthStatus",
         "parameters": [
@@ -597,9 +569,7 @@
     },
     "/connections/{connectionId}/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Refresh authentication tokens",
         "operationId": "refreshAuth",
         "parameters": [
@@ -636,9 +606,7 @@
     },
     "/connections/{connectionId}/auth": {
       "delete": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Remove stored authentication state",
         "operationId": "removeAuth",
         "parameters": [
@@ -668,9 +636,7 @@
     },
     "/connections/{connectionId}/secrets": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Attach secret references and environment variables for stdio startup",
         "operationId": "attachSecrets",
         "parameters": [
@@ -717,9 +683,7 @@
     },
     "/connections/{connectionId}/tools": {
       "get": {
-        "tags": [
-          "Tools"
-        ],
+        "tags": ["Tools"],
         "summary": "List tools with optional pagination and refresh",
         "operationId": "listTools",
         "parameters": [
@@ -777,9 +741,7 @@
     },
     "/connections/{connectionId}/tools/{toolName}/call": {
       "post": {
-        "tags": [
-          "Tools"
-        ],
+        "tags": ["Tools"],
         "summary": "Call a tool with arguments and options",
         "operationId": "callTool",
         "parameters": [
@@ -837,9 +799,7 @@
     },
     "/connections/{connectionId}/tools/{toolName}": {
       "get": {
-        "tags": [
-          "Tools"
-        ],
+        "tags": ["Tools"],
         "summary": "Get cached tool metadata and schema",
         "operationId": "getToolMetadata",
         "parameters": [
@@ -884,9 +844,7 @@
     },
     "/connections/{connectionId}/resources": {
       "get": {
-        "tags": [
-          "Resources"
-        ],
+        "tags": ["Resources"],
         "summary": "List resources with optional pagination and refresh",
         "operationId": "listResources",
         "parameters": [
@@ -944,9 +902,7 @@
     },
     "/connections/{connectionId}/resources/read": {
       "post": {
-        "tags": [
-          "Resources"
-        ],
+        "tags": ["Resources"],
         "summary": "Read resource content by URI",
         "operationId": "readResource",
         "parameters": [
@@ -996,9 +952,7 @@
     },
     "/connections/{connectionId}/resource-templates": {
       "get": {
-        "tags": [
-          "Resources"
-        ],
+        "tags": ["Resources"],
         "summary": "List resource templates",
         "operationId": "listResourceTemplates",
         "parameters": [
@@ -1038,9 +992,7 @@
     },
     "/connections/{connectionId}/resources/subscribe": {
       "post": {
-        "tags": [
-          "Resources"
-        ],
+        "tags": ["Resources"],
         "summary": "Subscribe to resource updates",
         "operationId": "subscribeResource",
         "parameters": [
@@ -1090,9 +1042,7 @@
     },
     "/connections/{connectionId}/resources/unsubscribe": {
       "post": {
-        "tags": [
-          "Resources"
-        ],
+        "tags": ["Resources"],
         "summary": "Unsubscribe from resource updates",
         "operationId": "unsubscribeResource",
         "parameters": [
@@ -1142,9 +1092,7 @@
     },
     "/connections/{connectionId}/resources/cache": {
       "get": {
-        "tags": [
-          "Resources"
-        ],
+        "tags": ["Resources"],
         "summary": "Return cached resource metadata",
         "operationId": "getResourceCache",
         "parameters": [
@@ -1184,9 +1132,7 @@
     },
     "/connections/{connectionId}/prompts": {
       "get": {
-        "tags": [
-          "Prompts"
-        ],
+        "tags": ["Prompts"],
         "summary": "List prompts with optional pagination",
         "operationId": "listPrompts",
         "parameters": [
@@ -1235,9 +1181,7 @@
     },
     "/connections/{connectionId}/prompts/{promptName}/get": {
       "post": {
-        "tags": [
-          "Prompts"
-        ],
+        "tags": ["Prompts"],
         "summary": "Get prompt details with arguments",
         "operationId": "getPrompt",
         "parameters": [
@@ -1295,9 +1239,7 @@
     },
     "/connections/{connectionId}/completions": {
       "post": {
-        "tags": [
-          "Completions"
-        ],
+        "tags": ["Completions"],
         "summary": "Complete prompt or reference with arguments",
         "operationId": "createCompletion",
         "parameters": [
@@ -1344,9 +1286,7 @@
     },
     "/connections/{connectionId}/logging/level": {
       "post": {
-        "tags": [
-          "Logging"
-        ],
+        "tags": ["Logging"],
         "summary": "Set logging level for connection",
         "operationId": "setLogLevel",
         "parameters": [
@@ -1393,9 +1333,7 @@
     },
     "/connections/{connectionId}/logs": {
       "get": {
-        "tags": [
-          "Logging"
-        ],
+        "tags": ["Logging"],
         "summary": "Query persisted logs for connection",
         "operationId": "getLogs",
         "parameters": [
@@ -1416,13 +1354,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "debug",
-                "info",
-                "warn",
-                "error",
-                "fatal"
-              ]
+              "enum": ["debug", "info", "warn", "error", "fatal"]
             }
           },
           {
@@ -1468,9 +1400,7 @@
     },
     "/connections/{connectionId}/events": {
       "get": {
-        "tags": [
-          "Events"
-        ],
+        "tags": ["Events"],
         "summary": "Query event history for connection",
         "operationId": "getEvents",
         "parameters": [
@@ -1536,9 +1466,7 @@
     },
     "/connections/{connectionId}/stream": {
       "get": {
-        "tags": [
-          "Events"
-        ],
+        "tags": ["Events"],
         "summary": "Live event stream via SSE or WebSocket",
         "operationId": "streamEvents",
         "parameters": [
@@ -1573,9 +1501,7 @@
     },
     "/requests/{requestId}": {
       "get": {
-        "tags": [
-          "Requests"
-        ],
+        "tags": ["Requests"],
         "summary": "Inspect request, response, and error record",
         "operationId": "getRequest",
         "parameters": [
@@ -1612,9 +1538,7 @@
     },
     "/requests/{requestId}/cancel": {
       "post": {
-        "tags": [
-          "Requests"
-        ],
+        "tags": ["Requests"],
         "summary": "Cancel an in-flight request",
         "operationId": "cancelRequest",
         "parameters": [
@@ -1654,9 +1578,7 @@
     },
     "/connections/{connectionId}/roots": {
       "get": {
-        "tags": [
-          "Roots"
-        ],
+        "tags": ["Roots"],
         "summary": "Get client roots exposed to server",
         "operationId": "getRoots",
         "parameters": [
@@ -1694,9 +1616,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Roots"
-        ],
+        "tags": ["Roots"],
         "summary": "Replace allowed roots for connection",
         "operationId": "replaceRoots",
         "parameters": [
@@ -1768,11 +1688,7 @@
         }
       },
       "ConnectionCreateRequest": {
-        "required": [
-          "authMode",
-          "serverId",
-          "transportConfig"
-        ],
+        "required": ["authMode", "serverId", "transportConfig"],
         "type": "object",
         "properties": {
           "serverId": {
@@ -1786,12 +1702,7 @@
           "authMode": {
             "type": "string",
             "description": "Authentication mode for the connection",
-            "enum": [
-              "none",
-              "oauth2",
-              "bearer",
-              "secret_env"
-            ]
+            "enum": ["none", "oauth2", "bearer", "secret_env"]
           },
           "metadata": {
             "type": "object",
@@ -1812,20 +1723,11 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "disconnected",
-              "connecting",
-              "connected",
-              "initialized",
-              "error"
-            ]
+            "enum": ["disconnected", "connecting", "connected", "initialized", "error"]
           },
           "transportType": {
             "type": "string",
-            "enum": [
-              "stdio",
-              "streamable_http"
-            ]
+            "enum": ["stdio", "streamable_http"]
           },
           "lastSeenAt": {
             "type": "string",
@@ -1851,21 +1753,11 @@
               },
               "lifecycleState": {
                 "type": "string",
-                "enum": [
-                  "created",
-                  "connected",
-                  "initialized",
-                  "disconnected"
-                ]
+                "enum": ["created", "connected", "initialized", "disconnected"]
               },
               "authState": {
                 "type": "string",
-                "enum": [
-                  "unauthenticated",
-                  "authenticating",
-                  "authenticated",
-                  "failed"
-                ]
+                "enum": ["unauthenticated", "authenticating", "authenticated", "failed"]
               },
               "desiredProtocolVersion": {
                 "type": "string"
@@ -1916,30 +1808,15 @@
         "properties": {
           "transportState": {
             "type": "string",
-            "enum": [
-              "disconnected",
-              "connecting",
-              "connected",
-              "error"
-            ]
+            "enum": ["disconnected", "connecting", "connected", "error"]
           },
           "lifecycleState": {
             "type": "string",
-            "enum": [
-              "created",
-              "connected",
-              "initialized",
-              "disconnected"
-            ]
+            "enum": ["created", "connected", "initialized", "disconnected"]
           },
           "authState": {
             "type": "string",
-            "enum": [
-              "unauthenticated",
-              "authenticating",
-              "authenticated",
-              "failed"
-            ]
+            "enum": ["unauthenticated", "authenticating", "authenticated", "failed"]
           },
           "protocolVersion": {
             "type": "string"
@@ -2138,13 +2015,7 @@
           },
           "level": {
             "type": "string",
-            "enum": [
-              "debug",
-              "info",
-              "warn",
-              "error",
-              "fatal"
-            ]
+            "enum": ["debug", "info", "warn", "error", "fatal"]
           },
           "message": {
             "type": "string"
@@ -2204,12 +2075,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "pending",
-              "completed",
-              "failed",
-              "cancelled"
-            ]
+            "enum": ["pending", "completed", "failed", "cancelled"]
           },
           "progressToken": {
             "type": "string",
@@ -2276,18 +2142,12 @@
         }
       },
       "auth_start_body": {
-        "required": [
-          "strategy"
-        ],
+        "required": ["strategy"],
         "type": "object",
         "properties": {
           "strategy": {
             "type": "string",
-            "enum": [
-              "oauth2",
-              "bearer",
-              "none"
-            ]
+            "enum": ["oauth2", "bearer", "none"]
           },
           "scopes": {
             "type": "array",
@@ -2471,14 +2331,7 @@
         "properties": {
           "level": {
             "type": "string",
-            "enum": [
-              "debug",
-              "info",
-              "warn",
-              "error",
-              "fatal",
-              "false"
-            ]
+            "enum": ["debug", "info", "warn", "error", "fatal", "false"]
           }
         }
       },
@@ -2510,17 +2363,12 @@
         }
       },
       "ConnectionCreateRequest_transportConfig": {
-        "required": [
-          "type"
-        ],
+        "required": ["type"],
         "type": "object",
         "properties": {
           "type": {
             "type": "string",
-            "enum": [
-              "stdio",
-              "streamable_http"
-            ]
+            "enum": ["stdio", "streamable_http"]
           },
           "stdioCommand": {
             "type": "string",

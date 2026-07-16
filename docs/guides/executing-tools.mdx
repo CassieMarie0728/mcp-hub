@@ -1,7 +1,7 @@
 ---
-title: "Run, Inspect, and Export MCP Tool Results in MCP Hub"
-sidebarTitle: "Execute Tools"
-description: "Run tools on connected MCP servers with MCP Hub. Fill in parameters, execute, and inspect results in text, JSON, Markdown, HTML, or image formats."
+title: 'Run, Inspect, and Export MCP Tool Results in MCP Hub'
+sidebarTitle: 'Execute Tools'
+description: 'Run tools on connected MCP servers with MCP Hub. Fill in parameters, execute, and inspect results in text, JSON, Markdown, HTML, or image formats.'
 ---
 
 MCP Hub lets you execute any tool on a connected server directly from the mobile app or web interface. Input forms are generated automatically from the tool's JSON Schema, so you can fill in parameters without writing raw JSON. Results are displayed in multiple formats — text, JSON, Markdown, HTML, images, and more — with options to copy, share, and export.
@@ -10,22 +10,29 @@ MCP Hub lets you execute any tool on a connected server directly from the mobile
 
 <Steps>
   <Step title="Open Tool Browser and select a tool">
-    Navigate to the **Tool Browser** tab and tap the tool you want to run. Use the search bar to find it quickly if the list is long.
+    Navigate to the **Tool Browser** tab and tap the tool you want to run. Use the search bar to
+    find it quickly if the list is long.
   </Step>
   <Step title="Tap Execute">
-    On the Tool Detail screen, tap the **Execute** button (or the ▶ play icon) to open the execution form.
+    On the Tool Detail screen, tap the **Execute** button (or the ▶ play icon) to open the execution
+    form.
   </Step>
   <Step title="Fill in the required parameters">
-    MCP Hub generates an input form from the tool's JSON Schema. Required fields are marked with an asterisk. Fill in each field — the form adapts to the parameter type (text input, number spinner, toggle, dropdown for enums, etc.).
+    MCP Hub generates an input form from the tool's JSON Schema. Required fields are marked with an
+    asterisk. Fill in each field — the form adapts to the parameter type (text input, number
+    spinner, toggle, dropdown for enums, etc.).
   </Step>
   <Step title="Review optional parameters">
-    Scroll down to see optional parameters. Leave them blank to use the server's defaults, or fill them in to customize the call.
+    Scroll down to see optional parameters. Leave them blank to use the server's defaults, or fill
+    them in to customize the call.
   </Step>
   <Step title="Tap Run">
-    MCP Hub validates your inputs, then sends the tool call to the server. A loading indicator appears while the server processes the request.
+    MCP Hub validates your inputs, then sends the tool call to the server. A loading indicator
+    appears while the server processes the request.
   </Step>
   <Step title="View results in the Results screen">
-    When the call completes, MCP Hub navigates to the **Results** screen and displays the output. Switch between display formats using the format selector at the top of the screen.
+    When the call completes, MCP Hub navigates to the **Results** screen and displays the output.
+    Switch between display formats using the format selector at the top of the screen.
   </Step>
 </Steps>
 
@@ -45,16 +52,20 @@ MCP Hub displays results based on the content type returned by the tool. Use the
 
 <CardGroup cols={2}>
   <Card title="Text" icon="align-left">
-    Plain text output rendered in a scrollable view. Ideal for log output, summaries, and simple string responses.
+    Plain text output rendered in a scrollable view. Ideal for log output, summaries, and simple
+    string responses.
   </Card>
   <Card title="JSON" icon="code">
-    Pretty-printed with syntax highlighting and a collapsible tree view. Tap any node to expand or collapse it.
+    Pretty-printed with syntax highlighting and a collapsible tree view. Tap any node to expand or
+    collapse it.
   </Card>
   <Card title="Markdown" icon="file-text">
-    Rendered as formatted text with headings, lists, code blocks, and links. Great for documentation and report tools.
+    Rendered as formatted text with headings, lists, code blocks, and links. Great for documentation
+    and report tools.
   </Card>
   <Card title="HTML" icon="globe">
-    Rendered in an embedded web view. Useful for tools that return rich HTML reports or formatted content.
+    Rendered in an embedded web view. Useful for tools that return rich HTML reports or formatted
+    content.
   </Card>
   <Card title="Image" icon="image">
     Displayed inline in a zoomable image viewer. Supports PNG, JPEG, GIF, and WebP.
@@ -85,27 +96,29 @@ Filter the history by status or search by tool name and server name to find spec
 
 If a tool call fails, MCP Hub displays a structured error message explaining what went wrong. Use the table below to diagnose and fix common errors:
 
-| Error | Cause | Fix |
-|---|---|---|
-| `UNREACHABLE` — Server not reachable | Network connectivity issue or server is down | Check your network connection and verify the server URL or command |
-| `TIMEOUT` — Request timed out | Server is overloaded or the operation takes too long | Retry the request, or increase the timeout in **Settings → Connection Timeout** |
-| `INVALID_PARAMS` — Invalid parameter | Wrong input type or value that fails server-side validation | Correct the highlighted field and resubmit |
-| `AUTH_FAILED` — Authentication failed | Token is expired, revoked, or incorrect | Re-authenticate in **Server Settings** or refresh your token from the Token Management screen |
-| `TOOL_ERROR` — Tool error | Server-side error returned by the tool itself | Review the error details, check your parameter values, and consult the server's documentation or logs |
-| `PARTIAL_RESULT` — Partial result received | The server timed out mid-execution after returning some data | Tap **View Partial Result** to inspect what was received, then retry if needed |
+| Error                                      | Cause                                                        | Fix                                                                                                   |
+| ------------------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `UNREACHABLE` — Server not reachable       | Network connectivity issue or server is down                 | Check your network connection and verify the server URL or command                                    |
+| `TIMEOUT` — Request timed out              | Server is overloaded or the operation takes too long         | Retry the request, or increase the timeout in **Settings → Connection Timeout**                       |
+| `INVALID_PARAMS` — Invalid parameter       | Wrong input type or value that fails server-side validation  | Correct the highlighted field and resubmit                                                            |
+| `AUTH_FAILED` — Authentication failed      | Token is expired, revoked, or incorrect                      | Re-authenticate in **Server Settings** or refresh your token from the Token Management screen         |
+| `TOOL_ERROR` — Tool error                  | Server-side error returned by the tool itself                | Review the error details, check your parameter values, and consult the server's documentation or logs |
+| `PARTIAL_RESULT` — Partial result received | The server timed out mid-execution after returning some data | Tap **View Partial Result** to inspect what was received, then retry if needed                        |
 
 ## Retry Behavior
 
 When a request fails due to a transient error (network hiccup, server busy, etc.), MCP Hub automatically retries it using **exponential backoff**:
 
-| Attempt | Delay before retry |
-|---|---|
-| 1st retry | 500 ms |
-| 2nd retry | 1 s |
-| 3rd retry | 2 s |
+| Attempt   | Delay before retry |
+| --------- | ------------------ |
+| 1st retry | 500 ms             |
+| 2nd retry | 1 s                |
+| 3rd retry | 2 s                |
 
 After 3 failed attempts, MCP Hub stops retrying and surfaces the error. You can then trigger a **manual retry** by tapping the **Retry** button on the Results screen — no need to navigate back and re-enter your parameters.
 
 <Tip>
-  Save useful tool call configurations as macros to replay them later without re-entering parameters. Open the Results screen after a successful run and tap **Save as Macro**, or head to the [Macros guide](/guides/macros) to learn how to build, chain, and schedule macros.
+  Save useful tool call configurations as macros to replay them later without re-entering
+  parameters. Open the Results screen after a successful run and tap **Save as Macro**, or head to
+  the [Macros guide](/guides/macros) to learn how to build, chain, and schedule macros.
 </Tip>

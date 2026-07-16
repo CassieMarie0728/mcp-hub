@@ -116,9 +116,7 @@ export default function NotificationsCenterScreen() {
    * Mark as read
    */
   const markAsRead = (id: string) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+    setNotifications(notifications.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
 
   /**
@@ -153,7 +151,7 @@ export default function NotificationsCenterScreen() {
       className={cn(
         'rounded-xl p-4 mb-3 border flex-row gap-3 active:opacity-70',
         getNotificationColor(item.priority),
-        !item.read && 'bg-primary/5'
+        !item.read && 'bg-primary/5',
       )}
     >
       <Text className="text-2xl">{getNotificationIcon(item.type)}</Text>
@@ -216,13 +214,13 @@ export default function NotificationsCenterScreen() {
               onPress={() => setShowUnreadOnly(!showUnreadOnly)}
               className={cn(
                 'flex-1 rounded-lg p-3 active:opacity-80 border',
-                showUnreadOnly ? 'bg-primary border-primary' : 'bg-surface border-border'
+                showUnreadOnly ? 'bg-primary border-primary' : 'bg-surface border-border',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold',
-                  showUnreadOnly ? 'text-background' : 'text-foreground'
+                  showUnreadOnly ? 'text-background' : 'text-foreground',
                 )}
               >
                 Unread Only
@@ -236,38 +234,40 @@ export default function NotificationsCenterScreen() {
               onPress={() => setFilterType(null)}
               className={cn(
                 'px-4 py-2 rounded-full border',
-                filterType === null ? 'bg-primary border-primary' : 'bg-surface border-border'
+                filterType === null ? 'bg-primary border-primary' : 'bg-surface border-border',
               )}
             >
               <Text
                 className={cn(
                   'font-semibold text-sm',
-                  filterType === null ? 'text-background' : 'text-foreground'
+                  filterType === null ? 'text-background' : 'text-foreground',
                 )}
               >
                 All
               </Text>
             </Pressable>
 
-            {['macro_execution', 'collaboration_update', 'anomaly_alert', 'schedule_trigger'].map((type) => (
-              <Pressable
-                key={type}
-                onPress={() => setFilterType(filterType === type ? null : type)}
-                className={cn(
-                  'px-4 py-2 rounded-full border',
-                  filterType === type ? 'bg-primary border-primary' : 'bg-surface border-border'
-                )}
-              >
-                <Text
+            {['macro_execution', 'collaboration_update', 'anomaly_alert', 'schedule_trigger'].map(
+              (type) => (
+                <Pressable
+                  key={type}
+                  onPress={() => setFilterType(filterType === type ? null : type)}
                   className={cn(
-                    'font-semibold text-sm',
-                    filterType === type ? 'text-background' : 'text-foreground'
+                    'px-4 py-2 rounded-full border',
+                    filterType === type ? 'bg-primary border-primary' : 'bg-surface border-border',
                   )}
                 >
-                  {type.replace(/_/g, ' ')}
-                </Text>
-              </Pressable>
-            ))}
+                  <Text
+                    className={cn(
+                      'font-semibold text-sm',
+                      filterType === type ? 'text-background' : 'text-foreground',
+                    )}
+                  >
+                    {type.replace(/_/g, ' ')}
+                  </Text>
+                </Pressable>
+              ),
+            )}
           </ScrollView>
 
           {/* Notifications List */}
@@ -300,7 +300,9 @@ export default function NotificationsCenterScreen() {
               </View>
               <View className="flex-row items-center justify-between">
                 <Text className="text-sm text-foreground">Read</Text>
-                <Text className="text-lg font-bold text-success">{notifications.filter((n) => n.read).length}</Text>
+                <Text className="text-lg font-bold text-success">
+                  {notifications.filter((n) => n.read).length}
+                </Text>
               </View>
             </View>
           </View>

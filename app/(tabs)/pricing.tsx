@@ -7,13 +7,25 @@ import { Card } from '@/components/ui/card';
 const PLAN_AREAS = [
   {
     name: 'Personal Lab',
-    description: 'For one operator connecting MCP servers, testing tools, and building practical workflows.',
-    features: ['Server connection basics', 'Tool discovery', 'Execution history', 'Mobile control room'],
+    description:
+      'For one operator connecting MCP servers, testing tools, and building practical workflows.',
+    features: [
+      'Server connection basics',
+      'Tool discovery',
+      'Execution history',
+      'Mobile control room',
+    ],
   },
   {
     name: 'Operator Mode',
-    description: 'For heavier workflow work, stronger debugging, scheduling, and more connected systems.',
-    features: ['Workflow builder upgrades', 'Scheduling', 'Debug views', 'Expanded server management'],
+    description:
+      'For heavier workflow work, stronger debugging, scheduling, and more connected systems.',
+    features: [
+      'Workflow builder upgrades',
+      'Scheduling',
+      'Debug views',
+      'Expanded server management',
+    ],
   },
   {
     name: 'Team Stack',
@@ -36,10 +48,13 @@ export default function PricingScreen() {
     <ScreenContainer className="p-0">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="bg-primary px-6 py-8">
-          <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">PRICING ROADMAP</Text>
+          <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">
+            PRICING ROADMAP
+          </Text>
           <Text className="text-4xl font-bold text-background mb-2">Plans Need Receipts</Text>
           <Text className="text-base text-background/90 leading-relaxed">
-            This page is now a clean roadmap for future plan structure. Actual pricing can be added when the product model is final.
+            This page is now a clean roadmap for future plan structure. Actual pricing can be added
+            when the product model is final.
           </Text>
         </View>
 
@@ -76,7 +91,9 @@ export default function PricingScreen() {
         </View>
 
         <View className="mx-6 mb-8 p-6 bg-primary rounded-lg">
-          <Text className="text-lg font-bold text-background mb-2 text-center">Build value first.</Text>
+          <Text className="text-lg font-bold text-background mb-2 text-center">
+            Build value first.
+          </Text>
           <Text className="text-sm text-background/90 text-center">
             When the offer is ready, this page can become the checkout doorway.
           </Text>

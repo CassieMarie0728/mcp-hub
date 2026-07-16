@@ -1,7 +1,7 @@
 ---
-title: "MCP Connection Auth — OAuth2, Bearer Tokens, and Secrets"
-sidebarTitle: "Connection Auth"
-description: "Manage auth for MCP server connections: start OAuth2 flows, poll auth status, refresh tokens, revoke credentials, and inject secrets for stdio processes."
+title: 'MCP Connection Auth — OAuth2, Bearer Tokens, and Secrets'
+sidebarTitle: 'Connection Auth'
+description: 'Manage auth for MCP server connections: start OAuth2 flows, poll auth status, refresh tokens, revoke credentials, and inject secrets for stdio processes.'
 ---
 
 MCP Hub supports multiple authentication modes for server connections: OAuth2, bearer tokens, and secret environment variables. Use these endpoints to manage the full auth lifecycle for a connection — from initiating a login flow to refreshing expired tokens and attaching runtime secrets.
@@ -35,7 +35,8 @@ Initiates an authentication flow for the connection. For `oauth2` connections, M
 </ParamField>
 
 <ParamField body="resourceUri" type="string">
-  Optional resource URI hint passed to the authorization server. Only applicable when `strategy` is `oauth2`.
+  Optional resource URI hint passed to the authorization server. Only applicable when `strategy` is
+  `oauth2`.
 </ParamField>
 
 **Response:**
@@ -60,13 +61,16 @@ Store the `state` value **server-side** (for example, in the user's session) and
 <Warning>
   **Callback URL requirements.**
 
-  - Register an `https://` redirect URL with the OAuth provider for any non-localhost deployment. `http://` callbacks are only acceptable for `localhost` during local development.
-  - Make sure the registered URL is an **exact match** — including scheme, host, port, and trailing slash.
-  - Avoid open redirects, wildcard redirect URIs, and `http://` callbacks in production. Each one enables authorization-code interception.
-</Warning>
+- Register an `https://` redirect URL with the OAuth provider for any non-localhost deployment. `http://` callbacks are only acceptable for `localhost` during local development.
+- Make sure the registered URL is an **exact match** — including scheme, host, port, and trailing slash.
+- Avoid open redirects, wildcard redirect URIs, and `http://` callbacks in production. Each one enables authorization-code interception.
+  </Warning>
 
 <Note>
-  After the user completes the OAuth2 flow and your callback URL receives the authorization code, MCP Hub handles the token exchange automatically. Poll `GET /api/connections/{connectionId}/auth/status` to confirm authentication completed successfully. Access and refresh tokens are stored encrypted at rest by MCP Hub and are never returned to the client over the API.
+  After the user completes the OAuth2 flow and your callback URL receives the authorization code,
+  MCP Hub handles the token exchange automatically. Poll `GET /api/connections/{connectionId}
+  /auth/status` to confirm authentication completed successfully. Access and refresh tokens are
+  stored encrypted at rest by MCP Hub and are never returned to the client over the API.
 </Note>
 
 ---
@@ -88,12 +92,12 @@ Returns the current authentication state for the connection, including whether a
 }
 ```
 
-| Field | Description |
-|---|---|
-| `authenticated` | `true` if a valid, non-expired token is present |
-| `userId` | UUID of the authenticated user as provided by the authorization server, or `null` |
-| `expiresAt` | ISO 8601 timestamp when the token expires, or `null` for non-expiring tokens |
-| `scopes` | Array of OAuth2 scopes granted, or an empty array for non-OAuth2 modes |
+| Field           | Description                                                                       |
+| --------------- | --------------------------------------------------------------------------------- |
+| `authenticated` | `true` if a valid, non-expired token is present                                   |
+| `userId`        | UUID of the authenticated user as provided by the authorization server, or `null` |
+| `expiresAt`     | ISO 8601 timestamp when the token expires, or `null` for non-expiring tokens      |
+| `scopes`        | Array of OAuth2 scopes granted, or an empty array for non-OAuth2 modes            |
 
 ---
 
@@ -117,7 +121,9 @@ Returns `200 OK` with the updated `AuthStatus` on success:
 ```
 
 <Warning>
-  If no refresh token is available — for example, because the original OAuth2 grant did not include `offline_access` — this endpoint returns `400 Bad Request`. In that case, restart the auth flow with `/auth/start`.
+  If no refresh token is available — for example, because the original OAuth2 grant did not include
+  `offline_access` — this endpoint returns `400 Bad Request`. In that case, restart the auth flow
+  with `/auth/start`.
 </Warning>
 
 ---
@@ -155,23 +161,26 @@ Attaches secret references and plain environment variables to the connection. MC
 ```
 
 <ParamField body="secretRefs" type="array">
-  An optional list of secret reference names to resolve and inject. MCP Hub looks up each entry in the configured secrets store. Prefer `secretRefs` over `envVars` whenever your secret already lives in a vault — the plain-text value never traverses this API.
+  An optional list of secret reference names to resolve and inject. MCP Hub looks up each entry in
+  the configured secrets store. Prefer `secretRefs` over `envVars` whenever your secret already
+  lives in a vault — the plain-text value never traverses this API.
 </ParamField>
 
 <ParamField body="envVars" type="object">
-  An optional map of environment variable names to plain-text values. These are stored encrypted at rest. Submitting a key that already exists overwrites the previous value.
+  An optional map of environment variable names to plain-text values. These are stored encrypted at
+  rest. Submitting a key that already exists overwrites the previous value.
 </ParamField>
 
 <Warning>
   **Handling secret values.**
 
-  - Only call this endpoint over HTTPS — `envVars` values are sent in the request body in plain text.
-  - For production credentials, prefer `secretRefs` (vault lookup) over `envVars`. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs.
-  - Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
-  - Do not log request bodies or include them in error reports.
-  - Use **least-privilege** tokens. Scope `GITHUB_TOKEN` to the specific repos and permissions the MCP server needs, and avoid full `repo` or `admin` scopes. Use scoped or project-restricted API keys for third-party services.
-  - Rotate any secret that may have leaked through shell history, screenshots, or commit history. Provider-side revocation is the only guaranteed remediation.
-</Warning>
+- Only call this endpoint over HTTPS — `envVars` values are sent in the request body in plain text.
+- For production credentials, prefer `secretRefs` (vault lookup) over `envVars`. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs.
+- Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
+- Do not log request bodies or include them in error reports.
+- Use **least-privilege** tokens. Scope `GITHUB_TOKEN` to the specific repos and permissions the MCP server needs, and avoid full `repo` or `admin` scopes. Use scoped or project-restricted API keys for third-party services.
+- Rotate any secret that may have leaked through shell history, screenshots, or commit history. Provider-side revocation is the only guaranteed remediation.
+  </Warning>
 
 Returns `200 OK` on success:
 
@@ -182,5 +191,7 @@ Returns `200 OK` on success:
 ```
 
 <Note>
-  Secrets are only injected when MCP Hub spawns the stdio process. If the connection is already running, disconnect and reconnect to apply updated secrets. Rotate any secret that may have been exposed in logs, screenshots, or shared `.env` files immediately.
+  Secrets are only injected when MCP Hub spawns the stdio process. If the connection is already
+  running, disconnect and reconnect to apply updated secrets. Rotate any secret that may have been
+  exposed in logs, screenshots, or shared `.env` files immediately.
 </Note>

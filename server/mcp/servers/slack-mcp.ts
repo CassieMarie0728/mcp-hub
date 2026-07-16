@@ -171,11 +171,11 @@ export class SlackMCPServer {
       const response = await fetch(`${this.config.baseUrl}/auth.test`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.config.token}`,
+          Authorization: `Bearer ${this.config.token}`,
           'Content-Type': 'application/json',
         },
       });
-      const data = await response.json() as { ok?: boolean };
+      const data = (await response.json()) as { ok?: boolean };
       return data.ok === true;
     } catch {
       return false;

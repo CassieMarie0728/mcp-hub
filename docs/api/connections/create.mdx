@@ -1,7 +1,7 @@
 ---
-title: "Create MCP Connection — Request Body and Response Fields"
-sidebarTitle: "Create Connection"
-description: "POST /api/connections registers a new MCP server connection. Specify the server UUID, transport config, and authentication mode to get started."
+title: 'Create MCP Connection — Request Body and Response Fields'
+sidebarTitle: 'Create Connection'
+description: 'POST /api/connections registers a new MCP server connection. Specify the server UUID, transport config, and authentication mode to get started.'
 ---
 
 Register a new MCP server connection in MCP Hub. After creating a connection, use the [connect endpoint](/api/connections/manage) to open the transport and begin the MCP initialization handshake.
@@ -13,7 +13,8 @@ POST /api/connections
 ## Request Body
 
 <ParamField body="serverId" type="string (uuid)" required>
-  The UUID of the MCP server to connect to. This must reference a server already registered in your MCP Hub instance.
+  The UUID of the MCP server to connect to. This must reference a server already registered in your
+  MCP Hub instance.
 </ParamField>
 
 <ParamField body="transportConfig" type="object" required>
@@ -35,17 +36,18 @@ POST /api/connections
     <ParamField body="stdioArgs" type="array">
       An optional list of string arguments passed to `stdioCommand` at startup. Only used when `type` is `stdio`.
     </ParamField>
+
   </Expandable>
 </ParamField>
 
 <ParamField body="authMode" type="string" required>
   The authentication mode for this connection. Accepted values:
 
-  - `none` — no authentication required
-  - `oauth2` — OAuth 2.0 flow managed by MCP Hub
-  - `bearer` — a static bearer token you supply
-  - `secret_env` — secrets injected as environment variables into the stdio process
-</ParamField>
+- `none` — no authentication required
+- `oauth2` — OAuth 2.0 flow managed by MCP Hub
+- `bearer` — a static bearer token you supply
+- `secret_env` — secrets injected as environment variables into the stdio process
+  </ParamField>
 
 <ParamField body="metadata" type="object">
   Optional metadata to associate with this connection, such as `workspaceId` or owner information.
@@ -76,6 +78,7 @@ POST /api/connections
   "authMode": "secret_env"
 }
 ```
+
 </CodeGroup>
 
 ## Response
@@ -97,5 +100,8 @@ A successful request returns `201 Created` with the full `Connection` object, in
 ```
 
 <Note>
-  A newly created connection starts in the `disconnected` status with `lifecycleState: "created"`. Call `POST /api/connections/{connectionId}/connect` to open the transport, then `POST /api/connections/{connectionId}/initialize` to complete the MCP handshake before using tools or resources.
+  A newly created connection starts in the `disconnected` status with `lifecycleState: "created"`.
+  Call `POST /api/connections/{connectionId}/connect` to open the transport, then `POST
+  /api/connections/{connectionId}/initialize` to complete the MCP handshake before using tools or
+  resources.
 </Note>

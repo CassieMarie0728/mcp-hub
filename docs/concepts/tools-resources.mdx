@@ -1,7 +1,7 @@
 ---
-title: "Tools, Resources & Prompts — MCP Hub Primitives Guide"
-sidebarTitle: "Tools & Resources"
-description: "Learn how MCP Hub discovers and interacts with tools, resources, and prompts exposed by MCP servers — the three core primitives of the MCP protocol."
+title: 'Tools, Resources & Prompts — MCP Hub Primitives Guide'
+sidebarTitle: 'Tools & Resources'
+description: 'Learn how MCP Hub discovers and interacts with tools, resources, and prompts exposed by MCP servers — the three core primitives of the MCP protocol.'
 ---
 
 MCP servers expose three types of capabilities: tools (executable functions), resources (data sources), and prompts (reusable templates). MCP Hub discovers and surfaces all three through its UI and API as soon as you connect to a server. You can browse them in the server detail screen, execute them directly, and incorporate them into macros and automation workflows.
@@ -49,12 +49,12 @@ Call `prompts/list` to see available templates on a connected server. Each promp
 
 When MCP Hub calls `tools/call`, the server responds with a `content` array and an `isError` flag. Each item in the `content` array is a typed content block. MCP Hub handles the following content types and renders each one appropriately in the results panel:
 
-| Type | Description |
-|---|---|
-| `text` | Plain text output rendered as readable prose or code. |
-| `image` | A base64-encoded image with a MIME type. MCP Hub decodes and displays it inline. |
-| `audio` | A base64-encoded audio clip with a MIME type. MCP Hub provides a playback control. |
-| `resource` | Embedded resource data or a URI link to a resource on the server. |
+| Type       | Description                                                                        |
+| ---------- | ---------------------------------------------------------------------------------- |
+| `text`     | Plain text output rendered as readable prose or code.                              |
+| `image`    | A base64-encoded image with a MIME type. MCP Hub decodes and displays it inline.   |
+| `audio`    | A base64-encoded audio clip with a MIME type. MCP Hub provides a playback control. |
+| `resource` | Embedded resource data or a URI link to a resource on the server.                  |
 
 A successful tool call response looks like this:
 
@@ -73,5 +73,7 @@ A successful tool call response looks like this:
 If `isError` is `true`, MCP Hub displays the content as an error message and highlights the result in red. The execution is still recorded in your history so you can review the error details and retry with adjusted parameters.
 
 <Info>
-  Tool schemas follow the JSON Schema specification. Properties can include `type`, `description`, `enum`, `minimum`, `maximum`, `pattern`, and more. MCP Hub uses these constraints to validate your input before sending the request, catching errors before they reach the server.
+  Tool schemas follow the JSON Schema specification. Properties can include `type`, `description`,
+  `enum`, `minimum`, `maximum`, `pattern`, and more. MCP Hub uses these constraints to validate your
+  input before sending the request, catching errors before they reach the server.
 </Info>

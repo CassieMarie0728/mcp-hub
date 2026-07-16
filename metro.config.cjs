@@ -1,6 +1,6 @@
-const { getDefaultConfig } = require("expo/metro-config");
-const { withNativeWind } = require("nativewind/metro");
-const path = require("path");
+const { getDefaultConfig } = require('expo/metro-config');
+const { withNativeWind } = require('nativewind/metro');
+const path = require('path');
 
 const config = getDefaultConfig(__dirname);
 
@@ -8,11 +8,7 @@ const config = getDefaultConfig(__dirname);
 config.resolver.platforms = ['ios', 'android', 'web'];
 
 // Support .mjs and .cjs files
-config.resolver.sourceExts = [
-  ...config.resolver.sourceExts,
-  "mjs",
-  "cjs",
-];
+config.resolver.sourceExts = [...config.resolver.sourceExts, 'mjs', 'cjs'];
 
 // Enable package exports resolution (for @trpc/server subpaths)
 config.resolver.unstable_enablePackageExports = true;
@@ -23,18 +19,15 @@ config.resolver.unstable_enableSymlinks = true;
 // Explicit aliases for @trpc/server subpaths (workaround for Metro resolution bug)
 config.resolver.extraNodeModules = {
   ...config.resolver.extraNodeModules,
-  "@trpc/server/unstable-core-do-not-import": path.resolve(
+  '@trpc/server/unstable-core-do-not-import': path.resolve(
     __dirname,
-    "node_modules/@trpc/server/dist/unstable-core-do-not-import.mjs"
+    'node_modules/@trpc/server/dist/unstable-core-do-not-import.mjs',
   ),
-  "@trpc/server/observable": path.resolve(
+  '@trpc/server/observable': path.resolve(
     __dirname,
-    "node_modules/@trpc/server/dist/observable.mjs"
+    'node_modules/@trpc/server/dist/observable.mjs',
   ),
-  "@trpc/server/rpc": path.resolve(
-    __dirname,
-    "node_modules/@trpc/server/dist/rpc.mjs"
-  ),
+  '@trpc/server/rpc': path.resolve(__dirname, 'node_modules/@trpc/server/dist/rpc.mjs'),
 };
 
 // Only block prom-client (which uses process.uptime)
@@ -44,5 +37,5 @@ config.resolver.blockList = [
 ];
 
 module.exports = withNativeWind(config, {
-  input: "./global.css",
+  input: './global.css',
 });

@@ -1,7 +1,7 @@
-import { ScrollView, Text, View, Pressable } from "react-native";
-import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
-import { useState } from "react";
+import { ScrollView, Text, View, Pressable } from 'react-native';
+import { ScreenContainer } from '@/components/screen-container';
+import { useColors } from '@/hooks/use-colors';
+import { useState } from 'react';
 
 export default function ExecutionDebuggerScreen() {
   const colors = useColors();
@@ -9,36 +9,36 @@ export default function ExecutionDebuggerScreen() {
   const [showVariables, setShowVariables] = useState(false);
 
   const execution = {
-    id: "example-run",
-    workflow: "Example workflow run",
-    status: "completed",
+    id: 'example-run',
+    workflow: 'Example workflow run',
+    status: 'completed',
     steps: [
       {
-        id: "step-1",
-        name: "Collect source items",
+        id: 'step-1',
+        name: 'Collect source items',
         duration: 245,
-        status: "completed",
-        input: { source: "connected server" },
+        status: 'completed',
+        input: { source: 'connected server' },
         output: { itemsFound: 5 },
-        variables: { items: [{ id: 1, title: "Example item" }] },
+        variables: { items: [{ id: 1, title: 'Example item' }] },
       },
       {
-        id: "step-2",
-        name: "Filter useful results",
+        id: 'step-2',
+        name: 'Filter useful results',
         duration: 120,
-        status: "completed",
+        status: 'completed',
         input: { itemsFound: 5 },
         output: { kept: 2 },
-        variables: { kept: [{ id: 1, title: "Example item" }] },
+        variables: { kept: [{ id: 1, title: 'Example item' }] },
       },
       {
-        id: "step-3",
-        name: "Send final update",
+        id: 'step-3',
+        name: 'Send final update',
         duration: 450,
-        status: "completed",
-        input: { summary: "2 items need review" },
-        output: { updateId: "example-update" },
-        variables: { updateId: "example-update" },
+        status: 'completed',
+        input: { summary: '2 items need review' },
+        output: { updateId: 'example-update' },
+        variables: { updateId: 'example-update' },
       },
     ],
   };
@@ -53,7 +53,8 @@ export default function ExecutionDebuggerScreen() {
             <Text className="text-xs font-bold tracking-widest text-background/70">DEBUG RUN</Text>
             <Text className="text-3xl font-bold text-background">Follow the trail</Text>
             <Text className="text-sm text-background/80 leading-relaxed">
-              Inspect each step, compare inputs and outputs, and find where the workflow changed shape.
+              Inspect each step, compare inputs and outputs, and find where the workflow changed
+              shape.
             </Text>
           </View>
 
@@ -73,10 +74,22 @@ export default function ExecutionDebuggerScreen() {
                 className="p-4 rounded-xl flex-row items-center justify-between"
               >
                 <View className="flex-1">
-                  <Text className={`font-semibold ${index === currentStep ? "text-background" : "text-foreground"}`}>{s.name}</Text>
-                  <Text className={`text-xs mt-1 ${index === currentStep ? "text-background/70" : "text-muted"}`}>{s.duration}ms</Text>
+                  <Text
+                    className={`font-semibold ${index === currentStep ? 'text-background' : 'text-foreground'}`}
+                  >
+                    {s.name}
+                  </Text>
+                  <Text
+                    className={`text-xs mt-1 ${index === currentStep ? 'text-background/70' : 'text-muted'}`}
+                  >
+                    {s.duration}ms
+                  </Text>
                 </View>
-                <Text className={`text-lg ${index === currentStep ? "text-background" : "text-success"}`}>✓</Text>
+                <Text
+                  className={`text-lg ${index === currentStep ? 'text-background' : 'text-success'}`}
+                >
+                  ✓
+                </Text>
               </Pressable>
             ))}
           </View>
@@ -101,9 +114,12 @@ export default function ExecutionDebuggerScreen() {
               </View>
             </View>
 
-            <Pressable onPress={() => setShowVariables(!showVariables)} className="py-2 px-3 bg-background rounded-lg flex-row items-center justify-between border border-border">
+            <Pressable
+              onPress={() => setShowVariables(!showVariables)}
+              className="py-2 px-3 bg-background rounded-lg flex-row items-center justify-between border border-border"
+            >
               <Text className="text-sm font-semibold text-foreground">Step variables</Text>
-              <Text className="text-primary">{showVariables ? "▼" : "▶"}</Text>
+              <Text className="text-primary">{showVariables ? '▼' : '▶'}</Text>
             </Pressable>
 
             {showVariables && (
@@ -116,11 +132,20 @@ export default function ExecutionDebuggerScreen() {
           </View>
 
           <View className="flex-row gap-3">
-            <Pressable onPress={() => currentStep > 0 && setCurrentStep(currentStep - 1)} className="flex-1 py-3 rounded-full items-center border border-primary">
+            <Pressable
+              onPress={() => currentStep > 0 && setCurrentStep(currentStep - 1)}
+              className="flex-1 py-3 rounded-full items-center border border-primary"
+            >
               <Text className="text-primary font-semibold">Previous</Text>
             </Pressable>
 
-            <Pressable onPress={() => currentStep < execution.steps.length - 1 && setCurrentStep(currentStep + 1)} style={{ backgroundColor: colors.primary }} className="flex-1 py-3 rounded-full items-center">
+            <Pressable
+              onPress={() =>
+                currentStep < execution.steps.length - 1 && setCurrentStep(currentStep + 1)
+              }
+              style={{ backgroundColor: colors.primary }}
+              className="flex-1 py-3 rounded-full items-center"
+            >
               <Text className="text-background font-semibold">Next</Text>
             </Pressable>
           </View>

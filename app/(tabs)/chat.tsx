@@ -93,9 +93,7 @@ export default function ChatScreen() {
         const [, serverName, toolName, paramsStr] = toolCallMatch;
 
         // Find server by name
-        const server = servers.find((s) =>
-          s.name.toLowerCase().includes(serverName.toLowerCase())
-        );
+        const server = servers.find((s) => s.name.toLowerCase().includes(serverName.toLowerCase()));
 
         if (!server) {
           const assistantMessage: ChatMessage = {
@@ -122,7 +120,7 @@ export default function ChatScreen() {
         }
 
         // Execute tool
-        const result = await executeTool(server.id, toolName, params) as any;
+        const result = (await executeTool(server.id, toolName, params)) as any;
         // Ensure result has an id
         if (!result.id) {
           result.id = `result-${Date.now()}`;
@@ -241,9 +239,7 @@ export default function ChatScreen() {
         {messages.length === 0 && (
           <View className="flex-1 items-center justify-center px-6">
             <MaterialIcons name="chat-bubble-outline" size={48} color={colors.muted} />
-            <Text className="text-foreground font-semibold mt-4 text-center">
-              No messages yet
-            </Text>
+            <Text className="text-foreground font-semibold mt-4 text-center">No messages yet</Text>
             <Text className="text-muted text-sm mt-2 text-center">
               Use format: @server_name tool_name param1=value1
             </Text>
@@ -293,7 +289,9 @@ export default function ChatScreen() {
                       <TouchableOpacity
                         key={tool.name}
                         onPress={() =>
-                          setInputText(`@${servers.find((s) => s.id === selectedServerId)?.name || 'server'} ${tool.name}`)
+                          setInputText(
+                            `@${servers.find((s) => s.id === selectedServerId)?.name || 'server'} ${tool.name}`,
+                          )
                         }
                         className="bg-primary/10 border border-primary px-3 py-1 rounded-full"
                       >

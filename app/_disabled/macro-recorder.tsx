@@ -54,7 +54,10 @@ export default function MacroRecorderScreen() {
   const handleStopRecording = useCallback(() => {
     setIsRecording(false);
     setIsPaused(false);
-    Alert.alert('Recording Stopped', `Recorded ${recordedActions.length} actions in ${(recordingDuration / 1000).toFixed(1)}s`);
+    Alert.alert(
+      'Recording Stopped',
+      `Recorded ${recordedActions.length} actions in ${(recordingDuration / 1000).toFixed(1)}s`,
+    );
   }, [recordedActions.length, recordingDuration]);
 
   /**
@@ -234,19 +237,21 @@ export default function MacroRecorderScreen() {
           <View
             className={cn(
               'rounded-xl p-4 gap-3',
-              isRecording ? 'bg-error/10 border border-error' : 'bg-surface border border-border'
+              isRecording ? 'bg-error/10 border border-error' : 'bg-surface border border-border',
             )}
           >
             <View className="flex-row items-center justify-between">
               <View className="flex-row items-center gap-2">
-                {isRecording && (
-                  <View className="w-3 h-3 rounded-full bg-error animate-pulse" />
-                )}
-                <Text className={cn('font-semibold', isRecording ? 'text-error' : 'text-foreground')}>
+                {isRecording && <View className="w-3 h-3 rounded-full bg-error animate-pulse" />}
+                <Text
+                  className={cn('font-semibold', isRecording ? 'text-error' : 'text-foreground')}
+                >
                   {isRecording ? 'RECORDING' : 'READY'}
                 </Text>
               </View>
-              <Text className="text-lg font-mono text-foreground">{formatDuration(recordingDuration)}</Text>
+              <Text className="text-lg font-mono text-foreground">
+                {formatDuration(recordingDuration)}
+              </Text>
             </View>
 
             <Text className="text-sm text-muted">
@@ -267,7 +272,10 @@ export default function MacroRecorderScreen() {
               <View className="gap-2">
                 <Pressable
                   onPress={handleTogglePause}
-                  className={cn('rounded-lg p-4 active:opacity-80', isPaused ? 'bg-success' : 'bg-warning')}
+                  className={cn(
+                    'rounded-lg p-4 active:opacity-80',
+                    isPaused ? 'bg-success' : 'bg-warning',
+                  )}
                 >
                   <Text className="text-center font-semibold text-background">
                     {isPaused ? 'Resume' : 'Pause'}
@@ -332,10 +340,14 @@ export default function MacroRecorderScreen() {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item, index }) => (
                   <Pressable
-                    onPress={() => setSelectedActionIndex(selectedActionIndex === index ? null : index)}
+                    onPress={() =>
+                      setSelectedActionIndex(selectedActionIndex === index ? null : index)
+                    }
                     className={cn(
                       'rounded-lg p-3 mb-2 flex-row items-center justify-between',
-                      selectedActionIndex === index ? 'bg-primary/20 border border-primary' : 'bg-surface border border-border'
+                      selectedActionIndex === index
+                        ? 'bg-primary/20 border border-primary'
+                        : 'bg-surface border border-border',
                     )}
                   >
                     <View className="flex-1">
@@ -343,7 +355,9 @@ export default function MacroRecorderScreen() {
                         {index + 1}. {item.type.toUpperCase()}
                       </Text>
                       <Text className="text-xs text-muted mt-1">{item.description}</Text>
-                      <Text className="text-xs text-muted mt-1">@ {formatDuration(item.timestamp)}</Text>
+                      <Text className="text-xs text-muted mt-1">
+                        @ {formatDuration(item.timestamp)}
+                      </Text>
                     </View>
                     {selectedActionIndex === index && (
                       <Pressable
@@ -366,7 +380,7 @@ export default function MacroRecorderScreen() {
               disabled={recordedActions.length === 0 || isRecording}
               className={cn(
                 'rounded-lg p-4 active:opacity-80',
-                recordedActions.length === 0 || isRecording ? 'bg-muted/50' : 'bg-success'
+                recordedActions.length === 0 || isRecording ? 'bg-muted/50' : 'bg-success',
               )}
             >
               <Text className="text-center font-semibold text-background">

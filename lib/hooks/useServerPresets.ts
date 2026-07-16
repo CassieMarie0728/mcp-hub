@@ -18,8 +18,13 @@ export interface UseServerPresetsReturn {
   loadPresets: (filter?: ServerPresetFilter) => Promise<void>;
   loadFavorites: () => Promise<void>;
   loadRecentlyUsed: (limit?: number) => Promise<void>;
-  createPreset: (preset: Omit<ServerPreset, 'id' | 'createdAt' | 'updatedAt'>) => Promise<ServerPreset>;
-  createFromTemplate: (templateKey: string, overrides?: Partial<ServerPreset>) => Promise<ServerPreset>;
+  createPreset: (
+    preset: Omit<ServerPreset, 'id' | 'createdAt' | 'updatedAt'>,
+  ) => Promise<ServerPreset>;
+  createFromTemplate: (
+    templateKey: string,
+    overrides?: Partial<ServerPreset>,
+  ) => Promise<ServerPreset>;
   getPreset: (id: string) => Promise<ServerPreset | null>;
   updatePreset: (id: string, updates: Partial<ServerPreset>) => Promise<ServerPreset>;
   deletePreset: (id: string) => Promise<void>;
@@ -105,7 +110,7 @@ export function useServerPresets(): UseServerPresetsReturn {
         throw err;
       }
     },
-    [loadPresets]
+    [loadPresets],
   );
 
   // Create from template
@@ -124,7 +129,7 @@ export function useServerPresets(): UseServerPresetsReturn {
         throw err;
       }
     },
-    [loadPresets]
+    [loadPresets],
   );
 
   // Get single preset
@@ -156,7 +161,7 @@ export function useServerPresets(): UseServerPresetsReturn {
         throw err;
       }
     },
-    [loadPresets]
+    [loadPresets],
   );
 
   // Delete preset
@@ -173,7 +178,7 @@ export function useServerPresets(): UseServerPresetsReturn {
         console.error('Error deleting preset:', err);
       }
     },
-    [loadPresets]
+    [loadPresets],
   );
 
   // Toggle favorite
@@ -191,22 +196,25 @@ export function useServerPresets(): UseServerPresetsReturn {
         console.error('Error toggling favorite:', err);
       }
     },
-    [loadPresets, loadFavorites]
+    [loadPresets, loadFavorites],
   );
 
   // Record usage
-  const recordUsage = useCallback(async (id: string) => {
-    try {
-      setError(null);
-      await ServerPresetManager.recordUsage(id);
-      // Reload recently used
-      await loadRecentlyUsed();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to record usage';
-      setError(message);
-      console.error('Error recording usage:', err);
-    }
-  }, [loadRecentlyUsed]);
+  const recordUsage = useCallback(
+    async (id: string) => {
+      try {
+        setError(null);
+        await ServerPresetManager.recordUsage(id);
+        // Reload recently used
+        await loadRecentlyUsed();
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to record usage';
+        setError(message);
+        console.error('Error recording usage:', err);
+      }
+    },
+    [loadRecentlyUsed],
+  );
 
   // Export as JSON
   const exportAsJson = useCallback(async (): Promise<string> => {
@@ -237,7 +245,7 @@ export function useServerPresets(): UseServerPresetsReturn {
         throw err;
       }
     },
-    [loadPresets]
+    [loadPresets],
   );
 
   // Get templates

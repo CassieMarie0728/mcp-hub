@@ -6,17 +6,17 @@ MCP Hub is a React Native mobile application built with Expo, designed to provid
 
 ## Technology Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **UI Framework** | React Native | 0.81.5 |
-| **App Framework** | Expo | 54.0.29 |
-| **Routing** | Expo Router | 6.0.24 |
-| **Styling** | NativeWind (Tailwind CSS) | 4.2.1 |
-| **State Management** | React Context + AsyncStorage | - |
-| **API Client** | tRPC + TanStack Query | 11.7.2 / 5.90.12 |
-| **Backend** | Express.js | 4.22.1 |
-| **Database** | PostgreSQL | - |
-| **Language** | TypeScript | 5.9.3 |
+| Layer                | Technology                   | Version          |
+| -------------------- | ---------------------------- | ---------------- |
+| **UI Framework**     | React Native                 | 0.81.5           |
+| **App Framework**    | Expo                         | 54.0.29          |
+| **Routing**          | Expo Router                  | 6.0.24           |
+| **Styling**          | NativeWind (Tailwind CSS)    | 4.2.1            |
+| **State Management** | React Context + AsyncStorage | -                |
+| **API Client**       | tRPC + TanStack Query        | 11.7.2 / 5.90.12 |
+| **Backend**          | Express.js                   | 4.22.1           |
+| **Database**         | PostgreSQL                   | -                |
+| **Language**         | TypeScript                   | 5.9.3            |
 
 ## Project Structure
 
@@ -99,24 +99,28 @@ GestureHandlerRootView
 ### Key Contexts
 
 #### 1. **OnboardingContext** (`lib/onboarding-context.tsx`)
+
 - **Purpose**: Manages onboarding flow state
 - **State**: Current step, completion status, progress
 - **Persistence**: AsyncStorage
 - **Functions**: nextStep, previousStep, skipOnboarding, completeOnboarding, resetOnboarding
 
 #### 2. **AppContext** (`lib/app-context.tsx`)
+
 - **Purpose**: Global app state (servers, tools, execution history)
 - **State**: Servers list, tools, execution results, user preferences
 - **Persistence**: AsyncStorage + Backend sync
 - **Functions**: CRUD operations for servers, tools, macros
 
 #### 3. **ThemeProvider** (`lib/theme-provider.tsx`)
+
 - **Purpose**: Theme management (light/dark mode)
 - **State**: Current theme, color scheme
 - **Persistence**: AsyncStorage
 - **Functions**: toggleTheme, setTheme
 
 #### 4. **AIAssistantProvider** (`hooks/use-ai-assistant.ts`)
+
 - **Purpose**: AI assistant state and interactions
 - **State**: Chat history, assistant status
 - **Persistence**: AsyncStorage
@@ -125,16 +129,19 @@ GestureHandlerRootView
 ## Data Flow
 
 ### User Authentication Flow
+
 ```
 User → OAuth Login → OAuth Callback → Session Storage → Protected Routes
 ```
 
 ### MCP Server Connection Flow
+
 ```
 User Input → AppContext → Backend API → Server Validation → Storage → UI Update
 ```
 
 ### Tool Execution Flow
+
 ```
 User Selection → Tool Details → Parameter Input → Execute → History Storage → Result Display
 ```
@@ -150,6 +157,7 @@ const servers = await trpc.server.list.query();
 ```
 
 ### API Endpoints Structure
+
 - `/server` - Server management (connect, list, delete, update)
 - `/tool` - Tool operations (list, execute, get details)
 - `/execution` - Execution history (list, get, delete)
@@ -160,18 +168,21 @@ const servers = await trpc.server.list.query();
 ## Component Architecture
 
 ### Screen Components
+
 - Located in `app/(tabs)/`
 - Use `ScreenContainer` for proper SafeArea handling
 - Implement error boundaries for error handling
 - Use hooks for state management
 
 ### UI Components
+
 - Located in `components/`
 - Reusable across screens
 - Styled with Tailwind CSS (NativeWind)
 - Type-safe with TypeScript
 
 ### Custom Hooks
+
 - Located in `hooks/`
 - Encapsulate business logic
 - Provide clean API for components
@@ -180,12 +191,14 @@ const servers = await trpc.server.list.query();
 ## Error Handling
 
 ### Error Boundary
+
 - Catches React component errors
 - Displays user-friendly error UI
 - Provides recovery options
 - Logs errors for debugging
 
 ### API Error Handling
+
 - tRPC handles network errors
 - TanStack Query provides retry logic
 - Error messages displayed to users
@@ -211,6 +224,7 @@ const servers = await trpc.server.list.query();
 ## Deployment Architecture
 
 ### Development
+
 ```
 Local Machine
   ├── Metro Bundler (Port 8081)
@@ -219,6 +233,7 @@ Local Machine
 ```
 
 ### Production
+
 ```
 Cloud Platform (Vercel/Firebase)
   ├── Frontend (Static assets)
@@ -229,33 +244,41 @@ Cloud Platform (Vercel/Firebase)
 ## Key Design Patterns
 
 ### 1. **Provider Pattern**
+
 Context providers wrap the app to provide global state and utilities.
 
 ### 2. **Hook Pattern**
+
 Custom hooks encapsulate business logic and state management.
 
 ### 3. **Container/Presentational Pattern**
+
 Screens (containers) manage logic, components (presentational) handle UI.
 
 ### 4. **Error Boundary Pattern**
+
 Error boundaries catch and handle component errors gracefully.
 
 ### 5. **Context Selector Pattern**
+
 Consumers can select specific parts of context to avoid unnecessary re-renders.
 
 ## Testing Architecture
 
 ### Unit Tests
+
 - Located in `lib/__tests__/`
 - Test business logic and utilities
 - Use Vitest framework
 
 ### Integration Tests
+
 - Located in `tests/`
 - Test API endpoints and workflows
 - Test authentication flows
 
 ### Component Tests
+
 - Test UI components in isolation
 - Test user interactions
 - Test accessibility

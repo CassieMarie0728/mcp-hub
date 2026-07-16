@@ -205,12 +205,10 @@ export class HealthChecker {
 
     for (const [name, check] of this.checks) {
       try {
-        const result = await Promise.race([
+        const result = (await Promise.race([
           check(),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Check timeout')), 5000),
-          ),
-        ]) as { status: string; message: string };
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Check timeout')), 5000)),
+        ])) as { status: string; message: string };
 
         const status = result.status === 'ok' ? 'ok' : 'warning';
         if (status === 'warning') overallStatus = 'degraded';
@@ -376,7 +374,12 @@ export const alertManager = new AlertManager();
 export async function setupSlackAlerts(webhookUrl: string) {
   alertManager.registerHandler(async (alert) => {
     try {
-      const color = alert.severity === 'critical' ? 'danger' : alert.severity === 'warning' ? 'warning' : 'good';
+      const color =
+        alert.severity === 'critical'
+          ? 'danger'
+          : alert.severity === 'warning'
+            ? 'warning'
+            : 'good';
 
       await fetch(webhookUrl, {
         method: 'POST',

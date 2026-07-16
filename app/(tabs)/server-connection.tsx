@@ -1,4 +1,12 @@
-import { ScrollView, Text, View, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
+import {
+  ScrollView,
+  Text,
+  View,
+  TextInput,
+  Pressable,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import { useState, useCallback, useEffect } from 'react';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
@@ -44,7 +52,11 @@ export default function ServerConnectionScreen() {
 
     if (!formData.host.trim()) {
       errors.host = 'Host is required';
-    } else if (!/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$|^localhost$|^127\.0\.0\.1$/.test(formData.host)) {
+    } else if (
+      !/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$|^localhost$|^127\.0\.0\.1$/.test(
+        formData.host,
+      )
+    ) {
       errors.host = 'Invalid host format';
     }
 
@@ -102,14 +114,14 @@ export default function ServerConnectionScreen() {
     onChangeText: (text: string) => void,
     placeholder: string = '',
     keyboardType: 'default' | 'numeric' | 'email-address' = 'default',
-    error?: string
+    error?: string,
   ) => (
     <View className="mb-4">
       <Text className="text-sm font-semibold text-foreground mb-2">{label}</Text>
       <TextInput
         className={cn(
           'px-4 py-3 rounded-lg border text-foreground',
-          error ? 'border-error bg-error/10' : 'border-border bg-surface'
+          error ? 'border-error bg-error/10' : 'border-border bg-surface',
         )}
         placeholder={placeholder}
         placeholderTextColor={colors.muted}
@@ -137,13 +149,13 @@ export default function ServerConnectionScreen() {
               'flex-1 py-3 px-4 rounded-lg border-2',
               formData.transport === transport
                 ? 'border-primary bg-primary/10'
-                : 'border-border bg-surface'
+                : 'border-border bg-surface',
             )}
           >
             <Text
               className={cn(
                 'text-center font-semibold text-sm',
-                formData.transport === transport ? 'text-primary' : 'text-foreground'
+                formData.transport === transport ? 'text-primary' : 'text-foreground',
               )}
             >
               {transport}
@@ -170,7 +182,7 @@ export default function ServerConnectionScreen() {
               key={conn.id}
               className={cn(
                 'p-4 rounded-lg border',
-                conn.isConnected ? 'border-success bg-success/5' : 'border-error bg-error/5'
+                conn.isConnected ? 'border-success bg-success/5' : 'border-error bg-error/5',
               )}
             >
               <View className="flex-row items-center justify-between mb-2">
@@ -178,13 +190,13 @@ export default function ServerConnectionScreen() {
                 <View
                   className={cn(
                     'px-2 py-1 rounded-full',
-                    conn.isConnected ? 'bg-success/20' : 'bg-error/20'
+                    conn.isConnected ? 'bg-success/20' : 'bg-error/20',
                   )}
                 >
                   <Text
                     className={cn(
                       'text-xs font-semibold',
-                      conn.isConnected ? 'text-success' : 'text-error'
+                      conn.isConnected ? 'text-success' : 'text-error',
                     )}
                   >
                     {conn.status}
@@ -219,7 +231,7 @@ export default function ServerConnectionScreen() {
         {/* Form */}
         <View className="bg-surface rounded-lg p-6 mb-6 border border-border">
           {renderField('Server Name', formData.name, (text) =>
-            setFormData((prev) => ({ ...prev, name: text }))
+            setFormData((prev) => ({ ...prev, name: text })),
           )}
 
           {renderTransportSelector()}
@@ -228,7 +240,7 @@ export default function ServerConnectionScreen() {
             'Host',
             formData.host,
             (text) => setFormData((prev) => ({ ...prev, host: text })),
-            'localhost or IP address'
+            'localhost or IP address',
           )}
 
           {renderField(
@@ -236,7 +248,7 @@ export default function ServerConnectionScreen() {
             formData.port,
             (text) => setFormData((prev) => ({ ...prev, port: parseInt(text) || 0 })),
             '3000',
-            'numeric'
+            'numeric',
           )}
 
           {/* Advanced Options */}
@@ -254,31 +266,36 @@ export default function ServerConnectionScreen() {
                 'Auth Token (Optional)',
                 formData.authToken,
                 (text) => setFormData((prev) => ({ ...prev, authToken: text })),
-                'Bearer token or API key'
+                'Bearer token or API key',
               )}
 
               {renderField(
                 'Connection Timeout (ms)',
                 formData.connectionTimeoutMs,
                 (text) =>
-                  setFormData((prev) => ({ ...prev, connectionTimeoutMs: parseInt(text) || 30000 })),
+                  setFormData((prev) => ({
+                    ...prev,
+                    connectionTimeoutMs: parseInt(text) || 30000,
+                  })),
                 '30000',
-                'numeric'
+                'numeric',
               )}
 
               <View className="flex-row items-center justify-between py-3">
-                <Text className="font-semibold text-foreground">Use Secure Connection (HTTPS/WSS)</Text>
+                <Text className="font-semibold text-foreground">
+                  Use Secure Connection (HTTPS/WSS)
+                </Text>
                 <Pressable
                   onPress={() => setFormData((prev) => ({ ...prev, isSecure: !prev.isSecure }))}
                   className={cn(
                     'w-12 h-7 rounded-full flex items-center justify-start p-1',
-                    formData.isSecure ? 'bg-primary' : 'bg-border'
+                    formData.isSecure ? 'bg-primary' : 'bg-border',
                   )}
                 >
                   <View
                     className={cn(
                       'w-5 h-5 rounded-full bg-background transition-all',
-                      formData.isSecure ? 'translate-x-5' : 'translate-x-0'
+                      formData.isSecure ? 'translate-x-5' : 'translate-x-0',
                     )}
                   />
                 </Pressable>
@@ -292,7 +309,7 @@ export default function ServerConnectionScreen() {
             disabled={isLoading}
             className={cn(
               'py-4 px-6 rounded-lg flex-row items-center justify-center mt-6',
-              isLoading ? 'bg-primary/50' : 'bg-primary'
+              isLoading ? 'bg-primary/50' : 'bg-primary',
             )}
           >
             {isLoading ? (

@@ -277,21 +277,13 @@ describe('Intent Parser', () => {
     });
 
     it('should calculate success rate', () => {
-      const history = [
-        { success: true },
-        { success: true },
-        { success: false },
-      ];
+      const history = [{ success: true }, { success: true }, { success: false }];
       const successRate = history.filter((h) => h.success).length / history.length;
       expect(successRate).toBeCloseTo(0.667, 2);
     });
 
     it('should calculate average duration', () => {
-      const history = [
-        { duration: 100 },
-        { duration: 200 },
-        { duration: 300 },
-      ];
+      const history = [{ duration: 100 }, { duration: 200 }, { duration: 300 }];
       const avgDuration = history.reduce((sum, h) => sum + h.duration, 0) / history.length;
       expect(avgDuration).toBe(200);
     });

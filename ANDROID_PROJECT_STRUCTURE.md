@@ -85,7 +85,7 @@ Configures the app module specifically:
 ```gradle
 android {
     compileSdk 34
-    
+
     defaultConfig {
         applicationId "space.manus.mcp.hub.t20260329022456"
         minSdk 24
@@ -93,7 +93,7 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
-    
+
     buildTypes {
         debug {
             debuggable true
@@ -109,7 +109,7 @@ dependencies {
     // React Native and Expo
     implementation 'com.facebook.react:react-native:0.81.5'
     implementation 'expo:expo:~54.0.0'
-    
+
     // Other dependencies...
 }
 ```
@@ -156,13 +156,13 @@ Declares app metadata, permissions, and components:
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.RECORD_AUDIO"/>
   <uses-permission android:name="android.permission.CAMERA"/>
-  
+
   <application
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:theme="@style/AppTheme">
-    
+
     <!-- Activities -->
     <activity
         android:name=".MainActivity"
@@ -173,12 +173,12 @@ Declares app metadata, permissions, and components:
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    
+
     <!-- Services -->
     <service
         android:name=".MyService"
         android:exported="false"/>
-    
+
   </application>
 </manifest>
 ```
@@ -225,7 +225,7 @@ import expo.modules.ApplicationLifecycleDispatcher
 
 class MainApplication : Application(), ReactApplication {
   override val reactNativeHost: ReactNativeHost = ...
-  
+
   override fun onCreate() {
     super.onCreate()
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
@@ -318,16 +318,16 @@ android/app/build/outputs/
 
 ## Resource Directories
 
-| Directory | Purpose | Example |
-|-----------|---------|---------|
-| `drawable/` | Vector drawables and images | `ic_home.xml`, `background.png` |
-| `mipmap-*/` | App icons (various DPI) | `ic_launcher.png` (48×48, 72×72, etc.) |
-| `layout/` | XML layout files | `activity_main.xml` |
-| `values/` | String, color, dimension resources | `strings.xml`, `colors.xml` |
-| `values-night/` | Dark mode resources | `colors.xml` (dark variants) |
-| `values-*/` | Localized resources | `values-es/`, `values-fr/` |
-| `raw/` | Raw binary files | `data.json`, `config.xml` |
-| `menu/` | Menu definitions | `main_menu.xml` |
+| Directory       | Purpose                            | Example                                |
+| --------------- | ---------------------------------- | -------------------------------------- |
+| `drawable/`     | Vector drawables and images        | `ic_home.xml`, `background.png`        |
+| `mipmap-*/`     | App icons (various DPI)            | `ic_launcher.png` (48×48, 72×72, etc.) |
+| `layout/`       | XML layout files                   | `activity_main.xml`                    |
+| `values/`       | String, color, dimension resources | `strings.xml`, `colors.xml`            |
+| `values-night/` | Dark mode resources                | `colors.xml` (dark variants)           |
+| `values-*/`     | Localized resources                | `values-es/`, `values-fr/`             |
+| `raw/`          | Raw binary files                   | `data.json`, `config.xml`              |
+| `menu/`         | Menu definitions                   | `main_menu.xml`                        |
 
 ## Gradle Wrapper
 

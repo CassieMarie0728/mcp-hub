@@ -1,7 +1,7 @@
 ---
-title: "Connect, Configure, and Manage MCP Servers in MCP Hub"
-sidebarTitle: "Connect Servers"
-description: "Add, configure, and manage MCP server connections in MCP Hub. Supports HTTP and stdio transports with OAuth2, bearer, or no authentication."
+title: 'Connect, Configure, and Manage MCP Servers in MCP Hub'
+sidebarTitle: 'Connect Servers'
+description: 'Add, configure, and manage MCP server connections in MCP Hub. Supports HTTP and stdio transports with OAuth2, bearer, or no authentication.'
 ---
 
 Connect MCP Hub to any MCP-compatible server to start discovering and executing tools. MCP Hub supports both HTTP and stdio transports, and multiple authentication modes — so whether you're running a local server on your device or connecting to a remote API, you can get up and running in seconds.
@@ -10,30 +10,36 @@ Connect MCP Hub to any MCP-compatible server to start discovering and executing 
 
 <Steps>
   <Step title="Open the app and navigate to the Servers tab">
-    The Servers tab lists all of your saved connections. If this is your first time, the list will be empty.
+    The Servers tab lists all of your saved connections. If this is your first time, the list will
+    be empty.
   </Step>
   <Step title="Tap Add Server">
     Tap the **Add Server** button in the top-right corner to open the server configuration screen.
   </Step>
   <Step title="Enter a name and connection details">
-    Give your server a descriptive name (e.g., `Filesystem Server`). Then enter either the server URL (for HTTP) or the command that starts the server process (for stdio).
+    Give your server a descriptive name (e.g., `Filesystem Server`). Then enter either the server
+    URL (for HTTP) or the command that starts the server process (for stdio).
   </Step>
   <Step title="Choose a transport type">
-    Select **HTTP** if your server exposes an HTTP endpoint, or **Stdio** if MCP Hub should launch a local process and communicate over stdin/stdout.
+    Select **HTTP** if your server exposes an HTTP endpoint, or **Stdio** if MCP Hub should launch a
+    local process and communicate over stdin/stdout.
   </Step>
   <Step title="Choose an authentication mode">
-    Select one of: **None**, **Bearer Token**, **OAuth2**, or **Secret Env**. See the [Authentication](#authentication) section below for guidance on which mode to choose.
+    Select one of: **None**, **Bearer Token**, **OAuth2**, or **Secret Env**. See the
+    [Authentication](#authentication) section below for guidance on which mode to choose.
   </Step>
   <Step title="Provide credentials if required">
-    - **Bearer Token** — paste your API key or static token into the Token field.
-    - **OAuth2** — tap **Connect** and complete the OAuth authorization flow in the browser sheet that opens.
-    - **Secret Env** — specify the environment variable names that hold your secrets. MCP Hub injects them into the process environment at launch.
+    - **Bearer Token** — paste your API key or static token into the Token field. - **OAuth2** — tap
+    **Connect** and complete the OAuth authorization flow in the browser sheet that opens. -
+    **Secret Env** — specify the environment variable names that hold your secrets. MCP Hub injects
+    them into the process environment at launch.
   </Step>
   <Step title="Tap Save">
     MCP Hub validates your configuration and saves the server to your list.
   </Step>
   <Step title="Tap Connect">
-    Select the server from your list and tap **Connect**. The status indicator changes to **CONNECTED** once the handshake completes and tools have been discovered.
+    Select the server from your list and tap **Connect**. The status indicator changes to
+    **CONNECTED** once the handshake completes and tools have been discovered.
   </Step>
 </Steps>
 
@@ -48,6 +54,7 @@ https://my-server.com/mcp
 MCP Hub sends JSON-RPC requests via HTTP POST to that URL and processes the responses. If the server supports **Server-Sent Events (SSE)**, MCP Hub will automatically upgrade to SSE streaming for real-time progress events during long-running tool calls.
 
 Use HTTP transport when your MCP server is:
+
 - Hosted on a remote machine or cloud service
 - Running locally but exposed over HTTP (e.g., `http://localhost:8080/mcp`)
 - Behind a reverse proxy or API gateway
@@ -64,34 +71,36 @@ Args:    -y @modelcontextprotocol/server-filesystem /path/to/dir
 MCP Hub spawns the process when you connect and terminates it when you disconnect. You can also pass additional arguments to configure the server's behavior — separate multiple arguments with spaces.
 
 Use stdio transport when your MCP server is:
+
 - A Node.js, Python, or shell script you run locally
 - A package from the MCP ecosystem (e.g., `@modelcontextprotocol/server-filesystem`)
 - A tool you are developing and testing on your device
 
 <Warning>
-  Stdio transport launches processes directly on your device. Only connect to stdio servers from sources you trust. A malicious server command could access local files or system resources.
+  Stdio transport launches processes directly on your device. Only connect to stdio servers from
+  sources you trust. A malicious server command could access local files or system resources.
 </Warning>
 
 ## Authentication
 
 MCP Hub supports four authentication modes. Choose the one that matches how your server is secured.
 
-| Mode | When to use |
-|---|---|
-| **None** | Open MCP servers, local development environments, or servers protected at the network level. Use only over loopback (`127.0.0.1`) or a trusted private network, never with a public HTTP endpoint. |
-| **Bearer Token** | Servers that require an API key or a static token in the `Authorization: Bearer` header. Always pair with an `https://` URL — `http://` exposes the token to interception. |
-| **OAuth2** | Servers with user-delegated auth (GitHub, Slack, Google, etc.) — MCP Hub handles the full PKCE flow and token refresh |
-| **Secret Env** | Stdio servers that expect credentials as environment variables (e.g., `GITHUB_TOKEN`, `OPENAI_API_KEY`) |
+| Mode             | When to use                                                                                                                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **None**         | Open MCP servers, local development environments, or servers protected at the network level. Use only over loopback (`127.0.0.1`) or a trusted private network, never with a public HTTP endpoint. |
+| **Bearer Token** | Servers that require an API key or a static token in the `Authorization: Bearer` header. Always pair with an `https://` URL — `http://` exposes the token to interception.                         |
+| **OAuth2**       | Servers with user-delegated auth (GitHub, Slack, Google, etc.) — MCP Hub handles the full PKCE flow and token refresh                                                                              |
+| **Secret Env**   | Stdio servers that expect credentials as environment variables (e.g., `GITHUB_TOKEN`, `OPENAI_API_KEY`)                                                                                            |
 
 For OAuth2 servers, MCP Hub stores the access and refresh tokens securely in the device keychain and automatically refreshes them before they expire. You can review and revoke tokens at any time from the **Token Management** screen.
 
 <Tip>
   When issuing tokens to attach here, follow the **principle of least privilege**:
 
-  - Grant only the scopes the MCP server needs (for example, `read:user` instead of full `repo` if read-only profile access is enough).
-  - Set the shortest practical expiry.
-  - Revoke tokens from the provider's dashboard when they are no longer needed.
-</Tip>
+- Grant only the scopes the MCP server needs (for example, `read:user` instead of full `repo` if read-only profile access is enough).
+- Set the shortest practical expiry.
+- Revoke tokens from the provider's dashboard when they are no longer needed.
+  </Tip>
 
 ## Managing Connections
 

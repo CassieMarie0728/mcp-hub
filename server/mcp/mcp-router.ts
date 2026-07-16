@@ -26,19 +26,34 @@ const MCPServerConfigSchema = z.object({
   retryAttempts: z.number().optional(),
 });
 
+/**
+ * Redact sensitive authentication information from server configuration
+ */
+function redactServerConfig(config: any) {
+  if (!config || typeof config !== 'object' || 'error' in config) {
+    return config;
+  }
+
+  const redacted = { ...config };
+  if (redacted.auth) {
+    redacted.auth = { ...redacted.auth };
+    delete redacted.auth.token;
+    delete redacted.auth.password;
+  }
+  return redacted;
+}
+
 export const mcpRouter = router({
   /**
    * Register a new MCP server
    */
-  registerServer: protectedProcedure
-    .input(MCPServerConfigSchema)
-    .mutation(({ input }) => {
-      mcpServerManager.registerServer(input);
-      return {
-        success: true,
-        serverId: input.id,
-      };
-    }),
+  registerServer: protectedProcedure.input(MCPServerConfigSchema).mutation(({ input }) => {
+    mcpServerManager.registerServer(input);
+    return {
+      success: true,
+      serverId: input.id,
+    };
+  }),
 
   /**
    * Discover tools from an MCP server
@@ -72,14 +87,14 @@ export const mcpRouter = router({
         serverId: z.string(),
         toolName: z.string(),
         input: z.record(z.string(), z.any()),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
         const result = await mcpServerManager.executeTool(
           input.serverId,
           input.toolName,
-          input.input
+          input.input,
         );
 
         return {
@@ -165,18 +180,20 @@ export const mcpRouter = router({
    * Get all registered servers
    */
   getAllServers: protectedProcedure.query(() => {
-    return mcpServerManager.getAllServers();
+    const servers = mcpServerManager.getAllServers();
+    return servers.map(redactServerConfig);
   }),
 
   /**
    * Get a specific server config
    */
-  getServer: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .query(({ input }) => {
-      const server = mcpServerManager.getServer(input.serverId);
-      return server || { error: 'Server not found' };
-    }),
+  getServer: protectedProcedure.input(z.object({ serverId: z.string() })).query(({ input }) => {
+    const server = mcpServerManager.getServer(input.serverId);
+    if (!server) {
+      return { error: 'Server not found' };
+    }
+    return redactServerConfig(server);
+  }),
 });
 
 export type MCPRouter = typeof mcpRouter;

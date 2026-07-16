@@ -14,7 +14,9 @@ export default function RecommendationsScreen() {
   const colors = useColors();
 
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'personalized' | 'trending' | 'category'>('personalized');
+  const [activeTab, setActiveTab] = useState<'personalized' | 'trending' | 'category'>(
+    'personalized',
+  );
   const [recommendations, setRecommendations] = useState<any[]>([]);
 
   useEffect(() => {
@@ -140,13 +142,13 @@ export default function RecommendationsScreen() {
               onPress={() => setActiveTab('personalized')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'personalized' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'personalized' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'personalized' ? 'text-background' : 'text-foreground'
+                  activeTab === 'personalized' ? 'text-background' : 'text-foreground',
                 )}
               >
                 For You
@@ -157,13 +159,13 @@ export default function RecommendationsScreen() {
               onPress={() => setActiveTab('trending')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'trending' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'trending' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'trending' ? 'text-background' : 'text-foreground'
+                  activeTab === 'trending' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Trending
@@ -174,13 +176,13 @@ export default function RecommendationsScreen() {
               onPress={() => setActiveTab('category')}
               className={cn(
                 'flex-1 rounded-md p-2 active:opacity-80',
-                activeTab === 'category' ? 'bg-primary' : 'bg-transparent'
+                activeTab === 'category' ? 'bg-primary' : 'bg-transparent',
               )}
             >
               <Text
                 className={cn(
                   'text-center font-semibold text-sm',
-                  activeTab === 'category' ? 'text-background' : 'text-foreground'
+                  activeTab === 'category' ? 'text-background' : 'text-foreground',
                 )}
               >
                 Category

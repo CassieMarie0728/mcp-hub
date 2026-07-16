@@ -119,7 +119,7 @@ export const adminMetricsManager = {
           github: randomInt(80, 10),
           slack: randomInt(45, 5),
           notion: randomInt(35, 3),
-          custom: randomInt(25, 1)
+          custom: randomInt(25, 1),
         },
       },
       userMetrics: {

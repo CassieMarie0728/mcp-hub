@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,13 +9,13 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
-import { useColors } from "@/hooks/use-colors";
-import { cn } from "@/lib/utils";
+} from 'react-native';
+import { useColors } from '@/hooks/use-colors';
+import { cn } from '@/lib/utils';
 
 interface Message {
   id: string;
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   timestamp: number;
 }
@@ -35,7 +35,7 @@ interface AIChatModalProps {
 export function AIChatModal({ visible, onClose, context }: AIChatModalProps) {
   const colors = useColors();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -44,9 +44,10 @@ export function AIChatModal({ visible, onClose, context }: AIChatModalProps) {
   useEffect(() => {
     if (visible && messages.length === 0) {
       const greeting: Message = {
-        id: "greeting",
-        role: "assistant",
-        content: "Hi! I'm your MCP Hub AI Assistant. I can help you with workflows, MCP connections, troubleshooting, and anything else about the app. What can I help you with?",
+        id: 'greeting',
+        role: 'assistant',
+        content:
+          "Hi! I'm your MCP Hub AI Assistant. I can help you with workflows, MCP connections, troubleshooting, and anything else about the app. What can I help you with?",
         timestamp: Date.now(),
       };
       setMessages([greeting]);
@@ -64,31 +65,31 @@ export function AIChatModal({ visible, onClose, context }: AIChatModalProps) {
     // Add user message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
-      role: "user",
+      role: 'user',
       content: input,
       timestamp: Date.now(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setInput("");
+    setInput('');
     setIsLoading(true);
     setError(null);
 
     try {
       // Call backend API
-      const response = await fetch("http://localhost:3000/api/ai/chat", {
-        method: "POST",
+      const response = await fetch('http://localhost:3000/api/ai/chat', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           messages: messages
-            .filter((m) => m.role !== "assistant" || m.id !== "greeting")
+            .filter((m) => m.role !== 'assistant' || m.id !== 'greeting')
             .map((m) => ({
               role: m.role,
               content: m.content,
             }))
-            .concat([{ role: "user", content: input }]),
+            .concat([{ role: 'user', content: input }]),
           context,
         }),
       });
@@ -100,36 +101,35 @@ export function AIChatModal({ visible, onClose, context }: AIChatModalProps) {
       const data = await response.json();
       const assistantMessage: Message = {
         id: `assistant-${Date.now()}`,
-        role: "assistant",
+        role: 'assistant',
         content: data.response,
         timestamp: Date.now(),
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to get response";
+      const errorMsg = err instanceof Error ? err.message : 'Failed to get response';
       setError(errorMsg);
-      console.error("[ai-chat] Error:", err);
+      console.error('[ai-chat] Error:', err);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent={false}
-      onRequestClose={onClose}
-    >
+    <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onClose}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1, backgroundColor: colors.background }}
       >
         {/* Header */}
         <View
           className="flex-row items-center justify-between px-4 py-3"
-          style={{ backgroundColor: colors.surface, borderBottomColor: colors.border, borderBottomWidth: 1 }}
+          style={{
+            backgroundColor: colors.surface,
+            borderBottomColor: colors.border,
+            borderBottomWidth: 1,
+          }}
         >
           <Text className="text-lg font-semibold text-foreground">AI Assistant</Text>
           <TouchableOpacity onPress={onClose} className="p-2">
@@ -147,29 +147,29 @@ export function AIChatModal({ visible, onClose, context }: AIChatModalProps) {
             <View
               key={msg.id}
               className={cn(
-                "mb-3 max-w-xs rounded-lg px-3 py-2",
-                msg.role === "user"
-                  ? "self-end bg-primary"
-                  : "self-start bg-surface border border-border"
+                'mb-3 max-w-xs rounded-lg px-3 py-2',
+                msg.role === 'user'
+                  ? 'self-end bg-primary'
+                  : 'self-start bg-surface border border-border',
               )}
             >
               <Text
                 className={cn(
-                  "text-sm leading-5",
-                  msg.role === "user" ? "text-background" : "text-foreground"
+                  'text-sm leading-5',
+                  msg.role === 'user' ? 'text-background' : 'text-foreground',
                 )}
               >
                 {msg.content}
               </Text>
               <Text
                 className={cn(
-                  "text-xs mt-1",
-                  msg.role === "user" ? "text-background opacity-70" : "text-muted"
+                  'text-xs mt-1',
+                  msg.role === 'user' ? 'text-background opacity-70' : 'text-muted',
                 )}
               >
                 {new Date(msg.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
+                  hour: '2-digit',
+                  minute: '2-digit',
                 })}
               </Text>
             </View>
@@ -208,8 +208,8 @@ export function AIChatModal({ visible, onClose, context }: AIChatModalProps) {
             onPress={handleSendMessage}
             disabled={!input.trim() || isLoading}
             className={cn(
-              "p-2 rounded-lg",
-              input.trim() && !isLoading ? "bg-primary" : "bg-muted opacity-50"
+              'p-2 rounded-lg',
+              input.trim() && !isLoading ? 'bg-primary' : 'bg-muted opacity-50',
             )}
           >
             <Text className="text-lg">→</Text>

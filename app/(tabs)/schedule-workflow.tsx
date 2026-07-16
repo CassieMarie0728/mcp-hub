@@ -1,33 +1,33 @@
-import { ScrollView, Text, View, Pressable, TextInput } from "react-native";
-import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
-import { useState } from "react";
+import { ScrollView, Text, View, Pressable, TextInput } from 'react-native';
+import { ScreenContainer } from '@/components/screen-container';
+import { useColors } from '@/hooks/use-colors';
+import { useState } from 'react';
 
 export default function ScheduleWorkflowScreen() {
   const colors = useColors();
   const [schedules] = useState([
     {
-      id: "1",
-      workflow: "Morning repo check",
-      cron: "0 9 * * 1-5",
-      nextRun: "Weekdays at 9:00 AM",
-      status: "example",
+      id: '1',
+      workflow: 'Morning repo check',
+      cron: '0 9 * * 1-5',
+      nextRun: 'Weekdays at 9:00 AM',
+      status: 'example',
     },
     {
-      id: "2",
-      workflow: "End-of-day summary",
-      cron: "0 17 * * *",
-      nextRun: "Daily at 5:00 PM",
-      status: "example",
+      id: '2',
+      workflow: 'End-of-day summary',
+      cron: '0 17 * * *',
+      nextRun: 'Daily at 5:00 PM',
+      status: 'example',
     },
   ]);
-  const [cronExpression, setCronExpression] = useState("");
+  const [cronExpression, setCronExpression] = useState('');
 
   const cronExamples = [
-    { label: "Every hour", value: "0 * * * *" },
-    { label: "Daily at 9 AM", value: "0 9 * * *" },
-    { label: "Weekdays at 9 AM", value: "0 9 * * 1-5" },
-    { label: "Every Monday", value: "0 0 * * 1" },
+    { label: 'Every hour', value: '0 * * * *' },
+    { label: 'Daily at 9 AM', value: '0 9 * * *' },
+    { label: 'Weekdays at 9 AM', value: '0 9 * * 1-5' },
+    { label: 'Every Monday', value: '0 0 * * 1' },
   ];
 
   return (
@@ -38,7 +38,8 @@ export default function ScheduleWorkflowScreen() {
             <Text className="text-xs font-bold tracking-widest text-background/70">SCHEDULES</Text>
             <Text className="text-3xl font-bold text-background">Put repeat work on rails</Text>
             <Text className="text-sm text-background/80 leading-relaxed">
-              Build recurring workflow runs with clear timing, readable examples, and no mystery automation.
+              Build recurring workflow runs with clear timing, readable examples, and no mystery
+              automation.
             </Text>
           </View>
 
@@ -71,7 +72,10 @@ export default function ScheduleWorkflowScreen() {
           <View className="gap-3">
             <Text className="text-sm font-semibold text-foreground">Example schedules</Text>
             {schedules.map((schedule) => (
-              <View key={schedule.id} className="bg-surface rounded-xl p-4 gap-2 border border-border">
+              <View
+                key={schedule.id}
+                className="bg-surface rounded-xl p-4 gap-2 border border-border"
+              >
                 <View className="flex-row items-center justify-between">
                   <Text className="font-semibold text-foreground">{schedule.workflow}</Text>
                   <View className="bg-primary/10 px-2 py-1 rounded">
@@ -84,7 +88,10 @@ export default function ScheduleWorkflowScreen() {
             ))}
           </View>
 
-          <Pressable style={{ backgroundColor: colors.primary }} className="py-4 rounded-full items-center mt-4">
+          <Pressable
+            style={{ backgroundColor: colors.primary }}
+            className="py-4 rounded-full items-center mt-4"
+          >
             <Text className="text-background font-semibold text-lg">Create Schedule</Text>
           </Pressable>
         </View>

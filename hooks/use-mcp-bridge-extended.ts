@@ -70,7 +70,7 @@ export function useMCPBridgeExtended() {
       if (!MCPServerBridgeExtended) throw new Error('MCPServerBridgeExtended not available');
       return MCPServerBridgeExtended.getAuditLog(filter, limit) as Promise<AuditLogEntry[]>;
     },
-    []
+    [],
   );
 
   const getAuditLogStats = useCallback(async () => {
@@ -89,7 +89,7 @@ export function useMCPBridgeExtended() {
       if (!MCPServerBridgeExtended) throw new Error('MCPServerBridgeExtended not available');
       return MCPServerBridgeExtended.updateAppStatus(packageName, status) as Promise<boolean>;
     },
-    []
+    [],
   );
 
   // Service Control Methods
@@ -125,13 +125,10 @@ export function useMCPBridgeExtended() {
     return MCPServerBridgeExtended.getMacros() as Promise<Macro[]>;
   }, []);
 
-  const createMacro = useCallback(
-    async (name: string, description?: string) => {
-      if (!MCPServerBridgeExtended) throw new Error('MCPServerBridgeExtended not available');
-      return MCPServerBridgeExtended.createMacro(name, description) as Promise<Macro>;
-    },
-    []
-  );
+  const createMacro = useCallback(async (name: string, description?: string) => {
+    if (!MCPServerBridgeExtended) throw new Error('MCPServerBridgeExtended not available');
+    return MCPServerBridgeExtended.createMacro(name, description) as Promise<Macro>;
+  }, []);
 
   const deleteMacro = useCallback(async (macroId: string) => {
     if (!MCPServerBridgeExtended) throw new Error('MCPServerBridgeExtended not available');
@@ -163,10 +160,7 @@ export function useMCPBridgeExtended() {
 /**
  * Hook for listening to native events
  */
-export function useMCPBridgeEvents(
-  eventName: string,
-  callback: (data: any) => void
-) {
+export function useMCPBridgeEvents(eventName: string, callback: (data: any) => void) {
   useEffect(() => {
     if (!MCPServerBridgeExtended) return;
 

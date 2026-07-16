@@ -81,20 +81,17 @@ export default function ToolDetailScreen() {
     const missing = required.filter((param) => !parameters[param]);
 
     if (missing.length > 0) {
-      Alert.alert(
-        'Missing Parameters',
-        `Please fill in: ${missing.join(', ')}`
-      );
+      Alert.alert('Missing Parameters', `Please fill in: ${missing.join(', ')}`);
       return;
     }
 
     setIsExecuting(true);
     try {
-      const executionResult = await executeTool(
+      const executionResult = (await executeTool(
         serverId as string,
         toolName as string,
-        parameters
-      ) as any;
+        parameters,
+      )) as any;
 
       // Ensure executionResult has an id
       if (!executionResult.id) {
@@ -124,9 +121,7 @@ export default function ToolDetailScreen() {
           placeholder={schema.description || `Enter ${paramName}`}
           placeholderTextColor={colors.muted}
           value={parameters[paramName] || ''}
-          onChangeText={(value) =>
-            setParameters((prev) => ({ ...prev, [paramName]: value }))
-          }
+          onChangeText={(value) => setParameters((prev) => ({ ...prev, [paramName]: value }))}
           editable={!isExecuting}
           multiline={schema.type === 'string' && !schema.enum}
           numberOfLines={schema.type === 'string' ? 3 : 1}
@@ -161,9 +156,8 @@ export default function ToolDetailScreen() {
         {Object.keys(tool.inputSchema.properties || {}).length > 0 && (
           <View className="mb-6">
             <Text className="text-lg font-semibold text-foreground mb-4">Parameters</Text>
-            {Object.entries(tool.inputSchema.properties || {}).map(
-              ([paramName, schema]) =>
-                renderParameterInput(paramName, schema as JSONSchema)
+            {Object.entries(tool.inputSchema.properties || {}).map(([paramName, schema]) =>
+              renderParameterInput(paramName, schema as JSONSchema),
             )}
           </View>
         )}
@@ -199,9 +193,7 @@ export default function ToolDetailScreen() {
                 {result.isError ? 'Error' : 'Success'}
               </Text>
             </View>
-            <Text className="text-sm text-muted font-mono">
-              {JSON.stringify(result, null, 2)}
-            </Text>
+            <Text className="text-sm text-muted font-mono">{JSON.stringify(result, null, 2)}</Text>
             <TouchableOpacity
               onPress={() => {
                 Alert.alert('Copied', 'Result copied to clipboard');

@@ -34,7 +34,7 @@ export class GitHubMCPServer {
         token: this.config.token,
       },
       headers: {
-        'Accept': 'application/vnd.github.v3+json',
+        Accept: 'application/vnd.github.v3+json',
         'X-GitHub-Api-Version': '2022-11-28',
       },
       timeout: 30000,
@@ -163,8 +163,8 @@ export class GitHubMCPServer {
     try {
       const response = await fetch(`${this.config.baseUrl}/user`, {
         headers: {
-          'Authorization': `Bearer ${this.config.token}`,
-          'Accept': 'application/vnd.github.v3+json',
+          Authorization: `Bearer ${this.config.token}`,
+          Accept: 'application/vnd.github.v3+json',
         },
       });
       return response.ok;

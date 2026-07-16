@@ -1,7 +1,7 @@
 ---
-title: "MCP Hub REST API — Complete Overview and Reference"
-sidebarTitle: "Overview"
-description: "The MCP Hub REST API lets you manage server connections, discover tools, execute them, and stream events programmatically. Base URL: /api."
+title: 'MCP Hub REST API — Complete Overview and Reference'
+sidebarTitle: 'Overview'
+description: 'The MCP Hub REST API lets you manage server connections, discover tools, execute them, and stream events programmatically. Base URL: /api.'
 ---
 
 The MCP Hub REST API gives you programmatic access to all MCP Hub features: create and manage server connections, list and call tools, read resources, stream events, and inspect execution logs. The base URL for all endpoints is `/api`.
@@ -50,13 +50,13 @@ All errors follow a standard envelope shape:
 }
 ```
 
-| Status | Meaning |
-|---|---|
-| `200 OK` | Request succeeded |
-| `201 Created` | Resource was created successfully |
-| `400 Bad Request` | The request body or parameters are invalid |
+| Status             | Meaning                                       |
+| ------------------ | --------------------------------------------- |
+| `200 OK`           | Request succeeded                             |
+| `201 Created`      | Resource was created successfully             |
+| `400 Bad Request`  | The request body or parameters are invalid    |
 | `401 Unauthorized` | Missing or invalid authentication credentials |
-| `404 Not Found` | The requested resource does not exist |
+| `404 Not Found`    | The requested resource does not exist         |
 
 The `code` field contains a machine-readable string you can use for programmatic error handling. The `message` field contains a human-readable explanation. The `details` object may contain additional context depending on the error type.
 

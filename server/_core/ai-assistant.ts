@@ -1,19 +1,19 @@
-import { Readable } from "stream";
+import { Readable } from 'stream';
 
 // Free models whitelist from OpenRouter
 const FREE_MODELS = [
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "nvidia/nemotron-3-ultra:free",
-  "google/glm-4-5-air:free",
-  "meta-llama/llama-3.2-3b-instruct:free",
-  "google/gemma-4-26b-a4b:free",
-  "nvidia/nemo-3-nano-omni:free",
-  "lmstudio/lfm2.5-1.2b-instruct:free",
-  "gpt-oss-20b:free",
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'nvidia/nemotron-3-ultra:free',
+  'google/glm-4-5-air:free',
+  'meta-llama/llama-3.2-3b-instruct:free',
+  'google/gemma-4-26b-a4b:free',
+  'nvidia/nemo-3-nano-omni:free',
+  'lmstudio/lfm2.5-1.2b-instruct:free',
+  'gpt-oss-20b:free',
 ];
 
 interface AIMessage {
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
 }
 
@@ -32,7 +32,7 @@ interface AIAssistantOptions {
  */
 export class AIAssistant {
   private apiKey: string;
-  private baseURL = "https://openrouter.io/api/v1";
+  private baseURL = 'https://openrouter.io/api/v1';
   private modelIndex = 0;
   private requestCount = 0;
   private lastResetTime = Date.now();
@@ -44,14 +44,14 @@ export class AIAssistant {
   /**
    * Get the system prompt for the AI assistant
    */
-  private getSystemPrompt(userContext?: AIAssistantOptions["userContext"]): string {
-    let contextInfo = "";
+  private getSystemPrompt(userContext?: AIAssistantOptions['userContext']): string {
+    let contextInfo = '';
     if (userContext) {
       if (userContext.currentScreen) {
         contextInfo += `\nUser is currently on: ${userContext.currentScreen}`;
       }
       if (userContext.recentActions?.length) {
-        contextInfo += `\nRecent actions: ${userContext.recentActions.join(", ")}`;
+        contextInfo += `\nRecent actions: ${userContext.recentActions.join(', ')}`;
       }
     }
 
@@ -88,7 +88,7 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
    */
   async streamChat(
     messages: AIMessage[],
-    userContext?: AIAssistantOptions["userContext"]
+    userContext?: AIAssistantOptions['userContext'],
   ): Promise<Readable> {
     const systemMessage = this.getSystemPrompt(userContext);
 
@@ -113,7 +113,7 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
   private async makeStreamRequest(
     messages: AIMessage[],
     systemMessage: string,
-    readable: Readable
+    readable: Readable,
   ): Promise<void> {
     let lastError: Error | null = null;
 
@@ -123,19 +123,16 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
         const model = this.getNextModel();
 
         const response = await fetch(`${this.baseURL}/chat/completions`, {
-          method: "POST",
+          method: 'POST',
           headers: {
             Authorization: `Bearer ${this.apiKey}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://mcphub.app",
-            "X-Title": "MCP Hub AI Assistant",
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://mcphub.app',
+            'X-Title': 'MCP Hub AI Assistant',
           },
           body: JSON.stringify({
             model,
-            messages: [
-              { role: "system", content: systemMessage },
-              ...messages,
-            ],
+            messages: [{ role: 'system', content: systemMessage }, ...messages],
             stream: true,
             temperature: 0.7,
             max_tokens: 2000,
@@ -144,11 +141,13 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(`OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`);
+          throw new Error(
+            `OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`,
+          );
         }
 
         if (!response.body) {
-          throw new Error("No response body from OpenRouter");
+          throw new Error('No response body from OpenRouter');
         }
 
         // Stream the response
@@ -161,12 +160,12 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
             if (done) break;
 
             const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split("\n");
+            const lines = chunk.split('\n');
 
             for (const line of lines) {
-              if (line.startsWith("data: ")) {
+              if (line.startsWith('data: ')) {
                 const data = line.slice(6);
-                if (data === "[DONE]") {
+                if (data === '[DONE]') {
                   readable.push(null); // End stream
                   return;
                 }
@@ -196,7 +195,7 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
     }
 
     // All models failed
-    const errorMsg = `All AI models failed. Last error: ${lastError?.message || "Unknown error"}`;
+    const errorMsg = `All AI models failed. Last error: ${lastError?.message || 'Unknown error'}`;
     readable.destroy(new Error(errorMsg));
   }
 
@@ -205,7 +204,7 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
    */
   async getResponse(
     messages: AIMessage[],
-    userContext?: AIAssistantOptions["userContext"]
+    userContext?: AIAssistantOptions['userContext'],
   ): Promise<string> {
     const systemMessage = this.getSystemPrompt(userContext);
     let lastError: Error | null = null;
@@ -215,19 +214,16 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
         const model = this.getNextModel();
 
         const response = await fetch(`${this.baseURL}/chat/completions`, {
-          method: "POST",
+          method: 'POST',
           headers: {
             Authorization: `Bearer ${this.apiKey}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://mcphub.app",
-            "X-Title": "MCP Hub AI Assistant",
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://mcphub.app',
+            'X-Title': 'MCP Hub AI Assistant',
           },
           body: JSON.stringify({
             model,
-            messages: [
-              { role: "system", content: systemMessage },
-              ...messages,
-            ],
+            messages: [{ role: 'system', content: systemMessage }, ...messages],
             temperature: 0.7,
             max_tokens: 2000,
           }),
@@ -235,18 +231,20 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(`OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`);
+          throw new Error(
+            `OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`,
+          );
         }
 
         const data = await response.json();
-        return data.choices?.[0]?.message?.content || "No response generated";
+        return data.choices?.[0]?.message?.content || 'No response generated';
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err));
         console.error(`[ai-assistant] Model attempt ${attempt + 1} failed:`, lastError.message);
       }
     }
 
-    throw new Error(`All AI models failed. Last error: ${lastError?.message || "Unknown error"}`);
+    throw new Error(`All AI models failed. Last error: ${lastError?.message || 'Unknown error'}`);
   }
 }
 
@@ -259,7 +257,7 @@ export function getAIAssistant(): AIAssistant {
   if (!assistantInstance) {
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      throw new Error("OPENROUTER_API_KEY environment variable is not set");
+      throw new Error('OPENROUTER_API_KEY environment variable is not set');
     }
     assistantInstance = new AIAssistant({ apiKey });
   }

@@ -37,6 +37,7 @@ gh auth login
 ```
 
 The script will:
+
 1. ✅ Auto-detect your repository from git remote
 2. ✅ Enable GitHub Pages
 3. ✅ Configure workflow permissions
@@ -64,36 +65,43 @@ The script will:
 ## What the Script Does
 
 ### 1. Checks Prerequisites
+
 - Verifies `gh` CLI is installed
 - Confirms `gh` is authenticated
 - Checks for git installation
 
 ### 2. Detects Repository
+
 - Parses git remote URL
 - Extracts OWNER/REPO
 - Validates repository access
 
 ### 3. Enables GitHub Pages
+
 - Configures GitHub Pages with GitHub Actions as source
 - Sets main branch as deployment source
 - Enables automatic deployments
 
 ### 4. Configures Workflow Permissions
+
 - Sets workflow default permissions to "write"
 - Allows workflows to create and approve PRs
 - Enables necessary repository access
 
 ### 5. Sets Custom Domain (Optional)
+
 - Configures custom domain if provided
 - Displays DNS configuration instructions
 - Validates domain setup
 
 ### 6. Verifies Setup
+
 - Checks GitHub Pages status
 - Displays landing page URL
 - Shows custom domain (if configured)
 
 ### 7. Checks Workflow Status
+
 - Retrieves latest workflow run
 - Shows deployment status
 - Provides workflow URL for monitoring
@@ -195,6 +203,7 @@ If you prefer to set up GitHub Pages manually:
 **Language**: Bash
 
 **Dependencies**:
+
 - `gh` (GitHub CLI)
 - `git`
 - `jq` (for JSON parsing)

@@ -1,7 +1,7 @@
 ---
-title: "Discover and Browse MCP Tools on Connected Servers"
-sidebarTitle: "Tool Discovery"
-description: "Browse, search, and inspect tools exposed by connected MCP servers. View input schemas, descriptions, and categories to find the right tool for the job."
+title: 'Discover and Browse MCP Tools on Connected Servers'
+sidebarTitle: 'Tool Discovery'
+description: 'Browse, search, and inspect tools exposed by connected MCP servers. View input schemas, descriptions, and categories to find the right tool for the job.'
 ---
 
 Once connected to an MCP server, MCP Hub automatically discovers all available tools. The Tool Browser lets you search, filter, and inspect every tool before you execute it — so you always know exactly what a tool does and what inputs it expects.
@@ -21,7 +21,8 @@ If you are connected to multiple servers, tools from all servers appear together
 Use the **search bar** at the top of the Tool Browser to filter tools by name or description. Results update as you type — you do not need to press a search button. Clear the search bar to return to the full list.
 
 <Tip>
-  Search is case-insensitive and matches partial strings. Searching `issue` will match `create_issue`, `list_issues`, `close_issue`, and any tool with "issue" in its description.
+  Search is case-insensitive and matches partial strings. Searching `issue` will match
+  `create_issue`, `list_issues`, `close_issue`, and any tool with "issue" in its description.
 </Tip>
 
 ## Viewing Tool Details
@@ -68,15 +69,15 @@ In this example, `repo` and `title` are required — MCP Hub marks them with an 
 
 Supported schema features include:
 
-| Feature | Example |
-|---|---|
-| Primitive types | `string`, `number`, `boolean`, `integer` |
-| Required fields | `"required": ["repo", "title"]` |
-| Enumerations | `"enum": ["open", "closed", "all"]` |
-| String patterns | `"pattern": "^[a-z0-9-]+$"` |
-| Numeric ranges | `"minimum": 1, "maximum": 100` |
-| Nested objects | `"type": "object"` with sub-properties |
-| Arrays | `"type": "array", "items": { "type": "string" }` |
+| Feature         | Example                                          |
+| --------------- | ------------------------------------------------ |
+| Primitive types | `string`, `number`, `boolean`, `integer`         |
+| Required fields | `"required": ["repo", "title"]`                  |
+| Enumerations    | `"enum": ["open", "closed", "all"]`              |
+| String patterns | `"pattern": "^[a-z0-9-]+$"`                      |
+| Numeric ranges  | `"minimum": 1, "maximum": 100`                   |
+| Nested objects  | `"type": "object"` with sub-properties           |
+| Arrays          | `"type": "array", "items": { "type": "string" }` |
 
 ## Refreshing the Tool List
 
@@ -90,9 +91,10 @@ A refresh re-issues the MCP `tools/list` request and updates the local cache wit
 <Tip>
   You can also discover tools programmatically using the REST API:
 
-  ```
-  GET /api/connections/{connectionId}/tools
-  ```
+```
+GET /api/connections/{connectionId}/tools
+```
 
-  The response is a JSON array of tool objects matching the MCP schema format.
+The response is a JSON array of tool objects matching the MCP schema format.
+
 </Tip>
