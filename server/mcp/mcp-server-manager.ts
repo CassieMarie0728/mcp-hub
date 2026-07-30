@@ -3,7 +3,7 @@
  * Handles connections to real MCP servers, tool discovery, and execution
  */
 
-import axios, { AxiosInstance } from 'axios';
+import { createHttpClient, type HttpClient } from '../../lib/http-client';
 
 export interface MCPServerConfig {
   id: string;
@@ -53,7 +53,7 @@ export interface ServerStatus {
 
 class MCPServerManager {
   private servers: Map<string, MCPServerConfigWithUnknownHeaders> = new Map();
-  private clients: Map<string, AxiosInstance> = new Map();
+  private clients: Map<string, HttpClient> = new Map();
   private toolCache: Map<string, MCPTool[]> = new Map();
   private serverStatus: Map<string, ServerStatus> = new Map();
 
@@ -64,7 +64,7 @@ class MCPServerManager {
     this.servers.set(config.id, config);
 
     // Create HTTP client with auth
-    const client = axios.create({
+    const client = createHttpClient({
       baseURL: config.url,
       timeout: config.timeout || 30000,
       headers: this.buildHeaders(config) as Record<string, string>,
@@ -129,7 +129,7 @@ class MCPServerManager {
         throw new Error(`No client for server ${serverId}`);
       }
 
-      const response = await client.post('/mcp/tools/list', {});
+      const response = await client.post<any>('/mcp/tools/list', {});
 
       const tools = response.data.tools || [];
       this.toolCache.set(serverId, tools);
@@ -173,14 +173,14 @@ class MCPServerManager {
         throw new Error(`No client for server ${serverId}`);
       }
 
-      const response = await client.post('/mcp/tools/call', {
+      const response = await client.post<any>('/mcp/tools/call', {
         name: toolName,
         arguments: input,
       });
 
       return {
         success: true,
-        data: response.data,
+        data: response.data.result || response.data,
       };
     } catch (error) {
       const status = this.serverStatus.get(serverId);
@@ -215,12 +215,19 @@ class MCPServerManager {
    */
   async testConnection(serverId: string): Promise<boolean> {
     try {
-      const client = this.clients.get(serverId);
-      if (!client) {
+      const config = this.servers.get(serverId);
+      if (!config) {
         return false;
       }
 
-      await client.get('/health', { timeout: 5000 });
+      // Create a temporary client with shorter timeout for health check
+      const healthClient = createHttpClient({
+        baseURL: config.url,
+        timeout: 5000,
+        headers: this.buildHeaders(config) as Record<string, string>,
+      });
+
+      await healthClient.get('/health');
       return true;
     } catch {
       return false;
