@@ -26,6 +26,43 @@ const MCPServerConfigSchema = z.object({
   retryAttempts: z.number().optional(),
 });
 
+/**
+ * Helper to redact sensitive credentials from server configs
+ */
+function redactServerConfig(config: any): any {
+  if (!config || typeof config !== 'object' || 'error' in config) {
+    return config;
+  }
+
+  const redacted = JSON.parse(JSON.stringify(config));
+
+  if (redacted.auth) {
+    if (redacted.auth.token) {
+      redacted.auth.token = '••••••••';
+    }
+    if (redacted.auth.password) {
+      redacted.auth.password = '••••••••';
+    }
+  }
+
+  if (redacted.headers) {
+    for (const key of Object.keys(redacted.headers)) {
+      const lowerKey = key.toLowerCase();
+      if (
+        lowerKey === 'authorization' ||
+        lowerKey === 'x-api-key' ||
+        lowerKey.includes('secret') ||
+        lowerKey.includes('token') ||
+        lowerKey.includes('password')
+      ) {
+        redacted.headers[key] = '••••••••';
+      }
+    }
+  }
+
+  return redacted;
+}
+
 export const mcpRouter = router({
   /**
    * Register a new MCP server
@@ -165,7 +202,8 @@ export const mcpRouter = router({
    * Get all registered servers
    */
   getAllServers: protectedProcedure.query(() => {
-    return mcpServerManager.getAllServers();
+    const servers = mcpServerManager.getAllServers();
+    return servers.map((server) => redactServerConfig(server));
   }),
 
   /**
@@ -175,7 +213,10 @@ export const mcpRouter = router({
     .input(z.object({ serverId: z.string() }))
     .query(({ input }) => {
       const server = mcpServerManager.getServer(input.serverId);
-      return server || { error: 'Server not found' };
+      if (!server) {
+        return { error: 'Server not found' };
+      }
+      return redactServerConfig(server);
     }),
 });
 

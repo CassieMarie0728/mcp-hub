@@ -7,3 +7,8 @@
 **Vulnerability:** Multiple sensitive tRPC routers (Tokens, Webhooks, Analytics) were defined using `publicProcedure`, which would allow unauthenticated access once registered in the main application router.
 **Learning:** In a tRPC-based architecture, it is easy to default to `publicProcedure` when creating new routers. Security must be considered at the router definition level, especially for management and data-sensitive modules.
 **Prevention:** Always use `protectedProcedure` or `adminProcedure` by default for new tRPC routers unless they are explicitly intended to be public. Implement security tests that verify authentication requirements for all registered routers.
+
+## 2025-06-25 - [Redaction of Sensitive MCP Server Configs]
+**Vulnerability:** The MCP router `getServer` and `getAllServers` endpoints were exposing raw, sensitive credentials (including Bearer tokens, passwords, and sensitive API headers) directly to authenticated clients. The API documentation claimed these fields were redacted, but the actual implementation returned raw database configurations.
+**Learning:** Documented features regarding credential safety must be explicitly implemented and tested at the router level. Even with authenticated contexts (`protectedProcedure`), exposure of cleartext passwords and keys poses a credential leakage hazard if user accounts or client sessions are compromised.
+**Prevention:** Always implement data redaction (`redactServerConfig` helper) to mask credentials before returning server configuration objects from the backend, and write automated tests to enforce this behavior on all registry-based endpoints.
