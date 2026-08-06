@@ -31,6 +31,32 @@ This page documents the authentication and authorization pipeline end to end: OA
 3. The client calls `oauth.exchangeCode`, passing the code **and** the stored state. The router verifies the state matches (`verifyState`) before exchanging the code for tokens with the OAuth server.
 4. `sdk.authenticateRequest` resolves the session on subsequent requests.
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Expo client
+    participant R as oauth-router
+    participant M as oauth-manager
+    participant OS as OAuth server
+    participant SK as Session SDK
+
+    App->>R: oauth.getAuthorizationUrl
+    R->>M: generate CSRF state (crypto.randomBytes 32)
+    M-->>R: store with 10-minute expiry
+    R-->>App: { url, state }
+    App->>OS: open url, user authorizes
+    OS-->>App: redirect with code
+    App->>R: oauth.exchangeCode(code, state)
+    R->>M: verifyState(state)
+    R->>SK: ExchangeToken(code)
+    SK-->>R: session JWT (HS256, JWT_SECRET)
+    R-->>App: success
+    App->>App: store in SecureStore (SESSION_TOKEN_KEY)
+    App->>R: subsequent tRPC calls (Bearer token)
+    R->>SK: sdk.authenticateRequest
+    SK-->>R: ctx.user
+```
+
 > [!IMPORTANT]
 > The OAuth state store is **in-memory**: it dies with the process and cannot be shared across multiple server instances. The comment in `oauth-manager.ts` notes it "would be replaced with database." See [Data model](data-model.md).
 

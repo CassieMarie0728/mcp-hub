@@ -88,7 +88,9 @@ sequenceDiagram
     S-->>M: {content, isError}
     M-->>R: response.data.result
     R-->>App: ToolExecutionResult
-``` The [Tool Execution](../user-guide/tool-execution.md) page covers the UI contract; on the client, `lib/services/tool-execution-service.ts` orchestrates validation and result formatting.
+```
+
+The [Tool Execution](../user-guide/tool-execution.md) page covers the UI contract; on the client, `lib/services/tool-execution-service.ts` orchestrates validation and result formatting.
 
 ## Built-in presets (Beta)
 
