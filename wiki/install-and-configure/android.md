@@ -60,6 +60,6 @@ This compiles a dev build and installs it on the connected device/emulator. Firs
 ## Notes and limitations
 
 - The app talks to the API on `localhost:3000` for dev; on a physical device, point `EXPO_PUBLIC_OAUTH_SERVER_URL` / the API base at your machine's LAN address.
-- CI does **not** build Android in this audit; `pnpm android` is verified as a script only. Native SDK version bumps go through `expo` (see [Contribute](../../contribute/index.md)).
+- CI does **not** build Android in this audit; `pnpm android` is verified as a script only. Native SDK version bumps go through `expo` (see [Contribute](../contribute/index.md)).
 
 > **Next:** [iOS & web](ios-web.md)

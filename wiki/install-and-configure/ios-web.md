@@ -59,5 +59,5 @@ For a plain static export run Expo's `npx expo export --platform web` and serve 
 
 > [!NOTE]
 > The web client is a dev-serving and static-export target. The Express container serves the `landing/` page and the API; it does **not** host the exported Expo web app by default — plan your web hosting separately (see [Docker & Kubernetes](docker.md)).
-
+>
 > **Next:** [Docker & Kubernetes](docker.md)

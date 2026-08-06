@@ -156,7 +156,7 @@ spec:
 The ingress terminates host-based routing for `mcp-hub.example.com` (replace with your domain), forwarding everything to the ClusterIP service on port 80.
 
 > [!WARNING]
-> The Kubernetes manifests are **starter scaffolding**, not a production spec: no resource requests/limits, no readiness/liveness probes, no horizontal autoscaling, no TLS annotations on the ingress, and no MySQL/PVCs. Treat them as a baseline and extend before real traffic — see the checklist in [operate](../../operate/deployment-overview.md) when that section lands.
+> The Kubernetes manifests are **starter scaffolding**, not a production spec: no resource requests/limits, no readiness/liveness probes, no horizontal autoscaling, no TLS annotations on the ingress, and no MySQL/PVCs. Treat them as a baseline and extend before real traffic — see the checklist in [operate](../operate/deployment-overview.md) when that section lands.
 
 ## Related pages
 

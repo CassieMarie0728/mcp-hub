@@ -87,10 +87,10 @@ corepack pnpm test     # Vitest
 ```
 
 > [!NOTE]
-> `pnpm test` runs `lib/__tests__/**` and `tests/**`. The large root `__tests__/` tree is **excluded** by `vitest.config.ts`, so a green suite does not cover everything that lives there — see [Testing strategy](../../contribute/testing-strategy.md) for the details.
+> `pnpm test` runs `lib/__tests__/**` and `tests/**`. The large root `__tests__/` tree is **excluded** by `vitest.config.ts`, so a green suite does not cover everything that lives there — see [Testing strategy](../contribute/testing-strategy.md) for the details.
 
 ## Next steps
 
 - [Environment variables](environment-variables.md) — configure OAuth, tokens, and integrations.
 - [Database](database.md) — turn on user persistence.
-- [Docker & Kubernetes](../../install-and-configure/docker.md) — containerize what you just ran.
+- [Docker & Kubernetes](docker.md) — containerize what you just ran.
