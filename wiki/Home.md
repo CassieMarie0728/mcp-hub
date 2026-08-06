@@ -60,7 +60,7 @@ Counts from the [User guide](./user-guide/index.md) feature table and the [Disab
 | Integrate an MCP server | [MCP in plain English](./start-here/mcp-in-plain-english.md) → [MCP integration architecture](./architecture/mcp-integration.md) → [Connections API](./api-reference/connections.md) |
 | Contribute code | [Contributor setup](./contribute/setup.md) → [Development workflow](./contribute/development-workflow.md) → [Recipes](./contribute/recipes.md) |
 | Operate a deployment | [Deployment overview](./operate/deployment-overview.md) → [Production checklist](./operate/production-checklist.md) → [Monitoring & runbooks](./operate/monitoring-runbooks.md) |
-| Something broke | [Troubleshooting home](./help/troubleshooting.md) → [Diagnostic checklist](./help/diagnostics.md) |
+| Something broke | [FAQ](./help/faq.md) → [Troubleshooting home](./help/troubleshooting.md) → [Diagnostic checklist](./help/diagnostics.md) |
 
 ## Current project snapshot
 

@@ -26,10 +26,11 @@ Most apparent "failures" in MCP Hub trace back to a small set of structural fact
 | --- | --- |
 | [Troubleshooting](troubleshooting.md) | Symptom-first failure guide: for each symptom, the likely cause, how to confirm it, and the fix. |
 | [Diagnostics](diagnostics.md) | The ordered diagnostic checklist to run top to bottom when you need a methodical pass. |
+| [FAQ](faq.md) | Straight answers to the most-asked questions (state, persistence, errors, status labels). |
 
 ## Suggested reading order
 
-If you have a specific symptom, go straight to [Troubleshooting](troubleshooting.md). If you are not sure what is wrong, or troubleshooting did not cover your case, run the [Diagnostics](diagnostics.md) checklist top to bottom. Keep the [operate](../operate/index.md) section open for production-specific concerns.
+Want quick answers before you dig? Start at [FAQ](faq.md). If you have a specific symptom, go straight to [Troubleshooting](troubleshooting.md). If you are not sure what is wrong, or troubleshooting did not cover your case, run the [Diagnostics](diagnostics.md) checklist top to bottom. Keep the [operate](../operate/index.md) section open for production-specific concerns.
 
 ## Related sections
 
