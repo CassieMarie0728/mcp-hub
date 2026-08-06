@@ -39,4 +39,3 @@ Start with [Deployment overview](deployment-overview.md) to see the modes and ar
 
 - [Install & configure](../install-and-configure/index.md) — get one instance running first; this section assumes you have.
 - [Architecture](../architecture/index.md) — the code behind every operational decision.
-- [Help](../help/index.md) — troubleshooting and diagnostics (when that section lands).
