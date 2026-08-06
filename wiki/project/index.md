@@ -38,7 +38,7 @@ The structural limitations that shape every other page:
 1. **Almost all state is in-memory.** Servers, tools, tokens, webhooks, workflows, and analytics are lost on restart; only the MySQL `users` table is durable. See [Data model](../architecture/data-model.md) and [Known limitations](../user-guide/server-connections.md#known-limitations).
 2. **HTTP transport only.** The MCP config schema accepts `websocket` and `stdio`, but only HTTP is implemented end to end. See [MCP integration](../architecture/mcp-integration.md).
 3. **The monitoring subsystem is defined but not wired.** See [Monitoring & runbooks](../operate/monitoring-runbooks.md).
-4. **Root-level deployment/testing docs are aspirational.** `DEPLOYMENT.md`, `PRODUCTION_DEPLOYMENT.md`, and `PRODUCTION_TESTING.md` describe PostgreSQL, Redis, PM2, Helm, metrics endpoints, and alert dashboards that do not exist in this codebase.
+4. **Archived deployment/testing docs are aspirational.** `DEPLOYMENT.md`, `PRODUCTION_DEPLOYMENT.md`, and `PRODUCTION_TESTING.md` (moved to `archive/aspirational-deployment/`) describe PostgreSQL, Redis, PM2, Helm, metrics endpoints, and alert dashboards that do not exist in this codebase.
 
 ## History & governance
 

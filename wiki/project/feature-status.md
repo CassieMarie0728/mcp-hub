@@ -19,7 +19,7 @@ Every wiki page states a **feature status** for the capability it documents. Thi
 | **Beta** | Works end to end but carries known rough edges, narrow testing, or an in-memory store that will bite you. | Integrations & OAuth (in-memory OAuth state store); providers. |
 | **Experimental** | UI + in-memory engine exist and are heavily tested, but the engine does not do the real thing (e.g. macro execution simulates tool steps) or is not wired to real tools. | Macros, workflows, webhooks, tokens, analytics, team workspaces — unless a page says otherwise. |
 | **Disabled** | Source ships but is parked under `app/_disabled` and not routed by Expo. See [Disabled feature catalog](disabled-catalog.md). | Macro recorder, marketplace, governance, audit log. |
-| **Aspirational** | Described in a root-level doc but **does not exist** in the codebase. Never cite as production truth. | PostgreSQL, Redis, PM2, Helm, `/metrics`, alert dashboards (in `DEPLOYMENT.md` / `PRODUCTION_DEPLOYMENT.md` / `PRODUCTION_TESTING.md`). |
+| **Aspirational** | Described in a doc but **does not exist** in the codebase. Never cite as production truth. | PostgreSQL, Redis, PM2, Helm, `/metrics`, alert dashboards (in `archive/aspirational-deployment/DEPLOYMENT.md` / `PRODUCTION_DEPLOYMENT.md` / `PRODUCTION_TESTING.md`). |
 
 ## How a label is assigned
 
@@ -36,7 +36,7 @@ When a root-level report or generated doc disagrees with a wiki page, the **wiki
 
 ## Known contradictions fixed here
 
-Each row is a root-level doc claim that this wiki verified against code and found false. The register is the evidence trail so the same argument does not have to be re-litigated. As of 2026-08-06 the four aspirational docs (`DEPLOYMENT.md`, `PRODUCTION_DEPLOYMENT.md`, `PRODUCTION_TESTING.md`, `DEPLOYMENT_REPORT.md`) each carry a banner at the top marking them **ASPIRATIONAL - NOT production truth** and linking back here and to the [Operate section](../operate/index.md).
+Each row is a doc claim that this wiki verified against code and found false. The register is the evidence trail so the same argument does not have to be re-litigated. As of 2026-08-06 the four aspirational docs (`DEPLOYMENT.md`, `PRODUCTION_DEPLOYMENT.md`, `PRODUCTION_TESTING.md`, `DEPLOYMENT_REPORT.md` — moved to `archive/aspirational-deployment/`) each carry a banner at the top marking them **ASPIRATIONAL - NOT production truth** and linking back here and to the [Operate section](../operate/index.md).
 
 | Doc | Claim | Reality | Where the wiki documents it |
 | --- | --- | --- | --- |
