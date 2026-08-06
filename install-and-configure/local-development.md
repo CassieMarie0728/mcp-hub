@@ -44,7 +44,7 @@ corepack pnpm dev:server
 
 This runs `node --loader tsx server/_core/index.ts`. You should see:
 
-```
+```text
 [api] server listening on port 3000
 [landing] available at http://localhost:3000
 [rate-limiting] Global: 1000 req/15min | API: 100 req/1min
