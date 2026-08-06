@@ -71,7 +71,7 @@ Almost all app data (servers, tools, tokens, webhooks, workflows, analytics) is 
 
 ## Vulnerability reporting
 
-`SECURITY.md` (repo root) is the policy: report suspected vulnerabilities **privately** through maintainer channels — do **not** open a public GitHub issue. There is no dedicated private mailbox, no SLA, and no bug bounty yet; maintainers respond as capacity allows. Include the summary, impact, affected components, reproduction steps, environment, evidence, and (optionally) a suggested mitigation. See [Contributing](../contribute/index.md) for the general contribution path.
+`SECURITY.md` (repo root) is the policy: report suspected vulnerabilities **privately** — do **not** open a public GitHub issue. There is no dedicated private mailbox, no SLA, and no bug bounty yet; maintainers respond as capacity allows. Full walkthrough - what to include, response expectations, and scope: [Vulnerability reporting](vulnerability-reporting.md). See [Contributing](../contribute/index.md) for the general contribution path.
 
 ## Related sections
 
