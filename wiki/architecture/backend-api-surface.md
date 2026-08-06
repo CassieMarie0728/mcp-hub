@@ -90,7 +90,7 @@ See [Auth & sessions](auth-session.md) for the full flow.
 
 ### `analytics` (`server/analytics/analytics-router.ts`)
 
-| Procedure | Guard | Notes |  |  |
+| Procedure | Guard | Notes |
 | --- | --- | --- |
 | `recordExecution` | protected | Status enum: `success`, `failed`, or `skipped`. |
 | `getToolStats` / `getServerStats` / `getExecutionHistory` | protected | In-memory aggregation. |
@@ -99,7 +99,7 @@ See [Auth & sessions](auth-session.md) for the full flow.
 
 | Procedure | Guard | Notes |
 | --- | --- | --- |
-| list / create / save / execute / delete | protected | In-memory `workflowStore`; `execute` simulates a successful run (stub). |
+| list / getById / create / save / execute / delete | protected | In-memory `workflowStore`; `execute` runs the `WorkflowEngine` (tool steps simulated). |
 
 ### `templates` (`server/templates/templates-router.ts`)
 
