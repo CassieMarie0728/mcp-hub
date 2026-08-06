@@ -86,7 +86,7 @@ The execution path for a tool call goes: tRPC request → `mcpRouter.execute` �
 
 `server/mcp/servers/github-mcp.ts` is the concrete example: it defines GitHub tools (`list_repositories`, `create_issue`, …) and talks to `https://api.github.com/mcp` with `Accept` + `X-GitHub-Api-Version: 2022-11-28` headers.
 
-Presets are **Beta**: the preset definitions and the GitHub tool set are implemented and the [Server Presets](../user-guide/server-presets.md) screens exist, but end-to-end preset + OAuth flows have not yet been verified in a deployed environment.
+Presets are **Beta**: the preset definitions and the GitHub tool set are implemented and the [Server connections](../user-guide/server-connections.md) screens exist, but end-to-end preset + OAuth flows have not yet been verified in a deployed environment.
 
 ## Security notes
 
@@ -98,6 +98,6 @@ Presets are **Beta**: the preset definitions and the GitHub tool set are impleme
 ## Related pages
 
 - [MCP in plain English](../start-here/mcp-in-plain-english.md) — the non-technical intro.
-- [MCP servers guide](../user-guide/mcp-servers-guide.md) — how to use the screens.
+- [Server connections](../user-guide/server-connections.md) — how to use the screens.
 - [Overview](overview.md) — where this layer sits in the system.
 - [Connections API](../api-reference/connections.md) — the tRPC procedures in detail.
