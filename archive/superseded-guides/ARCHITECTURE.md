@@ -273,5 +273,5 @@ Consumers can select specific parts of context to avoid unnecessary re-renders.
 ## Related Documentation
 
 - [Environment Variables](./ENV_VARIABLES.md)
-- [Review Findings](./REVIEW_FINDINGS.md)
-- [README](./README.md)
+- [Review Findings](../reports/REVIEW_FINDINGS.md)
+- [README](../../README.md)

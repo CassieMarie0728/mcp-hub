@@ -1,7 +1,7 @@
 # MCP Hub Production Deployment Guide
 
 > [!WARNING]
-> **ASPIRATIONAL - NOT production truth.** This document describes a deployment stack (PostgreSQL, Redis, PM2, WebSocket admin, Sentry) that **does not exist** in the `mcp-hub` codebase. As of `main` @ `0691562` (2026-08-06): the only database is **MySQL via Drizzle** (`DATABASE_URL` in MySQL form, `drizzle/schema.ts`); there is **no Redis**, **no PM2 config**, and **no `/socket.io/admin`** surface. The live HTTP surface is `/api/health`, `/api/trpc`, and the OAuth/AI routes only. Treat the [wiki's Operate section](wiki/operate/index.md) and the code as ground truth; see [Feature status](wiki/project/feature-status.md) for the contradiction register.
+> **ASPIRATIONAL - NOT production truth.** This document describes a deployment stack (PostgreSQL, Redis, PM2, WebSocket admin, Sentry) that **does not exist** in the `mcp-hub` codebase. As of `main` @ `0691562` (2026-08-06): the only database is **MySQL via Drizzle** (`DATABASE_URL` in MySQL form, `drizzle/schema.ts`); there is **no Redis**, **no PM2 config**, and **no `/socket.io/admin`** surface. The live HTTP surface is `/api/health`, `/api/trpc`, and the OAuth/AI routes only. Treat the [wiki's Operate section](../../wiki/operate/index.md) and the code as ground truth; see [Feature status](../../wiki/project/feature-status.md) for the contradiction register.
 
 This guide covers deploying MCP Hub to production with full database integration, OAuth flows, and WebSocket real-time sync.
 

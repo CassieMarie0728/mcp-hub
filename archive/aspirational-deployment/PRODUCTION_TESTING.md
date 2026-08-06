@@ -1,7 +1,7 @@
 # Production Testing & Validation Guide
 
 > [!WARNING]
-> **ASPIRATIONAL - NOT production truth.** This document validates against a stack that **does not exist** in the `mcp-hub` codebase. As of `main` @ `0691562` (2026-08-06): the database is **MySQL** (single `users` table), not PostgreSQL; there is **no Redis**; there are **no `/metrics`, `/admin/alerts`, or `/api/workflows` endpoints**; and `/api/health` returns `{ ok: true, timestamp, version: '1.0.0' }` (a liveness check), not `{ "status": "healthy", "checks": {...} }`. The live HTTP surface is `/api/health`, `/api/trpc`, and the OAuth/AI routes. Do not run these commands against this repo and expect success. Treat the [wiki's Operate section](wiki/operate/index.md) and the code as ground truth; see [Feature status](wiki/project/feature-status.md) for the contradiction register.
+> **ASPIRATIONAL - NOT production truth.** This document validates against a stack that **does not exist** in the `mcp-hub` codebase. As of `main` @ `0691562` (2026-08-06): the database is **MySQL** (single `users` table), not PostgreSQL; there is **no Redis**; there are **no `/metrics`, `/admin/alerts`, or `/api/workflows` endpoints**; and `/api/health` returns `{ ok: true, timestamp, version: '1.0.0' }` (a liveness check), not `{ "status": "healthy", "checks": {...} }`. The live HTTP surface is `/api/health`, `/api/trpc`, and the OAuth/AI routes. Do not run these commands against this repo and expect success. Treat the [wiki's Operate section](../../wiki/operate/index.md) and the code as ground truth; see [Feature status](../../wiki/project/feature-status.md) for the contradiction register.
 
 ## Overview
 
