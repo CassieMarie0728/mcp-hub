@@ -19,7 +19,7 @@ Before reading further, three facts shape every operational decision:
 
 1. **Almost all state is in-memory.** Servers, tools, tokens, webhooks, workflows, and analytics live in memory and are lost on restart. The only durable state is the MySQL `users` table ([Data model](../architecture/data-model.md)). Production restarts are therefore **destructive** unless you design around it.
 2. **The monitoring subsystem is defined but not wired.** `server/_core/monitoring.ts` ships a full Prometheus/winston/health/alert toolkit, but none of it is mounted in `server/_core/index.ts`. The live HTTP surface is only `/api/health`, `/api/trpc`, and the OAuth/AI routes (see [Monitoring & runbooks](monitoring-runbooks.md)).
-3. **The deployment docs at the repo root are aspirational.** `DEPLOYMENT.md` and `PRODUCTION_DEPLOYMENT.md` describe PostgreSQL, Redis, PM2, Helm, Socket.io, ELK, and Jaeger — none of which exist in this codebase. Treat this wiki section and the code as truth, not those files.
+3. **The archived deployment docs are aspirational.** `DEPLOYMENT.md` and `PRODUCTION_DEPLOYMENT.md` (moved to `archive/aspirational-deployment/`) describe PostgreSQL, Redis, PM2, Helm, Socket.io, ELK, and Jaeger — none of which exist in this codebase. Treat this wiki section and the code as truth, not those files.
 
 ## Pages in this section
 

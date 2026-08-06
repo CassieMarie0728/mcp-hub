@@ -64,7 +64,7 @@ Run Nginx as a container in the same Docker network as the app, or install it on
 
 ## Add TLS (required for production)
 
-The config has no TLS block. To serve HTTPS you must either extend this file with a `listen 443 ssl` server (certbot + Let's Encrypt is the typical path) or terminate TLS at an ingress/edge in front of Nginx. The production docs in the repo (`PRODUCTION_DEPLOYMENT.md`) show a full TLS Nginx layout — but note that file is otherwise aspirational (PostgreSQL, Redis, PM2, Helm — none in the codebase). Treat its Nginx/TLS snippets as reference, and this wiki + the code as ground truth.
+The config has no TLS block. To serve HTTPS you must either extend this file with a `listen 443 ssl` server (certbot + Let's Encrypt is the typical path) or terminate TLS at an ingress/edge in front of Nginx. The archived production docs (`archive/aspirational-deployment/PRODUCTION_DEPLOYMENT.md`) show a full TLS Nginx layout — but note that file is otherwise aspirational (PostgreSQL, Redis, PM2, Helm — none in the codebase). Treat its Nginx/TLS snippets as reference, and this wiki + the code as ground truth.
 
 Remember the app's own CORS allowlist: browsers must reach it from an allowed origin (`EXPO_WEB_PREVIEW_URL` / `EXPO_PACKAGER_PROXY_URL` for a real domain) — see [Environment variables](../install-and-configure/environment-variables.md) and the [Production checklist](production-checklist.md).
 

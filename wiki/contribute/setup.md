@@ -20,7 +20,7 @@ This page is the contributor onboarding path. It covers the same ground as [Loca
 | MySQL-compatible database | Optional for exploration — the server boots without one. Required only if you exercise user persistence. See [Database](../install-and-configure/database.md). |
 | Expo mobile tooling | Optional — Android Studio / Xcode only for the `android` / `ios` scripts. |
 
-See `REQUIREMENTS.md` at the repo root for the canonical statement, and [Environment variables](../install-and-configure/environment-variables.md) for every config knob.
+See `REQUIREMENTS.md` in `archive/superseded-guides/` for the original requirements statement, and [Environment variables](../install-and-configure/environment-variables.md) for every config knob.
 
 ## 1. Fork and clone
 

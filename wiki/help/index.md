@@ -18,7 +18,7 @@ Most apparent "failures" in MCP Hub trace back to a small set of structural fact
 1. **Almost all state is in-memory.** Servers, tools, tokens, webhooks, workflows, and analytics live in memory and are lost on restart. The only durable state is the MySQL `users` table ([Data model](../architecture/data-model.md)). If your symptom is "everything disappeared after a restart", that is expected behavior, not data loss.
 2. **The HTTP surface is small.** The live server mounts only `/api/health`, `/api/trpc`, and the OAuth/AI routes. The monitoring toolkit in `server/_core/monitoring.ts` is defined but not wired, so `/metrics` and admin alert endpoints do not exist (see [Monitoring & runbooks](../operate/monitoring-runbooks.md)).
 3. **Auth errors carry numeric codes.** `Please login (10001)` and `You do not have required permission (10002)` come from `shared/const.ts` and map to specific conditions (see [Troubleshooting](troubleshooting.md)).
-4. **The docs at the repo root are aspirational.** `DEPLOYMENT.md`, `PRODUCTION_DEPLOYMENT.md`, and `PRODUCTION_TESTING.md` describe PostgreSQL, Redis, PM2, and metrics endpoints that do not exist in this codebase. Do not use them to diagnose this app.
+4. **The archived deployment docs are aspirational.** `DEPLOYMENT.md`, `PRODUCTION_DEPLOYMENT.md`, and `PRODUCTION_TESTING.md` (moved to `archive/aspirational-deployment/`) describe PostgreSQL, Redis, PM2, and metrics endpoints that do not exist in this codebase. Do not use them to diagnose this app.
 
 ## Pages in this section
 
