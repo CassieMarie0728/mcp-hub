@@ -29,6 +29,21 @@ This page documents everything the server exposes: the Express bootstrap, the te
 
 `appRouter` = `system`, `auth`, `oauth`, `mcp`, `mcpServers`, `tokens`, `webhooks`, `analytics`, `workflows`, `templates`.
 
+```mermaid
+flowchart TD
+    API["/api/trpc - Express + tRPC"] --> APP["appRouter - server/routers.ts"]
+    APP --> SYS["system"]
+    APP --> AUTH["auth"]
+    APP --> OAUTH["oauth"]
+    APP --> MCP["mcp"]
+    APP --> MS["mcpServers"]
+    APP --> TOK["tokens"]
+    APP --> WH["webhooks"]
+    APP --> AN["analytics"]
+    APP --> WF["workflows"]
+    APP --> TEM["templates"]
+```
+
 ### `system` (`server/_core/systemRouter.ts`)
 
 | Procedure | Guard | Notes |

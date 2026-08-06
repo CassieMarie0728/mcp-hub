@@ -32,6 +32,14 @@ tags:
 | Transport | How client and server connect. MCP defines stdio, SSE, WebSocket, and HTTP. | HTTP is implemented and wired; stdio/SSE/WebSocket exist as code but are not fully wired. |
 | JSON-RPC | The message format MCP uses — a lightweight remote procedure call protocol. | All tool calls are JSON-RPC 2.0 request/response. |
 
+```mermaid
+flowchart LR
+    YOU["You - the app user"] --> HUB["MCP Hub - the MCP client"]
+    HUB -- "JSON-RPC 2.0 over HTTP" --> G["GitHub MCP server"]
+    HUB -- "JSON-RPC 2.0 over HTTP" --> S["Slack MCP server"]
+    HUB -- "JSON-RPC 2.0 over HTTP" --> N["Notion MCP server"]
+```
+
 ## A concrete example
 
 The GitHub preset works like this:

@@ -27,6 +27,25 @@ All layers use JSON-RPC-style calls against the server's `tools/call` path:
 | Client service | `POST {serverUrl}/mcp/tools/call` with `{tool: toolId, arguments}` | Returns a normalized `ToolExecutionResult`; default timeout 30 000 ms. |
 | MCP client | `tools/call` with `{name, arguments}` | Returns `{content: any[], isError}`; tool errors surface as `content: [{type: 'text', text: 'Error: …'}], isError: true`. |
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant UI as Tool screen
+    participant SVC as tool-execution-service
+    participant MGR as server manager
+    participant SRV as MCP server
+
+    UI->>SVC: validateParameters(tool, parameters)
+    SVC-->>UI: {valid, errors}
+    UI->>SVC: executeTool(toolId, arguments)
+    SVC->>MGR: tools/call {name, arguments}
+    MGR->>SRV: JSON-RPC tools/call
+    SRV-->>MGR: {content, isError}
+    MGR-->>SVC: response.data.result
+    SVC-->>UI: ToolExecutionResult
+    Note over UI: default timeout 30 000 ms
+```
+
 ## Argument validation
 
 Before calling, the UI validates parameters via `validateParameters(tool, parameters) → {valid, errors}`. Rules come from the tool's `ToolParameter` descriptors: `required`, `type` (`string` / `number` / `boolean` / `array` / `object`), `enum`, `pattern`, `minLength`/`maxLength`, `minimum`/`maximum`, and `default`.

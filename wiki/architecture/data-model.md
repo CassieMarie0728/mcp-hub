@@ -26,6 +26,20 @@ Defined in `drizzle/schema.ts`, accessed through `server/db.ts` (lazy `getDb()`,
 | `role` | enum `'user' \| 'admin'`, default `'user'` | Admin via `OWNER_OPEN_ID` promotion |
 | `createdAt` / `updatedAt` | timestamps | |
 
+```mermaid
+erDiagram
+    users {
+        int id PK
+        varchar openId UK "OAuth provider id"
+        text name
+        varchar email
+        varchar loginMethod
+        varchar role "user or admin"
+        timestamp createdAt
+        timestamp updatedAt
+    }
+```
+
 Key behavior: `upsertUser` in `server/db.ts` **auto-promotes** any user whose `openId` equals `OWNER_OPEN_ID` to `admin`. See [Auth & sessions](auth-session.md).
 
 > [!IMPORTANT]
@@ -42,6 +56,21 @@ Key behavior: `upsertUser` in `server/db.ts` **auto-promotes** any user whose `o
 | Workflows | `server/procedures/workflows.ts` | No | `workflowStore` Map |
 | Analytics | `server/analytics/` | No | Aggregations derived at query time |
 | Macro state | `lib/engines/`, `server/macros/` | No | Client-side engines |
+
+```mermaid
+flowchart TB
+    subgraph DUR["Durable - survives restart"]
+        U[("MySQL users table")]
+    end
+    subgraph VOL["In-memory - lost on restart"]
+        MC["MCP servers, clients, tool cache"]
+        OA["OAuth CSRF states"]
+        TK["Tokens - AES-256-GCM"]
+        WH["Webhooks"]
+        WF["Workflows"]
+        AN["Analytics"]
+    end
+```
 
 ## Implications
 
