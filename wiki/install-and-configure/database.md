@@ -15,7 +15,7 @@ tags:
 | Audience | Developers, self-hosters. |
 | Source paths | `server/db.ts`, `drizzle/schema.ts`, `drizzle.config.ts`, `package.json` (`db:push`) |
 | Prerequisites | MySQL 8 running, `DATABASE_URL` set |
-| Next | [Environment variables](environment-variables.md), [Docker & Kubernetes](../../install-and-configure/docker.md) |
+| Next | [Environment variables](environment-variables.md), [Docker & Kubernetes](docker.md) |
 
 ## Is the database required?
 
@@ -25,7 +25,7 @@ tags:
 - auto-promoting `OWNER_OPEN_ID` to `admin`.
 
 > [!WARNING]
-> Because nearly all state is in-memory, **restarting the backend drops your registered servers, tokens, and webhooks** — with or without a database. See [Known limitations](../../user-guide/server-connections.md#known-limitations) and [Feature status](../../project/feature-status.md) for what that means.
+> Because nearly all state is in-memory, **restarting the backend drops your registered servers, tokens, and webhooks** — with or without a database. See [Known limitations](../user-guide/server-connections.md#known-limitations) and [Feature status](../project/feature-status.md) for what that means.
 
 ## Setup
 
@@ -66,9 +66,9 @@ corepack pnpm db:push
 Runs `drizzle-kit generate` then `drizzle-kit migrate` (`package.json`). `drizzle.config.ts` requires `DATABASE_URL` to be set or the command fails loudly — it reads the env var, not `.env` values you may have only set for the server, so export it in the shell or keep `.env` loaded.
 
 > [!NOTE]
-> `drizzle-kit generate` writes migration SQL to `drizzle/`. Generated files must be reviewed and committed as part of a schema change (see [Development workflow](../../contribute/development-workflow.md)).
+> `drizzle-kit generate` writes migration SQL to `drizzle/`. Generated files must be reviewed and committed as part of a schema change (see [Development workflow](../contribute/development-workflow.md)).
 
 ## Next steps
 
 - [Environment variables](environment-variables.md) — full config surface.
-- [Docker & Kubernetes](../../install-and-configure/docker.md) — note the compose file does **not** ship a MySQL service; bring your own.
+- [Docker & Kubernetes](docker.md) — note the compose file does **not** ship a MySQL service; bring your own.
