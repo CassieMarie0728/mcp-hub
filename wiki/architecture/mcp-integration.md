@@ -72,7 +72,23 @@ Two discovery paths:
 
 ## Tool execution
 
-The execution path for a tool call goes: tRPC request → `mcpRouter.execute` → server manager looks up the client → JSON-RPC `tools/call` over the wire → response returned to the app. The [Tool Execution](../user-guide/tool-execution.md) page covers the UI contract; on the client, `lib/services/tool-execution-service.ts` orchestrates validation and result formatting.
+The execution path for a tool call goes: tRPC request → `mcpRouter.execute` → server manager looks up the client → JSON-RPC `tools/call` over the wire → response returned to the app.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Expo client
+    participant R as tRPC mcpRouter
+    participant M as server manager
+    participant S as MCP server
+
+    App->>R: mcp.executeTool(serverId, name, arguments)
+    R->>M: look up client for serverId
+    M->>S: JSON-RPC tools/call {name, arguments}
+    S-->>M: {content, isError}
+    M-->>R: response.data.result
+    R-->>App: ToolExecutionResult
+``` The [Tool Execution](../user-guide/tool-execution.md) page covers the UI contract; on the client, `lib/services/tool-execution-service.ts` orchestrates validation and result formatting.
 
 ## Built-in presets (Beta)
 
