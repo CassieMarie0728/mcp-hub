@@ -21,7 +21,7 @@ This guide covers server-side features including authentication, database, tRPC 
 
 ## File Structure
 
-```
+```text
 server/
   db.ts              ← Query helpers (add database functions here)
   routers.ts         ← tRPC procedures (add API routes here)
@@ -54,10 +54,10 @@ Only touch the files with "←" markers. Anything under `_core/` directories is 
 
 The template uses **Manus OAuth** for user authentication. It works differently on native and web:
 
-| Platform | Auth Method | Token Storage |
-|----------|-------------|---------------|
-| iOS/Android | Bearer token | expo-secure-store |
-| Web | HTTP-only cookie | Browser cookie |
+| Platform    | Auth Method      | Token Storage     |
+| ----------- | ---------------- | ----------------- |
+| iOS/Android | Bearer token     | expo-secure-store |
+| Web         | HTTP-only cookie | Browser cookie    |
 
 ### Using the Auth Hook
 
