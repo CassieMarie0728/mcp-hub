@@ -5,8 +5,6 @@ tags:
   - wiki
   - hub
 ---
-# MCP Hub Wiki — Home
-
 > Audience: everyone | Status: living document | Last verified: 2026-08-06 | Owner: repo maintainers
 
 MCP Hub is a mobile-first, cross-platform control center for connecting **MCP servers**, discovering their **tools**, executing those tools safely, and composing **reusable automation** (macros, workflows, schedules, and webhooks). One app for Android, iOS, and web — backed by an Express + tRPC API and MySQL.

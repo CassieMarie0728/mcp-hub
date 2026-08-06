@@ -5,8 +5,6 @@ tags:
   - wiki
   - section
 ---
-# Start Here
-
 > Audience: everyone | Status: living document | Last verified: 2026-08-06
 
 The Start Here section gives you a mental model before you touch the code. It answers the questions the rest of the wiki assumes you already know.
