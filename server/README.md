@@ -7,7 +7,7 @@ This guide covers server-side features including authentication, database, tRPC 
 ## When Do You Need Backend?
 
 | Scenario | Backend Needed? | User Auth Required? | Solution |
-|----------|-----------------|---------------------|----------|
+| ---------- | ----------------- | --------------------- | ---------- |
 | Data stays on device only | No | No | Use `AsyncStorage` |
 | Data syncs across devices | Yes | Yes | Database + tRPC |
 | User accounts / login | Yes | Yes | Manus OAuth |
@@ -135,8 +135,11 @@ export const appRouter = router({
 });
 
 ```
+
 ### Frontend: Handling Auth Errors
+
 protectedProcedure MUST HANDLE UNAUTHORIZED when user is not logged in. Always handle this in the frontend:
+
 ```tsx
 try {
   await trpc.someProtectedEndpoint.mutate(data);
@@ -405,6 +408,7 @@ const response = await invokeLLM({
 ```
 
 Tips
+
 - Always call llm functions from server-side code (e.g., inside tRPC procedures), to avoid exposing your API key.
 - You don't need to manually set the model; the helper uses a sensible default.
 - LLM responses often contain markdown. Use `<Streamdown>{content}</Streamdown>` (imported from `streamdown`) to render markdown content with proper formatting and streaming support.
@@ -443,9 +447,11 @@ const structured = await invokeLLM({
 // The model responds with JSON content matching the schema.
 // Access via `structured.choices[0].message.content` and JSON.parse if needed.
 ```
+
 The helpers mirror the Python SDK semantics but produce JavaScript-first code, keeping credentials inside the server and ensuring every environment has access to the same token.
 
 **CRITICAL Note:** `json_schema` works for flat structures. For nested arrays/objects, use `json_object` instead.
+
 ```ts
 const response = await invokeLLM({
   messages: [
@@ -477,6 +483,7 @@ const data = JSON.parse(response.choices[0].message.content);
 Use the preconfigured voice transcription helper that converts speech to text using Whisper API, no manual setup required.
 
 Example usage:
+
 ```ts
 import { transcribeAudio } from "./server/_core/voiceTranscription";
 
@@ -493,6 +500,7 @@ const result = await transcribeAudio({
 ```
 
 Tips
+
 - Accepts URL to pre-uploaded audio file
 - 16MB file size limit enforced during transcription, size flag to be set by frontend
 - Supported formats: webm, mp3, wav, ogg, m4a
@@ -506,6 +514,7 @@ Tips
 Use the preconfigured image generation helper that connects to the internal ImageService, no manual setup required.
 
 Example usage:
+
 ```ts
 import { generateImage } from "./server/_core/imageGeneration.ts";
 
@@ -523,6 +532,7 @@ const { url: imageUrl } = await generateImage({
 ```
 
 Tips
+
 - Always call from server-side code (e.g., inside tRPC procedures) to avoid exposing API keys
 - Image generation can take 5-20 seconds, implement proper loading states
 - Implement proper error handling as image generation can fail
@@ -548,6 +558,7 @@ const { url } = await storagePut(
 ```
 
 Tips
+
 - Save metadata (path/URL/ACL/owner/mime/size) in your database; use S3 for the actual file bytes. This applies to all files including images, documents, and media.
 - For file uploads, have the client POST to your server, then call `storagePut` from your backend.
 
@@ -575,7 +586,7 @@ Keep this channel for owner-facing alerts; end-user messaging should flow throug
 Available environment variables:
 
 | Variable | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | `DATABASE_URL` | MySQL/TiDB connection string |
 | `JWT_SECRET` | Session signing secret |
 | `VITE_APP_ID` | Manus OAuth app ID |
@@ -589,7 +600,7 @@ Available environment variables:
 Expo runtime variables (prefixed with `EXPO_PUBLIC_`):
 
 | Variable | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | `EXPO_PUBLIC_APP_ID` | App ID for OAuth |
 | `EXPO_PUBLIC_API_BASE_URL` | API server URL |
 | `EXPO_PUBLIC_OAUTH_PORTAL_URL` | Login portal URL |
@@ -633,6 +644,7 @@ pnpm test
 ## Core File References
 
 `drizzle/schema.ts`
+
 ```ts
 import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
@@ -665,6 +677,7 @@ export type InsertUser = typeof users.$inferInsert;
 ```
 
 `server/db.ts`
+
 ```ts
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
@@ -761,6 +774,7 @@ export async function getUserByOpenId(openId: string) {
 ```
 
 `server/routers.ts`
+
 ```ts
 import { COOKIE_NAME } from "../shared/const.js";
 import { getSessionCookieOptions } from "./_core/cookies";
@@ -793,6 +807,7 @@ export type AppRouter = typeof appRouter;
 ```
 
 `server/storage.ts`
+
 ```ts
 // Preconfigured storage helpers for Manus WebDev templates
 // Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
@@ -892,6 +907,7 @@ export async function storageGet(relKey: string): Promise<{ key: string; url: st
 ```
 
 `lib/trpc.ts`
+
 ```ts
 import { createTRPCReact } from "@trpc/react-query";
 import { httpBatchLink } from "@trpc/client";
@@ -938,6 +954,7 @@ export function createTRPCClient() {
 ```
 
 `hooks/use-auth.ts`
+
 ```ts
 import * as Api from "@/lib/_core/api";
 import * as Auth from "@/lib/_core/auth";
@@ -1085,6 +1102,7 @@ export function useAuth(options?: UseAuthOptions) {
 ```
 
 `tests/auth.logout.test.ts`
+
 ```ts
 import { describe, expect, it } from "vitest";
 import { appRouter } from "../server/routers";
@@ -1227,7 +1245,7 @@ const { data, fetchNextPage, hasNextPage } = trpc.items.list.useInfiniteQuery(
 ## Troubleshooting
 
 | Issue | Solution |
-|-------|----------|
+| ------- | ---------- |
 | "Database not available" | Check `DATABASE_URL` is set |
 | Auth not working | Verify OAuth callback URL matches |
 | tRPC type errors | Run `pnpm check` to verify types |
