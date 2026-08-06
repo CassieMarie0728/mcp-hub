@@ -26,11 +26,9 @@ POST /api/connections
     <ParamField body="httpEndpoint" type="string (uri)">
       The full URL of the HTTP MCP endpoint. Required when `type` is `streamable_http`.
     </ParamField>
-
     <ParamField body="stdioCommand" type="string">
       The command to run when starting the server process. Required when `type` is `stdio`.
     </ParamField>
-
     <ParamField body="stdioArgs" type="array">
       An optional list of string arguments passed to `stdioCommand` at startup. Only used when `type` is `stdio`.
     </ParamField>

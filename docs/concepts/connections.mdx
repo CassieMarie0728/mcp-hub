@@ -11,7 +11,7 @@ A connection in MCP Hub represents a managed link to a single MCP server. Each c
 Every connection moves through a defined set of states. MCP Hub surfaces the current state in the server list so you always know what is happening.
 
 | State | Meaning |
-|---|---|
+| --- | --- |
 | `disconnected` | The connection is not active. The server is ready to attempt a new connection when you tap **Connect**. |
 | `connecting` | The transport handshake is in progress. MCP Hub is establishing the channel and sending the `initialize` request. |
 | `connected` | The transport is open. MCP Hub has confirmed the channel and is ready to complete the MCP initialization handshake. |
