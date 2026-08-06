@@ -16,7 +16,7 @@ This page documents everything the server exposes: the Express bootstrap, the te
 
 - Listens on **port 3000**, falling back to `3001`–`3019` if busy.
 - Mounts Express with JSON parsing and a **CORS allowlist**.
-- Passes global, auth, api, and workflow **rate limiters** to the endpoint builders (see below).
+- Mounts the **global** limiter (all requests) and the **api** limiter (the `/api/trpc` mount); the other limiters are defined but not wired (see below).
 - Hosts tRPC at `/api/trpc` (httpBatchLink target) and the REST routes.
 
 ## tRPC core
@@ -36,20 +36,22 @@ This page documents everything the server exposes: the Express bootstrap, the te
 | `health` | public | Input: timestamp; liveness probe. |
 | `notifyOwner` | admin | Notify the owner user. |
 
-### `auth`
+### `auth` (inline in `server/routers.ts`)
 
 | Procedure | Guard | Notes |
 | --- | --- | --- |
-| login / session / user info | public + protected | Creates and reads the session. |
+| `me` | public | Returns `ctx.user` or `null`. |
+| `logout` | public | Clears the session cookie. |
 
 ### `oauth` (`server/auth/oauth-router.ts`)
 
 | Procedure | Guard | Notes |
 | --- | --- | --- |
-| `getAuthorizationUrl` | public | Returns `{ url, state }`; 10-min CSRF state. |
-| `exchangeCode` | public | `verifyState` then exchange code for tokens. |
-| `getOAuthStatus` | public | Connection status. |
-| `disconnect` | protected | Remove the OAuth connection. |
+| `getAuthorizationUrl` | public | Returns `{ url, state, serverType }`; `state` is the CSRF token. |
+| `exchangeCode` | public | `verifyState` then exchange code for tokens; returns `{ success, token, serverId }`. |
+| `refreshToken` | protected | Exchange a refresh token for a new access token. |
+| `revokeToken` | protected | Revoke an access token. |
+| `checkTokenStatus` | public | Local expiry check; `needsRefresh` within 5 min. |
 
 See [Auth & sessions](auth-session.md) for the full flow.
 
@@ -103,16 +105,18 @@ See [Auth & sessions](auth-session.md) for the full flow.
 
 | Procedure | Guard | Notes |
 | --- | --- | --- |
-| `getAllTemplates` / `getTemplate` / `cloneTemplate` / `searchTemplates` | protected | Clone id `cloned-<ts>-<rand>`. |
+| `getAllTemplates` / `getTemplate` / `searchTemplates` / `getTemplatesByCategory` / `getFeaturedTemplates` | public | Catalog reads, no session needed. |
+| `cloneTemplate` | protected | Clone id `cloned-<ts>-<rand>`. |
 
 ## Rate limiters (`server/_core/rate-limiter.ts`)
 
 | Limiter | Limit | Applied to |
 | --- | --- | --- |
-| `globalLimiter` | 1000 / 15 min | everything |
-| `authLimiter` | 5 / 15 min | auth endpoints |
-| `apiLimiter` | 100 / 1 min | API endpoints |
-| `workflowLimiter` | 20 / 1 min | workflow execution |
+| `globalLimiter` | 1000 / 15 min | **everything** (mounted) |
+| `apiLimiter` | 100 / 1 min | **the `/api/trpc` mount** (mounted) |
+| `authLimiter` | 5 / 15 min | defined, **not mounted** |
+| `workflowLimiter` | 20 / 1 min | defined, **not mounted** |
+| `uploadLimiter` | 10 / 1 min | defined, **not mounted** |
 
 ## REST routes
 
