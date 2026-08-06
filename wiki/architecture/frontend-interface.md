@@ -41,6 +41,7 @@ The `lib/` folder is where all non-screen client logic lives:
 - **`engines/`** — macro and workflow engines: `MacroChainingEngine`, `MacroExecutionEngine`, `MacroSchedulingEngine`, `MacroSharingEngine`.
 - **`services/`** — orchestration services: `server-connection-service`, `tool-execution-service`.
 - **`_core/auth.ts`** — `SecureStore` helpers for the session token (`getSessionToken` / `setSessionToken` / `clearSessionToken`), reading keys from `constants/oauth.ts`.
+- **`constants/oauth.ts`** — the OAuth environment block and API base URL resolution (see below).
 - **`models/`** — shared data models (e.g. `Macro`).
 
 ## How a screen talks to the server
@@ -51,13 +52,16 @@ The `lib/` folder is where all non-screen client logic lives:
 
 ## API base URL resolution
 
-The app must know where the server lives. Resolution is environment-driven, so the same bundle works in dev and in the field:
+`getApiBaseUrl()` in `constants/oauth.ts` decides where the client sends requests, in this exact order:
 
-- The API base URL is resolved at runtime from the environment/config (Expo `extra`), with platform-aware defaults.
-- When no server is reachable, screens degrade to offline modes (e.g. local-only server lists) rather than crashing.
+1. **`EXPO_PUBLIC_API_BASE_URL`** (exported as `API_BASE_URL`) — if set, used verbatim with a trailing slash stripped.
+2. **Web hostname derivation** — on web, the current hostname is rewritten from the Metro sandbox pattern `8081-…` to the API pattern `3000-…` (`https://3000-sandboxid.region.domain`).
+3. **Relative fallback** — empty string, meaning the caller uses a relative URL (same origin).
+
+So the same bundle works in dev (Metro on 8081 rewrites to 3000) and in the field (via `EXPO_PUBLIC_API_BASE_URL`). Native builds must set `EXPO_PUBLIC_API_BASE_URL`; there is no localhost derivation for them.
 
 > [!NOTE]
-> The exact precedence order (Expo `extra` → platform default) is set in the app config and the API helper module. If you change where the server is hosted, update the deployment env vars described in [Installation overview](../install-and-configure/installation-overview.md), not the app source.
+> If you change where the server is hosted, set the appropriate env var — see [Environment variables](../install-and-configure/environment-variables.md) for `EXPO_PUBLIC_API_BASE_URL` and the OAuth-related `EXPO_PUBLIC_*` values.
 
 ## Auth on the client
 
