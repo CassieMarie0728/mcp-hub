@@ -48,6 +48,7 @@ https://my-server.com/mcp
 MCP Hub sends JSON-RPC requests via HTTP POST to that URL and processes the responses. If the server supports **Server-Sent Events (SSE)**, MCP Hub will automatically upgrade to SSE streaming for real-time progress events during long-running tool calls.
 
 Use HTTP transport when your MCP server is:
+
 - Hosted on a remote machine or cloud service
 - Running locally but exposed over HTTP (e.g., `http://localhost:8080/mcp`)
 - Behind a reverse proxy or API gateway
@@ -64,6 +65,7 @@ Args:    -y @modelcontextprotocol/server-filesystem /path/to/dir
 MCP Hub spawns the process when you connect and terminates it when you disconnect. You can also pass additional arguments to configure the server's behavior — separate multiple arguments with spaces.
 
 Use stdio transport when your MCP server is:
+
 - A Node.js, Python, or shell script you run locally
 - A package from the MCP ecosystem (e.g., `@modelcontextprotocol/server-filesystem`)
 - A tool you are developing and testing on your device
@@ -77,7 +79,7 @@ Use stdio transport when your MCP server is:
 MCP Hub supports four authentication modes. Choose the one that matches how your server is secured.
 
 | Mode | When to use |
-|---|---|
+| --- | --- |
 | **None** | Open MCP servers, local development environments, or servers protected at the network level. Use only over loopback (`127.0.0.1`) or a trusted private network, never with a public HTTP endpoint. |
 | **Bearer Token** | Servers that require an API key or a static token in the `Authorization: Bearer` header. Always pair with an `https://` URL — `http://` exposes the token to interception. |
 | **OAuth2** | Servers with user-delegated auth (GitHub, Slack, Google, etc.) — MCP Hub handles the full PKCE flow and token refresh |
@@ -88,9 +90,9 @@ For OAuth2 servers, MCP Hub stores the access and refresh tokens securely in the
 <Tip>
   When issuing tokens to attach here, follow the **principle of least privilege**:
 
-  - Grant only the scopes the MCP server needs (for example, `read:user` instead of full `repo` if read-only profile access is enough).
-  - Set the shortest practical expiry.
-  - Revoke tokens from the provider's dashboard when they are no longer needed.
+- Grant only the scopes the MCP server needs (for example, `read:user` instead of full `repo` if read-only profile access is enough).
+- Set the shortest practical expiry.
+- Revoke tokens from the provider's dashboard when they are no longer needed.
 </Tip>
 
 ## Managing Connections
