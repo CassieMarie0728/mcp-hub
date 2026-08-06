@@ -21,7 +21,7 @@ Procedures return (and `save` accepts) a workflow object:
 | `id` | string | Generated as `workflow-<timestamp>` on create. |
 | `name` | string | |
 | `description` | string | Empty string when unset. |
-| `steps` | array | Opaque step list (`WorkflowStep[]`); see [workflow-engine.ts](https://github.com/anomalyco/mcp-hub/blob/main/server/macros/workflow-engine.ts). |
+| `steps` | array | Opaque step list (`WorkflowStep[]`); the engine is described in [Workflows (user guide)](../user-guide/workflows.md). |
 | `createdAt` | Date | |
 | `lastModified` | Date | |
 | `lastExecuted` | Date \| null | |
