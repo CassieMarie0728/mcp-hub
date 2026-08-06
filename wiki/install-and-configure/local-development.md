@@ -13,8 +13,8 @@ tags:
 | Purpose | Get the backend API and the Expo client running locally. |
 | Audience | Developers. |
 | Source paths | `package.json`, `server/_core/index.ts`, `.env.example`, `scripts/load-env.js` |
-| Prerequisites | Node 20+, pnpm via corepack; see [Installation overview](../wiki/install-and-configure/installation-overview.md) |
-| Next | [Environment variables](./environment-variables.md), [Database](./database.md) |
+| Prerequisites | Node 20+, pnpm via corepack; see [Installation overview](installation-overview.md) |
+| Next | [Environment variables](environment-variables.md), [Database](database.md) |
 
 ## 1. Clone and install
 
@@ -34,7 +34,7 @@ corepack pnpm install                 # installs all dependencies
 cp .env.example .env
 ```
 
-A bare copy works for local exploration — the server boots fine without a database. See [Environment variables](./environment-variables.md) for every knob, and [Database](./database.md) if you want user persistence.
+A bare copy works for local exploration — the server boots fine without a database. See [Environment variables](environment-variables.md) for every knob, and [Database](database.md) if you want user persistence.
 
 ## 3. Run the API server
 
@@ -73,8 +73,8 @@ This runs `expo start --web` on port `EXPO_PORT` (default `8081`). The web clien
 | `format` | `prettier --write .` | Format everything. |
 | `build` | `esbuild server/_core/index.ts … --outdir=dist` | Production bundle of the API. |
 | `start` | `NODE_ENV=production node dist/index.js` | Run the built bundle. |
-| `db:push` | `drizzle-kit generate && drizzle-kit migrate` | Generate + apply DB migrations ([Database](./database.md)). |
-| `android` / `ios` | `expo run:android` / `expo run:ios` | Native builds ([Android](./android.md), [iOS & web](./ios-web.md)). |
+| `db:push` | `drizzle-kit generate && drizzle-kit migrate` | Generate + apply DB migrations ([Database](database.md)). |
+| `android` / `ios` | `expo run:android` / `expo run:ios` | Native builds ([Android](android.md), [iOS & web](ios-web.md)). |
 | `qr` | `node scripts/generate_qr.mjs` | Generate a QR for the client. |
 | `setup:github-pages` | `node scripts/setup-github-pages.js` (or `.sh`) | Static web hosting setup. |
 
@@ -87,10 +87,10 @@ corepack pnpm test     # Vitest
 ```
 
 > [!NOTE]
-> `pnpm test` runs `lib/__tests__/**` and `tests/**`. The large root `__tests__/` tree is **excluded** by `vitest.config.ts`, so a green suite does not cover everything that lives there — see [Testing strategy](../contribute/testing-strategy.md) for the details.
+> `pnpm test` runs `lib/__tests__/**` and `tests/**`. The large root `__tests__/` tree is **excluded** by `vitest.config.ts`, so a green suite does not cover everything that lives there — see [Testing strategy](../../contribute/testing-strategy.md) for the details.
 
 ## Next steps
 
-- [Environment variables](./environment-variables.md) — configure OAuth, tokens, and integrations.
-- [Database](./database.md) — turn on user persistence.
-- [Docker & Kubernetes](./docker.md) — containerize what you just ran.
+- [Environment variables](environment-variables.md) — configure OAuth, tokens, and integrations.
+- [Database](database.md) — turn on user persistence.
+- [Docker & Kubernetes](../../install-and-configure/docker.md) — containerize what you just ran.

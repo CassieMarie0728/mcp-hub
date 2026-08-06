@@ -15,7 +15,7 @@ tags:
 | Audience | Mobile + web developers. |
 | Source paths | `app.config.ts`, `package.json` (`dev:metro`, `ios`, `setup:github-pages`) |
 | Prerequisites | iOS: macOS + Xcode. Web: Node + pnpm only. |
-| Next | [Local development](./local-development.md), [Docker & Kubernetes](./docker.md) |
+| Next | [Local development](local-development.md), [Docker & Kubernetes](../../install-and-configure/docker.md) |
 
 ## iOS
 
@@ -44,7 +44,7 @@ The web target uses **Metro as the bundler with static output** (`app.config.ts`
 corepack pnpm dev:metro     # expo start --web --port ${EXPO_PORT:-8081}
 ```
 
-Opens the client at `http://localhost:8081`. The API server must be running on port `3000` (see [Local development](./local-development.md)).
+Opens the client at `http://localhost:8081`. The API server must be running on port `3000` (see [Local development](local-development.md)).
 
 ### Static hosting
 
@@ -58,6 +58,6 @@ The repo includes GitHub Pages helpers:
 For a plain static export run Expo's `npx expo export --platform web` and serve the `dist/` output.
 
 > [!NOTE]
-> The web client is a dev-serving and static-export target. The Express container serves the `landing/` page and the API; it does **not** host the exported Expo web app by default — plan your web hosting separately (see [Docker & Kubernetes](./docker.md)).
+> The web client is a dev-serving and static-export target. The Express container serves the `landing/` page and the API; it does **not** host the exported Expo web app by default — plan your web hosting separately (see [Docker & Kubernetes](../../install-and-configure/docker.md)).
 
-> **Next:** [Docker & Kubernetes](./docker.md)
+> **Next:** [Docker & Kubernetes](../../install-and-configure/docker.md)

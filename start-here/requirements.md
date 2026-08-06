@@ -50,7 +50,7 @@ tags:
 
 ## Environment variables
 
-Copy `.env.example` to `.env`. Full reference (both what the example lists and what the code actually reads) is in [Environment variables](../install-and-configure/environment-variables.md). Minimum for a working login: `JWT_SECRET`, `OAUTH_SERVER_URL`, `OWNER_OPEN_ID`. The server also reads `DATABASE_URL`, `NODE_ENV`, `VITE_APP_ID`, `BUILT_IN_FORGE_API_URL`, `BUILT_IN_FORGE_API_KEY`. `PORT` / `EXPO_PORT` control the two dev servers.
+Copy `.env.example` to `.env`. Full reference (both what the example lists and what the code actually reads) is in [Environment variables](../wiki/install-and-configure/environment-variables.md). Minimum for a working login: `JWT_SECRET`, `OAUTH_SERVER_URL`, `OWNER_OPEN_ID`. The server also reads `DATABASE_URL`, `NODE_ENV`, `VITE_APP_ID`, `BUILT_IN_FORGE_API_URL`, `BUILT_IN_FORGE_API_KEY`. `PORT` / `EXPO_PORT` control the two dev servers.
 
 ## Mobile build tools
 

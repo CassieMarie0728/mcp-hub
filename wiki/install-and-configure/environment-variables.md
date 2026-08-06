@@ -14,8 +14,8 @@ tags:
 | Purpose | The full configuration surface for the API server and client. |
 | Audience | Developers, operators, self-hosters. |
 | Source paths | `.env.example`, `server/_core/env.ts`, `server/_core/sdk.ts`, `server/_core/llm.ts`, `server/auth/oauth-manager.ts`, `server/tokens/token-manager.ts`, `server/webhooks/webhook-manager.ts`, `constants/oauth.ts` |
-| Prerequisites | [Local development](./local-development.md) |
-| Next | [Database](./database.md), [Docker & Kubernetes](./docker.md) |
+| Prerequisites | [Local development](local-development.md) |
+| Next | [Database](database.md), [Docker & Kubernetes](../../install-and-configure/docker.md) |
 
 ## How config is loaded
 
@@ -54,7 +54,7 @@ All three live in `server/auth/oauth-manager.ts`; defaults point at the local AP
 | `SLACK_OAUTH_CLIENT_ID` / `SLACK_OAUTH_CLIENT_SECRET` | `http://localhost:3000/oauth/slack/callback` | Slack preset + OAuth |
 | `NOTION_OAUTH_CLIENT_ID` / `NOTION_OAUTH_CLIENT_SECRET` | `http://localhost:3000/oauth/notion/callback` | Notion preset + OAuth |
 
-Redirect URI overrides: `GITHUB_OAUTH_REDIRECT_URI`, `SLACK_OAUTH_REDIRECT_URI`, `NOTION_OAUTH_REDIRECT_URI`. See [Integrations & OAuth](../user-guide/integrations-oauth.md) for the flows.
+Redirect URI overrides: `GITHUB_OAUTH_REDIRECT_URI`, `SLACK_OAUTH_REDIRECT_URI`, `NOTION_OAUTH_REDIRECT_URI`. See [Integrations & OAuth](../../user-guide/integrations-oauth.md) for the flows.
 
 ## Client (`EXPO_PUBLIC_*`) and CORS
 
@@ -71,6 +71,6 @@ The server always allowlists `http://localhost:8081` and `http://localhost:3000`
 
 - Set a strong `JWT_SECRET` and a stable `TOKEN_ENCRYPTION_KEY` before production.
 - Keep OAuth client secrets, `JWT_SECRET`, and `DATABASE_URL` out of git (`.env` is ignored).
-- In Kubernetes, feed env via the `mcp-hub-env` secret ([Docker & Kubernetes](./docker.md)).
+- In Kubernetes, feed env via the `mcp-hub-env` secret ([Docker & Kubernetes](../../install-and-configure/docker.md)).
 
-> **Next:** [Database](./database.md) · [Docker & Kubernetes](./docker.md)
+> **Next:** [Database](database.md) · [Docker & Kubernetes](../../install-and-configure/docker.md)

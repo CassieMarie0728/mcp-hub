@@ -15,7 +15,7 @@ tags:
 | Audience | Mobile developers. |
 | Source paths | `app.config.ts`, `package.json` (`android`), `expo-build-properties` |
 | Prerequisites | JDK 17+, Android Studio + SDK, an emulator or device |
-| Next | [iOS & web](./ios-web.md), [Local development](./local-development.md) |
+| Next | [iOS & web](ios-web.md), [Local development](local-development.md) |
 
 ## Prerequisites
 
@@ -55,11 +55,11 @@ corepack pnpm android     # expo run:android
 This compiles a dev build and installs it on the connected device/emulator. First build downloads Gradle dependencies — expect several minutes.
 
 > [!TIP]
-> For a quick web preview of the same UI (no Android SDK needed), run `corepack pnpm dev:metro` and open `http://localhost:8081` — see [iOS & web](./ios-web.md).
+> For a quick web preview of the same UI (no Android SDK needed), run `corepack pnpm dev:metro` and open `http://localhost:8081` — see [iOS & web](ios-web.md).
 
 ## Notes and limitations
 
 - The app talks to the API on `localhost:3000` for dev; on a physical device, point `EXPO_PUBLIC_OAUTH_SERVER_URL` / the API base at your machine's LAN address.
-- CI does **not** build Android in this audit; `pnpm android` is verified as a script only. Native SDK version bumps go through `expo` (see [Contribute](../contribute/index.md)).
+- CI does **not** build Android in this audit; `pnpm android` is verified as a script only. Native SDK version bumps go through `expo` (see [Contribute](../../contribute/index.md)).
 
-> **Next:** [iOS & web](./ios-web.md)
+> **Next:** [iOS & web](ios-web.md)

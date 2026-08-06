@@ -45,7 +45,7 @@ Then edit `.env` and set at least:
 | `OWNER_OPEN_ID` | The OpenID that is auto-promoted to the `admin` role. |
 | `DATABASE_URL` | Optional locally — `mysql://user:password@localhost:3306/mcp_hub`. Without it, auth still works but users are not persisted. |
 
-See [Environment variables](../install-and-configure/environment-variables.md) for the complete reference.
+See [Environment variables](../wiki/install-and-configure/environment-variables.md) for the complete reference.
 
 ## 3. Start the backend
 
