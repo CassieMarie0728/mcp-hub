@@ -22,6 +22,9 @@ Register a new MCP server config in the in-memory manager.
 
 Input (`MCPServerConfigSchema`):
 
+<details>
+<summary>MCPServerConfigSchema fields</summary>
+
 | Field | Type | Notes |
 | --- | --- | --- |
 | `id` | string (min 1) | Unique server id, supplied by the caller. |
@@ -32,6 +35,8 @@ Input (`MCPServerConfigSchema`):
 | `auth` | object | Optional; `{ type: 'bearer'\|'api-key'\|'basic', token?, username?, password? }`. |
 | `timeout` | number | Optional. |
 | `retryAttempts` | number | Optional. |
+
+</details>
 
 Returns `{ success: true, serverId }`.
 

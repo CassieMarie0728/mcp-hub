@@ -11,6 +11,26 @@ tags:
 
 This section explains how MCP Hub is built, file by file. It is the map you want when the user-guide tells you *what* a feature does and you need to know *where* and *how* it is implemented.
 
+```html preview
+<div style="font-family:system-ui,sans-serif;padding:16px;display:flex;gap:12px;flex-wrap:wrap">
+  <div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+    <div style="font-size:24px;font-weight:700;color:var(--chart-2)">8</div>
+    <div style="font-size:13px;font-weight:600">Pages in this section</div>
+    <div style="font-size:12px;color:var(--muted-foreground)">map + file-by-file, one page per layer</div>
+  </div>
+  <div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+    <div style="font-size:24px;font-weight:700;color:var(--chart-3)">6</div>
+    <div style="font-size:13px;font-weight:600">Mermaid diagrams</div>
+    <div style="font-size:12px;color:var(--muted-foreground)">trees, flows, a sequence, and a schema</div>
+  </div>
+  <div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+    <div style="font-size:24px;font-weight:700;color:var(--chart-4)">1</div>
+    <div style="font-size:13px;font-weight:600">Durable store</div>
+    <div style="font-size:12px;color:var(--muted-foreground)">the users table; everything else is in memory</div>
+  </div>
+</div>
+```
+
 ## Pages in this section
 
 | Page | What it answers |

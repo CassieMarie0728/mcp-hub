@@ -19,6 +19,26 @@ title: User Guide
 
 This section is the daily-operations manual: how to connect servers, find and run tools, and use macros, workflows, templates, webhooks, and tokens. Each page carries one status label that tells you how much to trust it.
 
+```html preview
+<div style="font-family:system-ui,sans-serif;padding:16px;display:flex;gap:12px;flex-wrap:wrap">
+  <div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+    <div style="font-size:24px;font-weight:700;color:var(--chart-2)">12</div>
+    <div style="font-size:13px;font-weight:600">Pages in this section</div>
+    <div style="font-size:12px;color:var(--muted-foreground)">11 feature pages, each with one status label</div>
+  </div>
+  <div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+    <div style="font-size:24px;font-weight:700;color:var(--chart-2)">3</div>
+    <div style="font-size:13px;font-weight:600">Stable features</div>
+    <div style="font-size:12px;color:var(--muted-foreground)">wired end to end and tested</div>
+  </div>
+  <div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+    <div style="font-size:24px;font-weight:700;color:var(--chart-3)">7</div>
+    <div style="font-size:13px;font-weight:600">Experimental features</div>
+    <div style="font-size:12px;color:var(--muted-foreground)">in-memory; resets on server restart</div>
+  </div>
+</div>
+```
+
 | Page | What it covers | Status |
 | --- | --- | --- |
 | [Server connections](./server-connections.md) | Add, edit, and remove MCP servers; connection methods. | Stable |

@@ -1,6 +1,6 @@
 {
   "MD013": false,
   "MD033": {
-    "allowed_elements": ["Tabs", "Tab"]
+    "allowed_elements": ["Tabs", "Tab", "details", "summary"]
   }
 }

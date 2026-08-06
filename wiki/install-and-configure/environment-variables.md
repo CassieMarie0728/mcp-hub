@@ -48,15 +48,23 @@ tags:
 
 All three live in `server/auth/oauth-manager.ts`; defaults point at the local API.
 
+<details>
+<summary>OAuth provider variables</summary>
+
 | Variable | Default redirect | Used for |
 | --- | --- | --- |
 | `GITHUB_OAUTH_CLIENT_ID` / `GITHUB_OAUTH_CLIENT_SECRET` | `http://localhost:3000/oauth/github/callback` | GitHub preset + OAuth |
 | `SLACK_OAUTH_CLIENT_ID` / `SLACK_OAUTH_CLIENT_SECRET` | `http://localhost:3000/oauth/slack/callback` | Slack preset + OAuth |
 | `NOTION_OAUTH_CLIENT_ID` / `NOTION_OAUTH_CLIENT_SECRET` | `http://localhost:3000/oauth/notion/callback` | Notion preset + OAuth |
 
+</details>
+
 Redirect URI overrides: `GITHUB_OAUTH_REDIRECT_URI`, `SLACK_OAUTH_REDIRECT_URI`, `NOTION_OAUTH_REDIRECT_URI`. See [Integrations & OAuth](../user-guide/integrations-oauth.md) for the flows.
 
 ## Client (`EXPO_PUBLIC_*`) and CORS
+
+<details>
+<summary>Client (EXPO_PUBLIC_*) and CORS variables</summary>
 
 | Variable | Read in | Notes |
 | --- | --- | --- |
@@ -64,6 +72,8 @@ Redirect URI overrides: `GITHUB_OAUTH_REDIRECT_URI`, `SLACK_OAUTH_REDIRECT_URI`,
 | `EXPO_PUBLIC_OWNER_OPEN_ID` | `constants/oauth.ts` | Client-side owner id. |
 | `EXPO_WEB_PREVIEW_URL` | `server/_core/index.ts` | Added to the CORS allowlist when set. |
 | `EXPO_PACKAGER_PROXY_URL` | `server/_core/index.ts` | Added to the CORS allowlist when set. |
+
+</details>
 
 The server always allowlists `http://localhost:8081` and `http://localhost:3000`.
 
