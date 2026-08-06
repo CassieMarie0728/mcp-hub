@@ -152,22 +152,6 @@ try {
 }
 ```
 
-### Frontend: Handling Auth Errors
-
-protectedProcedure MUST HANDLE UNAUTHORIZED when user is not logged in. Always handle this in the frontend:
-
-```tsx
-try {
-  await trpc.someProtectedEndpoint.mutate(data);
-} catch (error) {
-  if (error.data?.code === 'UNAUTHORIZED') {
-    router.push('/login');
-    return;
-  }
-  throw error;
-}
-```
-
 ---
 
 ## Database
