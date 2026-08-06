@@ -11,6 +11,13 @@ tags:
 
 This section is the security and governance view of MCP Hub: what the threat model actually is for this codebase, how secrets are handled, how MCP servers are kept from leaking credentials, and how to report a vulnerability. It is grounded in the repository as it exists on `main` — not in the aspirational deployment docs. When the wiki and a root doc disagree, the wiki wins ([Feature status](../project/feature-status.md)).
 
+## Pages in this section
+
+| Page | What it answers |
+| --- | --- |
+| [Secrets handling](secrets-handling.md) | The `.env` contract, redaction rules, token encryption, and the operator checklist. |
+| [Vulnerability reporting](vulnerability-reporting.md) | Where to report a flaw, what to include, and response expectations. |
+
 ## The security model in one paragraph
 
 MCP Hub is a **client/host** that talks to MCP servers over HTTP and exposes their tools through its own tRPC API. The trust boundary that matters most is the **one between the app and the MCP servers it calls** — a malicious or buggy server could return hostile tool output or attempt to capture credentials. The repo's main defense is **secret redaction**: server configs are scrubbed before they are returned to the client. Everything else (auth, sessions, tokens) is secondary hardening on that core boundary.
@@ -19,12 +26,12 @@ MCP Hub is a **client/host** that talks to MCP servers over HTTP and exposes the
 
 The security posture is defined by what is actually wired:
 
-- **Real (wired):** session JWT auth with `JWT_SECRET`; OAuth flow with CSRF `state` (in-memory, 10-minute expiry); `user`/`admin` roles with tRPC guards; AES-256-GCM token encryption; MCP secret redaction (`redactServerConfig`); rate limiters on auth routes; CORS allowlist. Details on [Auth & Sessions](../architecture/auth-session.md).
+- **Real (wired):** session JWT auth with `JWT_SECRET`; OAuth flow with CSRF `state` (in-memory, 10-minute expiry); `user`/`admin` roles with tRPC guards; AES-256-GCM token encryption; MCP secret redaction (`redactServerConfig`); global + API rate limiters (the auth-specific limiter is defined but not wired); CORS allowlist. Details on [Auth & Sessions](../architecture/auth-session.md).
 - **Aspirational (docs only):** PostgreSQL, Redis, TLS termination in `nginx.conf`, `/metrics`, alert dashboards, and audit-log/governance screens. `nginx.conf` does **not** terminate TLS — HTTPS must come from the ingress/platform edge ([Reverse proxy](../operate/reverse-proxy.md)). `governance.tsx` and `audit-log.tsx` are parked under `app/_disabled` ([Disabled feature catalog](../project/disabled-catalog.md)).
 
 ## Secrets handling
 
-The environment contract (`.env.example`) defines `COOKIE_SECRET`, `JWT_SECRET`, `DATABASE_URL`, `MCP_SERVER_URL`, and `OPENAI_API_KEY`. Rules that hold everywhere:
+Deep dive on the full model - every variable, the redaction walk, and the operator checklist: [Secrets handling](secrets-handling.md). The rules that hold everywhere:
 
 1. **Never commit real credentials.** `.env` is git-ignored; `.env.example` ships placeholders only. See [Environment variables](../install-and-configure/environment-variables.md).
 2. **Secrets stay out of MCP responses.** `redactServerConfig` masks bearer tokens, passwords, and any header whose name contains `secret`, `token`, or `password` (or is `authorization`/`x-api-key`) before a server config reaches the client ([MCP integration](../architecture/mcp-integration.md)).
