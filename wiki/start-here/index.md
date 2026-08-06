@@ -12,7 +12,7 @@ The Start Here section gives you a mental model before you touch the code. It an
 ## Pages in this section
 
 | Page | What it answers |
-|---|---|
+| --- | --- |
 | [What is MCP Hub?](./what-is-mcp-hub.md) | Problem statement, product principles, active vs aspirational capabilities, comparison table. |
 | [MCP in plain English](./mcp-in-plain-english.md) | What Model Context Protocol is, client/host/server roles, tools/resources/prompts, transports. |
 | [Feature tour](./feature-tour.md) | Every feature with its current status and a pointer to its guide. |

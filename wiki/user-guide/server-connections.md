@@ -26,7 +26,7 @@ A connection is a **named, URL-addressed MCP server** registered with the backen
 | Identity | `id` (uuid), `name`, `url`, `isActive` | `id`, `name`, `url`, `type` |
 | Auth | `credentials: {type, username, password, token, apiKey, apiKeyHeader, oauthToken}` | `auth: {type, token, username, password}` + `headers` |
 | Extra | `description`, `tags`, `createdAt`, `lastConnected` | `timeout` (default 30000 ms), `retryAttempts` |
-| Transport type | — | `type`: `'http' | 'websocket' | 'stdio'` |
+| Transport type | — | `type`: `'http' \| 'websocket' \| 'stdio'` |
 
 ## Adding a server
 
