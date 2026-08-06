@@ -14,7 +14,7 @@ tags:
 | Audience | Developers, operators, self-hosters. |
 | Source paths | `package.json`, `app.config.ts`, `server/_core/index.ts`, `Dockerfile`, `docker-compose.yml`, `kubernetes/*.yaml` |
 | Prerequisites | Node 20+, pnpm via corepack, (optional) MySQL 8 |
-| Next | [Local development](local-development.md) or [Docker & Kubernetes](../../install-and-configure/docker.md) |
+| Next | [Local development](local-development.md) or [Docker & Kubernetes](docker.md) |
 
 ## What MCP Hub ships
 
@@ -27,7 +27,7 @@ A single pnpm workspace whose pieces all live in this repository:
 | Landing page | `landing/` | Static HTML/CSS served by the Express server at `/`. |
 | Database | `drizzle/` schema + MySQL | Optional at boot; backs user persistence only today. |
 
-There is no separate MCP server to install — MCP Hub **connects to** MCP servers over HTTP (see [MCP in plain English](../../start-here/mcp-in-plain-english.md) and [Server connections](../../user-guide/server-connections.md)).
+There is no separate MCP server to install — MCP Hub **connects to** MCP servers over HTTP (see [MCP in plain English](../start-here/mcp-in-plain-english.md) and [Server connections](../user-guide/server-connections.md)).
 
 ## Runtime modes
 
