@@ -8,7 +8,7 @@ MCP servers can expose resources — data sources identified by URI, like files,
 
 ## List all resources
 
-**GET /api/connections/{connectionId}/resources**
+**GET /api/connections/\{connectionId\}/resources**
 
 Returns a paginated list of every resource exposed by the specified MCP server connection.
 
@@ -57,9 +57,9 @@ An array of `ResourceMetadata` objects.
 
 ## List resource templates
 
-**GET /api/connections/{connectionId}/resource-templates**
+**GET /api/connections/\{connectionId\}/resource-templates**
 
-Resource templates define URI patterns that let you construct valid resource URIs dynamically. Use a template's `schema.uriTemplate` to build a URI, then pass it to [Read Resource](/api/resources/read).
+Resource templates define URI patterns that let you construct valid resource URIs dynamically. Use a template's `schema.uriTemplate` to build a URI, then pass it to [Read Resource](../resources/read).
 
 ### Response
 
@@ -96,7 +96,7 @@ An array of `ResourceTemplate` objects.
 
 ## Subscribe to resource updates
 
-**POST /api/connections/{connectionId}/resources/subscribe**
+**POST /api/connections/\{connectionId\}/resources/subscribe**
 
 Subscribe to change notifications for a specific resource. When the resource changes on the MCP server, MCP Hub will deliver an update notification.
 
@@ -131,7 +131,7 @@ Subscribe to change notifications for a specific resource. When the resource cha
 
 ## Unsubscribe from resource updates
 
-**POST /api/connections/{connectionId}/resources/unsubscribe**
+**POST /api/connections/\{connectionId\}/resources/unsubscribe**
 
 Cancel an active subscription. MCP Hub will stop delivering change notifications for the specified resource.
 
@@ -170,7 +170,7 @@ Cancel an active subscription. MCP Hub will stop delivering change notifications
 
 ## List prompts
 
-**GET /api/connections/{connectionId}/prompts**
+**GET /api/connections/\{connectionId\}/prompts**
 
 MCP servers can expose reusable prompt templates alongside resources. Use this endpoint to discover all prompts available on the connection. Prompts may accept arguments that get substituted when retrieved via [Get Prompt](#get-a-prompt).
 
@@ -210,7 +210,7 @@ An array of `PromptMetadata` objects.
 
 ## Get a prompt
 
-**POST /api/connections/{connectionId}/prompts/{promptName}/get**
+**POST /api/connections/\{connectionId\}/prompts/\{promptName\}/get**
 
 Retrieve the full details of a specific prompt, optionally passing arguments to resolve template variables. The server returns a `Prompt` object containing the resolved schema and any filled-in content.
 
