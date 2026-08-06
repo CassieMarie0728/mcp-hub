@@ -12,7 +12,7 @@ This page maps every top-level directory and names the files you will reach for 
 
 ## Top-level layout
 
-```
+```text
 mcp-hub/
 ├── server/        # Backend: Express + tRPC, all business logic
 ├── app/           # Expo Router app screens (React Native)
@@ -67,7 +67,7 @@ Expo Router screen files. High-traffic screens:
 - `_layout.tsx` — root navigator
 
 > [!WARNING]
-> `app/_disabled/` contains **22 screens** for planned features (governance, macro-debugger, notifications-center, performance-profiler, and more). They are intentionally not wired into navigation. Do not assume a feature exists just because a screen file is present — check the [feature status](../start-here/feature-status.md) page.
+> `app/_disabled/` contains **22 screens** for planned features (governance, macro-debugger, notifications-center, performance-profiler, and more). They are intentionally not wired into navigation. Do not assume a feature exists just because a screen file is present — check the [feature tour](../start-here/feature-tour.md) page.
 
 ## Client libraries (`lib/`)
 
