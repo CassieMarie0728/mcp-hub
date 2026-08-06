@@ -37,6 +37,23 @@ There is no separate MCP server to install — MCP Hub **connects to** MCP serve
 | Self-hosted (container) | Docker / Kubernetes | Optional | Node 20-alpine image; env via `.env` file or a k8s secret. |
 | Mobile builds | `pnpm android` / `pnpm ios` | Optional | Needs native toolchains (see [Android](android.md), [iOS & web](ios-web.md)). |
 
+### Quickstart by platform
+
+<Tabs>
+  <Tab label="Web - quickest">
+    From a clean checkout: `corepack pnpm install`, then in two terminals run `corepack pnpm dev:server` (API on port 3000) and `corepack pnpm dev:metro` (client on port 8081). No database required. See [Local development](local-development.md).
+  </Tab>
+  <Tab label="Android">
+    Needs JDK 17 + Android SDK with minSdk 24, then run `corepack pnpm android`. The first build downloads Gradle dependencies. On a physical device point `EXPO_PUBLIC_OAUTH_SERVER_URL` at your machine's LAN address. See [Android](android.md).
+  </Tab>
+  <Tab label="iOS">
+    macOS + Xcode only: `corepack pnpm ios` runs `expo run:ios`. See [iOS & web](ios-web.md).
+  </Tab>
+  <Tab label="Docker">
+    `docker compose up` from the repository root serves the API + landing on port 3000. See [Docker & Kubernetes](docker.md).
+  </Tab>
+</Tabs>
+
 > [!WARNING]
 > The backend keeps server configs, tokens, and webhooks **in memory**. Without MySQL you can connect servers and run tools, but restarts lose state. The database is required only if you want user/auth persistence — and it currently stores **only the `users` table** ([Database](database.md)).
 
