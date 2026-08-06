@@ -41,10 +41,10 @@ POST /api/connections
 <ParamField body="authMode" type="string" required>
   The authentication mode for this connection. Accepted values:
 
-  - `none` — no authentication required
-  - `oauth2` — OAuth 2.0 flow managed by MCP Hub
-  - `bearer` — a static bearer token you supply
-  - `secret_env` — secrets injected as environment variables into the stdio process
+- `none` — no authentication required
+- `oauth2` — OAuth 2.0 flow managed by MCP Hub
+- `bearer` — a static bearer token you supply
+- `secret_env` — secrets injected as environment variables into the stdio process
 </ParamField>
 
 <ParamField body="metadata" type="object">
@@ -76,6 +76,7 @@ POST /api/connections
   "authMode": "secret_env"
 }
 ```
+
 </CodeGroup>
 
 ## Response

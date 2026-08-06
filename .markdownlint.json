@@ -4,6 +4,12 @@
     "siblings_only": true
   },
   "MD033": {
-    "allowed_elements": ["Tabs", "Tab", "details", "summary", "Callout", "Columns", "Card"]
+    "allowed_elements": [
+      "Tabs", "Tab", "details", "summary",
+      "Callout", "Columns", "Card", "CardGroup",
+      "ResponseField", "ParamField", "Expandable",
+      "Warning", "Note", "Tip", "Info",
+      "Steps", "Step", "CodeGroup", "Accordion", "AccordionGroup"
+    ]
   }
 }
