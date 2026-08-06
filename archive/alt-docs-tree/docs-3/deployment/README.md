@@ -103,4 +103,4 @@ certbot certonly --standalone -d api.mcphub.io
 
 ---
 
-See [DEPLOYMENT.md](../../DEPLOYMENT.md) for detailed instructions.
+See the [Infrastructure as Code notes](./iac-notes.md) for detailed instructions.

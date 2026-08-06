@@ -348,7 +348,7 @@ For issues with:
 
 - [GitHub Pages Deployment Guide](./GITHUB_PAGES_DEPLOYMENT.md)
 - [GitHub Pages Setup Script Guide](./GITHUB_PAGES_SETUP_SCRIPT.md)
-- [Landing Page Documentation](../landing/README.md)
+- [Documentation Landing Page](./README.md)
 
 ## Version History
 

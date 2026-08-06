@@ -118,4 +118,4 @@ if (signature !== request.headers['x-webhook-signature']) {
 
 ---
 
-For detailed endpoint documentation, see the [tRPC API Reference](./REFERENCE.md).
+For detailed endpoint documentation, see the [OpenAPI schema](./openapi.stub.yaml).

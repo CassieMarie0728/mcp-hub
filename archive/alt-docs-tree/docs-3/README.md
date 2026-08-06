@@ -61,8 +61,8 @@ This is especially important for MCP Hub because the repository contains many fe
 
 If you are new to the project, a practical order is:
 
-1. root [`README.md`](../README.md)
-2. root [`README.mdx`](../README.mdx)
+1. root [`README.md`](../../README.md)
+2. root [`README.mdx`](../../README.mdx)
 3. [`architecture/README.md`](./architecture/README.md)
 4. [`api/README.md`](./api/README.md)
 5. [`development/README.md`](./development/README.md) or [`deployment/README.md`](./deployment/README.md), depending on your role
