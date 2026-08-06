@@ -1,5 +1,5 @@
 ---
-description: Every screen MCP Hub ships — the five tabs, secondary screens, and the 23 disabled stubs — with status labels.
+description: Every screen MCP Hub ships — the five tabs, secondary screens, and the 22 disabled stubs — with status labels.
 tags:
   - ui
   - screens
@@ -29,6 +29,24 @@ The tab bar (`app/(tabs)/_layout.tsx`) exposes five tabs. Everything else is a s
 | Debug | `(tabs)/execution-debugger` | Inspect runs, step through executions. | Experimental |
 | Logs | `(tabs)/blog` | Activity/run log feed. | Experimental |
 
+```mermaid
+flowchart TD
+    APP["app/ - Expo Router"] --> TABS["(tabs)/ - the five tabs"]
+    APP --> SEC["other shipped screens"]
+    APP --> DIS["_disabled/ - 22 stubs, never routed"]
+
+    TABS --> HUB["Hub - index - Stable"]
+    TABS --> SRV["Servers - mcp-servers - Stable"]
+    TABS --> BLD["Builder - macro-builder - Experimental"]
+    TABS --> DBG["Debug - execution-debugger - Experimental"]
+    TABS --> LOG["Logs - blog - Experimental"]
+
+    SEC --> TL["tool-discovery, tool-execution, results, execution-history"]
+    SEC --> MC["macro-editor, macro-gallery, macro/id"]
+    SEC --> WF["workflow-templates, schedule-workflow, template/id"]
+    SEC --> OPS["admin-dashboard, token-management, webhooks, settings"]
+```
+
 ## Other shipped screens
 
 These are reachable in-app (navigation, not the tab bar):
@@ -42,7 +60,7 @@ These are reachable in-app (navigation, not the tab bar):
 
 ## Disabled screens
 
-`app/_disabled/` holds 23 stubs. They are **deliberately disabled** — code exists but is not routed/registered, and some have no backend wiring. They are not user-facing bugs.
+`app/_disabled/` holds 22 stubs. They are **deliberately disabled** — code exists but is not routed/registered, and some have no backend wiring. They are not user-facing bugs.
 
 | Disabled screen | What it was going to be |
 | --- | --- |

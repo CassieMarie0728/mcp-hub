@@ -34,9 +34,40 @@ A workflow is a server-side automation script made of **steps** with branching a
 
 The engine (`WorkflowEngine`) understands five step types: `tool`, `condition`, `loop`, `parallel`, `delay`. It also supports `registerCondition`, `registerLoop`, `setVariable`/`getVariable`, `pauseWorkflow`/`resumeWorkflow`/`stopWorkflow`, and records per-step `ExecutionRecord`s (`pending → running → success | failed | skipped`) plus a `WorkflowContext` of shared variables and errors.
 
+Each step records an `ExecutionRecord` that moves through these states:
+
+```mermaid
+stateDiagram-v2
+    [*] --> pending
+    pending --> running
+    running --> success
+    running --> failed
+    running --> skipped
+    success --> [*]
+    failed --> [*]
+    skipped --> [*]
+```
+
 ## dryRun semantics
 
 `dryRun` does **not** change how the workflow runs — execution is identical either way. The only difference: when `dryRun` is false, the workflow's `lastExecuted` is set and `executionCount` incremented. `dryRun` is echoed back in the response.
+
+```mermaid
+flowchart LR
+    RUN["workflows.execute(id, dryRun)"] --> ENG["WorkflowEngine walks the steps"]
+    ENG --> T{"step type"}
+    T -- tool --> X["executeTool - STUB, logs only"]
+    T -- condition --> C["registerCondition gate"]
+    T -- loop --> L["registerLoop repeat"]
+    T -- parallel --> P["parallel steps"]
+    T -- delay --> D["delay"]
+    X --> REC["ExecutionRecord: pending to running to success, failed or skipped"]
+    C --> REC
+    L --> REC
+    P --> REC
+    D --> REC
+    REC --> NEXT["next step or finish"]
+```
 
 ## Honest limits (read this)
 

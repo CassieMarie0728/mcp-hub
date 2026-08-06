@@ -29,6 +29,26 @@ mcp-hub/
 
 ## Server (`server/`)
 
+```mermaid
+flowchart TD
+    ROOT["mcp-hub repo"] --> SVR["server/ - Express + tRPC"]
+    ROOT --> APP["app/ - Expo Router screens"]
+    ROOT --> LIB["lib/ - shared client code"]
+    ROOT --> DZ["drizzle/ - schema + migrations"]
+    ROOT --> TST["tests/, __tests__/, lib/__tests__/"]
+    ROOT --> SCR["scripts/"]
+    ROOT --> LND["landing/ - static pages"]
+    ROOT --> WIKI["wiki/ - this documentation"]
+
+    SVR --> RTS["routers.ts - appRouter, 10 routers"]
+    SVR --> CORE["_core/ - bootstrap, tRPC core, env, rate limiters"]
+    SVR --> AUTH["auth/ - login + OAuth"]
+    SVR --> MCP["mcp/ - manager, router, presets"]
+    SVR --> OPS["tokens/ + webhooks/ + analytics/"]
+    SVR --> PROC["procedures/ - workflows + templates"]
+    SVR --> MAC["macros/ - engines, not wired into appRouter"]
+```
+
 | Path | What it is | Wired into `appRouter`? |
 | --- | --- | --- |
 | `routers.ts` | Composes `appRouter` from the 10 feature routers | Yes |
