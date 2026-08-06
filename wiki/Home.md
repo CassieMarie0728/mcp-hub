@@ -42,7 +42,7 @@ MCP Hub is a mobile-first, cross-platform control center for connecting **MCP se
 - **Backend:** Express 4.22, tRPC 11.17, Drizzle ORM 0.45 (MySQL via `mysql2`), Zod 4, Socket.IO 4.8, Winston, prom-client.
 - **Testing:** Vitest 4.1. `pnpm test` runs `lib/__tests__/**` and `tests/**`; the large root `__tests__/` tree is **excluded** by `vitest.config.ts` — see [Testing strategy](./contribute/testing-strategy.md) for what that means.
 - **Platforms:** Android (minSdk 24), iOS (needs macOS/Xcode), Docker, and Kubernetes manifests provided.
-- **Capability summary:** connections/tools **stable**; providers & OAuth **beta**; macros/workflows/webhooks/tokens/analytics/team **experimental**; 23 screens parked under `app/_disabled`.
+- **Capability summary:** connections/tools **stable**; providers & OAuth **beta**; macros/workflows/webhooks/tokens/analytics/team **experimental**; 22 screens parked under `app/_disabled`.
 
 ## Scope clarification
 
