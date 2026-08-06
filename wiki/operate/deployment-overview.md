@@ -50,32 +50,14 @@ Full contents of the Dockerfile, compose file, and manifests are documented on [
 
 ## Deployment modes in detail
 
-### Docker (single host)
-
-```bash
-docker build -t mcp-hub:latest .
-docker run -d --name mcp-hub -p 3000:3000 --env-file .env mcp-hub:latest
-```
-
-Or with compose:
-
-```bash
-cp .env.example .env
-# edit .env with your production values
-docker compose up -d --build
-```
-
-Verify with `curl http://localhost:3000/api/health` — expect `{ ok: true, timestamp, version }`.
-
-### Kubernetes
-
-The provided manifests are starter scaffolding, not a production spec (see the warning in [Docker & Kubernetes](../install-and-configure/docker.md)). They lack resource limits, probes, autoscaling, TLS annotations, and MySQL. `scripts/deploy.sh` builds an image and applies them:
-
-```bash
-IMAGE_NAME=ghcr.io/your-org/mcp-hub IMAGE_TAG=v1.0.0 ./scripts/deploy.sh
-```
-
-You must create the `mcp-hub-env` Secret the Deployment's `envFrom` references, and supply your own ingress/registry. The [Production checklist](production-checklist.md) lists every gap.
+<Tabs>
+  <Tab label="Docker">
+    `docker build -t mcp-hub:latest .` then `docker run -d --name mcp-hub -p 3000:3000 --env-file .env mcp-hub:latest`. Or with compose: `cp .env.example .env`, edit it with production values, then `docker compose up -d --build`. Verify with `curl http://localhost:3000/api/health` — expect `{ ok: true, timestamp, version }`.
+  </Tab>
+  <Tab label="Kubernetes">
+    The provided manifests are starter scaffolding, not a production spec (see the warning in [Docker & Kubernetes](../install-and-configure/docker.md)). They lack resource limits, probes, autoscaling, TLS annotations, and MySQL. `scripts/deploy.sh` builds an image and applies them: `IMAGE_NAME=ghcr.io/your-org/mcp-hub IMAGE_TAG=v1.0.0 ./scripts/deploy.sh`. You must create the `mcp-hub-env` Secret the Deployment's `envFrom` references, and supply your own ingress/registry. The [Production checklist](production-checklist.md) lists every gap.
+  </Tab>
+</Tabs>
 
 ## Runtime properties that shape production decisions
 

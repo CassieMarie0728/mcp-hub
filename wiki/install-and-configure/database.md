@@ -29,15 +29,14 @@ tags:
 
 ## Setup
 
-```sql
-CREATE DATABASE mcp_hub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-Then set in `.env`:
-
-```bash
-DATABASE_URL=mysql://user:password@localhost:3306/mcp_hub
-```
+<Tabs>
+  <Tab label="Local development">
+    Against a local MySQL 8 on port 3306: run `CREATE DATABASE mcp_hub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`, then set `DATABASE_URL=mysql://user:password@localhost:3306/mcp_hub` in `.env`, then run `corepack pnpm db:push` from the repo root.
+  </Tab>
+  <Tab label="Container">
+    Point `DATABASE_URL` at wherever MySQL runs. In Docker Compose it comes from `env_file: .env`; in Kubernetes from the `mcp-hub-env` Secret. The compose file ships **no** MySQL service — bring your own ([Docker & Kubernetes](docker.md)). Run `corepack pnpm db:push` from a one-off container or a local CLI against the reachable URL.
+  </Tab>
+</Tabs>
 
 The driver is `mysql2` (Drizzle ORM 0.45, dialect `mysql`).
 
