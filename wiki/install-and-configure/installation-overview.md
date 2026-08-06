@@ -65,4 +65,4 @@ The exact package versions come from `package.json`: Expo ~54, React Native 0.81
 1. [Local development](local-development.md) — get a clean checkout running.
 2. [Environment variables](environment-variables.md) — every config knob.
 3. [Database](database.md) — enable user persistence.
-4. [Docker & Kubernetes](../../install-and-configure/docker.md) — containerized self-hosting.
+4. [Docker & Kubernetes](docker.md) — containerized self-hosting.
