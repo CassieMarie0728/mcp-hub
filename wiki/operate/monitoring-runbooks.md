@@ -51,7 +51,7 @@ The server logs to **stdout** via `console.log` (startup banner, port selection,
 | `metricsMiddleware()` | Express middleware recording `api_request_*` per request | No |
 | `HealthChecker` / `healthChecker` | Extensible health checks with 5s timeout, healthy/degraded/unhealthy status | No |
 | `AlertManager` / `alertManager` + `setupSlackAlerts` / `setupEmailAlerts` | Alert lifecycle with Slack webhook handler; email handler is a TODO stub | No |
-| `exportMetrics('prometheus' | 'json')` | Programmatic metrics export | No |
+| `exportMetrics('prometheus' \| 'json')` | Programmatic metrics export (prometheus or json) | No |
 | winston `logger` | Structured console logger with commented-out daily-rotate-file transports | No |
 
 `server/notifications/token-expiration-monitor.ts` likewise defines a `TokenExpirationMonitor` class that nothing instantiates.
