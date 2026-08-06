@@ -26,7 +26,7 @@ MCP Hub is a mobile-first, cross-platform control center for connecting **MCP se
 ## Choose your path
 
 | I want to… | Start here |
-|---|---|
+| --- | --- |
 | Use MCP Hub | [Five-minute quickstart](./start-here/quickstart.md) → [Connect a server](./user-guide/server-connections.md) → [Execute a tool](./user-guide/tool-execution.md) |
 | Self-host MCP Hub | [Installation overview](./install-and-configure/installation-overview.md) → [Local development](./install-and-configure/local-development.md) → [Deployment overview](./operate/deployment-overview.md) |
 | Integrate an MCP server | [MCP in plain English](./start-here/mcp-in-plain-english.md) → [MCP integration architecture](./architecture/mcp-integration.md) → [Connections API](./api-reference/connections.md) |
@@ -41,7 +41,7 @@ MCP Hub is a mobile-first, cross-platform control center for connecting **MCP se
 - **Frontend:** Expo SDK ~54, React Native 0.81.5, React 19.1.0, Expo Router ~6, NativeWind 4 + Tailwind 3.4.
 - **Backend:** Express 4.22, tRPC 11.17, Drizzle ORM 0.45 (MySQL via `mysql2`), Zod 4, Socket.IO 4.8, Winston, prom-client.
 - **Testing:** Vitest 4.1. `pnpm test` runs `lib/__tests__/**` and `tests/**`; the large root `__tests__/` tree is **excluded** by `vitest.config.ts` — see [Testing strategy](./contribute/testing-strategy.md) for what that means.
-- **Platforms:** Android (minSdk 24), iOS (needs macOS/Xcode), Web (Expo static output), Docker, and Kubernetes manifests provided.
+- **Platforms:** Android (minSdk 24), iOS (needs macOS/Xcode), Docker, and Kubernetes manifests provided.
 - **Capability summary:** connections/tools **stable**; providers & OAuth **beta**; macros/workflows/webhooks/tokens/analytics/team **experimental**; 23 screens parked under `app/_disabled`.
 
 ## Scope clarification
