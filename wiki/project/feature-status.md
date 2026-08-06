@@ -36,7 +36,7 @@ When a root-level report or generated doc disagrees with a wiki page, the **wiki
 
 ## Known contradictions fixed here
 
-Each row is a root-level doc claim that this wiki verified against code and found false. The register is the evidence trail so the same argument does not have to be re-litigated.
+Each row is a root-level doc claim that this wiki verified against code and found false. The register is the evidence trail so the same argument does not have to be re-litigated. As of 2026-08-06 the four aspirational docs (`DEPLOYMENT.md`, `PRODUCTION_DEPLOYMENT.md`, `PRODUCTION_TESTING.md`, `DEPLOYMENT_REPORT.md`) each carry a banner at the top marking them **ASPIRATIONAL - NOT production truth** and linking back here and to the [Operate section](../operate/index.md).
 
 | Doc | Claim | Reality | Where the wiki documents it |
 | --- | --- | --- | --- |
