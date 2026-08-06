@@ -32,6 +32,32 @@ title: Analytics
 | `analytics.getPerformanceTrends` | Daily `averageExecutionTime`, `p50/p95/p99`. |
 | `analytics.generateReport` | A composite `AnalyticsReport` over a date range. |
 
+```html preview
+<div style="font-family:system-ui,sans-serif;padding:20px;color:var(--foreground)">
+  <div style="font-weight:600;font-size:15px">Execution status mix</div>
+  <div style="font-size:13px;color:var(--muted-foreground);margin-bottom:16px">Shape of getToolStats - illustrative values, in-memory store</div>
+  <div id="chart" style="display:flex;align-items:flex-end;gap:24px;height:180px;border-bottom:1px solid var(--border)"></div>
+  <script>
+    const rows = [
+      { label: 'successful', value: 118, color: 'var(--chart-2)' },
+      { label: 'failed', value: 16, color: 'var(--chart-4)' },
+      { label: 'skipped', value: 8, color: 'var(--chart-5)' }
+    ];
+    const max = Math.max(...rows.map(r => r.value));
+    const chart = document.getElementById('chart');
+    chart.innerHTML = rows.map(r => {
+      const h = Math.round((r.value / max) * 150);
+      return `
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px">
+          <div style="font-size:13px;font-weight:600">${r.value}</div>
+          <div style="width:56px;height:${h}px;background:${r.color};border-radius:4px 4px 0 0"></div>
+          <div style="font-size:12px;color:var(--muted-foreground)">${r.label}</div>
+        </div>`;
+    }).join('');
+  </script>
+</div>
+```
+
 ## Honest gaps (read this)
 
 - **In-memory.** Restart clears all analytics.
