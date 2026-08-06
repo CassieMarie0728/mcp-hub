@@ -19,6 +19,17 @@ title: Quickstart
 
 Each step links to the page that goes deeper. For the details, follow the links; for the fast path, run the commands.
 
+```mermaid
+flowchart TD
+    S1["1 - Clone + corepack pnpm install"] --> S2["2 - cp .env.example .env - JWT_SECRET, OAUTH_SERVER_URL, OWNER_OPEN_ID"]
+    S2 --> S3["3 - pnpm dev:server - API on port 3000"]
+    S3 --> S4["4 - pnpm dev:metro - web client on port 8081"]
+    S4 --> S5["5 - Sign in with the identity provider"]
+    S5 --> S6["6 - Connect a server - preset or custom HTTP"]
+    S6 --> S7["7 - Discover and run a tool"]
+    S7 --> S8["8 - Verify - pnpm check, lint, test"]
+```
+
 ## 1. Get the code and dependencies
 
 ```bash

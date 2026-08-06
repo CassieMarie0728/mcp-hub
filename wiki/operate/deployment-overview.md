@@ -32,6 +32,20 @@ The application is identical in every mode — the difference is who runs the No
 | nginx.conf | repo root | Reverse proxy that forwards to the app container and passes WebSocket upgrade headers. |
 | scripts/deploy.sh | repo root | Docker build + `kubectl apply` of the two manifests. |
 
+```mermaid
+flowchart LR
+    SRC["source on main"] --> BUILD["Dockerfile - Node 20-alpine, install + build"]
+    BUILD --> IMG["image - pushed to your registry"]
+    IMG --> DOCK["docker compose up -d - single host"]
+    IMG --> K8S["kubectl apply - manifests, 2 replicas"]
+    DOCK --> ENV[".env on the host"]
+    K8S --> SEC["mcp-hub-env Secret"]
+    DOCK --> NX["nginx.conf reverse proxy"]
+    K8S --> ING["host-based ingress"]
+    NX --> TLS["TLS at the edge - required"]
+    ING --> TLS
+```
+
 Full contents of the Dockerfile, compose file, and manifests are documented on [Docker & Kubernetes](../install-and-configure/docker.md).
 
 ## Deployment modes in detail

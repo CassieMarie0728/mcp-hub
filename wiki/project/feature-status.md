@@ -49,6 +49,33 @@ Live counts from the [User guide](../user-guide/index.md) feature table and the 
 </div>
 ```
 
+```mermaid
+pie title Feature status distribution
+    "Stable" : 3
+    "Beta" : 1
+    "Experimental" : 7
+    "Disabled" : 22
+```
+
+The ring below reads the same numbers a different way - how close the shipped feature set is to fully wired:
+
+```html preview
+<div style="font-family:system-ui,sans-serif;padding:20px;display:flex;align-items:center;gap:20px;color:var(--foreground)">
+  <svg width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="3 of 11 user-guide features stable">
+    <circle cx="60" cy="60" r="46" stroke-width="14" style="fill: none; stroke: var(--border)" />
+    <circle cx="60" cy="60" r="46" stroke-width="14"
+      stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="210"
+      transform="rotate(-90 60 60)" style="fill: none; stroke: var(--chart-2)" />
+    <text x="60" y="67" text-anchor="middle" font-size="22" font-weight="700"
+      style="fill: var(--foreground)">27%</text>
+  </svg>
+  <div>
+    <div style="font-weight:600;font-size:15px">Features fully wired</div>
+    <div style="font-size:13px;color:var(--muted-foreground);margin-top:2px">3 of 11 user-guide feature pages are Stable</div>
+  </div>
+</div>
+```
+
 ## How a label is assigned
 
 A wiki page cites the **source file(s)** it was verified against. The assignment rule, in order of precedence:

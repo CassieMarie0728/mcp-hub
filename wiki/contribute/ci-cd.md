@@ -11,6 +11,27 @@ tags:
 
 MCP Hub's automation lives in `.github/workflows/`. There are exactly three workflows: one CI pipeline and two GitHub Pages deployers for the static landing page. All are read directly from the committed YAML on `main`.
 
+```mermaid
+flowchart TD
+    subgraph CI["ci.yml - the quality gate"]
+        TRIG["push to main or develop, or any PR"] --> CHK["pnpm check - tsc"]
+        CHK --> LNT["pnpm lint"]
+        LNT --> TST["pnpm test"]
+        TST --> GATE["gate result"]
+    end
+    subgraph LP["deploy-landing-page.yml"]
+        LT["push to main touching landing-page/ or landing/"] --> CON["configure-pages@v4"]
+        CON --> RES["resolve landing-page/ else landing/"]
+        RES --> UPL["upload-pages-artifact@v3"]
+        UPL --> DEP["deploy-pages@v4"]
+    end
+    subgraph ST["static.yml - the older deployer"]
+        STT["push to main, any path"] --> C5["configure-pages@v5"]
+        C5 --> U5["upload ./landing"]
+        U5 --> D5["deploy-pages@v5"]
+    end
+```
+
 ## CI — `ci.yml`
 
 Runs the quality gate on every relevant branch and PR.
