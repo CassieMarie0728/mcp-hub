@@ -69,7 +69,7 @@ In this example, `repo` and `title` are required — MCP Hub marks them with an 
 Supported schema features include:
 
 | Feature | Example |
-|---|---|
+| --- | --- |
 | Primitive types | `string`, `number`, `boolean`, `integer` |
 | Required fields | `"required": ["repo", "title"]` |
 | Enumerations | `"enum": ["open", "closed", "all"]` |
@@ -90,7 +90,7 @@ A refresh re-issues the MCP `tools/list` request and updates the local cache wit
 <Tip>
   You can also discover tools programmatically using the REST API:
 
-  ```
+  ```text
   GET /api/connections/{connectionId}/tools
   ```
 

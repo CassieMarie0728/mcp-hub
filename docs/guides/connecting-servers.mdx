@@ -41,7 +41,7 @@ Connect MCP Hub to any MCP-compatible server to start discovering and executing 
 
 With HTTP transport, MCP Hub communicates with a remotely hosted (or locally served) MCP server over standard HTTP. Enter the full URL of the server's MCP endpoint:
 
-```
+```text
 https://my-server.com/mcp
 ```
 
@@ -57,7 +57,7 @@ Use HTTP transport when your MCP server is:
 
 With stdio transport, MCP Hub launches a local process on the device and communicates with it over stdin/stdout. Provide the executable command and any arguments:
 
-```
+```text
 Command: npx
 Args:    -y @modelcontextprotocol/server-filesystem /path/to/dir
 ```

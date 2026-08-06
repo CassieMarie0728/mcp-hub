@@ -19,7 +19,7 @@ cp .env.example .env
 <ParamField body="DATABASE_URL" type="string" required>
   The full MySQL connection string for your database. MCP Hub uses Drizzle ORM and passes this value directly to the Drizzle client.
 
-  ```
+  ```text
   DATABASE_URL="mysql://user:password@localhost:3306/mcp_hub"
   ```
 </ParamField>
@@ -43,7 +43,7 @@ cp .env.example .env
 <ParamField body="MCP_SERVER_URL" type="string">
   The default MCP server URL pre-populated when you add a new server in the UI. Set this to your most commonly used server to save time. You can still add servers with different URLs from within the app.
 
-  ```
+  ```text
   MCP_SERVER_URL="http://localhost:3001"
   ```
 </ParamField>
@@ -51,7 +51,7 @@ cp .env.example .env
 <ParamField body="OPENAI_API_KEY" type="string">
   Your OpenAI API key, required only if you use AI features such as natural-language tool search or automated workflow suggestions. Leave blank to disable those features.
 
-  ```
+  ```text
   OPENAI_API_KEY="<your-openai-api-key>"
   ```
 

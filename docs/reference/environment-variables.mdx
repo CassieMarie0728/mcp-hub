@@ -37,7 +37,7 @@ OPENAI_API_KEY=
 These three variables must be set before MCP Hub will start. The app will exit with an error if any of them are missing or left at their placeholder values.
 
 | Variable | Description | Example |
-|---|---|---|
+| --- | --- | --- |
 | `DATABASE_URL` | MySQL connection string. Format: `mysql://user:password@host:port/database`. Use a dedicated, least-privileged application user — not `root`. | `mysql://mcp_app:<password>@localhost:3306/mcp_hub` |
 | `COOKIE_SECRET` | Secret for signing session cookies. Use a cryptographically random string of **at least 32 characters**. Must stay constant between restarts — changing it invalidates all active sessions. | *(generated — see below)* |
 | `JWT_SECRET` | Secret for signing JWT tokens. Use a **different** random string of at least 32 characters. | *(generated — see below)* |
@@ -47,7 +47,7 @@ These three variables must be set before MCP Hub will start. The app will exit w
 These variables have safe defaults for local development. Override them in `.env` when you need a different port, a remote MCP server, or AI features.
 
 | Variable | Default | Description |
-|---|---|---|
+| --- | --- | --- |
 | `NODE_ENV` | `development` | Set to `production` for deployments. Affects logging verbosity and security hardening (e.g., secure cookies). |
 | `PORT` | `3000` | Port for the backend API server. Change this if port 3000 is already in use on your machine. |
 | `EXPO_PORT` | `8081` | Port for the Expo / web frontend served by Metro. Change this if port 8081 conflicts with another process. |
@@ -81,7 +81,7 @@ JWT_SECRET=<a-different-64-char-hex-string-from-the-command-above>
 
 `DATABASE_URL` follows the standard MySQL connection string format:
 
-```
+```text
 mysql://[user]:[password]@[host]:[port]/[database]
 ```
 
