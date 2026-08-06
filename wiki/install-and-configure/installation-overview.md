@@ -14,7 +14,7 @@ tags:
 | Audience | Developers, operators, self-hosters. |
 | Source paths | `package.json`, `app.config.ts`, `server/_core/index.ts`, `Dockerfile`, `docker-compose.yml`, `kubernetes/*.yaml` |
 | Prerequisites | Node 20+, pnpm via corepack, (optional) MySQL 8 |
-| Next | [Local development](./local-development.md) or [Docker & Kubernetes](./docker.md) |
+| Next | [Local development](../../install-and-configure/local-development.md) or [Docker & Kubernetes](../../install-and-configure/docker.md) |
 
 ## What MCP Hub ships
 
@@ -27,7 +27,7 @@ A single pnpm workspace whose pieces all live in this repository:
 | Landing page | `landing/` | Static HTML/CSS served by the Express server at `/`. |
 | Database | `drizzle/` schema + MySQL | Optional at boot; backs user persistence only today. |
 
-There is no separate MCP server to install — MCP Hub **connects to** MCP servers over HTTP (see [MCP in plain English](../start-here/mcp-in-plain-english.md) and [Server connections](../user-guide/server-connections.md)).
+There is no separate MCP server to install — MCP Hub **connects to** MCP servers over HTTP (see [MCP in plain English](../../start-here/mcp-in-plain-english.md) and [Server connections](../../user-guide/server-connections.md)).
 
 ## Runtime modes
 
@@ -35,10 +35,10 @@ There is no separate MCP server to install — MCP Hub **connects to** MCP serve
 | --- | --- | --- | --- |
 | Local development | `pnpm dev:server` + `pnpm dev:metro` | Optional | Fastest way to explore; Metro serves the web client on port `8081`. |
 | Self-hosted (container) | Docker / Kubernetes | Optional | Node 20-alpine image; env via `.env` file or a k8s secret. |
-| Mobile builds | `pnpm android` / `pnpm ios` | Optional | Needs native toolchains (see [Android](./android.md), [iOS & web](./ios-web.md)). |
+| Mobile builds | `pnpm android` / `pnpm ios` | Optional | Needs native toolchains (see [Android](../../install-and-configure/android.md), [iOS & web](../../install-and-configure/ios-web.md)). |
 
 > [!WARNING]
-> The backend keeps server configs, tokens, and webhooks **in memory**. Without MySQL you can connect servers and run tools, but restarts lose state. The database is required only if you want user/auth persistence — and it currently stores **only the `users` table** ([Database](./database.md)).
+> The backend keeps server configs, tokens, and webhooks **in memory**. Without MySQL you can connect servers and run tools, but restarts lose state. The database is required only if you want user/auth persistence — and it currently stores **only the `users` table** ([Database](../../install-and-configure/database.md)).
 
 ## Prerequisites
 
@@ -62,7 +62,7 @@ The exact package versions come from `package.json`: Expo ~54, React Native 0.81
 
 ## Next steps
 
-1. [Local development](./local-development.md) — get a clean checkout running.
-2. [Environment variables](./environment-variables.md) — every config knob.
-3. [Database](./database.md) — enable user persistence.
-4. [Docker & Kubernetes](./docker.md) — containerized self-hosting.
+1. [Local development](../../install-and-configure/local-development.md) — get a clean checkout running.
+2. [Environment variables](../../install-and-configure/environment-variables.md) — every config knob.
+3. [Database](../../install-and-configure/database.md) — enable user persistence.
+4. [Docker & Kubernetes](../../install-and-configure/docker.md) — containerized self-hosting.

@@ -13,7 +13,7 @@ tags:
 | Purpose | Get the backend API and the Expo client running locally. |
 | Audience | Developers. |
 | Source paths | `package.json`, `server/_core/index.ts`, `.env.example`, `scripts/load-env.js` |
-| Prerequisites | Node 20+, pnpm via corepack; see [Installation overview](./installation-overview.md) |
+| Prerequisites | Node 20+, pnpm via corepack; see [Installation overview](../wiki/install-and-configure/installation-overview.md) |
 | Next | [Environment variables](./environment-variables.md), [Database](./database.md) |
 
 ## 1. Clone and install
