@@ -23,6 +23,34 @@ MCP Hub is a mobile-first, cross-platform control center for connecting **MCP se
 > [!WARNING]
 > Do not treat simulated or in-memory features as production-ready. The [Feature status](./project/feature-status.md) page separates **what is wired end-to-end** from **what is UI + in-memory engine** from **what is parked under `app/_disabled`**. Read it before you rely on any capability.
 
+## Feature status at a glance
+
+Counts from the [User guide](./user-guide/index.md) feature table and the [Disabled catalog](./project/disabled-catalog.md).
+
+```html preview
+<div style="font-family:system-ui,sans-serif;padding:20px">
+  <div id="cards" style="display:flex;gap:14px;flex-wrap:wrap"></div>
+  <script>
+    var stats = [
+      ['Stable', '3', 'wired end to end', 'var(--chart-2)'],
+      ['Beta', '1', 'OAuth + presets', 'var(--chart-3)'],
+      ['Experimental', '7', 'in-memory engines', 'var(--chart-1)'],
+      ['Disabled', '22', 'screens under app/_disabled', 'var(--chart-5)']
+    ];
+    document.getElementById('cards').innerHTML = stats.map(function (s) {
+      return '<div style="flex:1;min-width:150px;padding:16px;background:var(--card);' +
+        'color:var(--card-foreground);border:1px solid var(--border);' +
+        'border-radius:var(--radius)">' +
+        '<div style="font-size:13px;color:var(--muted-foreground)">' + s[0] + '</div>' +
+        '<div style="font-size:26px;font-weight:700;margin-top:4px">' + s[1] + '</div>' +
+        '<div style="font-size:12px;font-weight:600;margin-top:4px;color:' + s[3] + '">' +
+        s[2] + '</div>' +
+        '</div>';
+    }).join('');
+  </script>
+</div>
+```
+
 ## Choose your path
 
 | I want to… | Start here |

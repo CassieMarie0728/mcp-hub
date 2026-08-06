@@ -21,6 +21,34 @@ Every wiki page states a **feature status** for the capability it documents. Thi
 | **Disabled** | Source ships but is parked under `app/_disabled` and not routed by Expo. See [Disabled feature catalog](disabled-catalog.md). | Macro recorder, marketplace, governance, audit log. |
 | **Aspirational** | Described in a doc but **does not exist** in the codebase. Never cite as production truth. | PostgreSQL, Redis, PM2, Helm, `/metrics`, alert dashboards (in `archive/aspirational-deployment/DEPLOYMENT.md` / `PRODUCTION_DEPLOYMENT.md` / `PRODUCTION_TESTING.md`). |
 
+### Current label counts
+
+Live counts from the [User guide](../user-guide/index.md) feature table and the [Disabled catalog](disabled-catalog.md):
+
+```html preview
+<div style="font-family:system-ui,sans-serif;padding:20px">
+  <div id="cards" style="display:flex;gap:14px;flex-wrap:wrap"></div>
+  <script>
+    var stats = [
+      ['Stable', '3', 'wired end to end', 'var(--chart-2)'],
+      ['Beta', '1', 'OAuth + presets', 'var(--chart-3)'],
+      ['Experimental', '7', 'in-memory engines', 'var(--chart-1)'],
+      ['Disabled', '22', 'screens under app/_disabled', 'var(--chart-5)']
+    ];
+    document.getElementById('cards').innerHTML = stats.map(function (s) {
+      return '<div style="flex:1;min-width:150px;padding:16px;background:var(--card);' +
+        'color:var(--card-foreground);border:1px solid var(--border);' +
+        'border-radius:var(--radius)">' +
+        '<div style="font-size:13px;color:var(--muted-foreground)">' + s[0] + '</div>' +
+        '<div style="font-size:26px;font-weight:700;margin-top:4px">' + s[1] + '</div>' +
+        '<div style="font-size:12px;font-weight:600;margin-top:4px;color:' + s[3] + '">' +
+        s[2] + '</div>' +
+        '</div>';
+    }).join('');
+  </script>
+</div>
+```
+
 ## How a label is assigned
 
 A wiki page cites the **source file(s)** it was verified against. The assignment rule, in order of precedence:
