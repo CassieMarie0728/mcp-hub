@@ -27,3 +27,5 @@ New to MCP Hub? Read [What is MCP Hub?](./what-is-mcp-hub.md) → [MCP in plain 
 
 > [!TIP]
 > Definitions are reused everywhere, so start with the [Glossary](./glossary.md) if you hit an unfamiliar term mid-page.
+
+
