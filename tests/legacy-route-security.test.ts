@@ -47,4 +47,27 @@ describe("legacy connection route security", () => {
     expect(execution).not.toContain("useMCPBridge");
     expect(execution).not.toContain("executeTool");
   });
+
+  it("retires local tool detail execution in favor of secure server management", async () => {
+    const source = await readProjectFile("app/(tabs)/tool-detail.tsx");
+
+    expect(source).toContain("Local Tool Details Are Retired");
+    expect(source).toContain("/(tabs)/mcp-servers");
+    expect(source).not.toContain("useMCPService");
+    expect(source).not.toContain("addExecutionResult");
+    expect(source).not.toContain("handleExecute");
+    expect(source).not.toContain("useLocalSearchParams");
+  });
+
+  it("retires local server editing in favor of secure server management", async () => {
+    const source = await readProjectFile("app/(tabs)/edit-server.tsx");
+
+    expect(source).toContain("Legacy Server Editing Is Retired");
+    expect(source).toContain("/(tabs)/mcp-servers");
+    expect(source).not.toContain("useMCPService");
+    expect(source).not.toContain("DocumentPicker");
+    expect(source).not.toContain("expo-sharing");
+    expect(source).not.toContain("connectionType");
+    expect(source).not.toContain("stdio");
+  });
 });

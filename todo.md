@@ -75,6 +75,8 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [ ] Remove remaining behavior-neutral unused-variable warnings after route decisions are complete
 - [ ] Validate route behavior and document the next audit findings
 - [x] Retire native-bridge tool control and execution routes that bypass the secure authorized MCP runtime
+- [x] Retire the legacy tool-detail execution route that uses local server state and client-side tool invocation
+- [x] Retire the legacy edit-server route that can modify local stdio and arbitrary transport configurations outside the secure repository
 
 ## Lifecycle Truthfulness Remediation
 
