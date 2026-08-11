@@ -1,128 +1,58 @@
-import { ScrollView, Text, View, Pressable } from "react-native";
-import { ScreenContainer } from "@/components/screen-container";
-import { useColors } from "@/hooks/use-colors";
-import { useState } from "react";
+import { ScrollView, Text, View } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
+import { ScreenContainer } from '@/components/screen-container';
+import { useColors } from '@/hooks/use-colors';
+
+const DEBUG_REQUIREMENTS = [
+  'Durable workflow execution records scoped to the active workspace',
+  'Redacted step inputs and outputs with no credential material in the log',
+  'Authorized replay and inspection rules for individual executions',
+  'Clear retention and deletion behavior for execution history',
+];
 
 export default function ExecutionDebuggerScreen() {
   const colors = useColors();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [showVariables, setShowVariables] = useState(false);
-
-  const execution = {
-    id: "example-run",
-    workflow: "Example workflow run",
-    status: "completed",
-    steps: [
-      {
-        id: "step-1",
-        name: "Collect source items",
-        duration: 245,
-        status: "completed",
-        input: { source: "connected server" },
-        output: { itemsFound: 5 },
-        variables: { items: [{ id: 1, title: "Example item" }] },
-      },
-      {
-        id: "step-2",
-        name: "Filter useful results",
-        duration: 120,
-        status: "completed",
-        input: { itemsFound: 5 },
-        output: { kept: 2 },
-        variables: { kept: [{ id: 1, title: "Example item" }] },
-      },
-      {
-        id: "step-3",
-        name: "Send final update",
-        duration: 450,
-        status: "completed",
-        input: { summary: "2 items need review" },
-        output: { updateId: "example-update" },
-        variables: { updateId: "example-update" },
-      },
-    ],
-  };
-
-  const step = execution.steps[currentStep];
 
   return (
-    <ScreenContainer className="p-6">
+    <ScreenContainer className="p-0">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 gap-6">
-          <View className="gap-2 bg-primary rounded-2xl p-5">
-            <Text className="text-xs font-bold tracking-widest text-background/70">DEBUG RUN</Text>
-            <Text className="text-3xl font-bold text-background">Follow the trail</Text>
-            <Text className="text-sm text-background/80 leading-relaxed">
-              Inspect each step, compare inputs and outputs, and find where the workflow changed shape.
+        <View className="bg-primary px-6 py-8">
+          <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">EXECUTION DEBUG GATE</Text>
+          <Text className="text-4xl font-bold text-background mb-2">There Is No Sample Run To Inspect</Text>
+          <Text className="text-base text-background/90 leading-relaxed">
+            A friendly-looking pretend execution trace is still pretend. Debugging returns only when workflow execution has real, tenant-scoped records behind it.
+          </Text>
+        </View>
+
+        <View className="flex-1 px-6 py-8 gap-6">
+          <View className="bg-surface rounded-2xl border border-border p-6 items-center">
+            <View className="w-14 h-14 rounded-full bg-warning/15 items-center justify-center mb-4">
+              <MaterialIcons name="bug-report" size={30} color={colors.warning} />
+            </View>
+            <Text className="text-xl font-bold text-foreground text-center mb-2">No fabricated logs</Text>
+            <Text className="text-sm text-muted text-center leading-relaxed">
+              This screen no longer manufactures completed steps, durations, inputs, outputs, or variables. The secure one-off MCP execution path remains available; durable workflow traces do not yet.
             </Text>
           </View>
 
-          <View className="gap-3">
-            {execution.steps.map((s, index) => (
-              <Pressable
-                key={s.id}
-                onPress={() => setCurrentStep(index)}
-                style={({ pressed }) => [
-                  {
-                    backgroundColor: index === currentStep ? colors.primary : colors.surface,
-                    opacity: pressed ? 0.8 : 1,
-                    borderColor: colors.border,
-                    borderWidth: 1,
-                  },
-                ]}
-                className="p-4 rounded-xl flex-row items-center justify-between"
-              >
-                <View className="flex-1">
-                  <Text className={`font-semibold ${index === currentStep ? "text-background" : "text-foreground"}`}>{s.name}</Text>
-                  <Text className={`text-xs mt-1 ${index === currentStep ? "text-background/70" : "text-muted"}`}>{s.duration}ms</Text>
+          <View className="bg-surface rounded-2xl border border-border p-5">
+            <Text className="text-base font-bold text-foreground mb-4">What the debugger requires</Text>
+            <View className="gap-4">
+              {DEBUG_REQUIREMENTS.map((requirement) => (
+                <View key={requirement} className="flex-row items-start gap-3">
+                  <MaterialIcons name="check-circle-outline" size={20} color={colors.primary} />
+                  <Text className="flex-1 text-sm text-muted leading-relaxed">{requirement}</Text>
                 </View>
-                <Text className={`text-lg ${index === currentStep ? "text-background" : "text-success"}`}>✓</Text>
-              </Pressable>
-            ))}
-          </View>
-
-          <View className="gap-4 bg-surface rounded-2xl p-4 border border-border">
-            <Text className="text-lg font-bold text-foreground">{step.name}</Text>
-            <Text className="text-xs text-muted">{execution.workflow}</Text>
-
-            <View className="gap-3">
-              <View>
-                <Text className="text-sm font-semibold text-muted mb-2">Input</Text>
-                <Text className="text-xs text-foreground font-mono bg-background p-2 rounded border border-border">
-                  {JSON.stringify(step.input, null, 2)}
-                </Text>
-              </View>
-
-              <View>
-                <Text className="text-sm font-semibold text-muted mb-2">Output</Text>
-                <Text className="text-xs text-foreground font-mono bg-background p-2 rounded border border-border">
-                  {JSON.stringify(step.output, null, 2)}
-                </Text>
-              </View>
+              ))}
             </View>
-
-            <Pressable onPress={() => setShowVariables(!showVariables)} className="py-2 px-3 bg-background rounded-lg flex-row items-center justify-between border border-border">
-              <Text className="text-sm font-semibold text-foreground">Step variables</Text>
-              <Text className="text-primary">{showVariables ? "▼" : "▶"}</Text>
-            </Pressable>
-
-            {showVariables && (
-              <View>
-                <Text className="text-xs text-foreground font-mono bg-background p-2 rounded border border-border">
-                  {JSON.stringify(step.variables, null, 2)}
-                </Text>
-              </View>
-            )}
           </View>
 
-          <View className="flex-row gap-3">
-            <Pressable onPress={() => currentStep > 0 && setCurrentStep(currentStep - 1)} className="flex-1 py-3 rounded-full items-center border border-primary">
-              <Text className="text-primary font-semibold">Previous</Text>
-            </Pressable>
-
-            <Pressable onPress={() => currentStep < execution.steps.length - 1 && setCurrentStep(currentStep + 1)} style={{ backgroundColor: colors.primary }} className="flex-1 py-3 rounded-full items-center">
-              <Text className="text-background font-semibold">Next</Text>
-            </Pressable>
+          <View className="rounded-xl border border-warning/30 bg-warning/10 p-4">
+            <Text className="text-sm font-semibold text-foreground mb-1">The honest boundary</Text>
+            <Text className="text-sm text-muted leading-relaxed">
+              MCP Hub will not turn sample data into a confidence trick. When workflow execution is implemented, the debugger will report the real run or nothing at all.
+            </Text>
           </View>
         </View>
       </ScrollView>

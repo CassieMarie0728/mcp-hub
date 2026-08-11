@@ -74,4 +74,23 @@ describe("tenant lifecycle feature gates", () => {
     expect(source).not.toContain("Token revoked");
     expect(source).not.toContain("mock data");
   });
+
+  it("keeps the primary workflow builder honest while orchestration remains unavailable", async () => {
+    const source = await readProjectFile("app/(tabs)/macro-builder.tsx");
+    expect(source).toContain("The Forge Is Cooling On Purpose");
+    expect(source).toContain("Workflow building is safely unavailable");
+    expect(source).not.toContain("useCreateWorkflow");
+    expect(source).not.toContain("useExecuteWorkflow");
+    expect(source).not.toContain("Create Workflow");
+    expect(source).not.toContain("handleCreateWorkflow");
+  });
+
+  it("keeps the primary execution debugger honest while workflow traces remain unavailable", async () => {
+    const source = await readProjectFile("app/(tabs)/execution-debugger.tsx");
+    expect(source).toContain("There Is No Sample Run To Inspect");
+    expect(source).toContain("No fabricated logs");
+    expect(source).not.toContain("example-run");
+    expect(source).not.toContain("itemsFound");
+    expect(source).not.toContain("currentStep");
+  });
 });

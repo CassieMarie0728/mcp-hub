@@ -70,7 +70,7 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 
 ## Legacy Route Alignment
 
-- [ ] Classify remaining unused-variable warnings by secure workflow relevance and retirement candidate
+- [x] Classify remaining unused-variable warnings by secure workflow relevance and retirement candidate
 - [ ] Repair or retire stale native-bridge and mock lifecycle routes that conflict with the secure backend
 - [ ] Remove remaining behavior-neutral unused-variable warnings after route decisions are complete
 - [ ] Validate route behavior and document the next audit findings
@@ -81,3 +81,6 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Replace mock workflow-template UI with an explicit unavailable state while backend workflow persistence remains gated
 - [x] Replace simulated OAuth UI and unsupported token-storage claims with an explicit unavailable state
 - [x] Replace mock token management UI and local credential lifecycle actions with an explicit unavailable state
+- [x] Replace the active macro-builder workflow UI with an explicit unavailable state until durable workflow execution exists
+- [x] Retire the legacy add-server screen that permits local-process, SSE, and WebSocket paths outside the secure outbound policy
+- [x] Replace the active execution-debugger sample run with an explicit unavailable state until durable workflow execution logs exist
