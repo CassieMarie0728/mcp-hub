@@ -58,4 +58,4 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [ ] Revisit the unresolved Expo CLI Tar advisory when an SDK 54-compatible upstream patch is available
 - [x] Assess and remediate the next highest-risk lifecycle or authorization gap
 - [x] Remove sensitive session-token and user-object diagnostics from the authentication hook
-- [ ] Update remediation status, evidence, and release blockers after the next audit pass
+- [x] Update remediation status, evidence, and release blockers after the next audit pass
