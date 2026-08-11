@@ -1,93 +1,21 @@
-/**
- * Token Management tRPC Router
- */
+/** Credential-lifecycle routes remain fail-closed until tenant storage is complete. */
 
-import { router, protectedProcedure } from '../_core/trpc';
-import { z } from 'zod';
-import TokenManager from './token-manager';
+import { z } from "zod";
+
+import { protectedProcedure, router } from "../_core/trpc";
+import { requireTenantLifecyclePersistence } from "../security/feature-availability";
+
+const unavailable = (feature: string) => requireTenantLifecyclePersistence(feature);
 
 export const tokenRouter = router({
-  /**
-   * Store a new token securely
-   */
-  storeToken: protectedProcedure
-    .input(
-      z.object({
-        serverId: z.string(),
-        serverType: z.string(),
-        name: z.string(),
-        token: z.string(),
-        expiresAt: z.date().optional(),
-        scopes: z.array(z.string()).optional(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      return TokenManager.storeToken(input);
-    }),
-
-  /**
-   * Get token metadata
-   */
-  getTokenMetadata: protectedProcedure
-    .input(z.object({ tokenId: z.string() }))
-    .query(async ({ input }) => {
-      return TokenManager.getTokenMetadata(input.tokenId);
-    }),
-
-  /**
-   * List all tokens for a server
-   */
-  listServerTokens: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .query(async ({ input }) => {
-      return TokenManager.listServerTokens(input.serverId);
-    }),
-
-  /**
-   * Revoke a token
-   */
-  revokeToken: protectedProcedure
-    .input(z.object({ tokenId: z.string() }))
-    .mutation(async ({ input }) => {
-      return TokenManager.revokeToken(input.tokenId);
-    }),
-
-  /**
-   * Rotate a token
-   */
-  rotateToken: protectedProcedure
-    .input(z.object({ tokenId: z.string(), newToken: z.string() }))
-    .mutation(async ({ input }) => {
-      return TokenManager.rotateToken(input.tokenId, input.newToken);
-    }),
-
-  /**
-   * Get expired tokens
-   */
-  getExpiredTokens: protectedProcedure.query(async () => {
-    return TokenManager.getExpiredTokens();
-  }),
-
-  /**
-   * Get token statistics
-   */
-  getTokenStats: protectedProcedure.query(async () => {
-    return TokenManager.getTokenStats();
-  }),
-
-  /**
-   * Validate token scopes
-   */
-  validateScopes: protectedProcedure
-    .input(
-      z.object({
-        tokenScopes: z.array(z.string()).optional(),
-        requiredScopes: z.array(z.string()),
-      })
-    )
-    .query(({ input }) => {
-      return TokenManager.validateScopes(input.tokenScopes, input.requiredScopes);
-    }),
+  storeToken: protectedProcedure.input(z.object({ serverId: z.string().uuid(), serverType: z.string(), name: z.string(), token: z.string(), expiresAt: z.date().optional(), scopes: z.array(z.string()).optional() })).mutation(() => unavailable("Credential storage")),
+  getTokenMetadata: protectedProcedure.input(z.object({ tokenId: z.string().uuid() })).query(() => unavailable("Credential metadata")),
+  listServerTokens: protectedProcedure.input(z.object({ serverId: z.string().uuid() })).query(() => unavailable("Credential listing")),
+  revokeToken: protectedProcedure.input(z.object({ tokenId: z.string().uuid() })).mutation(() => unavailable("Credential revocation")),
+  rotateToken: protectedProcedure.input(z.object({ tokenId: z.string().uuid(), newToken: z.string() })).mutation(() => unavailable("Credential rotation")),
+  getExpiredTokens: protectedProcedure.query(() => unavailable("Credential expiry inspection")),
+  getTokenStats: protectedProcedure.query(() => unavailable("Credential statistics")),
+  validateScopes: protectedProcedure.input(z.object({ tokenScopes: z.array(z.string()).optional(), requiredScopes: z.array(z.string()) })).query(() => unavailable("Credential scope validation")),
 });
 
 export default tokenRouter;

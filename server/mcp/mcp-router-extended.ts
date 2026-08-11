@@ -1,244 +1,86 @@
-/**
- * Extended MCP Router
- * Additional tRPC procedures for real MCP server integration
- */
+/** Additional tenant-scoped MCP procedures for registry-backed server presets. */
 
-import { z } from 'zod';
-import { router, protectedProcedure } from '../_core/trpc';
-import { mcpServerManager } from './mcp-server-manager';
-import MCPServerRegistry, { ServerType } from './mcp-server-registry';
+import { z } from "zod";
+
+import { protectedProcedure, router } from "../_core/trpc";
+import { getOrCreatePersonalWorkspaceAccess } from "../security/workspace-access";
+import MCPServerRegistry, { ServerType } from "./mcp-server-registry";
+import {
+  discoverAuthorizedMcpTools,
+  executeAuthorizedMcpTool,
+  listAuthorizedMcpServers,
+  registerAuthorizedMcpServer,
+  removeAuthorizedMcpServer,
+  testAuthorizedMcpConnection,
+} from "./secure-mcp-operations";
+
+async function workspaceFor(ctx: { user: { id: number } | null }) {
+  if (!ctx.user) throw new Error("Authentication is required");
+  return getOrCreatePersonalWorkspaceAccess(ctx.user);
+}
 
 export const mcpExtendedRouter = router({
-  /**
-   * Get all available MCP server types
-   */
-  getAvailableServers: protectedProcedure.query(() => {
-    return MCPServerRegistry.getAllServers();
+  getAvailableServers: protectedProcedure.query(() => MCPServerRegistry.getAllServers()),
+
+  getServerDefinition: protectedProcedure.input(z.object({ type: z.string() })).query(({ input }) =>
+    MCPServerRegistry.getServerDefinition(input.type as ServerType) ?? { error: "Server type not found" },
+  ),
+
+  getServerTools: protectedProcedure.input(z.object({ type: z.string() })).query(({ input }) => {
+    const tools = MCPServerRegistry.getServerTools(input.type as ServerType);
+    return { success: true, tools, count: tools.length };
   }),
 
-  /**
-   * Get server definition by type
-   */
-  getServerDefinition: protectedProcedure
-    .input(z.object({ type: z.string() }))
-    .query(({ input }) => {
-      const definition = MCPServerRegistry.getServerDefinition(input.type as ServerType);
-      return definition || { error: 'Server type not found' };
-    }),
+  validateToken: protectedProcedure.input(z.object({ type: z.string(), token: z.string().min(1) })).mutation(async ({ input }) => ({
+    success: true,
+    valid: await MCPServerRegistry.validateToken(input.type as ServerType, input.token),
+  })),
 
-  /**
-   * Get available tools for a server type (without connecting)
-   */
-  getServerTools: protectedProcedure
-    .input(z.object({ type: z.string() }))
-    .query(({ input }) => {
-      const tools = MCPServerRegistry.getServerTools(input.type as ServerType);
-      return {
-        success: true,
-        tools,
-        count: tools.length,
-      };
-    }),
-
-  /**
-   * Validate token for a server type
-   */
-  validateToken: protectedProcedure
-    .input(
-      z.object({
-        type: z.string(),
-        token: z.string(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      try {
-        const isValid = await MCPServerRegistry.validateToken(
-          input.type as ServerType,
-          input.token
-        );
-        return {
-          success: true,
-          valid: isValid,
-        };
-      } catch (error) {
-        return {
-          success: false,
-          valid: false,
-          error: error instanceof Error ? error.message : 'Validation failed',
-        };
-      }
-    }),
-
-  /**
-   * Register a real MCP server (GitHub, Slack, Notion)
-   */
-  registerRealServer: protectedProcedure
-    .input(
-      z.object({
-        type: z.string(),
-        token: z.string(),
-        customName: z.string().optional(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      try {
-        // Validate token first
-        const isValid = await MCPServerRegistry.validateToken(
-          input.type as ServerType,
-          input.token
-        );
-
-        if (!isValid) {
-          return {
-            success: false,
-            error: 'Invalid token for this server type',
-          };
-        }
-
-        // Create server config
-        const config = MCPServerRegistry.createServerConfig(
-          input.type as ServerType,
-          input.token
-        );
-
-        if (!config) {
-          return {
-            success: false,
-            error: 'Failed to create server configuration',
-          };
-        }
-
-        // Override name if provided
-        if (input.customName) {
-          config.name = input.customName;
-        }
-
-        // Register with manager
-        mcpServerManager.registerServer(config);
-
-        // Test connection
-        const connected = await mcpServerManager.testConnection(config.id);
-
-        return {
-          success: true,
-          serverId: config.id,
-          serverName: config.name,
-          connected,
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : 'Registration failed',
-        };
-      }
-    }),
-
-  /**
-   * Get registered servers with status
-   */
-  getRegisteredServers: protectedProcedure.query(() => {
-    const servers = mcpServerManager.getAllServers();
-    const statuses = mcpServerManager.getAllServerStatuses();
-
-    return servers.map((server) => {
-      const status = statuses.find((s) => s.id === server.id);
-      return {
-        id: server.id,
-        name: server.name,
-        type: server.type,
-        status: status?.status || 'unknown',
-        toolCount: status?.toolCount || 0,
-        lastConnected: status?.lastConnected,
-        lastError: status?.lastError,
-      };
+  registerRealServer: protectedProcedure.input(z.object({
+    type: z.string(),
+    token: z.string().min(1),
+    customName: z.string().trim().min(1).max(255).optional(),
+  })).mutation(async ({ ctx, input }) => {
+    const isValid = await MCPServerRegistry.validateToken(input.type as ServerType, input.token);
+    if (!isValid) return { success: false, error: "Invalid token for this server type" };
+    const config = MCPServerRegistry.createServerConfig(input.type as ServerType, input.token);
+    if (!config) return { success: false, error: "Server type is not available" };
+    const server = await registerAuthorizedMcpServer(await workspaceFor(ctx), {
+      ...config,
+      name: input.customName ?? config.name,
+      type: "http",
     });
+    const connected = await testAuthorizedMcpConnection(await workspaceFor(ctx), server.id);
+    return { success: true, serverId: server.id, serverName: server.name, connected };
   }),
 
-  /**
-   * Discover and cache tools from a registered server
-   */
-  discoverServerTools: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .mutation(async ({ input }) => {
-      try {
-        const tools = await mcpServerManager.discoverTools(input.serverId);
-        return {
-          success: true,
-          tools,
-          count: tools.length,
-        };
-      } catch (error) {
-        return {
-          success: false,
-          tools: [],
-          count: 0,
-          error: error instanceof Error ? error.message : 'Discovery failed',
-        };
-      }
-    }),
+  getRegisteredServers: protectedProcedure.query(async ({ ctx }) =>
+    listAuthorizedMcpServers(await workspaceFor(ctx)),
+  ),
 
-  /**
-   * Execute a tool on a registered server
-   */
-  executeServerTool: protectedProcedure
-    .input(
-      z.object({
-        serverId: z.string(),
-        toolName: z.string(),
-        parameters: z.record(z.string(), z.any()),
-      })
-    )
-    .mutation(async ({ input }) => {
-      try {
-        const result = await mcpServerManager.executeTool(
-          input.serverId,
-          input.toolName,
-          input.parameters
-        );
+  discoverServerTools: protectedProcedure.input(z.object({ serverId: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+    const tools = await discoverAuthorizedMcpTools(await workspaceFor(ctx), input.serverId);
+    return { success: true, tools, count: tools.length };
+  }),
 
-        return {
-          success: result.success,
-          data: result.data,
-          error: result.error,
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : 'Execution failed',
-        };
-      }
-    }),
+  executeServerTool: protectedProcedure.input(z.object({
+    serverId: z.string().uuid(),
+    toolName: z.string().trim().min(1).max(255),
+    parameters: z.record(z.string(), z.unknown()),
+  })).mutation(async ({ ctx, input }) => {
+    const result = await executeAuthorizedMcpTool(await workspaceFor(ctx), input.serverId, input.toolName, input.parameters);
+    return { success: result.success, data: result.data, error: result.error };
+  }),
 
-  /**
-   * Test connection to a registered server
-   */
-  testServerConnection: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .mutation(async ({ input }) => {
-      try {
-        const connected = await mcpServerManager.testConnection(input.serverId);
-        return {
-          success: true,
-          connected,
-        };
-      } catch (error) {
-        return {
-          success: false,
-          connected: false,
-          error: error instanceof Error ? error.message : 'Test failed',
-        };
-      }
-    }),
+  testServerConnection: protectedProcedure.input(z.object({ serverId: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+    const connected = await testAuthorizedMcpConnection(await workspaceFor(ctx), input.serverId);
+    return { success: connected, connected };
+  }),
 
-  /**
-   * Unregister a server
-   */
-  unregisterServer: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .mutation(({ input }) => {
-      mcpServerManager.removeServer(input.serverId);
-      return { success: true };
-    }),
+  unregisterServer: protectedProcedure.input(z.object({ serverId: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+    await removeAuthorizedMcpServer(await workspaceFor(ctx), input.serverId);
+    return { success: true };
+  }),
 });
 
 export type MCPExtendedRouter = typeof mcpExtendedRouter;

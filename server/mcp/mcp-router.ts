@@ -1,223 +1,91 @@
-/**
- * MCP Router
- * tRPC procedures for MCP server management and tool operations
- */
+/** Tenant-scoped tRPC procedures for MCP server management and execution. */
 
-import { z } from 'zod';
-import { router, publicProcedure, protectedProcedure } from '../_core/trpc';
-import { mcpServerManager, MCPServerConfig } from './mcp-server-manager';
+import { z } from "zod";
 
-// Validation schemas
-const MCPServerConfigSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  url: z.string().url(),
-  type: z.enum(['http', 'websocket', 'stdio']),
+import { protectedProcedure, router } from "../_core/trpc";
+import { getOrCreatePersonalWorkspaceAccess } from "../security/workspace-access";
+import {
+  discoverAuthorizedMcpTools,
+  executeAuthorizedMcpTool,
+  getAuthorizedMcpServer,
+  listAuthorizedMcpServers,
+  registerAuthorizedMcpServer,
+  removeAuthorizedMcpServer,
+  testAuthorizedMcpConnection,
+} from "./secure-mcp-operations";
+
+const serverIdSchema = z.object({ serverId: z.string().uuid() });
+const serverConfigSchema = z.object({
+  id: z.string().uuid().optional(),
+  name: z.string().trim().min(1).max(255),
+  url: z.string().url().max(2048),
+  type: z.literal("http").default("http"),
   headers: z.record(z.string(), z.string()).optional(),
-  auth: z
-    .object({
-      type: z.enum(['bearer', 'api-key', 'basic']),
-      token: z.string().optional(),
-      username: z.string().optional(),
-      password: z.string().optional(),
-    })
-    .optional(),
-  timeout: z.number().optional(),
-  retryAttempts: z.number().optional(),
+  auth: z.object({
+    type: z.enum(["bearer", "api-key", "basic"]),
+    token: z.string().max(4096).optional(),
+    username: z.string().max(1024).optional(),
+    password: z.string().max(4096).optional(),
+  }).optional(),
+  timeout: z.number().int().positive().max(8_000).optional(),
+  retryAttempts: z.number().int().min(0).max(1).optional(),
 });
 
-/**
- * Helper to redact sensitive credentials from server configs
- */
-function redactServerConfig(config: any): any {
-  if (!config || typeof config !== 'object' || 'error' in config) {
-    return config;
-  }
-
-  const redacted = JSON.parse(JSON.stringify(config));
-
-  if (redacted.auth) {
-    if (redacted.auth.token) {
-      redacted.auth.token = '••••••••';
-    }
-    if (redacted.auth.password) {
-      redacted.auth.password = '••••••••';
-    }
-  }
-
-  if (redacted.headers) {
-    for (const key of Object.keys(redacted.headers)) {
-      const lowerKey = key.toLowerCase();
-      if (
-        lowerKey === 'authorization' ||
-        lowerKey === 'x-api-key' ||
-        lowerKey.includes('secret') ||
-        lowerKey.includes('token') ||
-        lowerKey.includes('password')
-      ) {
-        redacted.headers[key] = '••••••••';
-      }
-    }
-  }
-
-  return redacted;
+async function workspaceFor(ctx: { user: { id: number } | null }) {
+  if (!ctx.user) throw new Error("Authentication is required");
+  return getOrCreatePersonalWorkspaceAccess(ctx.user);
 }
 
 export const mcpRouter = router({
-  /**
-   * Register a new MCP server
-   */
-  registerServer: protectedProcedure
-    .input(MCPServerConfigSchema)
-    .mutation(({ input }) => {
-      mcpServerManager.registerServer(input);
-      return {
-        success: true,
-        serverId: input.id,
-      };
-    }),
-
-  /**
-   * Discover tools from an MCP server
-   */
-  discoverTools: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .query(async ({ input, ctx }) => {
-      try {
-        const tools = await mcpServerManager.discoverTools(input.serverId);
-        return {
-          success: true,
-          tools,
-          count: tools.length,
-        };
-      } catch (error) {
-        return {
-          success: false,
-          tools: [],
-          count: 0,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
-      }
-    }),
-
-  /**
-   * Execute a tool on an MCP server
-   */
-  executeTool: protectedProcedure
-    .input(
-      z.object({
-        serverId: z.string(),
-        toolName: z.string(),
-        input: z.record(z.string(), z.any()),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const result = await mcpServerManager.executeTool(
-          input.serverId,
-          input.toolName,
-          input.input
-        );
-
-        return {
-          success: result.success,
-          data: result.data,
-          error: result.error,
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
-      }
-    }),
-
-  /**
-   * Get server status
-   */
-  getServerStatus: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .query(({ input }) => {
-      const status = mcpServerManager.getServerStatus(input.serverId);
-      return status || { error: 'Server not found' };
-    }),
-
-  /**
-   * Get all server statuses
-   */
-  getAllServerStatuses: protectedProcedure.query(() => {
-    return mcpServerManager.getAllServerStatuses();
+  registerServer: protectedProcedure.input(serverConfigSchema).mutation(async ({ ctx, input }) => {
+    const access = await workspaceFor(ctx);
+    const server = await registerAuthorizedMcpServer(access, input);
+    return { success: true, serverId: server.id, server };
   }),
 
-  /**
-   * Test connection to an MCP server
-   */
-  testConnection: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .mutation(async ({ input }) => {
-      try {
-        const connected = await mcpServerManager.testConnection(input.serverId);
-        return {
-          success: true,
-          connected,
-        };
-      } catch (error) {
-        return {
-          success: false,
-          connected: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        };
-      }
-    }),
+  discoverTools: protectedProcedure.input(serverIdSchema).query(async ({ ctx, input }) => {
+    const tools = await discoverAuthorizedMcpTools(await workspaceFor(ctx), input.serverId);
+    return { success: true, tools, count: tools.length };
+  }),
 
-  /**
-   * Clear tool cache for a server
-   */
-  clearToolCache: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .mutation(({ input }) => {
-      mcpServerManager.clearToolCache(input.serverId);
-      return { success: true };
-    }),
+  executeTool: protectedProcedure.input(z.object({
+    serverId: z.string().uuid(),
+    toolName: z.string().trim().min(1).max(255),
+    input: z.record(z.string(), z.unknown()),
+  })).mutation(async ({ ctx, input }) => {
+    const result = await executeAuthorizedMcpTool(await workspaceFor(ctx), input.serverId, input.toolName, input.input);
+    return { success: result.success, data: result.data, error: result.error };
+  }),
 
-  /**
-   * Clear all tool caches
-   */
-  clearAllCaches: protectedProcedure.mutation(() => {
-    mcpServerManager.clearAllCaches();
+  getServerStatus: protectedProcedure.input(serverIdSchema).query(async ({ ctx, input }) =>
+    getAuthorizedMcpServer(await workspaceFor(ctx), input.serverId),
+  ),
+
+  getAllServerStatuses: protectedProcedure.query(async ({ ctx }) =>
+    listAuthorizedMcpServers(await workspaceFor(ctx)),
+  ),
+
+  testConnection: protectedProcedure.input(serverIdSchema).mutation(async ({ ctx, input }) => {
+    const connected = await testAuthorizedMcpConnection(await workspaceFor(ctx), input.serverId);
+    return { success: connected, connected };
+  }),
+
+  // Runtime state is request-local by design, so cache invalidation is a no-op.
+  clearToolCache: protectedProcedure.input(serverIdSchema).mutation(() => ({ success: true })),
+  clearAllCaches: protectedProcedure.mutation(() => ({ success: true })),
+
+  removeServer: protectedProcedure.input(serverIdSchema).mutation(async ({ ctx, input }) => {
+    await removeAuthorizedMcpServer(await workspaceFor(ctx), input.serverId);
     return { success: true };
   }),
 
-  /**
-   * Remove a server
-   */
-  removeServer: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .mutation(({ input }) => {
-      mcpServerManager.removeServer(input.serverId);
-      return { success: true };
-    }),
+  getAllServers: protectedProcedure.query(async ({ ctx }) =>
+    listAuthorizedMcpServers(await workspaceFor(ctx)),
+  ),
 
-  /**
-   * Get all registered servers
-   */
-  getAllServers: protectedProcedure.query(() => {
-    const servers = mcpServerManager.getAllServers();
-    return servers.map((server) => redactServerConfig(server));
-  }),
-
-  /**
-   * Get a specific server config
-   */
-  getServer: protectedProcedure
-    .input(z.object({ serverId: z.string() }))
-    .query(({ input }) => {
-      const server = mcpServerManager.getServer(input.serverId);
-      if (!server) {
-        return { error: 'Server not found' };
-      }
-      return redactServerConfig(server);
-    }),
+  getServer: protectedProcedure.input(serverIdSchema).query(async ({ ctx, input }) =>
+    getAuthorizedMcpServer(await workspaceFor(ctx), input.serverId),
+  ),
 });
 
 export type MCPRouter = typeof mcpRouter;

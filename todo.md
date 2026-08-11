@@ -31,3 +31,14 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Audit documentation, observability, backup, and operational readiness
 - [x] Fix verified low-risk defects found during the audit
 - [x] Produce a detailed prioritized audit report and remediation roadmap
+
+## Critical Remediation Recovery
+
+- [x] Reconstruct tenant-scoped MCP persistence, credential encryption, and ownership-scoped repository access
+- [x] Reconstruct SSRF-safe outbound MCP transport and secure request-local execution runtime
+- [x] Reconnect MCP routers to secure operations and fail-close incomplete OAuth, token, webhook, and workflow lifecycles
+- [x] Rebuild the backend-backed HTTPS-only server connection screen and archive the native bridge screen
+- [x] Repair landing-page claims, calls to action, metadata, technical stack disclosure, and local-link contracts
+- [x] Restore security, lifecycle, route, landing, and encryption regression tests; complete full validation
+- [x] Align specified Expo SDK 54 packages and add required Expo configuration plugins
+- [x] Restore security-foundation documentation and observation-log entries

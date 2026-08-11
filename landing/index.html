@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP Hub – Automation Without the Bullshit</title>
-    <meta name="description" content="Stop wasting time on repetitive work. MCP Hub connects your tools into a unified workflow engine. Record macros once, execute them everywhere.">
+    <title>MCP Hub — Early Access for Secure MCP Server Management</title>
+    <meta name="description" content="MCP Hub is in early access: a mobile-first workspace for connecting HTTPS MCP servers, discovering tools, and testing secure integrations.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://mcphub-cah4bw3p.manus.space/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MCP Hub — Early Access for Secure MCP Server Management">
+    <meta property="og:description" content="A mobile-first workspace for connecting HTTPS MCP servers, discovering tools, and testing secure integrations.">
+    <meta property="og:url" content="https://mcphub-cah4bw3p.manus.space/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="MCP Hub — Early Access for Secure MCP Server Management">
+    <meta name="twitter:description" content="Join the early-access list for a mobile-first MCP server workspace.">
     <meta name="theme-color" content="#0b0f0f">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -502,21 +511,21 @@
             <nav>
                 <a href="#features">Features</a>
                 <a href="#how">How It Works</a>
-                <a href="#pricing">Pricing</a>
+                <a href="#access">Early Access</a>
                 <a href="#contact">Contact</a>
             </nav>
         </header>
 
         <!-- Hero Section -->
         <section class="hero">
-            <h1>Stop Wasting Time on Repetitive Bullshit</h1>
-            <p class="tagline">Where Mindless Grunt Work Goes to Die</p>
+            <h1>One Place to Manage Your MCP Servers</h1>
+            <p class="tagline">No fake green lights. No credential circus.</p>
             <p>
-                MCP Hub is a production-grade automation platform that connects your favorite tools (GitHub, Slack, Notion, and beyond) into a unified workflow engine. Record macros once, execute them everywhere. No more manual copy-paste. No more context switching. Just pure, unapologetic automation.
+                MCP Hub is an early-access, mobile-first workspace for connecting HTTPS Model Context Protocol servers, inspecting their tools, and testing integrations. We are building the secure plumbing first, because pretending an unfinished automation platform is a product is how trust gets murdered.
             </p>
             <div class="cta-group">
-            <button class="btn btn-primary" onclick="window.location.href='https://app.mcphub.io'">Get Started Now</button>
-            <button class="btn btn-secondary" onclick="window.location.href='./demo-workflow-builder.html'">Try Demo</button>
+            <a class="btn btn-primary" href="#access">Request early access</a>
+            <a class="btn btn-secondary" href="./demo-workflow-builder.html">View product preview</a>
             </div>
         </section>
 
@@ -525,28 +534,28 @@
             <h2 class="section-title">What You Actually Get</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <h3>🔐 Secure by Default</h3>
-                    <p>Tokens encrypted with AES-256-GCM. No plaintext credentials ever stored. OAuth flows handle refresh tokens seamlessly. Your data stays yours.</p>
+                    <h3>Secure connection foundation</h3>
+                    <p>HTTPS-only server registration, outbound request controls, tenant boundaries, and encrypted credential storage are the work in progress—not vaporware bullet points.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>⚡ Real-Time Execution</h3>
-                    <p>Trigger workflows instantly via webhooks, schedules, or manual execution. Watch execution timelines in real-time. No waiting, no guessing.</p>
+                    <h3>Server connection workflow</h3>
+                    <p>Name an HTTPS MCP endpoint, choose a supported authentication method, test the connection, and see its honest status in one place.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🛠️ Advanced Workflows</h3>
-                    <p>Conditional logic, loops, parallel execution, error handling with automatic retry. Build complex automations without writing a single line of code.</p>
+                    <h3>Tool discovery and execution</h3>
+                    <p>The app includes the foundation for inspecting server tools and sending tool calls. Broader automation orchestration remains deliberately gated until its durable security model exists.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>📊 Full Visibility</h3>
-                    <p>Real-time analytics, error tracking, performance metrics. Admin dashboard with live system health, token inventory, and alert management.</p>
+                    <h3>Clear operational signals</h3>
+                    <p>Connection status, test results, and execution records are designed to answer the useful question: did the server work, or did it fall on its face?</p>
                 </div>
                 <div class="feature-card">
-                    <h3>👥 Team Collaboration</h3>
-                    <p>Workspaces for organizing team macros. Role-based access control. Shared credentials with granular permissions. Audit logging for compliance.</p>
+                    <h3>Mobile-first onboarding</h3>
+                    <p>An eight-step product tour and replayable onboarding guide help new users understand the workspace before we ask them to trust it with anything important.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🚀 Production Ready</h3>
-                    <p>Enterprise-grade infrastructure. Horizontal scaling. Disaster recovery. Prometheus monitoring. Slack/Email alerts. Deploy anywhere.</p>
+                    <h3>Early access, honestly labeled</h3>
+                    <p>OAuth callbacks, webhooks, and workflow scheduling are not being marketed as ready. They stay unavailable until tenant-scoped persistence and review land.</p>
                 </div>
             </div>
         </section>
@@ -557,148 +566,136 @@
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
-                    <h4>Connect Your Tools</h4>
-                    <p>Register MCP servers (GitHub, Slack, Notion, etc.) and authenticate via OAuth. We handle the credentials securely.</p>
+                    <h4>Add an HTTPS endpoint</h4>
+                    <p>Enter a connection name, a standard-port HTTPS endpoint, and only the authentication method the server actually requires.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
-                    <h4>Discover Available Tools</h4>
-                    <p>Browse the complete list of available tools and actions from each connected service. No configuration needed.</p>
+                    <h4>Test the connection</h4>
+                    <p>MCP Hub validates the endpoint through its outbound policy, tests the connection, and reports the result instead of manufacturing a success badge.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <h4>Build Your Workflow</h4>
-                    <p>Use the visual builder to chain tools together. Add conditions, loops, and error handling. Test with dry-run before deploying.</p>
+                    <h4>Discover and call tools</h4>
+                    <p>Explore tools provided by the connected server and run targeted calls through a tenant-scoped runtime.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">4</div>
-                    <h4>Deploy & Monitor</h4>
-                    <p>Execute manually, schedule recurring runs, or trigger via webhooks. Monitor execution in real-time with full audit trails.</p>
+                    <h4>Grow only when the foundation holds</h4>
+                    <p>Scheduled workflows, webhooks, and OAuth automation come later—after their durable lifecycle models can be built without handing security a loaded gun.</p>
                 </div>
             </div>
         </section>
 
         <!-- Demo Links -->
         <section style="margin-bottom: 100px;">
-            <h2 class="section-title">Try Interactive Demos</h2>
+            <h2 class="section-title">Product Previews</h2>
+            <p style="max-width: 720px; margin: -35px auto 35px; text-align: center; color: #a8a9ad;">These interactive pages are visual previews of product directions, not live connected-server promises.</p>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                 <a href="./demo-workflow-builder.html" style="text-decoration: none;">
                     <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">⚡ Workflow Builder</div>
-                        <p style="font-size: 14px; color: #a8a9ad;">Drag tools to build workflows. No code required.</p>
+                        <p style="font-size: 14px; color: #a8a9ad;">Preview a possible visual workflow-building direction.</p>
                     </div>
                 </a>
                 <a href="./demo-execution-simulator.html" style="text-decoration: none;">
                     <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">⚙️ Live Execution</div>
-                        <p style="font-size: 14px; color: #a8a9ad;">Watch workflows execute in real-time with metrics.</p>
+                        <p style="font-size: 14px; color: #a8a9ad;">Preview how a future execution view could communicate state.</p>
                     </div>
                 </a>
                 <a href="./demo-features.html" style="text-decoration: none;">
                     <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">🎯 Features</div>
-                        <p style="font-size: 14px; color: #a8a9ad;">Explore security, performance, and monitoring.</p>
+                        <p style="font-size: 14px; color: #a8a9ad;">Preview the product surface without inventing operational guarantees.</p>
                     </div>
                 </a>
             </div>
         </section>
 
-        <!-- Use Case -->
+        <!-- Product honesty -->
         <section class="use-case" id="demo">
-            <h3>Real-World Example</h3>
+            <h3>What We Will Not Fake</h3>
             <p>
-                <strong>Scenario:</strong> You're managing a GitHub repository. Every time someone opens an issue, you want to:
+                <strong>No imaginary uptime:</strong> We will not quote reliability targets without production evidence.
             </p>
             <p>
-                1. Create a Slack notification in #issues channel<br>
-                2. Add the issue to a Notion database for tracking<br>
-                3. Assign it to the right team member based on labels<br>
-                4. Send them an email with the issue details
+                <strong>No pretend integrations:</strong> A provider card is not a live integration unless the secure end-to-end flow exists and is testable.
             </p>
             <p>
-                <strong>Without MCP Hub:</strong> Manual process every single time. Copy issue link, paste in Slack, switch to Notion, create entry, send email. Repeat 50 times a week.
+                <strong>No fake enterprise theater:</strong> We will not promise compliance, team controls, disaster recovery, or on-premise deployment until the product can actually support those claims.
             </p>
             <p>
-                <strong>With MCP Hub:</strong> Set it up once. It runs automatically. Forever. You're welcome.
+                If that makes the page less shiny, good. It makes it more useful.
             </p>
         </section>
 
         <!-- Tech Stack -->
         <section class="tech-stack">
-            <h2 class="section-title">Built With Enterprise Tech</h2>
+            <h2 class="section-title">Current Foundation</h2>
             <div class="tech-grid">
                 <div class="tech-item">React Native 0.81</div>
                 <div class="tech-item">Node.js + Express</div>
-                <div class="tech-item">PostgreSQL 14+</div>
-                <div class="tech-item">Redis</div>
-                <div class="tech-item">Prometheus</div>
-                <div class="tech-item">Docker</div>
+                <div class="tech-item">MySQL + Drizzle</div>
+                <div class="tech-item">Expo Router</div>
+                <div class="tech-item">NativeWind</div>
+                <div class="tech-item">AsyncStorage</div>
                 <div class="tech-item">TypeScript 5.9</div>
                 <div class="tech-item">tRPC</div>
-                <div class="tech-item">Nginx</div>
-                <div class="tech-item">OAuth 2.0</div>
+                <div class="tech-item">tRPC</div>
+                <div class="tech-item">HTTPS outbound policy</div>
                 <div class="tech-item">AES-256-GCM</div>
-                <div class="tech-item">WebSocket</div>
+                <div class="tech-item">Vitest</div>
             </div>
         </section>
 
-        <!-- Pricing -->
-        <section class="pricing" id="pricing">
-            <h2 class="section-title">Pricing That Makes Sense</h2>
+        <!-- Early access -->
+        <section class="pricing" id="access">
+            <h2 class="section-title">Early Access</h2>
             <div class="pricing-cards">
                 <div class="pricing-card">
-                    <h4>Starter</h4>
-                    <div class="price">Free</div>
-                    <div class="price-period">Forever</div>
+                    <h4>Join the list</h4>
+                    <div class="price">Beta</div>
+                    <div class="price-period">availability is limited</div>
                     <ul class="pricing-features">
-                        <li>Up to 5 workflows</li>
-                        <li>1 workspace</li>
-                        <li>Basic analytics</li>
-                        <li>Community support</li>
-                        <li>GitHub, Slack, Notion</li>
+                        <li>Tell us which MCP server you need</li>
+                        <li>Tell us the job it should do</li>
+                        <li>Receive access updates by email</li>
                     </ul>
-                    <button class="btn btn-secondary">Get Started</button>
+                    <a class="btn btn-secondary" href="mailto:early-access@mcphub.io?subject=MCP%20Hub%20early%20access">Request early access</a>
                 </div>
                 <div class="pricing-card featured">
-                    <h4>Professional</h4>
-                    <div class="price">$99</div>
-                    <div class="price-period">per month</div>
+                    <h4>Pricing status</h4>
+                    <div class="price">TBD</div>
+                    <div class="price-period">we are not making numbers up</div>
                     <ul class="pricing-features">
-                        <li>Unlimited workflows</li>
-                        <li>Up to 5 workspaces</li>
-                        <li>Advanced analytics</li>
-                        <li>Email support</li>
-                        <li>20+ integrations</li>
-                        <li>Webhook triggers</li>
-                        <li>Custom alerts</li>
+                        <li>No active paid plan</li>
+                        <li>No fictional feature caps</li>
+                        <li>No trial terms to decipher</li>
                     </ul>
-                    <button class="btn btn-primary">Start Free Trial</button>
+                    <a class="btn btn-primary" href="mailto:early-access@mcphub.io?subject=MCP%20Hub%20pricing%20interest">Share pricing interest</a>
                 </div>
                 <div class="pricing-card">
-                    <h4>Enterprise</h4>
-                    <div class="price">Custom</div>
-                    <div class="price-period">contact us</div>
+                    <h4>Feedback channel</h4>
+                    <div class="price">Useful</div>
+                    <div class="price-period">tell us what hurts</div>
                     <ul class="pricing-features">
-                        <li>Everything in Pro</li>
-                        <li>Unlimited workspaces</li>
-                        <li>Dedicated support</li>
-                        <li>SLA guarantee</li>
-                        <li>Custom integrations</li>
-                        <li>On-premise deployment</li>
-                        <li>Advanced security</li>
+                        <li>Connection flow feedback</li>
+                        <li>Security requirements</li>
+                        <li>Workflow use cases</li>
                     </ul>
-                    <button class="btn btn-secondary">Schedule Demo</button>
+                    <a class="btn btn-secondary" href="mailto:early-access@mcphub.io?subject=MCP%20Hub%20product%20feedback">Send feedback</a>
                 </div>
             </div>
         </section>
 
         <!-- Final CTA -->
         <section class="final-cta">
-            <h2>Ready to Stop Wasting Time?</h2>
+            <h2>Want In Before It Gets Polished to Death?</h2>
             <p>
-                Join teams that have already automated thousands of hours of repetitive work. No credit card required. No setup fees. No corporate nonsense.
+                Request early access, tell us the MCP server you need to manage, and help shape the part that should exist before the marketing department starts hallucinating outcomes.
             </p>
-            <button class="btn btn-primary" onclick="window.location.href='https://app.mcphub.io'">Start Automating Now</button>
+            <a class="btn btn-primary" href="mailto:early-access@mcphub.io?subject=MCP%20Hub%20early%20access">Request early access</a>
         </section>
 
         <!-- Footer -->
@@ -707,11 +704,8 @@
                 &copy; 2026 MCP Hub. Built by people who hate repetitive work.
             </p>
             <p>
-                <a href="./privacy">Privacy</a>
-                <a href="./terms">Terms</a>
-                <a href="./security">Security</a>
                 <a href="https://github.com/manus-ai/mcp-hub">GitHub</a>
-                <a href="mailto:support@mcphub.io">Support</a>
+                <a href="mailto:early-access@mcphub.io">Early access</a>
             </p>
         </footer>
     </div>

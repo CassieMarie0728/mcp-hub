@@ -56,7 +56,6 @@ export default function TabLayout() {
       <Tabs.Screen name="oauth-connect" options={{ href: null }} />
       <Tabs.Screen name="results" options={{ href: null }} />
       <Tabs.Screen name="server-connection" options={{ href: null }} />
-      <Tabs.Screen name="server-connection-updated" options={{ href: null }} />
       <Tabs.Screen name="server-detail" options={{ href: null }} />
       <Tabs.Screen name="server-presets" options={{ href: null }} />
       <Tabs.Screen name="servers" options={{ href: null }} />

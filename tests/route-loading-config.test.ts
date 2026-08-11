@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -7,6 +7,7 @@ const appConfig = readFileSync(resolve(projectRoot, "app.config.ts"), "utf8");
 const rootLayout = readFileSync(resolve(projectRoot, "app/_layout.tsx"), "utf8");
 const tabLayout = readFileSync(resolve(projectRoot, "app/(tabs)/_layout.tsx"), "utf8");
 const chatScreen = readFileSync(resolve(projectRoot, "app/(tabs)/chat.tsx"), "utf8");
+const connectionScreen = readFileSync(resolve(projectRoot, "app/(tabs)/server-connection.tsx"), "utf8");
 const packageJson = JSON.parse(
   readFileSync(resolve(projectRoot, "package.json"), "utf8"),
 ) as {
@@ -63,5 +64,16 @@ describe("route-loading configuration", () => {
   it("uses an opaque foreground token for the chat-header subtitle", () => {
     expect(chatScreen).toContain('className="text-background text-sm mt-1"');
     expect(chatScreen).not.toContain('text-background/80 text-sm mt-1');
+  });
+
+  it("keeps a single backend-backed server connection workflow", () => {
+    expect(connectionScreen).toContain("trpc.mcp.registerServer.useMutation()");
+    expect(connectionScreen).toContain("trpc.mcp.testConnection.useMutation()");
+    expect(connectionScreen).toContain("trpc.mcp.removeServer.useMutation()");
+    expect(connectionScreen).toContain("trpc.mcp.getAllServers.useQuery()");
+    expect(connectionScreen).not.toContain("useMCPBridge");
+    expect(connectionScreen).not.toContain("useMCPServerConnection");
+    expect(tabLayout).not.toContain("server-connection-updated");
+    expect(existsSync(resolve(projectRoot, "archive/disabled-screens/server-connection-updated.tsx"))).toBe(true);
   });
 });
