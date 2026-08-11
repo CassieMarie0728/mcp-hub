@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback, memo } from 'react';
 import { FlatList, View, Text, Pressable, ActivityIndicator } from 'react-native';
 import { useColors } from '@/hooks/use-colors';
-import { cn } from '@/lib/utils';
 
 export interface Tool {
   name: string;

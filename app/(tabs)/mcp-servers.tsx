@@ -1,5 +1,5 @@
 import { ScrollView, View, Text, Pressable, ActivityIndicator } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';

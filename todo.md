@@ -59,3 +59,15 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Assess and remediate the next highest-risk lifecycle or authorization gap
 - [x] Remove sensitive session-token and user-object diagnostics from the authentication hook
 - [x] Update remediation status, evidence, and release blockers after the next audit pass
+
+## Lint and Runtime-Quality Remediation
+
+- [ ] Classify all current lint warnings by safe cleanup versus runtime-sensitive behavior
+- [ ] Remove safe unused imports, variables, and duplicate-import warnings
+- [ ] Resolve high-impact hook dependency and stale-state warnings
+- [ ] Validate and document the reduced lint-warning baseline
+
+## Lifecycle Truthfulness Remediation
+
+- [x] Replace mock webhook lifecycle UI with an explicit unavailable state while backend persistence remains gated
+- [x] Replace mock workflow-template UI with an explicit unavailable state while backend workflow persistence remains gated

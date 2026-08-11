@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   ScrollView,
   Text,
@@ -30,7 +30,7 @@ interface Tool {
  */
 export default function ToolDiscoveryUpdatedScreen() {
   const colors = useColors();
-  const { isReady, error, setError, discoveredTools, discoverTools } = useMCPBridge();
+  const { isReady, error, setError, discoverTools } = useMCPBridge();
 
   // UI State
   const [selectedServerId, setSelectedServerId] = useState<string>('');

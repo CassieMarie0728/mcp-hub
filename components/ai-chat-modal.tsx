@@ -51,7 +51,7 @@ export function AIChatModal({ visible, onClose, context }: AIChatModalProps) {
       };
       setMessages([greeting]);
     }
-  }, [visible]);
+  }, [visible, messages.length]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

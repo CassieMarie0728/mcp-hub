@@ -23,13 +23,6 @@ export default function MacroSchedulingScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * Load schedules on mount
-   */
-  useEffect(() => {
-    loadSchedules();
-  }, []);
-
-  /**
    * Load all schedules
    */
   const loadSchedules = useCallback(async () => {
@@ -40,6 +33,13 @@ export default function MacroSchedulingScreen() {
       console.error('Failed to load schedules:', error);
     }
   }, []);
+
+  /**
+   * Load schedules on mount
+   */
+  useEffect(() => {
+    loadSchedules();
+  }, [loadSchedules]);
 
   /**
    * Handle create schedule

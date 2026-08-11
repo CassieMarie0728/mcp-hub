@@ -1,4 +1,4 @@
-import { ScrollView, View, RefreshControl } from 'react-native';
+import { ScrollView, View, RefreshControl , Text } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useRouter } from 'expo-router';
@@ -8,7 +8,6 @@ import { useColors } from '@/hooks/use-colors';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/list';
-import { Text } from 'react-native';
 import { AIChatModal } from '@/components/ai-chat-modal';
 import { AIAssistantButton } from '@/components/ai-assistant-button';
 import { useAIAssistant } from '@/hooks/use-ai-assistant';

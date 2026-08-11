@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import { useAIAssistant } from "@/hooks/use-ai-assistant";
 import { cn } from "@/lib/utils";

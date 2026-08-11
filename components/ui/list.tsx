@@ -177,8 +177,6 @@ interface BadgeProps {
 }
 
 export function Badge({ variant = 'status', children, color = 'primary' }: BadgeProps) {
-  const colors = useColors();
-
   const colorMap = {
     primary: { bg: 'bg-primary', text: 'text-background' },
     success: { bg: 'bg-success', text: 'text-background' },

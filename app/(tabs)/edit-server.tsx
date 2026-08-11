@@ -63,7 +63,7 @@ export default function EditServerScreen() {
         </View>
       ),
     });
-  }, [navigation, colors]);
+  }, [navigation, colors, router]);
 
   const server = servers.find((s) => s.id === id);
 

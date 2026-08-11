@@ -69,7 +69,7 @@ export default function ChatScreen() {
     if (servers.length > 0 && !selectedServerId) {
       setSelectedServerId(servers[0].id);
     }
-  }, [servers]);
+  }, [servers, selectedServerId]);
 
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;

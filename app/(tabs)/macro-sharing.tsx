@@ -1,5 +1,5 @@
 import { ScrollView, Text, View, Pressable, Alert, FlatList } from 'react-native';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
@@ -19,7 +19,7 @@ export default function MacroSharingScreen() {
   // State
   const [selectedMacros, setSelectedMacros] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [importedCount, setImportedCount] = useState(0);
+  const [, setImportedCount] = useState(0);
 
   /**
    * Handle export selected macros

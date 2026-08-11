@@ -36,4 +36,22 @@ describe("tenant lifecycle feature gates", () => {
     expect(source).not.toContain("workflowStore");
     expect(source).not.toContain("WorkflowEngine");
   });
+
+  it("keeps the webhook screen honest while the backend lifecycle is unavailable", async () => {
+    const source = await readProjectFile("app/(tabs)/webhooks.tsx");
+    expect(source).toContain("Webhooks Are Not Live Yet");
+    expect(source).toContain("Safely unavailable");
+    expect(source).not.toContain("mockWebhooks");
+    expect(source).not.toContain("api.mcphub.io");
+    expect(source).not.toContain("Webhook created successfully");
+  });
+
+  it("keeps workflow templates honest while orchestration remains unavailable", async () => {
+    const source = await readProjectFile("app/(tabs)/workflow-templates.tsx");
+    expect(source).toContain("Templates Are Parked On Purpose");
+    expect(source).toContain("No fake templates. No pretend clones.");
+    expect(source).not.toContain("mockTemplates");
+    expect(source).not.toContain("cloned successfully");
+    expect(source).not.toContain("rating:");
+  });
 });
