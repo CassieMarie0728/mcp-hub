@@ -1,526 +1,61 @@
-/**
- * Token Management Screen
- * Secure token registration, rotation, and lifecycle management
- */
-
-import React, { useState, useEffect } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-  Modal,
-  FlatList,
-  Pressable,
-} from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
-import { cn } from '@/lib/utils';
-import {
-  useTokens,
-  useStoreToken,
-  useRevokeToken,
-  useRotateToken,
-} from '@/hooks/use-api';
 
-interface Token {
-  id: string;
-  serverId: string;
-  serverType: string;
-  name: string;
-  maskedToken: string;
-  createdAt: Date;
-  lastUsedAt?: Date;
-  expiresAt?: Date;
-  isActive: boolean;
-  scopes?: string[];
-}
-
-interface ServerType {
-  id: string;
-  name: string;
-  icon: string;
-  authMethod: string;
-  docsUrl: string;
-}
-
-const SERVER_TYPES: ServerType[] = [
-  {
-    id: 'github',
-    name: 'GitHub',
-    icon: 'github',
-    authMethod: 'Bearer Token',
-    docsUrl: 'https://github.com/settings/tokens',
-  },
-  {
-    id: 'slack',
-    name: 'Slack',
-    icon: 'slack',
-    authMethod: 'Bot Token',
-    docsUrl: 'https://api.slack.com/apps',
-  },
-  {
-    id: 'notion',
-    name: 'Notion',
-    icon: 'notion',
-    authMethod: 'Integration Token',
-    docsUrl: 'https://www.notion.so/my-integrations',
-  },
+const TOKEN_REQUIREMENTS = [
+  'Tenant-scoped provider connection ownership and authorization checks',
+  'Encrypted secret envelopes with rotation, revocation, and deletion paths',
+  'Provider-specific validation without sending secrets to untrusted destinations',
+  'Audit history that records credential lifecycle events without storing token material',
 ];
 
 export default function TokenManagementScreen() {
   const colors = useColors();
-  const { data: fetchedTokens, loading, error: fetchError, refetch } = useTokens();
-  const { mutate: storeToken, loading: storeLoading } = useStoreToken();
-  const { mutate: revokeToken, loading: revokeLoading } = useRevokeToken();
-  const { mutate: rotateToken, loading: rotateLoading } = useRotateToken();
-
-  const [activeTab, setActiveTab] = useState<'register' | 'manage'>('manage');
-  const [tokens, setTokens] = useState<Token[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedServer, setSelectedServer] = useState<ServerType | null>(null);
-  const [tokenInput, setTokenInput] = useState('');
-  const [tokenName, setTokenName] = useState('');
-  const [showTokenInput, setShowTokenInput] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<Token | null>(null);
-  const [showRotateModal, setShowRotateModal] = useState(false);
-  const [newToken, setNewToken] = useState('');
-
-  useEffect(() => {
-    loadTokens();
-  }, []);
-
-  const loadTokens = async () => {
-
-    try {
-      // TODO: Call tRPC listServerTokens for each server
-      // For now, using mock data
-      setTokens([
-        {
-          id: '1',
-          serverId: 'github-1',
-          serverType: 'github',
-          name: 'My GitHub Token',
-          maskedToken: '••••cdef',
-          createdAt: new Date(Date.now() - 86400000 * 30),
-          lastUsedAt: new Date(Date.now() - 3600000),
-          isActive: true,
-        },
-        {
-          id: '2',
-          serverId: 'slack-1',
-          serverType: 'slack',
-          name: 'Slack Bot Token',
-          maskedToken: '••••ghij',
-          createdAt: new Date(Date.now() - 86400000 * 7),
-          lastUsedAt: new Date(Date.now() - 7200000),
-          isActive: true,
-        },
-      ]);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to load tokens');
-    } finally {
-
-    }
-  };
-
-  const handleRegisterToken = async () => {
-    if (!selectedServer || !tokenInput || !tokenName) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
-
-    try {
-      const newToken = await storeToken({
-        serverId: selectedServer.id,
-        serverType: selectedServer.id,
-        name: tokenName,
-        token: tokenInput,
-      });
-      const formattedToken: Token = {
-        id: newToken.id,
-        serverId: newToken.serverId,
-        serverType: newToken.serverType,
-        name: newToken.name,
-        maskedToken: `••••${tokenInput.slice(-4)}`,
-        createdAt: new Date(),
-        isActive: true,
-      };
-      setTokens([...tokens, formattedToken]);
-      Alert.alert('Success', `Token "${tokenName}" registered successfully`);
-      setTokenInput('');
-      setTokenName('');
-      setSelectedServer(null);
-      setShowTokenInput(false);
-      setActiveTab('manage');
-      refetch();
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to register token');
-    }
-  };
-
-  const handleRevokeToken = async (token: Token) => {
-    Alert.alert(
-      'Revoke Token',
-      `Are you sure you want to revoke "${token.name}"? This cannot be undone.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Revoke',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await revokeToken(token.id);
-              setTokens(tokens.filter((t) => t.id !== token.id));
-              Alert.alert('Success', 'Token revoked');
-              refetch();
-            } catch (error: any) {
-              Alert.alert('Error', error.message || 'Failed to revoke token');
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  const handleRotateToken = async () => {
-    if (!selectedToken || !newToken) {
-      Alert.alert('Error', 'Please enter a new token');
-      return;
-    }
-
-
-    try {
-      // TODO: Call tRPC rotateToken
-      Alert.alert('Success', `Token "${selectedToken.name}" rotated successfully`);
-      setNewToken('');
-      setShowRotateModal(false);
-      setSelectedToken(null);
-      await loadTokens();
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to rotate token');
-    } finally {
-
-    }
-  };
-
-  const getServerIcon = (serverType: string) => {
-    const icons: Record<string, string> = {
-      github: 'code',
-      slack: 'chat',
-      notion: 'storage',
-    };
-    return icons[serverType] || 'link';
-  };
-
-  const getServerColor = (serverType: string) => {
-    const colorMap: Record<string, string> = {
-      github: '#333333',
-      slack: '#E01E5A',
-      notion: '#000000',
-    };
-    return colorMap[serverType] || colors.primary;
-  };
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
 
   return (
-    <ScreenContainer className="bg-background">
-      {/* Tab Navigation */}
-      <View className="flex-row border-b border-border mb-4">
-        <TouchableOpacity
-          onPress={() => setActiveTab('manage')}
-          className={cn(
-            'flex-1 py-3 px-4 border-b-2',
-            activeTab === 'manage' ? 'border-primary' : 'border-transparent'
-          )}
-        >
-          <Text
-            className={cn(
-              'text-center font-semibold',
-              activeTab === 'manage' ? 'text-primary' : 'text-muted'
-            )}
-          >
-            My Tokens
+    <ScreenContainer className="p-0">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View className="bg-primary px-6 py-8">
+          <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">CREDENTIAL LIFECYCLE GATE</Text>
+          <Text className="text-4xl font-bold text-background mb-2">Standalone Tokens Are Locked</Text>
+          <Text className="text-base text-background/90 leading-relaxed">
+            A list of fake masked tokens and a pretend Rotate button do not make credential management safe. This area stays unavailable until its tenant lifecycle has a real security model.
           </Text>
-        </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity
-          onPress={() => setActiveTab('register')}
-          className={cn(
-            'flex-1 py-3 px-4 border-b-2',
-            activeTab === 'register' ? 'border-primary' : 'border-transparent'
-          )}
-        >
-          <Text
-            className={cn(
-              'text-center font-semibold',
-              activeTab === 'register' ? 'text-primary' : 'text-muted'
-            )}
-          >
-            Register Token
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
-        {activeTab === 'manage' ? (
-          <View className="flex-1">
-            {loading ? (
-              <View className="flex-1 items-center justify-center">
-                <ActivityIndicator color={colors.primary} size="large" />
-              </View>
-            ) : tokens.length === 0 ? (
-              <View className="flex-1 items-center justify-center py-8">
-                    <MaterialIcons name={"security" as any} size={48} color={colors.muted} />
-                <Text className="text-foreground font-semibold mt-4">No Tokens Yet</Text>
-                <Text className="text-muted text-center mt-2 px-4">
-                  Register your first API token to get started
-                </Text>
-              </View>
-            ) : (
-              <View className="gap-3">
-                {tokens.map((token) => (
-                  <Pressable
-                    key={token.id}
-                    onPress={() => setSelectedToken(token)}
-                    className="bg-surface rounded-lg p-4 border border-border"
-                    style={({ pressed }) => [pressed && { opacity: 0.7 }]}
-                  >
-                    <View className="flex-row items-center justify-between mb-2">
-                      <View className="flex-row items-center flex-1 gap-3">
-                        <View
-                          className="w-10 h-10 rounded-full items-center justify-center"
-                          style={{ backgroundColor: getServerColor(token.serverType) + '20' }}
-                        >
-                          <MaterialIcons
-                            name={getServerIcon(token.serverType) as any}
-                            size={20}
-                            color={getServerColor(token.serverType)}
-                          />
-                        </View>
-                        <View className="flex-1">
-                          <Text className="text-foreground font-semibold">{token.name}</Text>
-                          <Text className="text-muted text-xs">
-                            {SERVER_TYPES.find((s) => s.id === token.serverType)?.name}
-                          </Text>
-                        </View>
-                      </View>
-                      {token.isActive ? (
-                        <View className="bg-success/20 rounded-full px-2 py-1">
-                          <Text className="text-success text-xs font-semibold">Active</Text>
-                        </View>
-                      ) : (
-                        <View className="bg-error/20 rounded-full px-2 py-1">
-                          <Text className="text-error text-xs font-semibold">Revoked</Text>
-                        </View>
-                      )}
-                    </View>
-
-                    <View className="bg-background rounded p-2 mb-3">
-                      <Text className="text-muted text-xs font-mono">{token.maskedToken}</Text>
-                    </View>
-
-                    <View className="gap-2">
-                      <View className="flex-row justify-between">
-                        <Text className="text-muted text-xs">
-                          Created: {formatDate(token.createdAt)}
-                        </Text>
-                        {token.lastUsedAt && (
-                          <Text className="text-muted text-xs">
-                            Last used: {formatDate(token.lastUsedAt)}
-                          </Text>
-                        )}
-                      </View>
-                    </View>
-
-                    {token.isActive && (
-                      <View className="flex-row gap-2 mt-3 pt-3 border-t border-border">
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedToken(token);
-                      setShowRotateModal(true);
-                    }}
-                    className="flex-1 bg-primary/10 rounded py-2 items-center"
-                  >
-                    <Text className="text-primary font-semibold text-sm">Rotate</Text>
-                  </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => handleRevokeToken(token)}
-                          className="flex-1 bg-error/10 rounded py-2 items-center"
-                        >
-                          <Text className="text-error font-semibold text-sm">Revoke</Text>
-                        </TouchableOpacity>
-                      </View>
-                    )}
-                  </Pressable>
-                ))}
-              </View>
-            )}
+        <View className="flex-1 px-6 py-8 gap-6">
+          <View className="bg-surface rounded-2xl border border-border p-6 items-center">
+            <View className="w-14 h-14 rounded-full bg-warning/15 items-center justify-center mb-4">
+              <MaterialIcons name="key-off" size={30} color={colors.warning} />
+            </View>
+            <Text className="text-xl font-bold text-foreground text-center mb-2">No manufactured credentials</Text>
+            <Text className="text-sm text-muted text-center leading-relaxed">
+              There are no sample provider tokens, local registration actions, simulated rotation, or fake last-used timestamps here. The protected backend blocks this lifecycle until durable persistence is implemented.
+            </Text>
           </View>
-        ) : (
-          <View className="flex-1">
-            {/* Server Selection */}
-            <Text className="text-foreground font-semibold text-lg mb-3">Select Server</Text>
 
-            <View className="gap-2 mb-6">
-              {SERVER_TYPES.map((server) => (
-                <TouchableOpacity
-                  key={server.id}
-                  onPress={() => {
-                    setSelectedServer(server);
-                    setShowTokenInput(true);
-                  }}
-                  className={cn(
-                    'border rounded-lg p-4 flex-row items-center justify-between',
-                    selectedServer?.id === server.id
-                      ? 'bg-primary/10 border-primary'
-                      : 'bg-surface border-border'
-                  )}
-                >
-                  <View className="flex-row items-center gap-3">
-                      <View
-                        className="w-10 h-10 rounded-full items-center justify-center"
-                        style={{ backgroundColor: getServerColor(server.id) + '20' }}
-                      >
-                        <MaterialIcons
-                          name={getServerIcon(server.id) as any}
-                          size={20}
-                          color={getServerColor(server.id)}
-                        />
-                      </View>
-                    <View>
-                      <Text className="text-foreground font-semibold">{server.name}</Text>
-                      <Text className="text-muted text-xs">{server.authMethod}</Text>
-                    </View>
-                  </View>
-                  {selectedServer?.id === server.id && (
-                        <MaterialIcons name={"check-circle" as any} size={24} color={colors.primary} />
-                  )}
-                </TouchableOpacity>
+          <View className="bg-surface rounded-2xl border border-border p-5">
+            <Text className="text-base font-bold text-foreground mb-4">What must exist before this unlocks</Text>
+            <View className="gap-4">
+              {TOKEN_REQUIREMENTS.map((requirement) => (
+                <View key={requirement} className="flex-row items-start gap-3">
+                  <MaterialIcons name="check-circle-outline" size={20} color={colors.primary} />
+                  <Text className="flex-1 text-sm text-muted leading-relaxed">{requirement}</Text>
+                </View>
               ))}
             </View>
-
-            {/* Token Input Form */}
-            {showTokenInput && selectedServer && (
-              <View className="bg-surface rounded-lg p-4 gap-3 mb-4">
-                <Text className="text-foreground font-semibold">Register {selectedServer.name} Token</Text>
-
-                <View>
-                  <Text className="text-muted text-xs mb-1">Token Name</Text>
-                  <TextInput
-                    placeholder="e.g., My GitHub Token"
-                    value={tokenName}
-                    onChangeText={setTokenName}
-                    className="bg-background border border-border rounded px-3 py-2 text-foreground"
-                    placeholderTextColor={colors.muted}
-                  />
-                </View>
-
-                <View>
-                  <Text className="text-muted text-xs mb-1">API Token</Text>
-                  <TextInput
-                    placeholder={`Enter your ${selectedServer.name} token`}
-                    value={tokenInput}
-                    onChangeText={setTokenInput}
-                    secureTextEntry={!showTokenInput}
-                    className="bg-background border border-border rounded px-3 py-2 text-foreground"
-                    placeholderTextColor={colors.muted}
-                  />
-                </View>
-
-                <View className="bg-yellow-100 border border-yellow-300 rounded p-3">
-                  <Text className="text-yellow-800 text-xs">
-                    ⚠️ Your token will be encrypted and stored securely. Never share your token with anyone.
-                  </Text>
-                </View>
-
-                <View className="flex-row gap-2">
-                  <TouchableOpacity
-                    onPress={() => {
-                      setShowTokenInput(false);
-                      setTokenInput('');
-                      setTokenName('');
-                      setSelectedServer(null);
-                    }}
-                    className="flex-1 bg-muted/10 rounded py-3 items-center"
-                  >
-                    <Text className="text-muted font-semibold">Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={handleRegisterToken}
-                    disabled={loading}
-                    className="flex-1 bg-primary rounded py-3 items-center"
-                  >
-                    {loading ? (
-                      <ActivityIndicator color="white" />
-                    ) : (
-                      <Text className="text-background font-semibold">Register Token</Text>
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
           </View>
-        )}
-      </ScrollView>
 
-      {/* Rotate Token Modal */}
-      <Modal visible={showRotateModal} transparent animationType="slide">
-        <View className="flex-1 bg-black/50 justify-end">
-          <View className="bg-background rounded-t-2xl p-6 gap-4">
-            <View className="flex-row justify-between items-center mb-4">
-              <Text className="text-foreground font-bold text-lg">Rotate Token</Text>
-              <TouchableOpacity onPress={() => setShowRotateModal(false)}>
-                <MaterialIcons name="close" size={24} color={colors.foreground} />
-              </TouchableOpacity>
-            </View>
-
-            <Text className="text-muted">
-              Enter your new {selectedToken?.serverType} token. The old token will be revoked.
+          <View className="rounded-xl border border-warning/30 bg-warning/10 p-4">
+            <Text className="text-sm font-semibold text-foreground mb-1">What is safe today</Text>
+            <Text className="text-sm text-muted leading-relaxed">
+              Connect an HTTPS MCP server through the server connection flow. Connection credentials are handled by the scoped MCP connection foundation rather than a separate, unfinished provider-token surface.
             </Text>
-
-            <TextInput
-              placeholder="Enter new token"
-              value={newToken}
-              onChangeText={setNewToken}
-              secureTextEntry
-              className="bg-surface border border-border rounded px-3 py-3 text-foreground"
-              placeholderTextColor={colors.muted}
-            />
-
-            <View className="flex-row gap-2">
-              <TouchableOpacity
-                onPress={() => setShowRotateModal(false)}
-                className="flex-1 bg-muted/10 rounded py-3 items-center"
-              >
-                <Text className="text-muted font-semibold">Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleRotateToken}
-                disabled={loading}
-                className="flex-1 bg-primary rounded py-3 items-center"
-              >
-                {loading ? (
-                  <ActivityIndicator color="white" />
-                ) : (
-                  <Text className="text-background font-semibold">Rotate</Text>
-                )}
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
-      </Modal>
+      </ScrollView>
     </ScreenContainer>
   );
 }

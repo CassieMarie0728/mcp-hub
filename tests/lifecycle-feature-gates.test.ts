@@ -54,4 +54,24 @@ describe("tenant lifecycle feature gates", () => {
     expect(source).not.toContain("cloned successfully");
     expect(source).not.toContain("rating:");
   });
+
+  it("keeps OAuth UI honest while token persistence remains unavailable", async () => {
+    const source = await readProjectFile("app/(tabs)/oauth-connect.tsx");
+    expect(source).toContain("Service Connections Are Paused");
+    expect(source).toContain("No simulated authorizations");
+    expect(source).not.toContain("mockAuthUrl");
+    expect(source).not.toContain("openAuthSessionAsync");
+    expect(source).not.toContain("connected successfully");
+    expect(source).not.toContain("Expires in 89 days");
+  });
+
+  it("keeps standalone token UI honest while its persistence remains unavailable", async () => {
+    const source = await readProjectFile("app/(tabs)/token-management.tsx");
+    expect(source).toContain("Standalone Tokens Are Locked");
+    expect(source).toContain("No manufactured credentials");
+    expect(source).not.toContain("maskedToken");
+    expect(source).not.toContain("useStoreToken");
+    expect(source).not.toContain("Token revoked");
+    expect(source).not.toContain("mock data");
+  });
 });
