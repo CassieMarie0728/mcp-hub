@@ -94,14 +94,15 @@ describe("tenant lifecycle feature gates", () => {
     expect(source).not.toContain("currentStep");
   });
 
-  it("keeps execution history honest until it reads tenant-scoped secure logs", async () => {
+  it("renders execution history only from the protected tenant-scoped log query", async () => {
     const source = await readProjectFile("app/(tabs)/execution-history.tsx");
-    expect(source).toContain("History Needs Real Records");
-    expect(source).toContain("No local-only audit trail");
+    expect(source).toContain("SECURE ACTIVITY LOG");
+    expect(source).toContain("trpc.analytics.getExecutionHistory.useQuery");
+    expect(source).toContain("Retry protected query");
     expect(source).not.toContain("useExecutionHistory");
     expect(source).not.toContain("deleteExecution");
     expect(source).not.toContain("clearAll");
-    expect(source).not.toContain("ExecutionStatus");
+    expect(source).not.toContain("AsyncStorage");
   });
 
   it("keeps secondary macro lifecycle screens aligned with the workflow gate", async () => {
@@ -132,14 +133,15 @@ describe("tenant lifecycle feature gates", () => {
     expect(source).not.toContain("handleDownload");
   });
 
-  it("keeps analytics honest until it aggregates tenant-scoped execution logs", async () => {
+  it("renders analytics only from protected tenant-scoped execution-log aggregates", async () => {
     const source = await readProjectFile("app/(tabs)/analytics-dashboard.tsx");
-    expect(source).toContain("Analytics Needs Real Activity");
-    expect(source).toContain("No manufactured metrics");
+    expect(source).toContain("REAL ACTIVITY ONLY");
+    expect(source).toContain("trpc.analytics.getReport.useQuery");
+    expect(source).toContain("No verified activity in this window");
     expect(source).not.toContain("totalExecutions: 1247");
     expect(source).not.toContain("successfulExecutions: 1189");
     expect(source).not.toContain("create_issue");
-    expect(source).not.toContain("useAnalyticsReport");
+    expect(source).not.toContain("ExecutionAnalytics");
   });
 
   it("keeps chat-triggered client execution unavailable until it uses the authorized runtime", async () => {

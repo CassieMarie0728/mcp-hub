@@ -93,3 +93,12 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Retire the legacy add-server screen that permits local-process, SSE, and WebSocket paths outside the secure outbound policy
 - [x] Replace the active execution-debugger sample run with an explicit unavailable state until durable workflow execution logs exist
 - [x] Retire the legacy local execution-history route until it reads tenant-scoped secure execution logs
+
+## Secure Activity Reporting Milestone
+
+- [x] Map authorized runtime outputs and the tenant-scoped execution-log data contract
+- [x] Design protected history and analytics queries with ownership, pagination, and aggregate boundaries
+- [x] Implement backend-backed execution history using authorized runtime records
+- [x] Implement backend-backed analytics from real tenant-scoped execution logs
+- [x] Add history and analytics security, data-shape, and UI regression coverage
+- [x] Validate the complete milestone and preserve it in a checkpoint

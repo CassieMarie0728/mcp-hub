@@ -25,7 +25,7 @@ describe("Router Security", () => {
   });
 
   it("denies analytics access to unauthenticated callers", async () => {
-    await expect(caller.analytics.getToolStats({})).rejects.toThrow();
+    await expect(caller.analytics.getReport({ range: "7d" })).rejects.toThrow();
   });
 
   it("denies OAuth authorization initiation to unauthenticated callers", async () => {
