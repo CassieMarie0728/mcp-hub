@@ -193,7 +193,7 @@ export default function ChatScreen() {
         {/* Header */}
         <View className="bg-primary px-6 pt-6 pb-4">
           <Text className="text-3xl font-bold text-background">MCP Chat</Text>
-          <Text className="text-background/80 text-sm mt-1">
+          <Text className="text-background text-sm mt-1">
             Execute tools from your connected servers
           </Text>
         </View>

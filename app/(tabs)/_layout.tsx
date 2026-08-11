@@ -41,6 +41,33 @@ export default function TabLayout() {
       <Tabs.Screen name="use-cases" options={{ href: null }} />
       <Tabs.Screen name="pricing" options={{ href: null }} />
       <Tabs.Screen name="integrations" options={{ href: null }} />
+      <Tabs.Screen name="add-server" options={{ href: null }} />
+      <Tabs.Screen name="admin-dashboard" options={{ href: null }} />
+      <Tabs.Screen name="analytics-dashboard" options={{ href: null }} />
+      <Tabs.Screen name="chat" options={{ href: null }} />
+      <Tabs.Screen name="edit-server" options={{ href: null }} />
+      <Tabs.Screen name="execution-history" options={{ href: null }} />
+      <Tabs.Screen name="macro-chaining" options={{ href: null }} />
+      <Tabs.Screen name="macro-editor" options={{ href: null }} />
+      <Tabs.Screen name="macro-gallery" options={{ href: null }} />
+      <Tabs.Screen name="macro-scheduling" options={{ href: null }} />
+      <Tabs.Screen name="macro-sharing" options={{ href: null }} />
+      <Tabs.Screen name="mcp-control" options={{ href: null }} />
+      <Tabs.Screen name="oauth-connect" options={{ href: null }} />
+      <Tabs.Screen name="results" options={{ href: null }} />
+      <Tabs.Screen name="server-connection" options={{ href: null }} />
+      <Tabs.Screen name="server-connection-updated" options={{ href: null }} />
+      <Tabs.Screen name="server-detail" options={{ href: null }} />
+      <Tabs.Screen name="server-presets" options={{ href: null }} />
+      <Tabs.Screen name="servers" options={{ href: null }} />
+      <Tabs.Screen name="settings" options={{ href: null }} />
+      <Tabs.Screen name="token-management" options={{ href: null }} />
+      <Tabs.Screen name="tool-browser" options={{ href: null }} />
+      <Tabs.Screen name="tool-detail" options={{ href: null }} />
+      <Tabs.Screen name="tool-discovery" options={{ href: null }} />
+      <Tabs.Screen name="tool-execution" options={{ href: null }} />
+      <Tabs.Screen name="webhooks" options={{ href: null }} />
+      <Tabs.Screen name="workflow-templates" options={{ href: null }} />
     </Tabs>
   );
 }

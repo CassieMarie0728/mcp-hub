@@ -5,6 +5,8 @@ import { describe, expect, it } from "vitest";
 const projectRoot = process.cwd();
 const appConfig = readFileSync(resolve(projectRoot, "app.config.ts"), "utf8");
 const rootLayout = readFileSync(resolve(projectRoot, "app/_layout.tsx"), "utf8");
+const tabLayout = readFileSync(resolve(projectRoot, "app/(tabs)/_layout.tsx"), "utf8");
+const chatScreen = readFileSync(resolve(projectRoot, "app/(tabs)/chat.tsx"), "utf8");
 const packageJson = JSON.parse(
   readFileSync(resolve(projectRoot, "package.json"), "utf8"),
 ) as {
@@ -38,5 +40,28 @@ describe("route-loading configuration", () => {
     for (const route of disabledRoutes) {
       expect(rootLayout).not.toContain(`<Stack.Screen name="${route}"`);
     }
+  });
+
+  it("keeps secondary screens out of the primary tab bar", () => {
+    const hiddenTabRoutes = [
+      "add-server",
+      "chat",
+      "execution-history",
+      "macro-editor",
+      "oauth-connect",
+      "server-connection",
+      "settings",
+      "tool-execution",
+      "webhooks",
+    ];
+
+    for (const route of hiddenTabRoutes) {
+      expect(tabLayout).toContain(`<Tabs.Screen name="${route}" options={{ href: null }} />`);
+    }
+  });
+
+  it("uses an opaque foreground token for the chat-header subtitle", () => {
+    expect(chatScreen).toContain('className="text-background text-sm mt-1"');
+    expect(chatScreen).not.toContain('text-background/80 text-sm mt-1');
   });
 });
