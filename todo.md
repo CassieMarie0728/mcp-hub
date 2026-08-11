@@ -62,10 +62,11 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 
 ## Lint and Runtime-Quality Remediation
 
-- [ ] Classify all current lint warnings by safe cleanup versus runtime-sensitive behavior
+- [x] Classify all current lint warnings by safe cleanup versus runtime-sensitive behavior
 - [ ] Remove safe unused imports, variables, and duplicate-import warnings
-- [ ] Resolve high-impact hook dependency and stale-state warnings
-- [ ] Validate and document the reduced lint-warning baseline
+- [x] Resolve high-impact hook dependency and stale-state warnings
+- [x] Validate and document the reduced lint-warning baseline
+- [ ] Resolve or retire the remaining unused-variable warnings in legacy and secondary route modules
 
 ## Lifecycle Truthfulness Remediation
 
