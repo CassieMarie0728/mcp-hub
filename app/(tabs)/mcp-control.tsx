@@ -1,156 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useRouter } from 'expo-router';
+
 import { ScreenContainer } from '@/components/screen-container';
-import { useMCPBridge } from '@/hooks/use-mcp-bridge';
+import { useColors } from '@/hooks/use-colors';
 
-/**
- * MCP Server Control Screen - Demonstrates IPC Bridge usage
- */
 export default function MCPControlScreen() {
-  const {
-    serverStatus,
-    isLoading,
-    error,
-    startServer,
-    stopServer,
-    getServerStatus,
-    executeFilesTool,
-  } = useMCPBridge();
-
-  const [fileListResult, setFileListResult] = useState<any>(null);
-
-  useEffect(() => {
-    // Check server status on mount
-    getServerStatus();
-  }, [getServerStatus]);
-
-  const handleStartServer = async () => {
-    await startServer({
-      httpPort: 8080,
-      enableSSE: true,
-      enableWebSocket: true,
-      enableStdio: false,
-    });
-  };
-
-  const handleTestFilesTool = async () => {
-    const result = await executeFilesTool('listFiles', {
-      path: '/sdcard/Download',
-    });
-    setFileListResult(result);
-  };
+  const colors = useColors();
+  const router = useRouter();
 
   return (
-    <ScreenContainer className="p-4">
+    <ScreenContainer className="p-0">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="gap-4">
-          {/* Header */}
-          <View className="items-center gap-2 mb-4">
-            <Text className="text-3xl font-bold text-foreground">MCP Server Control</Text>
-            <Text className="text-sm text-muted">Manage your MCP server instance</Text>
-          </View>
+        <View className="bg-primary px-6 py-8">
+          <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">RUNTIME SAFETY GATE</Text>
+          <Text className="text-4xl font-bold text-background mb-2">Local MCP Control Is Retired</Text>
+          <Text className="text-base text-background/90 leading-relaxed">
+            This route used to start local servers, toggle transports, and inspect device files through a native bridge. None of that belongs in a tenant-scoped remote MCP control room.
+          </Text>
+        </View>
 
-          {/* Status Card */}
-          <View className="bg-surface rounded-lg p-4 border border-border">
-            <Text className="text-lg font-semibold text-foreground mb-2">Server Status</Text>
-            <View className="gap-2">
-              <View className="flex-row items-center justify-between">
-                <Text className="text-muted">Status:</Text>
-                <View
-                  className={`px-3 py-1 rounded-full ${
-                    serverStatus.isRunning ? 'bg-success' : 'bg-error'
-                  }`}
-                >
-                  <Text className="text-white text-xs font-semibold">
-                    {serverStatus.isRunning ? 'Running' : 'Stopped'}
-                  </Text>
-                </View>
-              </View>
-
-              {serverStatus.isRunning && serverStatus.serverInfo && (
-                <>
-                  <View className="flex-row items-center justify-between">
-                    <Text className="text-muted">Uptime:</Text>
-                    <Text className="text-foreground">
-                      {Math.floor(serverStatus.serverInfo.uptime / 1000)}s
-                    </Text>
-                  </View>
-                  <View className="flex-row items-center justify-between">
-                    <Text className="text-muted">Transports:</Text>
-                    <Text className="text-foreground">
-                      {serverStatus.serverInfo.transports?.join(', ') || 'None'}
-                    </Text>
-                  </View>
-                </>
-              )}
+        <View className="flex-1 px-6 py-8 gap-6">
+          <View className="bg-surface rounded-2xl border border-border p-6 items-center">
+            <View className="w-14 h-14 rounded-full bg-warning/15 items-center justify-center mb-4">
+              <MaterialIcons name="phonelink-erase" size={30} color={colors.warning} />
             </View>
-          </View>
-
-          {/* Control Buttons */}
-          <View className="gap-2">
-            <TouchableOpacity
-              className={`py-3 px-4 rounded-lg items-center ${
-                isLoading
-                  ? 'bg-primary opacity-50'
-                  : serverStatus.isRunning
-                    ? 'bg-error'
-                    : 'bg-success'
-              }`}
-              onPress={serverStatus.isRunning ? stopServer : handleStartServer}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text className="text-white font-semibold">
-                  {serverStatus.isRunning ? 'Stop Server' : 'Start Server'}
-                </Text>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="py-3 px-4 rounded-lg items-center bg-primary"
-              onPress={getServerStatus}
-              disabled={isLoading}
-            >
-              <Text className="text-white font-semibold">Refresh Status</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Test Tool Execution */}
-          <View className="bg-surface rounded-lg p-4 border border-border">
-            <Text className="text-lg font-semibold text-foreground mb-2">Test Tool Execution</Text>
-            <TouchableOpacity
-              className="py-3 px-4 rounded-lg items-center bg-primary mb-2"
-              onPress={handleTestFilesTool}
-              disabled={isLoading}
-            >
-              <Text className="text-white font-semibold">List Files (/sdcard/Download)</Text>
-            </TouchableOpacity>
-
-            {fileListResult && (
-              <View className="bg-background rounded p-2 mt-2">
-                <Text className="text-xs text-muted font-mono">
-                  {JSON.stringify(fileListResult, null, 2)}
-                </Text>
-              </View>
-            )}
-          </View>
-
-          {/* Error Display */}
-          {error && (
-            <View className="bg-error bg-opacity-10 rounded-lg p-3 border border-error">
-              <Text className="text-error text-sm">{error}</Text>
-            </View>
-          )}
-
-          {/* Info */}
-          <View className="bg-primary bg-opacity-10 rounded-lg p-3 border border-primary">
-            <Text className="text-primary text-xs">
-              This screen demonstrates the IPC bridge between React Native and the Kotlin MCP
-              Server backend. Use these controls to start/stop the server and test tool execution.
+            <Text className="text-xl font-bold text-foreground text-center mb-2">No device-side server controls</Text>
+            <Text className="text-sm text-muted text-center leading-relaxed">
+              There are no raw transport switches, local server lifecycle controls, or filesystem tool probes here. MCP Hub now routes approved server work through the authorized backend runtime.
             </Text>
           </View>
+
+          <View className="bg-surface rounded-2xl border border-border p-5 gap-4">
+            <View className="flex-row items-start gap-3">
+              <MaterialIcons name="lock" size={22} color={colors.primary} />
+              <Text className="flex-1 text-sm text-muted leading-relaxed">Secure server registration validates HTTPS destinations, ownership, and credentials before a connection is stored.</Text>
+            </View>
+            <View className="flex-row items-start gap-3">
+              <MaterialIcons name="build-circle" size={22} color={colors.primary} />
+              <Text className="flex-1 text-sm text-muted leading-relaxed">Tool discovery and execution are available only through the authorized MCP runtime for the current workspace.</Text>
+            </View>
+          </View>
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Open secure server connection workflow"
+            onPress={() => router.replace('/(tabs)/server-connection')}
+            className="bg-primary rounded-xl px-5 py-4 flex-row items-center justify-center gap-2"
+            style={({ pressed }) => [pressed && { opacity: 0.85 }]}
+          >
+            <MaterialIcons name="security" size={20} color={colors.background} />
+            <Text className="text-background font-semibold">Open secure connection</Text>
+          </Pressable>
         </View>
       </ScrollView>
     </ScreenContainer>

@@ -1,198 +1,47 @@
-import React, { useState, useCallback } from 'react';
-import {
-  ScrollView,
-  Text,
-  View,
-  TextInput,
-  Pressable,
-  ActivityIndicator,
-  FlatList,
-  Alert,
-} from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useRouter } from 'expo-router';
+
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
-import { cn } from '@/lib/utils';
-import { useMCPBridge } from '@/lib/hooks/useMCPBridge';
 
-interface Tool {
-  name: string;
-  description: string;
-  inputSchema?: {
-    type: string;
-    properties?: Record<string, any>;
-    required?: string[];
-  };
-}
-
-/**
- * Updated Tool Discovery Screen
- * Discovers tools from connected MCP servers using the Kotlin bridge
- */
-export default function ToolDiscoveryUpdatedScreen() {
+export default function ToolDiscoveryScreen() {
   const colors = useColors();
-  const { isReady, error, setError, discoverTools } = useMCPBridge();
-
-  // UI State
-  const [selectedServerId, setSelectedServerId] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isDiscovering, setIsDiscovering] = useState(false);
-  const [tools, setTools] = useState<Tool[]>([]);
-  const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
-
-  // Handle discover tools
-  const handleDiscoverTools = useCallback(async () => {
-    if (!selectedServerId || !isReady) {
-      Alert.alert('Error', 'Please select a server and ensure bridge is ready');
-      return;
-    }
-
-    setIsDiscovering(true);
-    setError(null);
-
-    try {
-      const result = await discoverTools(selectedServerId);
-      if (result && Array.isArray(result)) {
-        setTools(result);
-        Alert.alert('Success', `Discovered ${result.length} tools`);
-      } else {
-        Alert.alert('Error', 'Failed to discover tools');
-      }
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : String(err);
-      Alert.alert('Discovery Error', errorMsg);
-    } finally {
-      setIsDiscovering(false);
-    }
-  }, [selectedServerId, isReady, discoverTools, setError]);
-
-  // Filter tools by search query
-  const filteredTools = tools.filter((tool) =>
-    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    tool.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Render tool card
-  const renderToolCard = ({ item: tool }: { item: Tool }) => (
-    <Pressable
-      onPress={() => setSelectedTool(tool)}
-      className="mb-3 p-4 bg-surface rounded-lg border border-border"
-    >
-      <Text className="text-base font-semibold text-foreground mb-1">{tool.name}</Text>
-      <Text className="text-sm text-muted mb-2">{tool.description || 'No description'}</Text>
-      {tool.inputSchema?.properties && (
-        <Text className="text-xs text-muted">
-          Parameters: {Object.keys(tool.inputSchema.properties).join(', ')}
-        </Text>
-      )}
-    </Pressable>
-  );
+  const router = useRouter();
 
   return (
-    <ScreenContainer className="flex-1 bg-background">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-4">
-        {/* Header */}
-        <View className="mb-6">
-          <Text className="text-3xl font-bold text-foreground mb-2">Discover Tools</Text>
-          <Text className="text-sm text-muted">
-            {isReady ? 'Bridge Ready' : 'Bridge Loading...'}
+    <ScreenContainer className="p-0">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View className="bg-primary px-6 py-8">
+          <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">DISCOVERY SAFETY GATE</Text>
+          <Text className="text-4xl font-bold text-background mb-2">Use Server-Side Discovery</Text>
+          <Text className="text-base text-background/90 leading-relaxed">
+            This legacy route used a native bridge to discover tools without the workspace-scoped authorized runtime. Tool discovery now belongs to the secure server-management flow.
           </Text>
         </View>
 
-        {/* Error Display */}
-        {error && (
-          <View className="mb-4 p-3 bg-error rounded-lg">
-            <Text className="text-sm text-background font-semibold">{error}</Text>
-            <Pressable onPress={() => setError(null)} className="mt-2">
-              <Text className="text-xs text-background underline">Dismiss</Text>
-            </Pressable>
+        <View className="flex-1 px-6 py-8 gap-6">
+          <View className="bg-surface rounded-2xl border border-border p-6 items-center">
+            <View className="w-14 h-14 rounded-full bg-warning/15 items-center justify-center mb-4">
+              <MaterialIcons name="manage-search" size={30} color={colors.warning} />
+            </View>
+            <Text className="text-xl font-bold text-foreground text-center mb-2">No bridge-side discovery</Text>
+            <Text className="text-sm text-muted text-center leading-relaxed">
+              Server testing and tool discovery run through the tenant-backed MCP server list, where ownership, encrypted credentials, and outbound policy controls are enforced.
+            </Text>
           </View>
-        )}
-
-        {/* Server Selection */}
-        <View className="mb-6 bg-surface rounded-lg p-4">
-          <Text className="text-lg font-semibold text-foreground mb-4">Select Server</Text>
-
-          <TextInput
-            placeholder="Enter server ID (e.g., filesystem-server)"
-            placeholderTextColor={colors.muted}
-            value={selectedServerId}
-            onChangeText={setSelectedServerId}
-            className="bg-background text-foreground p-3 rounded-lg border border-border mb-4"
-            editable={!isDiscovering}
-          />
 
           <Pressable
-            onPress={handleDiscoverTools}
-            disabled={isDiscovering || !isReady || !selectedServerId}
-            className={cn(
-              'p-4 rounded-lg items-center justify-center',
-              isDiscovering || !isReady || !selectedServerId ? 'bg-muted' : 'bg-primary'
-            )}
+            accessibilityRole="button"
+            accessibilityLabel="Open secure MCP server management"
+            onPress={() => router.replace('/(tabs)/mcp-servers')}
+            className="bg-primary rounded-xl px-5 py-4 flex-row items-center justify-center gap-2"
+            style={({ pressed }) => [pressed && { opacity: 0.85 }]}
           >
-            {isDiscovering ? (
-              <ActivityIndicator color={colors.background} />
-            ) : (
-              <Text className="text-base font-semibold text-background">Discover Tools</Text>
-            )}
+            <MaterialIcons name="dns" size={20} color={colors.background} />
+            <Text className="text-background font-semibold">Open MCP servers</Text>
           </Pressable>
         </View>
-
-        {/* Search */}
-        {tools.length > 0 && (
-          <View className="mb-4">
-            <TextInput
-              placeholder="Search tools..."
-              placeholderTextColor={colors.muted}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              className="bg-surface text-foreground p-3 rounded-lg border border-border"
-            />
-          </View>
-        )}
-
-        {/* Tools List */}
-        {tools.length > 0 ? (
-          <View className="mb-4">
-            <Text className="text-lg font-semibold text-foreground mb-4">
-              Tools ({filteredTools.length})
-            </Text>
-            <FlatList
-              scrollEnabled={false}
-              data={filteredTools}
-              keyExtractor={(item) => item.name}
-              renderItem={renderToolCard}
-            />
-          </View>
-        ) : isDiscovering ? (
-          <View className="items-center justify-center py-8">
-            <ActivityIndicator size="large" color={colors.primary} />
-            <Text className="text-sm text-muted mt-4">Discovering tools...</Text>
-          </View>
-        ) : (
-          <View className="items-center justify-center py-8">
-            <Text className="text-sm text-muted">No tools discovered yet</Text>
-            <Text className="text-xs text-muted mt-2">Select a server and tap Discover Tools</Text>
-          </View>
-        )}
-
-        {/* Tool Details */}
-        {selectedTool && (
-          <View className="mt-6 p-4 bg-surface rounded-lg border border-primary">
-            <Pressable onPress={() => setSelectedTool(null)} className="mb-4">
-              <Text className="text-sm font-medium text-primary">✕ Close</Text>
-            </Pressable>
-            <Text className="text-lg font-semibold text-foreground mb-2">{selectedTool.name}</Text>
-            <Text className="text-sm text-muted mb-4">{selectedTool.description}</Text>
-            {selectedTool.inputSchema && (
-              <>
-                <Text className="text-sm font-medium text-foreground mb-2">Parameters:</Text>
-                <Text className="text-xs text-muted font-mono">
-                  {JSON.stringify(selectedTool.inputSchema, null, 2)}
-                </Text>
-              </>
-            )}
-          </View>
-        )}
       </ScrollView>
     </ScreenContainer>
   );

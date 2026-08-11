@@ -74,6 +74,7 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [ ] Repair or retire stale native-bridge and mock lifecycle routes that conflict with the secure backend
 - [ ] Remove remaining behavior-neutral unused-variable warnings after route decisions are complete
 - [ ] Validate route behavior and document the next audit findings
+- [x] Retire native-bridge tool control and execution routes that bypass the secure authorized MCP runtime
 
 ## Lifecycle Truthfulness Remediation
 

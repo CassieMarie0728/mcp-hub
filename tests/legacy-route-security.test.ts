@@ -21,4 +21,30 @@ describe("legacy connection route security", () => {
     expect(source).not.toContain("stdio");
     expect(source).not.toContain("websocket");
   });
+
+  it("retires native bridge control in favor of the secure backend workflow", async () => {
+    const source = await readProjectFile("app/(tabs)/mcp-control.tsx");
+
+    expect(source).toContain("Local MCP Control Is Retired");
+    expect(source).toContain("/(tabs)/server-connection");
+    expect(source).not.toContain("useMCPBridge");
+    expect(source).not.toContain("startServer");
+    expect(source).not.toContain("executeFilesTool");
+    expect(source).not.toContain("/sdcard/Download");
+  });
+
+  it("retires native bridge tool discovery and execution routes", async () => {
+    const discovery = await readProjectFile("app/(tabs)/tool-discovery.tsx");
+    const execution = await readProjectFile("app/(tabs)/tool-execution.tsx");
+
+    expect(discovery).toContain("Use Server-Side Discovery");
+    expect(discovery).toContain("/(tabs)/mcp-servers");
+    expect(discovery).not.toContain("useMCPBridge");
+    expect(discovery).not.toContain("discoverTools");
+
+    expect(execution).toContain("Bridge-Side Execution Is Retired");
+    expect(execution).toContain("/(tabs)/mcp-servers");
+    expect(execution).not.toContain("useMCPBridge");
+    expect(execution).not.toContain("executeTool");
+  });
 });
