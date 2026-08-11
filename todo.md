@@ -54,6 +54,7 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Validate Android native project generation, configuration, and build readiness using lightweight checks
 - [x] Remove unused audio/video modules and generated Android media permissions
 - [ ] Run a constrained Android Gradle debug build on a provisioned Android SDK runner
-- [ ] Perform advisory-by-advisory dependency triage for remaining production audit paths
+- [x] Perform advisory-by-advisory dependency triage for remaining production audit paths
+- [ ] Revisit the unresolved Expo CLI Tar advisory when an SDK 54-compatible upstream patch is available
 - [ ] Assess and remediate the next highest-risk lifecycle or authorization gap
 - [ ] Update remediation status, evidence, and release blockers after the next audit pass
