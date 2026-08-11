@@ -77,6 +77,7 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Retire native-bridge tool control and execution routes that bypass the secure authorized MCP runtime
 - [x] Retire the legacy tool-detail execution route that uses local server state and client-side tool invocation
 - [x] Retire the legacy edit-server route that can modify local stdio and arbitrary transport configurations outside the secure repository
+- [x] Retire local macro editing, scheduling, sharing, and chaining routes until durable tenant-scoped workflow persistence exists
 
 ## Lifecycle Truthfulness Remediation
 

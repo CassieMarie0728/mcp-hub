@@ -103,4 +103,22 @@ describe("tenant lifecycle feature gates", () => {
     expect(source).not.toContain("clearAll");
     expect(source).not.toContain("ExecutionStatus");
   });
+
+  it("keeps secondary macro lifecycle screens aligned with the workflow gate", async () => {
+    const files = [
+      "app/(tabs)/macro-editor.tsx",
+      "app/(tabs)/macro-scheduling.tsx",
+      "app/(tabs)/macro-sharing.tsx",
+      "app/(tabs)/macro-chaining.tsx",
+    ];
+
+    for (const file of files) {
+      const source = await readProjectFile(file);
+      expect(source).toContain("WorkflowGateScreen");
+      expect(source).not.toContain("useMacroExecution");
+      expect(source).not.toContain("MacroSchedulingEngine");
+      expect(source).not.toContain("MacroSharingEngine");
+      expect(source).not.toContain("MacroChainingEngine");
+    }
+  });
 });
