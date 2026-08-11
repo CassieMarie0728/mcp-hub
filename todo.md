@@ -56,5 +56,6 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [ ] Run a constrained Android Gradle debug build on a provisioned Android SDK runner
 - [x] Perform advisory-by-advisory dependency triage for remaining production audit paths
 - [ ] Revisit the unresolved Expo CLI Tar advisory when an SDK 54-compatible upstream patch is available
-- [ ] Assess and remediate the next highest-risk lifecycle or authorization gap
+- [x] Assess and remediate the next highest-risk lifecycle or authorization gap
+- [x] Remove sensitive session-token and user-object diagnostics from the authentication hook
 - [ ] Update remediation status, evidence, and release blockers after the next audit pass
