@@ -93,4 +93,14 @@ describe("tenant lifecycle feature gates", () => {
     expect(source).not.toContain("itemsFound");
     expect(source).not.toContain("currentStep");
   });
+
+  it("keeps execution history honest until it reads tenant-scoped secure logs", async () => {
+    const source = await readProjectFile("app/(tabs)/execution-history.tsx");
+    expect(source).toContain("History Needs Real Records");
+    expect(source).toContain("No local-only audit trail");
+    expect(source).not.toContain("useExecutionHistory");
+    expect(source).not.toContain("deleteExecution");
+    expect(source).not.toContain("clearAll");
+    expect(source).not.toContain("ExecutionStatus");
+  });
 });

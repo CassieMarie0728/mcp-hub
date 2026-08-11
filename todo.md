@@ -84,3 +84,4 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Replace the active macro-builder workflow UI with an explicit unavailable state until durable workflow execution exists
 - [x] Retire the legacy add-server screen that permits local-process, SSE, and WebSocket paths outside the secure outbound policy
 - [x] Replace the active execution-debugger sample run with an explicit unavailable state until durable workflow execution logs exist
+- [x] Retire the legacy local execution-history route until it reads tenant-scoped secure execution logs
