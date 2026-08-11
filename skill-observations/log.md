@@ -52,3 +52,18 @@ Observations captured during task-oriented work.
 **Suggested improvement:** Add lightweight source-contract tests for every public landing page that verify owned calls to action, required SEO metadata, valid local links, and an explicit denylist of claims unsupported by the shipped product.
 
 **Principle:** Marketing copy is a release surface: its promises, destinations, and metadata need the same regression protection as product behavior.
+
+### Observation 4: Native build checks need an explicit resource budget
+
+**Status:** OPEN
+**Date:** 2026-08-11
+**Session context:** Android native-readiness audit in a constrained development sandbox.
+**Skill:** Existing workflow: native release validation
+**Type:** open-source
+**Phase/Area:** Gradle and Android build verification
+
+**Issue:** A Gradle configuration task downloaded the toolchain and spawned compilation workers that exceeded the available sandbox memory, causing the workspace to reset before a native build result could be collected.
+
+**Suggested improvement:** Separate native validation into a lightweight generation/structural phase and an explicitly budgeted full-build phase. Preflight memory, stop nonessential watchers, cap Gradle workers, and checkpoint before invoking heavyweight Android compilation.
+
+**Principle:** A native build command is not a harmless check in constrained automation; resource limits are part of release-test design.

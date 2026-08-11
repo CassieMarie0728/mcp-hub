@@ -48,3 +48,12 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Remove unused Socket.IO server and client dependencies after source and build validation
 - [x] Document the remaining Expo navigation advisory drift and upstream transitive audit exposure
 - [x] Require frozen dependency installation and backend build verification in CI
+
+## Continued Audit Remediation
+
+- [x] Validate Android native project generation, configuration, and build readiness using lightweight checks
+- [x] Remove unused audio/video modules and generated Android media permissions
+- [ ] Run a constrained Android Gradle debug build on a provisioned Android SDK runner
+- [ ] Perform advisory-by-advisory dependency triage for remaining production audit paths
+- [ ] Assess and remediate the next highest-risk lifecycle or authorization gap
+- [ ] Update remediation status, evidence, and release blockers after the next audit pass
