@@ -61,9 +61,11 @@ describe("route-loading configuration", () => {
     }
   });
 
-  it("uses an opaque foreground token for the chat-header subtitle", () => {
-    expect(chatScreen).toContain('className="text-background text-sm mt-1"');
-    expect(chatScreen).not.toContain('text-background/80 text-sm mt-1');
+  it("keeps the hidden chat route as a secure execution gate", () => {
+    expect(chatScreen).toContain("Command-Parsing Chat Is Retired");
+    expect(chatScreen).toContain("No chat-triggered client execution");
+    expect(chatScreen).not.toContain("useMCPService");
+    expect(chatScreen).not.toContain("executeTool");
   });
 
   it("keeps a single backend-backed server connection workflow", () => {

@@ -1,32 +1,36 @@
 # Lint and Runtime-Quality Remediation Status
 
 **Status date:** 2026-08-11  
-**Checkpoint baseline:** `ef769610`
+**Current checkpoint baseline:** pending final checkpoint after `542bdc37`
 
 ## Outcome
 
-The lint baseline fell from **98 warnings to 56**, a reduction of **42 warnings (42.9%)**. All remaining warnings are `@typescript-eslint/no-unused-vars`; there are no remaining hook-dependency, duplicate-import, import-order, or array-style warnings.
+The audit-era lint baseline is now **zero warnings and zero errors**, reduced from **98 warnings** without disabling lint rules or hiding debt in configuration. The final cleanup pass did not treat unused values as harmless clutter: it reviewed the remaining legacy routes and removed or retired behavior that conflicted with the secure, backend-authorized MCP architecture.
 
-| Warning category | Before | Current | Result |
+| Warning category | Starting count | Final count | Resolution |
 |---|---:|---:|---|
-| Unused variables/imports | 76 | 56 | Reduced; more route-level cleanup remains. |
-| Hook dependencies / stale values | 8 | 0 | Resolved. |
-| Duplicate imports | 12 | 0 | Resolved. |
-| Import ordering / style | 2 | 0 | Resolved. |
-| **Total** | **98** | **56** | **42.9% reduction**. |
+| Unused variables/imports | 76 | 0 | Removed after route-by-route safety review; unsafe legacy surfaces were retired rather than cosmetically silenced. |
+| Hook dependencies / stale values | 8 | 0 | Corrected with stable callbacks, complete dependency lists, and preserved animation state. |
+| Duplicate imports | 12 | 0 | Consolidated. |
+| Import ordering / style | 2 | 0 | Corrected. |
+| **Total** | **98** | **0** | **All findings resolved.** |
 
-## Runtime Corrections
+## Final Route Decisions
 
-The completed effect fixes are behavioral, not cosmetic. The skeleton now keeps one animated value across renders; the admin dashboard refresh interval uses the current time range; chat initializes a server without retaining an outdated selection; the AI greeting observes the message count it reads; the server editor header includes its router dependency; and macro schedules load through a stable callback.
+The last cleanup batch found two more routes that needed a safety decision rather than a throwaway rename. The chat route parsed free-form messages into device-side tool invocation; it now presents a clear execution gate until conversational actions can resolve an owned server and execute through the authorized runtime. The server-preset route stored local configuration and offered HTTP, WebSocket, and stdio transports; it now directs users to the tenant-backed HTTPS-only registration workflow.
 
-## Lifecycle Truthfulness
-
-The webhook and workflow-template screens no longer render fabricated data, fake URLs, ratings, clone counts, or simulated lifecycle actions. Both show an explicit unavailable state that matches the protected backend gates. The lifecycle source-contract suite now guards these public claims.
-
-## Remaining Warning Debt
-
-The remaining 56 warnings are unused values in legacy and secondary route modules. Some can be safely removed; others signal unfinished screens or client-side bridge paths that should be either implemented against the secure backend or retired from the active route tree. They are not silently disabled by configuration—the next cleanup pass should make that decision file by file.
+The same pass retained and simplified the active onboarding experience by removing two unused destructured values with no behavioral change. Lifecycle regression coverage increased to **16 tests**, and legacy-route security coverage remains at **5 tests**.
 
 ## Validation
 
-The complete test suite, lint, TypeScript check, backend bundle, and static web export passed after this remediation batch. The static export still contains secondary routes because they remain routable, even where hidden from the primary tab bar.
+The final release matrix completed successfully:
+
+| Validation | Result |
+|---|---|
+| Full Vitest suite | **283 passed, 1 intentionally skipped** across 25 files |
+| TypeScript | **Passed** with no errors |
+| ESLint | **0 errors, 0 warnings** |
+| Backend bundle | **Passed** (`pnpm build`) |
+| Expo static web export | **Passed** (`npx expo export --platform web`) |
+
+Secondary routes still export because they remain routable for backward-compatible navigation. Where an underlying lifecycle is not durably tenant-scoped and authorized, those routes now state that boundary explicitly instead of fabricating state or accessing local execution paths.

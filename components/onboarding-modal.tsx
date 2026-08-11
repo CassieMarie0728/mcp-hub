@@ -20,7 +20,6 @@ const ICON_MAP: Record<string, string> = {
 export function OnboardingModal() {
   const {
     isOnboarding,
-    currentStep,
     currentStepIndex,
     stepData,
     nextStep,
@@ -181,19 +180,8 @@ export function OnboardingModal() {
                 <Pressable
                   key={index}
                   onPress={() => {
-                    // Allow jumping to any step
-                    const steps: any[] = [
-                      'welcome',
-                      'connect-server',
-                      'execute-tool',
-                      'view-history',
-                      'ai-assistant',
-                      'manage-macros',
-                      'explore-marketplace',
-                      'settings',
-                    ];
                     // Commented out for now - can enable if you want users to jump around
-                    // useOnboarding().goToStep(steps[index]);
+                    // useOnboarding().goToStep(index);
                   }}
                   className={cn(
                     'h-2 rounded-full',

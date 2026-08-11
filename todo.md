@@ -63,22 +63,25 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 ## Lint and Runtime-Quality Remediation
 
 - [x] Classify all current lint warnings by safe cleanup versus runtime-sensitive behavior
-- [ ] Remove safe unused imports, variables, and duplicate-import warnings
+- [x] Remove safe unused imports, variables, and duplicate-import warnings
 - [x] Resolve high-impact hook dependency and stale-state warnings
 - [x] Validate and document the reduced lint-warning baseline
-- [ ] Resolve or retire the remaining unused-variable warnings in legacy and secondary route modules
+- [x] Resolve or retire the remaining unused-variable warnings in legacy and secondary route modules
 
 ## Legacy Route Alignment
 
 - [x] Classify remaining unused-variable warnings by secure workflow relevance and retirement candidate
-- [ ] Repair or retire stale native-bridge and mock lifecycle routes that conflict with the secure backend
-- [ ] Remove remaining behavior-neutral unused-variable warnings after route decisions are complete
-- [ ] Validate route behavior and document the next audit findings
+- [x] Repair or retire stale native-bridge and mock lifecycle routes that conflict with the secure backend
+- [x] Remove remaining behavior-neutral unused-variable warnings after route decisions are complete
+- [x] Validate route behavior and document the next audit findings
 - [x] Retire native-bridge tool control and execution routes that bypass the secure authorized MCP runtime
 - [x] Retire the legacy tool-detail execution route that uses local server state and client-side tool invocation
 - [x] Retire the legacy edit-server route that can modify local stdio and arbitrary transport configurations outside the secure repository
 - [x] Retire local macro editing, scheduling, sharing, and chaining routes until durable tenant-scoped workflow persistence exists
 - [x] Retire the local tool-results route until it renders tenant-scoped authorized execution records
+- [x] Replace fabricated analytics metrics with an explicit unavailable state until analytics reads tenant-scoped execution logs
+- [x] Retire the legacy chat route that parses messages into client-side MCP tool execution outside the authorized runtime
+- [x] Retire the device-local server-preset route because it models HTTP, WebSocket, and stdio transports outside the secure server registration path
 
 ## Lifecycle Truthfulness Remediation
 

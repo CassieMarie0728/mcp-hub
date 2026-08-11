@@ -131,4 +131,35 @@ describe("tenant lifecycle feature gates", () => {
     expect(source).not.toContain("handleShare");
     expect(source).not.toContain("handleDownload");
   });
+
+  it("keeps analytics honest until it aggregates tenant-scoped execution logs", async () => {
+    const source = await readProjectFile("app/(tabs)/analytics-dashboard.tsx");
+    expect(source).toContain("Analytics Needs Real Activity");
+    expect(source).toContain("No manufactured metrics");
+    expect(source).not.toContain("totalExecutions: 1247");
+    expect(source).not.toContain("successfulExecutions: 1189");
+    expect(source).not.toContain("create_issue");
+    expect(source).not.toContain("useAnalyticsReport");
+  });
+
+  it("keeps chat-triggered client execution unavailable until it uses the authorized runtime", async () => {
+    const source = await readProjectFile("app/(tabs)/chat.tsx");
+    expect(source).toContain("Command-Parsing Chat Is Retired");
+    expect(source).toContain("No chat-triggered client execution");
+    expect(source).not.toContain("useMCPService");
+    expect(source).not.toContain("executeTool");
+    expect(source).not.toContain("toolCallMatch");
+    expect(source).not.toContain("selectedServerId");
+  });
+
+  it("keeps device-local non-HTTPS server presets unavailable until presets are tenant-scoped", async () => {
+    const source = await readProjectFile("app/(tabs)/server-presets.tsx");
+    expect(source).toContain("Local Connection Presets Are Retired");
+    expect(source).toContain("HTTPS-only, tenant-authorized server registration contract");
+    expect(source).not.toContain("useServerPresets");
+    expect(source).not.toContain("TransportType");
+    expect(source).not.toContain("localhost");
+    expect(source).not.toContain("STDIO");
+    expect(source).not.toContain("WEBSOCKET");
+  });
 });

@@ -67,3 +67,18 @@ Observations captured during task-oriented work.
 **Suggested improvement:** Separate native validation into a lightweight generation/structural phase and an explicitly budgeted full-build phase. Preflight memory, stop nonessential watchers, cap Gradle workers, and checkpoint before invoking heavyweight Android compilation.
 
 **Principle:** A native build command is not a harmless check in constrained automation; resource limits are part of release-test design.
+
+### Observation 5: Treat legacy-route lint debt as a security-review queue
+
+**Status:** OPEN
+**Date:** 2026-08-11
+**Session context:** Final MCP Hub route-alignment and lint-zero remediation pass.
+**Skill:** Existing workflow: application security audit
+**Type:** open-source
+**Phase/Area:** Legacy route retirement and static-analysis cleanup
+
+**Issue:** The remaining unused values in legacy screens appeared behavior-neutral, but reviewing their surrounding code exposed device-side MCP tool execution and locally persisted HTTP, WebSocket, and stdio connection presets outside the authorized transport boundary.
+
+**Suggested improvement:** Require the final lint-cleanup phase of a security remediation to classify each remaining legacy-route warning by capability and authorization path before deleting it. If a route reaches local execution, unscoped state, or weaker transport validation, retire or redirect it and add a source-contract regression test.
+
+**Principle:** In legacy application surfaces, static-analysis debt can be a map of unreviewed capabilities; remove the unsafe capability before removing the warning.
