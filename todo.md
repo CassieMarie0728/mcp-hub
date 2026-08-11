@@ -42,3 +42,9 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Restore security, lifecycle, route, landing, and encryption regression tests; complete full validation
 - [x] Align specified Expo SDK 54 packages and add required Expo configuration plugins
 - [x] Restore security-foundation documentation and observation-log entries
+
+## Dependency and Release Hardening
+
+- [x] Remove unused Socket.IO server and client dependencies after source and build validation
+- [x] Document the remaining Expo navigation advisory drift and upstream transitive audit exposure
+- [x] Require frozen dependency installation and backend build verification in CI

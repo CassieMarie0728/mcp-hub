@@ -23,7 +23,7 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Type check
         run: pnpm check
@@ -33,3 +33,6 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Build backend bundle
+        run: pnpm build
