@@ -24,9 +24,10 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "@react-native-async-storage/async-storage": "^2.2.0",
-    "@react-navigation/bottom-tabs": "^7.8.12",
-    "@react-navigation/elements": "^2.9.2",
-    "@react-navigation/native": "^7.1.25",
+    "@react-navigation/bottom-tabs": "^7.15.11",
+    "@react-navigation/elements": "^2.9.15",
+    "@react-navigation/native": "^7.2.2",
+    "@react-navigation/native-stack": "7.14.12",
     "@tanstack/react-query": "^5.90.12",
     "@trpc/client": "^11.17.0",
     "@trpc/react-query": "^11.17.0",
@@ -91,16 +92,16 @@
     "@types/ws": "^8.18.1",
     "drizzle-kit": "^0.31.10",
     "esbuild": "^0.28.0",
-    "tailwindcss": "^3.4.17",
-    "typescript": "~5.9.3",
-    "vitest": "^4.1.0",
     "eslint": "^8.46.0",
     "eslint-config-universe": "^12.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-native": "^4.0.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsx-a11y": "^6.7.1"
+    "tailwindcss": "^3.4.17",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.0"
   },
   "packageManager": "pnpm@9.12.0"
 }

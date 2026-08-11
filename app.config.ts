@@ -86,7 +86,19 @@ const config: ExpoConfig = {
     favicon: './assets/images/favicon.png',
   },
   plugins: [
-    'expo-router',
+    [
+      'expo-router',
+      {
+        // Route-level splitting reduces the web app's initial JavaScript and
+        // keeps development from eagerly loading every feature screen.
+        // Native production keeps routes synchronous because Expo Router
+        // currently disables Suspense boundaries for that target.
+        asyncRoutes: {
+          default: 'development',
+          web: true,
+        },
+      },
+    ],
     [
       'expo-audio',
       {
