@@ -121,4 +121,14 @@ describe("tenant lifecycle feature gates", () => {
       expect(source).not.toContain("MacroChainingEngine");
     }
   });
+
+  it("keeps local tool results unavailable until secure execution history exists", async () => {
+    const source = await readProjectFile("app/(tabs)/results.tsx");
+    expect(source).toContain("Local Results Are Retired");
+    expect(source).toContain("No local result cache");
+    expect(source).not.toContain("useToolExecution");
+    expect(source).not.toContain("createFromExecutionHistory");
+    expect(source).not.toContain("handleShare");
+    expect(source).not.toContain("handleDownload");
+  });
 });

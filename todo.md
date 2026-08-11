@@ -78,6 +78,7 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Retire the legacy tool-detail execution route that uses local server state and client-side tool invocation
 - [x] Retire the legacy edit-server route that can modify local stdio and arbitrary transport configurations outside the secure repository
 - [x] Retire local macro editing, scheduling, sharing, and chaining routes until durable tenant-scoped workflow persistence exists
+- [x] Retire the local tool-results route until it renders tenant-scoped authorized execution records
 
 ## Lifecycle Truthfulness Remediation
 
