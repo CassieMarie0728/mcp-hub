@@ -16,4 +16,4 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Create a safeguarded snapshot of all local Phase 4 work
 - [x] Synchronize the shared CI update from the remote project branch
 - [x] Reapply and reconcile the Phase 4 changes with the CI update
-- [ ] Re-run full validation and save a publishable checkpoint
+- [x] Re-run full validation and save a publishable checkpoint
