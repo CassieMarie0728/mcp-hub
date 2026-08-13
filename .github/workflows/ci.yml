@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: ["**"]
+    branches: ['**']
 
 jobs:
   test:
@@ -30,6 +30,9 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      - name: Generate Android manifest
+        run: pnpm exec expo prebuild --platform android --clean --no-install
 
       - name: Test
         run: pnpm test
