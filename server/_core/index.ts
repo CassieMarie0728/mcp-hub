@@ -78,8 +78,8 @@ async function startServer() {
   // Apply global rate limiter to all requests
   app.use(globalLimiter);
 
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  app.use(express.json({ limit: "1mb" }));
+  app.use(express.urlencoded({ limit: "1mb", extended: true }));
 
   // Serve landing page at root
   app.get("/", (_req, res) => {

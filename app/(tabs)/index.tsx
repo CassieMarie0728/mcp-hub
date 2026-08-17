@@ -38,7 +38,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const colors = useColors();
   const [refreshing, setRefreshing] = useState(false);
-  const { isOpen, closeAssistant } = useAIAssistant();
+  const { isOpen, openAssistant, closeAssistant } = useAIAssistant();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -258,7 +258,7 @@ export default function HomeScreen() {
             <Button variant="primary" size="large" onPress={() => router.push('/(tabs)/mcp-servers' as any)}>
               Connect a Server
             </Button>
-            <Button variant="secondary" onPress={() => router.push('/(tabs)/chat' as any)}>
+            <Button variant="secondary" onPress={openAssistant}>
               Ask the AI Co-Pilot
             </Button>
           </View>

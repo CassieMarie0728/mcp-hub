@@ -70,4 +70,30 @@ describe("legacy connection route security", () => {
     expect(source).not.toContain("connectionType");
     expect(source).not.toContain("stdio");
   });
+
+  it("retires fictional provider MCP registration and static tool browsing", async () => {
+    const servers = await readProjectFile("app/(tabs)/mcp-servers.tsx");
+    const toolBrowser = await readProjectFile("app/(tabs)/tool-browser.tsx");
+    const extendedRouter = await readProjectFile("server/mcp/mcp-router-extended.ts");
+
+    expect(servers).toContain('Redirect href="/server-connection"');
+    expect(servers).not.toContain("registerRealServer");
+    expect(servers).not.toContain("validateToken");
+    expect(toolBrowser).toContain('Redirect href="/server-connection"');
+    expect(toolBrowser).not.toContain("executeServerTool");
+    expect(toolBrowser).not.toContain("simplified version");
+    expect(extendedRouter).toContain("requireTenantLifecyclePersistence");
+    expect(extendedRouter).not.toContain("MCPServerRegistry");
+    expect(extendedRouter).not.toContain("createServerConfig");
+  });
+
+  it("retires the secondary device-local Servers list in favor of canonical registration", async () => {
+    const source = await readProjectFile("app/(tabs)/servers.tsx");
+
+    expect(source).toContain('Redirect href="/server-connection"');
+    expect(source).not.toContain("useApp");
+    expect(source).not.toContain("deleteServer");
+    expect(source).not.toContain("connectionType");
+    expect(source).not.toContain("edit-server");
+  });
 });

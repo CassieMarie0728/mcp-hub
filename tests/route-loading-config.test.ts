@@ -8,6 +8,8 @@ const rootLayout = readFileSync(resolve(projectRoot, "app/_layout.tsx"), "utf8")
 const tabLayout = readFileSync(resolve(projectRoot, "app/(tabs)/_layout.tsx"), "utf8");
 const chatScreen = readFileSync(resolve(projectRoot, "app/(tabs)/chat.tsx"), "utf8");
 const connectionScreen = readFileSync(resolve(projectRoot, "app/(tabs)/server-connection.tsx"), "utf8");
+const settingsScreen = readFileSync(resolve(projectRoot, "app/(tabs)/settings.tsx"), "utf8");
+const homeScreen = readFileSync(resolve(projectRoot, "app/(tabs)/index.tsx"), "utf8");
 const packageJson = JSON.parse(
   readFileSync(resolve(projectRoot, "package.json"), "utf8"),
 ) as {
@@ -77,5 +79,21 @@ describe("route-loading configuration", () => {
     expect(connectionScreen).not.toContain("useMCPServerConnection");
     expect(tabLayout).not.toContain("server-connection-updated");
     expect(existsSync(resolve(projectRoot, "archive/disabled-screens/server-connection-updated.tsx"))).toBe(true);
+  });
+
+  it("keeps settings linked to real activity reporting instead of dead routes or local log deletion", () => {
+    expect(settingsScreen).toContain("router.push('/execution-history')");
+    expect(settingsScreen).toContain("router.push('/analytics-dashboard')");
+    expect(settingsScreen).not.toContain("clearExecutionHistory");
+    expect(settingsScreen).not.toContain("/audit-log");
+    expect(settingsScreen).not.toContain("/governance");
+    expect(settingsScreen).not.toContain("/service-control");
+    expect(settingsScreen).not.toContain("/notification-settings");
+  });
+
+  it("opens the existing assistant modal from the home call-to-action instead of the retired chat route", () => {
+    expect(homeScreen).toContain("const { isOpen, openAssistant, closeAssistant } = useAIAssistant()");
+    expect(homeScreen).toContain("onPress={openAssistant}");
+    expect(homeScreen).not.toContain("router.push('/(tabs)/chat'");
   });
 });

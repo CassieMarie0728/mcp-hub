@@ -102,3 +102,24 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Implement backend-backed analytics from real tenant-scoped execution logs
 - [x] Add history and analytics security, data-shape, and UI regression coverage
 - [x] Validate the complete milestone and preserve it in a checkpoint
+
+## Post-Activity-Reporting Comprehensive Audit
+
+- [x] Regenerate the missing Android native project after the permission contract exposed the absent manifest
+- [x] Establish a fresh full validation baseline and capture service/build health
+- [x] Harden AI request validation, provider error handling, abort behavior, and body-size limits
+- [x] Enforce app-scoped session validation in the server authentication adapter
+- [x] Retire or replace registry-backed provider connections that advertise unsupported MCP endpoints outside the canonical HTTPS registration workflow
+- [x] Retire the registry-backed tool browser that fabricated provider tools and invoked the unsupported extended router
+- [x] Re-audit backend authorization, data integrity, secure runtime, and API contracts
+- [x] Remove settings navigation to retired routes and retire the obsolete local execution-history clear action
+- [x] Retire the secondary device-local Servers list that exposes legacy local edit, delete, and connection behavior
+- [x] Remove OAuth callback diagnostics that expose authorization-code fragments or user records in client logs
+- [x] Wire the home AI call-to-action to the existing assistant modal instead of the retired chat route
+- [x] Re-audit mobile route behavior, navigation, onboarding, and truthful UI states
+- [x] Pin the patched qs parser version required by the Express dependency graph
+- [x] Add static Expo web export validation to CI so deployable client artifacts are checked on every change
+- [x] Repair verified landing-page navigation and content defects
+- [x] Re-audit dependencies, build output, Android readiness, CI, landing site, and operations documentation
+- [x] Remediate every verified in-sandbox finding and add regression coverage
+- [x] Run final full validation and publish an evidence-backed audit status update

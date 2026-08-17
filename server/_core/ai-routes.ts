@@ -1,38 +1,58 @@
 import { Express, Request, Response } from "express";
+import { z } from "zod";
 import { getAIAssistant } from "./ai-assistant.js";
+import { aiLimiter } from "./rate-limiter";
 import { sdk } from "./sdk.js";
 import { HttpError } from "../../shared/_core/errors.js";
+
+const aiRequestSchema = z.object({
+  messages: z.array(z.object({
+    role: z.enum(["user", "assistant"]),
+    content: z.string().trim().min(1).max(8_000),
+  })).min(1).max(32),
+  context: z.object({
+    currentScreen: z.string().trim().max(120).optional(),
+    recentActions: z.array(z.string().trim().min(1).max(240)).max(20).optional(),
+  }).optional(),
+});
+
+function parseAiRequest(body: unknown) {
+  const parsed = aiRequestSchema.safeParse(body);
+  if (!parsed.success) return null;
+  return parsed.data;
+}
+
+function respondToAiRouteError(err: unknown, res: Response, operation: "chat" | "stream") {
+  if (err instanceof HttpError) {
+    res.status(err.statusCode).json({ error: err.message });
+    return;
+  }
+  console.error(`[ai-routes] ${operation} error:`, err);
+  res.status(502).json({ error: "AI assistant is temporarily unavailable" });
+}
 
 export function setupAIRoutes(app: Express): void {
   /**
    * POST /api/ai/chat
    * Get a non-streaming response from the AI assistant
    */
-  app.post("/api/ai/chat", async (req: Request, res: Response) => {
+  app.post("/api/ai/chat", aiLimiter, async (req: Request, res: Response) => {
     try {
       // Authenticate user before processing request to prevent unauthorized OpenRouter API usage
       await sdk.authenticateRequest(req);
 
-      const { messages, context } = req.body;
-
-      if (!messages || !Array.isArray(messages)) {
-        res.status(400).json({ error: "messages array is required" });
+      const input = parseAiRequest(req.body);
+      if (!input) {
+        res.status(400).json({ error: "Invalid AI assistant request" });
         return;
       }
 
       const assistant = getAIAssistant();
-      const response = await assistant.getResponse(messages, context);
+      const response = await assistant.getResponse(input.messages, input.context);
 
       res.json({ response });
     } catch (err) {
-      if (err instanceof HttpError) {
-        res.status(err.statusCode).json({ error: err.message });
-        return;
-      }
-      console.error("[ai-routes] Chat error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Failed to get AI response",
-      });
+      respondToAiRouteError(err, res, "chat");
     }
   });
 
@@ -40,20 +60,24 @@ export function setupAIRoutes(app: Express): void {
    * POST /api/ai/stream
    * Stream a response from the AI assistant
    */
-  app.post("/api/ai/stream", async (req: Request, res: Response) => {
+  app.post("/api/ai/stream", aiLimiter, async (req: Request, res: Response) => {
     try {
       // Authenticate user before processing request to prevent unauthorized OpenRouter API usage
       await sdk.authenticateRequest(req);
 
-      const { messages, context } = req.body;
-
-      if (!messages || !Array.isArray(messages)) {
-        res.status(400).json({ error: "messages array is required" });
+      const input = parseAiRequest(req.body);
+      if (!input) {
+        res.status(400).json({ error: "Invalid AI assistant request" });
         return;
       }
 
       const assistant = getAIAssistant();
-      const stream = await assistant.streamChat(messages, context);
+      const controller = new AbortController();
+      const abortStream = () => {
+        controller.abort();
+        stream.destroy();
+      };
+      const stream = await assistant.streamChat(input.messages, input.context, controller.signal);
 
       res.setHeader("Content-Type", "text/event-stream");
       res.setHeader("Cache-Control", "no-cache");
@@ -61,19 +85,19 @@ export function setupAIRoutes(app: Express): void {
 
       stream.pipe(res);
 
+      req.once("aborted", abortStream);
+      res.once("close", abortStream);
+
       stream.on("error", (err) => {
         console.error("[ai-routes] Stream error:", err);
-        res.status(500).json({ error: "Stream failed" });
+        if (!res.headersSent) {
+          res.status(502).json({ error: "AI assistant stream failed" });
+        } else {
+          res.end();
+        }
       });
     } catch (err) {
-      if (err instanceof HttpError) {
-        res.status(err.statusCode).json({ error: err.message });
-        return;
-      }
-      console.error("[ai-routes] Stream setup error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Failed to start stream",
-      });
+      respondToAiRouteError(err, res, "stream");
     }
   });
 

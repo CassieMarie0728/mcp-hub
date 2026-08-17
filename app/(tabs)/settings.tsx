@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   Switch,
-  Alert,
 } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
@@ -17,29 +16,11 @@ import { useOnboarding } from '@/lib/onboarding-context';
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { settings, updateSettings, clearExecutionHistory } = useApp();
+  const { settings, updateSettings } = useApp();
   const { resetOnboarding, hasCompletedOnboarding } = useOnboarding();
   const colorScheme = useColorScheme();
   const colors = useColors();
   const [isDarkMode, setIsDarkMode] = useState(colorScheme === 'dark');
-
-  const handleClearHistory = () => {
-    Alert.alert(
-      'Clear History',
-      'Are you sure you want to delete all execution history? This cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Clear',
-          style: 'destructive',
-          onPress: async () => {
-            await clearExecutionHistory();
-            Alert.alert('Success', 'Execution history cleared');
-          },
-        },
-      ]
-    );
-  };
 
   const handleThemeChange = (value: boolean) => {
     setIsDarkMode(value);
@@ -107,71 +88,32 @@ export default function SettingsScreen() {
           )}
         </View>
 
-        {/* Dashboard Section */}
+        {/* Activity Section */}
         <View className="mb-8">
-          <Text className="text-lg font-semibold text-foreground mb-4">Dashboard</Text>
+          <Text className="text-lg font-semibold text-foreground mb-4">Activity</Text>
           <View className="gap-3">
             <TouchableOpacity
-              onPress={() => router.push('/audit-log' as any)}
+              onPress={() => router.push('/execution-history')}
               className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
             >
               <View className="flex-row items-center gap-3">
                 <MaterialIcons name="history" size={20} color={colors.primary} />
                 <View>
-                  <Text className="text-foreground font-medium">Audit Log</Text>
-                  <Text className="text-xs text-muted mt-1">View tool execution history</Text>
+                  <Text className="text-foreground font-medium">Execution History</Text>
+                  <Text className="text-xs text-muted mt-1">View protected workspace activity</Text>
                 </View>
               </View>
               <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => router.push('/governance' as any)}
+              onPress={() => router.push('/analytics-dashboard')}
               className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
             >
               <View className="flex-row items-center gap-3">
-                <MaterialIcons name="security" size={20} color={colors.primary} />
+                <MaterialIcons name="query-stats" size={20} color={colors.primary} />
                 <View>
-                  <Text className="text-foreground font-medium">Governance</Text>
-                  <Text className="text-xs text-muted mt-1">Manage app allowlist/blacklist</Text>
-                </View>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push('/service-control' as any)}
-              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
-            >
-              <View className="flex-row items-center gap-3">
-                <MaterialIcons name="cloud-done" size={20} color={colors.primary} />
-                <View>
-                  <Text className="text-foreground font-medium">Service Control</Text>
-                  <Text className="text-xs text-muted mt-1">Start/stop MCP server</Text>
-                </View>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push('/perception-test' as any)}
-              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
-            >
-              <View className="flex-row items-center gap-3">
-                <MaterialIcons name="visibility" size={20} color={colors.primary} />
-                <View>
-                  <Text className="text-foreground font-medium">Perception Test</Text>
-                  <Text className="text-xs text-muted mt-1">Test AI perception engine</Text>
-                </View>
-              </View>
-              <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push('/macro-management' as any)}
-              className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
-            >
-              <View className="flex-row items-center gap-3">
-                <MaterialIcons name="build" size={20} color={colors.primary} />
-                <View>
-                  <Text className="text-foreground font-medium">Macro Management</Text>
-                  <Text className="text-xs text-muted mt-1">Create and manage macros</Text>
+                  <Text className="text-foreground font-medium">Workspace Analytics</Text>
+                  <Text className="text-xs text-muted mt-1">Review real authorized MCP activity</Text>
                 </View>
               </View>
               <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
@@ -179,40 +121,16 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {/* Notifications Section */}
+        {/* Audit Records */}
         <View className="mb-8">
-          <Text className="text-lg font-semibold text-foreground mb-4">Notifications</Text>
-          <TouchableOpacity
-            onPress={() => router.push('/notification-settings' as any)}
-            className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
-          >
-            <View className="flex-row items-center gap-3">
-              <MaterialIcons name="notifications" size={20} color={colors.primary} />
-              <View>
-                <Text className="text-foreground font-medium">Notification Settings</Text>
-                <Text className="text-xs text-muted mt-1">Manage alert preferences</Text>
-              </View>
+          <Text className="text-lg font-semibold text-foreground mb-4">Audit Records</Text>
+          <View className="bg-surface rounded-xl p-4 border border-border flex-row items-start gap-3">
+            <MaterialIcons name="lock-outline" size={20} color={colors.primary} />
+            <View className="flex-1">
+              <Text className="text-foreground font-medium">Execution records are protected</Text>
+              <Text className="text-xs text-muted mt-1 leading-relaxed">Workspace activity is retained as an audit record. Deletion controls will appear only with a durable retention policy and explicit authorization model.</Text>
             </View>
-            <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Data Management */}
-        <View className="mb-8">
-          <Text className="text-lg font-semibold text-foreground mb-4">Data Management</Text>
-          <TouchableOpacity
-            onPress={handleClearHistory}
-            className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
-          >
-            <View className="flex-row items-center gap-3">
-              <MaterialIcons name="delete-outline" size={20} color={colors.error} />
-              <View>
-                <Text className="text-foreground font-medium">Clear History</Text>
-                <Text className="text-xs text-muted mt-1">Delete all execution history</Text>
-              </View>
-            </View>
-            <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
-          </TouchableOpacity>
+          </View>
         </View>
 
         {/* Onboarding Section */}
