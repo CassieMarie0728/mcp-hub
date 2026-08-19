@@ -173,6 +173,13 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Replace app icon family and web banner surfaces with the supplied MCP Hub imagery
 - [x] Verify native/web asset references, visual fit, and save a branded checkpoint
 
+## Cohesive MCP Core Visual System
+
+- [x] Audit onboarding illustration, social metadata, and reusable loading surfaces
+- [x] Create MCP-core onboarding and social-share artwork from the approved industrial-red brand language
+- [x] Replace onboarding imagery and add a restrained red-reactor loading state
+- [x] Update social metadata and validate native/web visual integration before checkpointing
+
 ## Authorized Assistant and Durable Lifecycle Foundations — Superseded Initial Plan
 
 - [x] Map current conversational assistant, secure runtime, OAuth, webhook, and workflow boundaries
