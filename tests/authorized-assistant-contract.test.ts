@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 const project = process.cwd();
 const schema = readFileSync(resolve(project, "drizzle/schema.ts"), "utf8");
 const repository = readFileSync(resolve(project, "server/assistant/assistant-repository.ts"), "utf8");
-const provider = readFileSync(resolve(project, "server/assistant/openrouter-free-provider.ts"), "utf8");
+const provider = readFileSync(resolve(project, "server/assistant/assistant-provider-client.ts"), "utf8");
 const router = readFileSync(resolve(project, "server/assistant/assistant-router.ts"), "utf8");
 const modal = readFileSync(resolve(project, "components/ai-chat-modal.tsx"), "utf8");
 
@@ -25,8 +25,10 @@ describe("authorized user-supplied assistant contract", () => {
     expect(repository).not.toContain("apiKey: row");
   });
 
-  it("keeps the provider endpoint fixed and tool execution behind a one-time approval", () => {
+  it("keeps provider endpoints fixed and tool execution behind a one-time approval", () => {
     expect(provider).toContain('const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"');
+    expect(provider).toContain('const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"');
+    expect(provider).toContain('const MISTRAL_URL = "https://api.mistral.ai/v1/chat/completions"');
     expect(provider).not.toContain("baseUrl");
     expect(router).toContain("createAssistantToolProposal");
     expect(router).toContain("consumeAssistantToolProposal");

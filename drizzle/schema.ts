@@ -127,7 +127,7 @@ export const assistantProviderConfigs = mysqlTable(
     workspaceId: varchar("workspaceId", { length: 64 })
       .notNull()
       .references(() => workspaces.id, { onDelete: "cascade" }),
-    provider: mysqlEnum("provider", ["openrouter"]).notNull(),
+    provider: mysqlEnum("provider", ["openrouter", "gemini", "groq", "mistral"]).notNull(),
     model: varchar("model", { length: 160 }).notNull(),
     encryptedPayload: text("encryptedPayload").notNull(),
     keyVersion: varchar("keyVersion", { length: 32 }).default("v1").notNull(),
@@ -135,7 +135,7 @@ export const assistantProviderConfigs = mysqlTable(
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
   (table) => [
-    uniqueIndex("assistant_provider_configs_workspace_unique").on(table.workspaceId),
+    uniqueIndex("assistant_provider_configs_workspace_provider_unique").on(table.workspaceId, table.provider),
   ],
 );
 

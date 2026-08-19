@@ -11,7 +11,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useColors } from '@/hooks/use-colors';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from 'react';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { useOnboarding } from '@/lib/onboarding-context';
 
 export default function SettingsScreen() {
@@ -50,6 +50,24 @@ export default function SettingsScreen() {
               thumbColor={colors.background}
             />
           </View>
+        </View>
+
+        {/* Assistant Providers */}
+        <View className="mb-8">
+          <Text className="text-lg font-semibold text-foreground mb-4">Assistant Providers</Text>
+          <TouchableOpacity
+            onPress={() => router.push('/assistant-providers' as Href)}
+            className="bg-surface rounded-xl p-4 border border-border flex-row items-center justify-between active:opacity-70"
+          >
+            <View className="flex-row items-center gap-3 flex-1">
+              <MaterialIcons name="vpn-key" size={20} color={colors.primary} />
+              <View className="flex-1">
+                <Text className="text-foreground font-medium">Encrypted Provider Keys</Text>
+                <Text className="text-xs text-muted mt-1">Manage OpenRouter, Gemini, Groq, and Mistral keys</Text>
+              </View>
+            </View>
+            <MaterialIcons name="chevron-right" size={20} color={colors.muted} />
+          </TouchableOpacity>
         </View>
 
         {/* Execution Settings */}

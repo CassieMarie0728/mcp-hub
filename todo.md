@@ -139,6 +139,15 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Add security, tenancy, lifecycle, and mobile-flow regression coverage
 - [x] Run complete release validation and save a phone-test-ready checkpoint
 
+## Multi-Provider BYOK Assistant Expansion
+
+- [x] Verify provider-specific free-tier model rules and rate-limit behavior for Gemini, Groq, and Mistral
+- [x] Extend encrypted tenant-scoped provider configuration to OpenRouter, Gemini, Groq, and Mistral
+- [x] Implement fixed-endpoint provider adapters and classified user-safe rate-limit errors
+- [x] Add secure provider API-key management in settings and provider selection in the assistant
+- [x] Add multi-provider, free-tier, rate-limit, and secret-exposure regression coverage
+- [x] Run full validation and save a phone-test-ready checkpoint
+
 ## Authorized Assistant and Durable Lifecycle Foundations — Superseded Initial Plan
 
 - [x] Map current conversational assistant, secure runtime, OAuth, webhook, and workflow boundaries

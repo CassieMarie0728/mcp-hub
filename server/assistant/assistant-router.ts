@@ -8,12 +8,14 @@ import {
   consumeAssistantToolProposal,
   createAssistantToolProposal,
   getAuthorizedAssistantProvider,
+  listPublicAssistantProviderConfigs,
   getPublicAssistantProviderConfig,
   rejectAssistantToolProposal,
   removeAssistantProviderConfig,
   saveAssistantProviderConfig,
 } from "./assistant-repository";
-import { askConfiguredFreeProvider } from "./openrouter-free-provider";
+import { askConfiguredAssistantProvider } from "./assistant-provider-client";
+import { ASSISTANT_PROVIDERS, type AssistantProviderId } from "./assistant-repository";
 
 const conversationSchema = z.object({
   messages: z.array(z.object({
@@ -21,6 +23,7 @@ const conversationSchema = z.object({
     content: z.string().trim().min(1).max(8_000),
   })).min(1).max(24),
   serverId: z.string().uuid().optional(),
+  provider: z.enum(ASSISTANT_PROVIDERS),
 });
 
 async function workspaceFor(ctx: { user: { id: number } | null }) {
@@ -33,12 +36,16 @@ function unavailable(message: string): never {
 }
 
 export const assistantRouter = router({
+  listProviderConfigurations: protectedProcedure.query(async ({ ctx }) =>
+    listPublicAssistantProviderConfigs(await workspaceFor(ctx)),
+  ),
+
   getProviderConfiguration: protectedProcedure.query(async ({ ctx }) =>
     getPublicAssistantProviderConfig(await workspaceFor(ctx)),
   ),
 
   saveProviderConfiguration: protectedProcedure.input(z.object({
-    provider: z.literal("openrouter"),
+    provider: z.enum(ASSISTANT_PROVIDERS),
     model: z.string().trim().min(4).max(160),
     apiKey: z.string().min(8).max(4_096),
   })).mutation(async ({ ctx, input }) => {
@@ -49,14 +56,14 @@ export const assistantRouter = router({
     }
   }),
 
-  removeProviderConfiguration: protectedProcedure.mutation(async ({ ctx }) => {
-    await removeAssistantProviderConfig(await workspaceFor(ctx));
+  removeProviderConfiguration: protectedProcedure.input(z.object({ provider: z.enum(ASSISTANT_PROVIDERS) })).mutation(async ({ ctx, input }) => {
+    await removeAssistantProviderConfig(await workspaceFor(ctx), input.provider);
     return { success: true };
   }),
 
   converse: protectedProcedure.input(conversationSchema).mutation(async ({ ctx, input }) => {
     const access = await workspaceFor(ctx);
-    const provider = await getAuthorizedAssistantProvider(access);
+    const provider = await getAuthorizedAssistantProvider(access, input.provider);
     if (!provider) unavailable("Configure your own assistant provider key before starting a conversation");
 
     let tools: Awaited<ReturnType<typeof discoverAuthorizedMcpTools>> = [];
@@ -68,7 +75,7 @@ export const assistantRouter = router({
     }
 
     try {
-      const response = await askConfiguredFreeProvider(provider, input.messages, tools);
+      const response = await askConfiguredAssistantProvider(provider, input.messages, tools);
       if (!response.toolCall) return { response: response.text, proposal: null };
       if (!input.serverId) unavailable("Select one of your connected servers before proposing a tool action");
       if (!tools.some((tool) => tool.name === response.toolCall?.name)) {
