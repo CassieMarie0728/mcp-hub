@@ -166,6 +166,13 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Add regression coverage for no-paid-fallback, retry expiry, tenant isolation, and tool-approval preservation
 - [x] Run full validation and save a phone-test-ready checkpoint
 
+## Industrial Red Brand Refresh
+
+- [x] Audit current icon, splash, landing, and marketing asset references
+- [x] Create a native-compatible MCP Hub splash screen from the supplied brand art
+- [x] Replace app icon family and web banner surfaces with the supplied MCP Hub imagery
+- [x] Verify native/web asset references, visual fit, and save a branded checkpoint
+
 ## Authorized Assistant and Durable Lifecycle Foundations — Superseded Initial Plan
 
 - [x] Map current conversational assistant, secure runtime, OAuth, webhook, and workflow boundaries
