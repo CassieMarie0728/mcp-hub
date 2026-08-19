@@ -6,9 +6,12 @@ import { discoverAuthorizedMcpTools, executeAuthorizedMcpTool, getAuthorizedMcpS
 import { getOrCreatePersonalWorkspaceAccess } from "../security/workspace-access";
 import {
   consumeAssistantToolProposal,
+  consumeAssistantRetryRequest,
   createAssistantToolProposal,
+  createAssistantRetryRequest,
   getAuthorizedAssistantProvider,
   getPublicAssistantProviderConfig,
+  listAuthorizedFallbackProviders,
   listAssistantProviderHealth,
   listProviderAlertPreferences,
   listPublicAssistantProviderConfigs,
@@ -16,9 +19,10 @@ import {
   removeAssistantProviderConfig,
   saveAssistantProviderHealth,
   saveAssistantProviderConfig,
+  setAssistantProviderFallback,
   setProviderAlertPreference,
 } from "./assistant-repository";
-import { askConfiguredAssistantProvider } from "./assistant-provider-client";
+import { AssistantProviderLimitError, askConfiguredAssistantProvider } from "./assistant-provider-client";
 import { ASSISTANT_PROVIDERS, type AssistantProviderId } from "./assistant-repository";
 import { testAssistantProviderKey } from "./provider-health-client";
 
@@ -38,6 +42,53 @@ async function workspaceFor(ctx: { user: { id: number } | null }) {
 
 function unavailable(message: string): never {
   throw new TRPCError({ code: "PRECONDITION_FAILED", message });
+}
+
+type ConversationInput = z.infer<typeof conversationSchema>;
+type AssistantConversationResult = { response: string; proposal: (Awaited<ReturnType<typeof createAssistantToolProposal>> & { serverName?: string }) | null; providerUsed: AssistantProviderId; fallbackFrom?: AssistantProviderId; retryRequest: { id: string; expiresAt: Date; retryAt?: Date } | null };
+
+async function runAssistantConversation(access: Awaited<ReturnType<typeof getOrCreatePersonalWorkspaceAccess>>, input: ConversationInput): Promise<AssistantConversationResult> {
+  let tools: Awaited<ReturnType<typeof discoverAuthorizedMcpTools>> = [];
+  let serverName: string | undefined;
+  if (input.serverId) {
+    const server = await getAuthorizedMcpServer(access, input.serverId);
+    serverName = server.name;
+    tools = await discoverAuthorizedMcpTools(access, input.serverId);
+  }
+  const callProvider = async (provider: NonNullable<Awaited<ReturnType<typeof getAuthorizedAssistantProvider>>>) => {
+    const response = await askConfiguredAssistantProvider(provider, input.messages, tools);
+    if (!response.toolCall) return { response: response.text, proposal: null };
+    if (!input.serverId) unavailable("Select one of your connected servers before proposing a tool action");
+    if (!tools.some((tool) => tool.name === response.toolCall?.name)) unavailable("The assistant proposed a tool that is not available on the selected server");
+    const proposal = await createAssistantToolProposal(access, { serverId: input.serverId, toolName: response.toolCall.name, toolInput: response.toolCall.input });
+    return { response: response.text, proposal: { ...proposal, serverName } };
+  };
+  const primary = await getAuthorizedAssistantProvider(access, input.provider);
+  if (!primary) unavailable("Configure your own assistant provider key before starting a conversation");
+  try {
+    const result = await callProvider(primary);
+    return { ...result, providerUsed: primary.provider, retryRequest: null };
+  } catch (error) {
+    if (!(error instanceof AssistantProviderLimitError)) throw error;
+    const rateLimits = [error];
+    for (const fallback of await listAuthorizedFallbackProviders(access, primary.provider)) {
+      try {
+        const result = await callProvider(fallback);
+        return { ...result, providerUsed: fallback.provider, fallbackFrom: primary.provider, retryRequest: null };
+      } catch (fallbackError) {
+        if (fallbackError instanceof AssistantProviderLimitError) { rateLimits.push(fallbackError); continue; }
+        throw fallbackError;
+      }
+    }
+    const retry = await createAssistantRetryRequest(access, { sourceProvider: primary.provider, serverId: input.serverId, messages: input.messages });
+    const retrySeconds = rateLimits.map((limit) => limit.retryAfterSeconds).filter((value): value is number => Boolean(value)).sort((a, b) => a - b)[0];
+    return {
+      response: "Every fallback provider you explicitly enabled is rate limited right now. No paid provider was touched. Tap the reset notification to retry this conversation when a real reset window is available.",
+      proposal: null,
+      providerUsed: primary.provider,
+      retryRequest: { id: retry.id, expiresAt: retry.expiresAt, retryAt: retrySeconds ? new Date(Date.now() + retrySeconds * 1_000) : undefined },
+    };
+  }
 }
 
 export const assistantRouter = router({
@@ -88,6 +139,18 @@ export const assistantRouter = router({
     return setProviderAlertPreference(access, input.provider, input.enabled);
   }),
 
+  setProviderFallback: protectedProcedure.input(z.object({
+    provider: z.enum(ASSISTANT_PROVIDERS),
+    enabled: z.boolean(),
+    priority: z.number().int().min(1).max(100),
+  })).mutation(async ({ ctx, input }) => {
+    try {
+      return await setAssistantProviderFallback(await workspaceFor(ctx), input);
+    } catch (error) {
+      unavailable(error instanceof Error ? error.message : "Provider fallback preference could not be saved");
+    }
+  }),
+
   saveProviderConfiguration: protectedProcedure.input(z.object({
     provider: z.enum(ASSISTANT_PROVIDERS),
     model: z.string().trim().min(4).max(160),
@@ -107,32 +170,20 @@ export const assistantRouter = router({
 
   converse: protectedProcedure.input(conversationSchema).mutation(async ({ ctx, input }) => {
     const access = await workspaceFor(ctx);
-    const provider = await getAuthorizedAssistantProvider(access, input.provider);
-    if (!provider) unavailable("Configure your own assistant provider key before starting a conversation");
-
-    let tools: Awaited<ReturnType<typeof discoverAuthorizedMcpTools>> = [];
-    let serverName: string | undefined;
-    if (input.serverId) {
-      const server = await getAuthorizedMcpServer(access, input.serverId);
-      serverName = server.name;
-      tools = await discoverAuthorizedMcpTools(access, input.serverId);
-    }
-
     try {
-      const response = await askConfiguredAssistantProvider(provider, input.messages, tools);
-      if (!response.toolCall) return { response: response.text, proposal: null };
-      if (!input.serverId) unavailable("Select one of your connected servers before proposing a tool action");
-      if (!tools.some((tool) => tool.name === response.toolCall?.name)) {
-        unavailable("The assistant proposed a tool that is not available on the selected server");
-      }
-      const proposal = await createAssistantToolProposal(access, {
-        serverId: input.serverId,
-        toolName: response.toolCall.name,
-        toolInput: response.toolCall.input,
-      });
-      return { response: response.text, proposal: { ...proposal, serverName } };
+      return await runAssistantConversation(access, input);
     } catch (error) {
       unavailable(error instanceof Error ? error.message : "The configured assistant provider is unavailable");
+    }
+  }),
+
+  retryConversation: protectedProcedure.input(z.object({ retryRequestId: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+    const access = await workspaceFor(ctx);
+    try {
+      const retry = await consumeAssistantRetryRequest(access, input.retryRequestId);
+      return await runAssistantConversation(access, { provider: retry.sourceProvider, serverId: retry.serverId, messages: retry.messages });
+    } catch (error) {
+      unavailable(error instanceof Error ? error.message : "The saved assistant retry is unavailable");
     }
   }),
 

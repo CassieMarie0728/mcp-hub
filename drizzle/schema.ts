@@ -132,6 +132,8 @@ export const assistantProviderConfigs = mysqlTable(
     model: varchar("model", { length: 160 }).notNull(),
     encryptedPayload: text("encryptedPayload").notNull(),
     keyVersion: varchar("keyVersion", { length: 32 }).default("v1").notNull(),
+    fallbackEnabled: boolean("fallbackEnabled").default(false).notNull(),
+    fallbackPriority: int("fallbackPriority").default(100).notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
@@ -177,6 +179,27 @@ export const assistantProviderAlertPreferences = mysqlTable(
   },
   (table) => [
     uniqueIndex("assistant_provider_alert_preferences_workspace_provider_unique").on(table.workspaceId, table.provider),
+  ],
+);
+
+/** A short-lived encrypted assistant request restored only after an explicit notification retry. */
+export const assistantRetryRequests = mysqlTable(
+  "hub_assistant_retry_requests",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    workspaceId: varchar("workspaceId", { length: 64 })
+      .notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    sourceProvider: mysqlEnum("sourceProvider", ["openrouter", "gemini", "groq", "mistral"]).notNull(),
+    serverId: varchar("serverId", { length: 64 }),
+    encryptedPayload: text("encryptedPayload").notNull(),
+    status: mysqlEnum("status", ["pending", "consumed", "expired"]).default("pending").notNull(),
+    expiresAt: timestamp("expiresAt").notNull(),
+    consumedAt: timestamp("consumedAt"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => [
+    index("assistant_retry_requests_workspace_status_idx").on(table.workspaceId, table.status, table.expiresAt),
   ],
 );
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
+import { scheduleProviderResetAlert } from "@/lib/provider-reset-alerts";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +10,7 @@ type AssistantProviderId = "openrouter" | "gemini" | "groq" | "mistral";
 type AssistantContext = { currentScreen?: string; workflowData?: Record<string, unknown>; recentActions?: string[] };
 type ToolProposal = { id: string; serverId: string; serverName?: string; toolName: string; input: Record<string, unknown>; expiresAt: Date };
 type Message = { id: string; role: "user" | "assistant"; content: string; timestamp: number; proposal?: ToolProposal | null };
-interface AIChatModalProps { visible: boolean; onClose: () => void; context?: AssistantContext }
+interface AIChatModalProps { visible: boolean; onClose: () => void; context?: AssistantContext; retryRequestId?: string | null; onRetryHandled?: () => void }
 
 const PROVIDERS: Record<AssistantProviderId, { label: string; model: string; note: string }> = {
   openrouter: { label: "OpenRouter", model: "meta-llama/llama-3.3-70b-instruct:free", note: "Only a model ending in :free is accepted. No paid fallback. Ever." },
@@ -19,22 +20,39 @@ const PROVIDERS: Record<AssistantProviderId, { label: string; model: string; not
 };
 function errorMessage(error: unknown, fallback: string) { return error && typeof error === "object" && "message" in error && typeof error.message === "string" ? error.message : fallback; }
 
-export function AIChatModal({ visible, onClose }: AIChatModalProps) {
+export function AIChatModal({ visible, onClose, retryRequestId, onRetryHandled }: AIChatModalProps) {
   const colors = useColors(); const utils = trpc.useUtils();
   const { data: providerConfigs = [], isLoading: loadingProviders } = trpc.assistant.listProviderConfigurations.useQuery(undefined, { enabled: visible });
+  const { data: alertPreferences = [] } = trpc.assistant.listProviderAlertPreferences.useQuery(undefined, { enabled: visible });
   const [selectedProvider, setSelectedProvider] = useState<AssistantProviderId>("openrouter");
   const providerConfig = providerConfigs.find((config) => config.provider === selectedProvider);
   const { data: servers = [] } = trpc.mcp.getAllServers.useQuery(undefined, { enabled: visible && Boolean(providerConfig) });
   const saveProvider = trpc.assistant.saveProviderConfiguration.useMutation({ onSuccess: () => utils.assistant.listProviderConfigurations.invalidate() });
   const removeProvider = trpc.assistant.removeProviderConfiguration.useMutation({ onSuccess: () => utils.assistant.listProviderConfigurations.invalidate() });
-  const converse = trpc.assistant.converse.useMutation(); const decideProposal = trpc.assistant.decideToolProposal.useMutation();
+  const converse = trpc.assistant.converse.useMutation(); const retryConversation = trpc.assistant.retryConversation.useMutation(); const decideProposal = trpc.assistant.decideToolProposal.useMutation();
   const [messages, setMessages] = useState<Message[]>([]); const [input, setInput] = useState(""); const [apiKey, setApiKey] = useState(""); const [model, setModel] = useState(PROVIDERS.openrouter.model); const [selectedServerId, setSelectedServerId] = useState<string | undefined>(); const [error, setError] = useState<string | null>(null); const scrollViewRef = useRef<ScrollView>(null);
   useEffect(() => { if (visible && messages.length === 0) setMessages([{ id: "greeting", role: "assistant", content: "I can explain your MCP workspace and prepare a tool action for your approval. I do not execute anything until you say yes.", timestamp: Date.now() }]); }, [visible, messages.length]);
   useEffect(() => { setModel(PROVIDERS[selectedProvider].model); setApiKey(""); setError(null); }, [selectedProvider]);
   useEffect(() => { scrollViewRef.current?.scrollToEnd({ animated: true }); }, [messages]);
-  const selectedServer = servers.find((server) => server.id === selectedServerId); const loading = saveProvider.isPending || removeProvider.isPending || converse.isPending || decideProposal.isPending;
+  const selectedServer = servers.find((server) => server.id === selectedServerId); const loading = saveProvider.isPending || removeProvider.isPending || converse.isPending || retryConversation.isPending || decideProposal.isPending;
+  useEffect(() => {
+    if (!visible || !retryRequestId || retryConversation.isPending) return;
+    const retrySavedConversation = async () => {
+      setError(null);
+      try {
+        const response = await retryConversation.mutateAsync({ retryRequestId });
+        setSelectedProvider(response.providerUsed);
+        setMessages((current) => [...current, { id: `retry-${Date.now()}`, role: "assistant", content: `${response.fallbackFrom ? `Fallback from ${PROVIDERS[response.fallbackFrom].label} to ${PROVIDERS[response.providerUsed].label} succeeded. ` : "Retry succeeded. "}${response.response}`, timestamp: Date.now(), proposal: response.proposal }]);
+      } catch (reason) {
+        setError(errorMessage(reason, "That saved retry could not be resumed. No tool action was started."));
+      } finally {
+        onRetryHandled?.();
+      }
+    };
+    void retrySavedConversation();
+  }, [visible, retryRequestId, retryConversation, onRetryHandled]);
   const handleSaveProvider = async () => { setError(null); try { await saveProvider.mutateAsync({ provider: selectedProvider, model, apiKey }); setApiKey(""); } catch (reason) { setError(errorMessage(reason, "Your provider configuration could not be saved.")); } };
-  const handleSendMessage = async () => { const content = input.trim(); if (!content || !providerConfig) return; const userMessage: Message = { id: `user-${Date.now()}`, role: "user", content, timestamp: Date.now() }; setMessages((current) => [...current, userMessage]); setInput(""); setError(null); try { const history = [...messages, userMessage].filter((message) => message.id !== "greeting").map(({ role, content: messageContent }) => ({ role, content: messageContent })); const response = await converse.mutateAsync({ provider: selectedProvider, messages: history, serverId: selectedServerId }); setMessages((current) => [...current, { id: `assistant-${Date.now()}`, role: "assistant", content: response.response, timestamp: Date.now(), proposal: response.proposal }]); } catch (reason) { setError(errorMessage(reason, "The assistant could not respond. Check your configured provider and try again.")); } };
+  const handleSendMessage = async () => { const content = input.trim(); if (!content || !providerConfig) return; const userMessage: Message = { id: `user-${Date.now()}`, role: "user", content, timestamp: Date.now() }; setMessages((current) => [...current, userMessage]); setInput(""); setError(null); try { const history = [...messages, userMessage].filter((message) => message.id !== "greeting").map(({ role, content: messageContent }) => ({ role, content: messageContent })); const response = await converse.mutateAsync({ provider: selectedProvider, messages: history, serverId: selectedServerId }); let responseText = response.response; if (response.fallbackFrom) { responseText = `${PROVIDERS[response.fallbackFrom].label} hit its limit, so MCP Hub continued with your enabled ${PROVIDERS[response.providerUsed].label} fallback. No paid provider was touched.\n\n${responseText}`; setSelectedProvider(response.providerUsed); } if (response.retryRequest?.retryAt && alertPreferences.some((preference) => preference.provider === selectedProvider && preference.resetAlertEnabled)) { const scheduled = await scheduleProviderResetAlert(selectedProvider, new Date(response.retryRequest.retryAt), response.retryRequest.id); responseText = `${responseText}\n\n${scheduled.message}`; } setMessages((current) => [...current, { id: `assistant-${Date.now()}`, role: "assistant", content: responseText, timestamp: Date.now(), proposal: response.proposal }]); } catch (reason) { setError(errorMessage(reason, "The assistant could not respond. Check your configured provider and try again.")); } };
   const handleProposalDecision = async (proposal: ToolProposal, approved: boolean) => { setError(null); try { const result = await decideProposal.mutateAsync({ proposalId: proposal.id, approved }); setMessages((current) => current.map((message) => message.proposal?.id === proposal.id ? { ...message, proposal: null, content: `${message.content}\n\n${result.message}.` } : message)); } catch (reason) { setError(errorMessage(reason, "That approval could not be completed. No additional tool action was started.")); } };
   const providerPicker = <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>{(Object.keys(PROVIDERS) as AssistantProviderId[]).map((provider) => <TouchableOpacity key={provider} onPress={() => setSelectedProvider(provider)} disabled={loading} className={cn("rounded-full border px-3 py-2", selectedProvider === provider ? "bg-primary border-primary" : "bg-surface border-border")}><Text className={cn("text-xs font-semibold", selectedProvider === provider ? "text-background" : "text-foreground")}>{PROVIDERS[provider].label}{providerConfigs.some((config) => config.provider === provider) ? " ✓" : ""}</Text></TouchableOpacity>)}</ScrollView>;
   const renderProviderSetup = () => <ScrollView className="flex-1 px-5 py-6" contentContainerStyle={{ gap: 16 }}><Text className="text-2xl font-bold text-foreground">Bring your own assistant key</Text><Text className="text-sm text-muted leading-relaxed">Your key is encrypted server-side and never returned to the phone. Choose the provider you actually control—no silent paid model, no mystery subscription, no sneaky bullshit.</Text>{providerPicker}<View className="bg-surface border border-border rounded-2xl p-4 gap-3"><Text className="text-sm font-semibold text-foreground">{PROVIDERS[selectedProvider].label} model</Text><TextInput value={model} onChangeText={setModel} editable={!loading} autoCapitalize="none" autoCorrect={false} className="bg-background text-foreground rounded-lg border border-border px-3 py-3" /><Text className="text-xs text-muted leading-relaxed">{PROVIDERS[selectedProvider].note}</Text><Text className="text-sm font-semibold text-foreground mt-2">Your {PROVIDERS[selectedProvider].label} API key</Text><TextInput value={apiKey} onChangeText={setApiKey} secureTextEntry editable={!loading} autoCapitalize="none" autoCorrect={false} placeholder="Paste your key" placeholderTextColor={colors.muted} className="bg-background text-foreground rounded-lg border border-border px-3 py-3" /><TouchableOpacity onPress={handleSaveProvider} disabled={loading || apiKey.trim().length < 8} className={cn("rounded-lg px-4 py-3 items-center", apiKey.trim().length >= 8 && !loading ? "bg-primary" : "bg-muted opacity-50")}><Text className="font-semibold text-background">Save encrypted {PROVIDERS[selectedProvider].label} key</Text></TouchableOpacity></View></ScrollView>;

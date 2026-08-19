@@ -157,6 +157,15 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Add regression coverage for secret safety, provider limit data, and reset notifications
 - [x] Run full validation and save a phone-test-ready checkpoint
 
+## Opt-In Provider Fallback and Notification Retry
+
+- [x] Define explicit fallback eligibility, ordering, and free/no-surprise safeguards
+- [x] Add tenant-scoped fallback preferences and short-lived retry request persistence
+- [x] Implement rate-limit-only fallback routing and protected retry retrieval
+- [x] Add fallback controls, fallback status, and notification-tap retry routing in the mobile UI
+- [x] Add regression coverage for no-paid-fallback, retry expiry, tenant isolation, and tool-approval preservation
+- [x] Run full validation and save a phone-test-ready checkpoint
+
 ## Authorized Assistant and Durable Lifecycle Foundations — Superseded Initial Plan
 
 - [x] Map current conversational assistant, secure runtime, OAuth, webhook, and workflow boundaries

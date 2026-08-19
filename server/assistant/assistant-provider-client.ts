@@ -19,7 +19,15 @@ export class AssistantProviderLimitError extends Error {
 function providerLabel(provider: AssistantProviderId) { return ({ openrouter: "OpenRouter", gemini: "Gemini", groq: "Groq", mistral: "Mistral" })[provider]; }
 function asRecord(value: unknown): Record<string, unknown> { if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Assistant provider returned invalid tool input"); return value as Record<string, unknown>; }
 function buildOpenAITools(tools: MCPTool[]) { return tools.map((tool) => ({ type: "function" as const, function: { name: tool.name, description: tool.description.slice(0, 1_000), parameters: tool.inputSchema } })); }
-function retryAfter(response: Response) { const value = Number(response.headers.get("retry-after")); return Number.isFinite(value) && value > 0 ? Math.ceil(value) : undefined; }
+function retryAfter(response: Response) {
+  const direct = Number(response.headers.get("retry-after"));
+  if (Number.isFinite(direct) && direct > 0) return Math.ceil(direct);
+  const reset = response.headers.get("x-ratelimit-reset-requests");
+  if (!reset) return undefined;
+  let total = 0; let matched = false;
+  for (const [, amount, unit] of reset.matchAll(/(\d+(?:\.\d+)?)\s*([hms])/gi)) { matched = true; total += Number(amount) * (unit.toLowerCase() === "h" ? 3_600 : unit.toLowerCase() === "m" ? 60 : 1); }
+  return matched && total > 0 ? Math.ceil(total) : undefined;
+}
 async function ensureSuccess(provider: AssistantProviderId, response: Response) { if (response.ok) return; if (response.status === 429) throw new AssistantProviderLimitError(provider, retryAfter(response)); if (response.status === 401 || response.status === 403) throw new Error(`${providerLabel(provider)} rejected this API key. Check the key and provider account permissions.`); throw new Error(`${providerLabel(provider)} is unavailable right now. The app did not try another provider behind your back.`); }
 function parseOpenAIResponse(payload: { choices?: Array<{ message?: { content?: string | null; tool_calls?: Array<{ function?: { name?: string; arguments?: string } }> } }> }): ProviderAssistantResponse { const message = payload.choices?.[0]?.message; if (!message) throw new Error("The configured assistant provider returned no response"); const call = message.tool_calls?.[0]?.function; if (!call?.name) return { text: message.content?.trim() || "I could not produce a response." }; let input: Record<string, unknown>; try { input = asRecord(JSON.parse(call.arguments ?? "{}")); } catch { throw new Error("The assistant proposed invalid tool input"); } return { text: message.content?.trim() || "I can prepare that action for your approval.", toolCall: { name: call.name, input } }; }
 async function askOpenAICompatible(provider: AssistantProviderId, url: string, apiKey: string, model: string, messages: AssistantMessage[], tools: MCPTool[], extraHeaders: Record<string, string> = {}) {

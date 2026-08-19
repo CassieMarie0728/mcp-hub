@@ -30,7 +30,7 @@ export async function cancelProviderResetAlert(provider: ProviderId) {
   await AsyncStorage.removeItem(storageKey(provider));
 }
 
-export async function scheduleProviderResetAlert(provider: ProviderId, resetAt: Date): Promise<{ scheduled: boolean; message: string }> {
+export async function scheduleProviderResetAlert(provider: ProviderId, resetAt: Date, retryRequestId?: string): Promise<{ scheduled: boolean; message: string }> {
   if (Platform.OS === "web") return { scheduled: false, message: "Reset alerts need the mobile app; browsers do not get a pretend notification button." };
   if (resetAt.getTime() <= Date.now()) return { scheduled: false, message: "That reset time already passed, so no stale notification was scheduled." };
   if (!await ensurePermission()) return { scheduled: false, message: "Notification permission is off, so the reset alert stayed respectfully quiet." };
@@ -38,8 +38,8 @@ export async function scheduleProviderResetAlert(provider: ProviderId, resetAt: 
   const identifier = await Notifications.scheduleNotificationAsync({
     content: {
       title: `${provider[0].toUpperCase()}${provider.slice(1)} limit reset`,
-      body: "The quota goblin says your provider may be ready again. Refresh usage before launching another prompt parade.",
-      data: { provider, url: "/assistant-providers" },
+      body: retryRequestId ? "Tap once to retry your saved assistant request. No tool action will run without your approval." : "The quota goblin says your provider may be ready again. Refresh usage before launching another prompt parade.",
+      data: { provider, url: "/", retryRequestId },
     },
     trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: resetAt, channelId: "provider-limits" },
   });

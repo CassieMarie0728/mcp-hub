@@ -1,12 +1,12 @@
-import { and, desc, eq, gt } from "drizzle-orm";
-
-import { assistantProviderAlertPreferences, assistantProviderConfigs, assistantProviderHealth, assistantToolProposals } from "../../drizzle/schema";
+import { and, asc, desc, eq, gt } from "drizzle-orm";
+import { assistantProviderAlertPreferences, assistantProviderConfigs, assistantProviderHealth, assistantRetryRequests, assistantToolProposals } from "../../drizzle/schema";
 import { getDb } from "../db";
 import { decryptMcpCredentials, encryptMcpCredentials } from "../security/mcp-credential-vault";
 import type { WorkspaceAccess } from "../security/workspace-access";
 
 export const ASSISTANT_PROVIDERS = ["openrouter", "gemini", "groq", "mistral"] as const;
 export type AssistantProviderId = (typeof ASSISTANT_PROVIDERS)[number];
+export const AUTO_FALLBACK_PROVIDERS = ["openrouter", "gemini", "groq"] as const;
 
 export const PROVIDER_MODEL_OPTIONS: Record<AssistantProviderId, readonly string[]> = {
   openrouter: ["meta-llama/llama-3.3-70b-instruct:free"],
@@ -17,11 +17,14 @@ export const PROVIDER_MODEL_OPTIONS: Record<AssistantProviderId, readonly string
 
 const FREE_MODEL_PATTERN = /^[a-z0-9][a-z0-9._/-]{0,150}:free$/i;
 type StoredProviderPayload = { apiKey: string };
+type StoredRetryPayload = { messages: Array<{ role: "user" | "assistant"; content: string }> };
 
 export type PublicAssistantProviderConfig = {
   provider: AssistantProviderId;
   model: string;
   keyConfigured: true;
+  fallbackEnabled: boolean;
+  fallbackPriority: number;
   configuredAt: Date;
 };
 
@@ -40,6 +43,13 @@ export type PublicAssistantProviderHealth = {
   checkedAt: Date;
 };
 export type PublicProviderAlertPreference = { provider: AssistantProviderId; resetAlertEnabled: boolean; updatedAt: Date };
+export type PublicAssistantRetryRequest = {
+  id: string;
+  sourceProvider: AssistantProviderId;
+  serverId: string | undefined;
+  messages: Array<{ role: "user" | "assistant"; content: string }>;
+  expiresAt: Date;
+};
 
 function requireDb<T>(db: T | null): T { if (!db) throw new Error("Durable assistant storage is not available"); return db; }
 function asProvider(value: string): AssistantProviderId {
@@ -65,8 +75,18 @@ function asStoredPayload(payload: Record<string, unknown>): StoredProviderPayloa
   if (typeof payload.apiKey !== "string" || payload.apiKey.trim().length < 8 || payload.apiKey.length > 4096) throw new Error("Stored assistant provider credentials are invalid");
   return { apiKey: payload.apiKey };
 }
+function asStoredRetryPayload(payload: Record<string, unknown>): StoredRetryPayload {
+  if (!Array.isArray(payload.messages) || payload.messages.length < 1 || payload.messages.length > 24) throw new Error("Stored assistant retry request is invalid");
+  const messages = payload.messages.map((message) => {
+    if (!message || typeof message !== "object" || Array.isArray(message)) throw new Error("Stored assistant retry request is invalid");
+    const typed = message as Record<string, unknown>;
+    if ((typed.role !== "user" && typed.role !== "assistant") || typeof typed.content !== "string" || typed.content.trim().length < 1 || typed.content.length > 8_000) throw new Error("Stored assistant retry request is invalid");
+    return { role: typed.role, content: typed.content } as { role: "user" | "assistant"; content: string };
+  });
+  return { messages };
+}
 function toPublicConfig(row: typeof assistantProviderConfigs.$inferSelect): PublicAssistantProviderConfig {
-  return { provider: asProvider(row.provider), model: row.model, keyConfigured: true, configuredAt: row.updatedAt };
+  return { provider: asProvider(row.provider), model: row.model, keyConfigured: true, fallbackEnabled: row.fallbackEnabled, fallbackPriority: row.fallbackPriority, configuredAt: row.updatedAt };
 }
 function parseProposalInput(inputJson: string): Record<string, unknown> {
   try { const input: unknown = JSON.parse(inputJson); if (!input || typeof input !== "object" || Array.isArray(input)) throw new Error("invalid"); return input as Record<string, unknown>; }
@@ -106,6 +126,40 @@ export async function getAuthorizedAssistantProvider(access: WorkspaceAccess, pr
   const rows = await db.select().from(assistantProviderConfigs).where(and(eq(assistantProviderConfigs.workspaceId, access.workspaceId), eq(assistantProviderConfigs.provider, provider))).limit(1);
   const row = rows[0]; if (!row) return null;
   return { ...toPublicConfig(row), apiKey: asStoredPayload(decryptMcpCredentials(row.encryptedPayload)).apiKey };
+}
+
+export async function listAuthorizedFallbackProviders(access: WorkspaceAccess, excludingProvider: AssistantProviderId): Promise<AuthorizedAssistantProvider[]> {
+  const db = requireDb(await getDb());
+  const rows = await db.select().from(assistantProviderConfigs).where(and(eq(assistantProviderConfigs.workspaceId, access.workspaceId), eq(assistantProviderConfigs.fallbackEnabled, true))).orderBy(asc(assistantProviderConfigs.fallbackPriority));
+  return rows.filter((row) => row.provider !== excludingProvider && (AUTO_FALLBACK_PROVIDERS as readonly string[]).includes(row.provider)).map((row) => ({ ...toPublicConfig(row), apiKey: asStoredPayload(decryptMcpCredentials(row.encryptedPayload)).apiKey }));
+}
+
+export async function setAssistantProviderFallback(access: WorkspaceAccess, input: { provider: AssistantProviderId; enabled: boolean; priority: number }): Promise<PublicAssistantProviderConfig> {
+  const db = requireDb(await getDb()); const provider = asProvider(input.provider);
+  if (!Number.isInteger(input.priority) || input.priority < 1 || input.priority > 100) throw new Error("Fallback priority must be between 1 and 100");
+  if (input.enabled && !(AUTO_FALLBACK_PROVIDERS as readonly string[]).includes(provider)) throw new Error("Mistral remains available for manual selection, but cannot be an automatic fallback because its billing cannot be guaranteed free");
+  const configured = await getAuthorizedAssistantProvider(access, provider);
+  if (!configured) throw new Error("Save this provider key before enabling it as a fallback");
+  await db.update(assistantProviderConfigs).set({ fallbackEnabled: input.enabled, fallbackPriority: input.priority }).where(and(eq(assistantProviderConfigs.workspaceId, access.workspaceId), eq(assistantProviderConfigs.provider, provider)));
+  const saved = await getPublicAssistantProviderConfig(access, provider);
+  if (!saved) throw new Error("Provider fallback preference could not be saved");
+  return saved;
+}
+
+export async function createAssistantRetryRequest(access: WorkspaceAccess, input: { sourceProvider: AssistantProviderId; serverId?: string; messages: Array<{ role: "user" | "assistant"; content: string }> }): Promise<PublicAssistantRetryRequest> {
+  const db = requireDb(await getDb()); const payload = asStoredRetryPayload({ messages: input.messages }); const encryptedPayload = encryptMcpCredentials(payload); const id = crypto.randomUUID(); const expiresAt = new Date(Date.now() + 30 * 60 * 1_000);
+  await db.insert(assistantRetryRequests).values({ id, workspaceId: access.workspaceId, sourceProvider: asProvider(input.sourceProvider), serverId: input.serverId, encryptedPayload, status: "pending", expiresAt });
+  return { id, sourceProvider: asProvider(input.sourceProvider), serverId: input.serverId, messages: payload.messages, expiresAt };
+}
+
+export async function consumeAssistantRetryRequest(access: WorkspaceAccess, retryRequestId: string): Promise<PublicAssistantRetryRequest> {
+  const db = requireDb(await getDb()); const now = new Date();
+  const rows = await db.select().from(assistantRetryRequests).where(and(eq(assistantRetryRequests.id, retryRequestId), eq(assistantRetryRequests.workspaceId, access.workspaceId), eq(assistantRetryRequests.status, "pending"), gt(assistantRetryRequests.expiresAt, now))).limit(1);
+  const request = rows[0]; if (!request) throw new Error("This assistant retry is unavailable or expired");
+  const update = await db.update(assistantRetryRequests).set({ status: "consumed", consumedAt: now }).where(and(eq(assistantRetryRequests.id, request.id), eq(assistantRetryRequests.workspaceId, access.workspaceId), eq(assistantRetryRequests.status, "pending")));
+  if (update[0].affectedRows !== 1) throw new Error("This assistant retry has already been used");
+  const payload = asStoredRetryPayload(decryptMcpCredentials(request.encryptedPayload));
+  return { id: request.id, sourceProvider: asProvider(request.sourceProvider), serverId: request.serverId ?? undefined, messages: payload.messages, expiresAt: request.expiresAt };
 }
 
 function toPublicHealth(row: typeof assistantProviderHealth.$inferSelect): PublicAssistantProviderHealth {
