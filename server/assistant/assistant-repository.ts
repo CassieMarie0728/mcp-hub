@@ -1,6 +1,6 @@
 import { and, desc, eq, gt } from "drizzle-orm";
 
-import { assistantProviderConfigs, assistantToolProposals } from "../../drizzle/schema";
+import { assistantProviderAlertPreferences, assistantProviderConfigs, assistantProviderHealth, assistantToolProposals } from "../../drizzle/schema";
 import { getDb } from "../db";
 import { decryptMcpCredentials, encryptMcpCredentials } from "../security/mcp-credential-vault";
 import type { WorkspaceAccess } from "../security/workspace-access";
@@ -27,6 +27,19 @@ export type PublicAssistantProviderConfig = {
 
 export type AuthorizedAssistantProvider = PublicAssistantProviderConfig & { apiKey: string };
 export type PublicToolProposal = { id: string; serverId: string; toolName: string; input: Record<string, unknown>; expiresAt: Date };
+export type ProviderHealthStatus = "valid" | "invalid" | "rate_limited" | "unavailable";
+export type ProviderHealthSource = "openrouter_key" | "response_headers" | "none";
+export type PublicAssistantProviderHealth = {
+  provider: AssistantProviderId;
+  status: ProviderHealthStatus;
+  remainingRequests: number | null;
+  remainingTokens: number | null;
+  remainingCredit: string | null;
+  resetAt: Date | null;
+  source: ProviderHealthSource;
+  checkedAt: Date;
+};
+export type PublicProviderAlertPreference = { provider: AssistantProviderId; resetAlertEnabled: boolean; updatedAt: Date };
 
 function requireDb<T>(db: T | null): T { if (!db) throw new Error("Durable assistant storage is not available"); return db; }
 function asProvider(value: string): AssistantProviderId {
@@ -93,6 +106,52 @@ export async function getAuthorizedAssistantProvider(access: WorkspaceAccess, pr
   const rows = await db.select().from(assistantProviderConfigs).where(and(eq(assistantProviderConfigs.workspaceId, access.workspaceId), eq(assistantProviderConfigs.provider, provider))).limit(1);
   const row = rows[0]; if (!row) return null;
   return { ...toPublicConfig(row), apiKey: asStoredPayload(decryptMcpCredentials(row.encryptedPayload)).apiKey };
+}
+
+function toPublicHealth(row: typeof assistantProviderHealth.$inferSelect): PublicAssistantProviderHealth {
+  return {
+    provider: asProvider(row.provider), status: row.status, remainingRequests: row.remainingRequests,
+    remainingTokens: row.remainingTokens, remainingCredit: row.remainingCredit, resetAt: row.resetAt,
+    source: row.source, checkedAt: row.checkedAt,
+  };
+}
+
+export async function listAssistantProviderHealth(access: WorkspaceAccess): Promise<PublicAssistantProviderHealth[]> {
+  const db = requireDb(await getDb());
+  const rows = await db.select().from(assistantProviderHealth).where(eq(assistantProviderHealth.workspaceId, access.workspaceId));
+  return rows.map(toPublicHealth);
+}
+
+export async function saveAssistantProviderHealth(access: WorkspaceAccess, input: Omit<PublicAssistantProviderHealth, "checkedAt">): Promise<PublicAssistantProviderHealth> {
+  const db = requireDb(await getDb());
+  const provider = asProvider(input.provider);
+  const existing = await db.select({ id: assistantProviderHealth.id }).from(assistantProviderHealth).where(and(eq(assistantProviderHealth.workspaceId, access.workspaceId), eq(assistantProviderHealth.provider, provider))).limit(1);
+  const values = {
+    status: input.status, remainingRequests: input.remainingRequests, remainingTokens: input.remainingTokens,
+    remainingCredit: input.remainingCredit, resetAt: input.resetAt, source: input.source, checkedAt: new Date(),
+  };
+  if (existing[0]) await db.update(assistantProviderHealth).set(values).where(and(eq(assistantProviderHealth.id, existing[0].id), eq(assistantProviderHealth.workspaceId, access.workspaceId), eq(assistantProviderHealth.provider, provider)));
+  else await db.insert(assistantProviderHealth).values({ id: crypto.randomUUID(), workspaceId: access.workspaceId, provider, ...values });
+  const saved = (await listAssistantProviderHealth(access)).find((health) => health.provider === provider);
+  if (!saved) throw new Error("Provider health could not be saved");
+  return saved;
+}
+
+export async function listProviderAlertPreferences(access: WorkspaceAccess): Promise<PublicProviderAlertPreference[]> {
+  const db = requireDb(await getDb());
+  const rows = await db.select().from(assistantProviderAlertPreferences).where(eq(assistantProviderAlertPreferences.workspaceId, access.workspaceId));
+  return rows.map((row) => ({ provider: asProvider(row.provider), resetAlertEnabled: row.resetAlertEnabled, updatedAt: row.updatedAt }));
+}
+
+export async function setProviderAlertPreference(access: WorkspaceAccess, providerValue: AssistantProviderId, resetAlertEnabled: boolean): Promise<PublicProviderAlertPreference> {
+  const db = requireDb(await getDb());
+  const provider = asProvider(providerValue);
+  const existing = await db.select({ id: assistantProviderAlertPreferences.id }).from(assistantProviderAlertPreferences).where(and(eq(assistantProviderAlertPreferences.workspaceId, access.workspaceId), eq(assistantProviderAlertPreferences.provider, provider))).limit(1);
+  if (existing[0]) await db.update(assistantProviderAlertPreferences).set({ resetAlertEnabled }).where(and(eq(assistantProviderAlertPreferences.id, existing[0].id), eq(assistantProviderAlertPreferences.workspaceId, access.workspaceId), eq(assistantProviderAlertPreferences.provider, provider)));
+  else await db.insert(assistantProviderAlertPreferences).values({ id: crypto.randomUUID(), workspaceId: access.workspaceId, provider, resetAlertEnabled });
+  const saved = (await listProviderAlertPreferences(access)).find((preference) => preference.provider === provider);
+  if (!saved) throw new Error("Provider alert preference could not be saved");
+  return saved;
 }
 
 export async function createAssistantToolProposal(access: WorkspaceAccess, input: { serverId: string; toolName: string; toolInput: Record<string, unknown> }): Promise<PublicToolProposal> {

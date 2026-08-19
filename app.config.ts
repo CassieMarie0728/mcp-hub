@@ -101,6 +101,7 @@ const config: ExpoConfig = {
     ],
     'expo-font',
     'expo-web-browser',
+    'expo-notifications',
     [
       'expo-splash-screen',
       {

@@ -148,6 +148,15 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Add multi-provider, free-tier, rate-limit, and secret-exposure regression coverage
 - [x] Run full validation and save a phone-test-ready checkpoint
 
+## Provider Health, Usage Limits, and Reset Alerts
+
+- [x] Verify official per-provider key-test, quota-header, and reset-time capabilities
+- [x] Add durable tenant-scoped provider health snapshots and opt-in reset-alert preferences
+- [x] Implement protected API-key testing and truthful supported usage-limit refreshes
+- [x] Add settings controls for key testing, health status, remaining-limit indicators, and opt-in alerts
+- [x] Add regression coverage for secret safety, provider limit data, and reset notifications
+- [x] Run full validation and save a phone-test-ready checkpoint
+
 ## Authorized Assistant and Durable Lifecycle Foundations — Superseded Initial Plan
 
 - [x] Map current conversational assistant, secure runtime, OAuth, webhook, and workflow boundaries

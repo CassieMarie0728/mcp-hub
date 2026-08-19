@@ -1,4 +1,5 @@
 import {
+  boolean,
   index,
   int,
   mysqlEnum,
@@ -136,6 +137,46 @@ export const assistantProviderConfigs = mysqlTable(
   },
   (table) => [
     uniqueIndex("assistant_provider_configs_workspace_provider_unique").on(table.workspaceId, table.provider),
+  ],
+);
+
+/** Safe provider-returned health metadata. Raw keys and response bodies are never stored here. */
+export const assistantProviderHealth = mysqlTable(
+  "hub_assistant_provider_health",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    workspaceId: varchar("workspaceId", { length: 64 })
+      .notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    provider: mysqlEnum("provider", ["openrouter", "gemini", "groq", "mistral"]).notNull(),
+    status: mysqlEnum("status", ["valid", "invalid", "rate_limited", "unavailable"]).notNull(),
+    remainingRequests: int("remainingRequests"),
+    remainingTokens: int("remainingTokens"),
+    remainingCredit: varchar("remainingCredit", { length: 64 }),
+    resetAt: timestamp("resetAt"),
+    source: mysqlEnum("source", ["openrouter_key", "response_headers", "none"]).default("none").notNull(),
+    checkedAt: timestamp("checkedAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("assistant_provider_health_workspace_provider_unique").on(table.workspaceId, table.provider),
+  ],
+);
+
+/** Server-side record of explicit opt-in. Device notification identifiers stay on the device. */
+export const assistantProviderAlertPreferences = mysqlTable(
+  "hub_assistant_provider_alert_preferences",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    workspaceId: varchar("workspaceId", { length: 64 })
+      .notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    provider: mysqlEnum("provider", ["openrouter", "gemini", "groq", "mistral"]).notNull(),
+    resetAlertEnabled: boolean("resetAlertEnabled").default(false).notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("assistant_provider_alert_preferences_workspace_provider_unique").on(table.workspaceId, table.provider),
   ],
 );
 

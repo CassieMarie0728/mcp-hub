@@ -8,14 +8,19 @@ import {
   consumeAssistantToolProposal,
   createAssistantToolProposal,
   getAuthorizedAssistantProvider,
-  listPublicAssistantProviderConfigs,
   getPublicAssistantProviderConfig,
+  listAssistantProviderHealth,
+  listProviderAlertPreferences,
+  listPublicAssistantProviderConfigs,
   rejectAssistantToolProposal,
   removeAssistantProviderConfig,
+  saveAssistantProviderHealth,
   saveAssistantProviderConfig,
+  setProviderAlertPreference,
 } from "./assistant-repository";
 import { askConfiguredAssistantProvider } from "./assistant-provider-client";
 import { ASSISTANT_PROVIDERS, type AssistantProviderId } from "./assistant-repository";
+import { testAssistantProviderKey } from "./provider-health-client";
 
 const conversationSchema = z.object({
   messages: z.array(z.object({
@@ -43,6 +48,45 @@ export const assistantRouter = router({
   getProviderConfiguration: protectedProcedure.query(async ({ ctx }) =>
     getPublicAssistantProviderConfig(await workspaceFor(ctx)),
   ),
+
+  listProviderHealth: protectedProcedure.query(async ({ ctx }) =>
+    listAssistantProviderHealth(await workspaceFor(ctx)),
+  ),
+
+  listProviderAlertPreferences: protectedProcedure.query(async ({ ctx }) =>
+    listProviderAlertPreferences(await workspaceFor(ctx)),
+  ),
+
+  testProviderKey: protectedProcedure.input(z.object({ provider: z.enum(ASSISTANT_PROVIDERS) })).mutation(async ({ ctx, input }) => {
+    const access = await workspaceFor(ctx);
+    const configured = await getAuthorizedAssistantProvider(access, input.provider);
+    if (!configured) unavailable(`Save a ${input.provider} key before testing it`);
+    try {
+      const result = await testAssistantProviderKey(configured);
+      const health = await saveAssistantProviderHealth(access, {
+        provider: result.provider,
+        status: result.status,
+        remainingRequests: result.remainingRequests,
+        remainingTokens: result.remainingTokens,
+        remainingCredit: result.remainingCredit,
+        resetAt: result.resetAt,
+        source: result.source,
+      });
+      return { health, message: result.message, canScheduleResetAlert: Boolean(result.resetAt) };
+    } catch {
+      unavailable("Provider key testing is temporarily unavailable. No alternate provider was tried.");
+    }
+  }),
+
+  setProviderResetAlert: protectedProcedure.input(z.object({
+    provider: z.enum(ASSISTANT_PROVIDERS),
+    enabled: z.boolean(),
+  })).mutation(async ({ ctx, input }) => {
+    const access = await workspaceFor(ctx);
+    const configured = await getAuthorizedAssistantProvider(access, input.provider);
+    if (!configured) unavailable("Save this provider key before enabling a reset alert");
+    return setProviderAlertPreference(access, input.provider, input.enabled);
+  }),
 
   saveProviderConfiguration: protectedProcedure.input(z.object({
     provider: z.enum(ASSISTANT_PROVIDERS),
