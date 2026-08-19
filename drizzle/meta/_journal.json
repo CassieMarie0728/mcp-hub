@@ -15,6 +15,27 @@
       "when": 1786476682751,
       "tag": "0001_illegal_ravenous",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1787127618143,
+      "tag": "0002_mysterious_meggan",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1787128289585,
+      "tag": "0003_cold_sentry",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1787128689334,
+      "tag": "0004_cooing_peter_parker",
+      "breakpoints": true
     }
   ]
 }

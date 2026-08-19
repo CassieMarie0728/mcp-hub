@@ -123,3 +123,28 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Re-audit dependencies, build output, Android readiness, CI, landing site, and operations documentation
 - [x] Remediate every verified in-sandbox finding and add regression coverage
 - [x] Run final full validation and publish an evidence-backed audit status update
+
+## Authorized Assistant and Durable Lifecycle Foundations
+
+- [x] Map the existing assistant, secure runtime, credential vault, OAuth, webhook, and workflow boundaries
+- [x] Reconcile live database schema drift before enabling any new tenant-scoped persistence
+- [x] Introduce an additive namespaced tenant persistence layer that leaves incompatible legacy tables untouched
+- [x] Design workspace-authorized conversational execution with explicit tool approval and encrypted user-supplied provider keys
+- [x] Ensure assistant UX and backend deny unselected-provider fallback and expose clear provider-configuration state
+- [x] Implement encrypted tenant-scoped provider-key lifecycle management for the assistant
+- [x] Implement the authorized conversational MCP assistant backend and mobile interface
+- [x] Design durable tenant-scoped OAuth connection, webhook subscription, and workflow data models
+- [x] Implement protected OAuth, webhook, and workflow lifecycle foundations
+- [x] Build truthful mobile interfaces for durable OAuth records, webhook configuration, and workflow drafts
+- [x] Add security, tenancy, lifecycle, and mobile-flow regression coverage
+- [x] Run complete release validation and save a phone-test-ready checkpoint
+
+## Authorized Assistant and Durable Lifecycle Foundations — Superseded Initial Plan
+
+- [x] Map current conversational assistant, secure runtime, OAuth, webhook, and workflow boundaries
+- [x] Design workspace-authorized conversational execution with explicit user intent and tool approval
+- [x] Implement the authorized conversational MCP assistant backend and mobile interface
+- [x] Design durable tenant-scoped OAuth connection, webhook subscription, and workflow data models
+- [x] Implement protected OAuth, webhook, and workflow lifecycle foundations
+- [x] Add security, tenancy, lifecycle, and mobile-flow regression coverage
+- [x] Run complete release validation and save a phone-test-ready checkpoint

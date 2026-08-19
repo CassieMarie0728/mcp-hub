@@ -1,105 +1,32 @@
 import { Express, Request, Response } from "express";
-import { z } from "zod";
-import { getAIAssistant } from "./ai-assistant.js";
+
 import { aiLimiter } from "./rate-limiter";
 import { sdk } from "./sdk.js";
 import { HttpError } from "../../shared/_core/errors.js";
 
-const aiRequestSchema = z.object({
-  messages: z.array(z.object({
-    role: z.enum(["user", "assistant"]),
-    content: z.string().trim().min(1).max(8_000),
-  })).min(1).max(32),
-  context: z.object({
-    currentScreen: z.string().trim().max(120).optional(),
-    recentActions: z.array(z.string().trim().min(1).max(240)).max(20).optional(),
-  }).optional(),
-});
-
-function parseAiRequest(body: unknown) {
-  const parsed = aiRequestSchema.safeParse(body);
-  if (!parsed.success) return null;
-  return parsed.data;
-}
-
-function respondToAiRouteError(err: unknown, res: Response, operation: "chat" | "stream") {
-  if (err instanceof HttpError) {
-    res.status(err.statusCode).json({ error: err.message });
+function respondToLegacyAiError(error: unknown, res: Response) {
+  if (error instanceof HttpError) {
+    res.status(error.statusCode).json({ error: error.message });
     return;
   }
-  console.error(`[ai-routes] ${operation} error:`, err);
   res.status(502).json({ error: "AI assistant is temporarily unavailable" });
 }
 
+/**
+ * Legacy direct HTTP AI routes are intentionally unavailable. The active
+ * assistant uses protected tRPC procedures, an encrypted user-selected
+ * provider configuration, and explicit tool approval records.
+ */
 export function setupAIRoutes(app: Express): void {
-  /**
-   * POST /api/ai/chat
-   * Get a non-streaming response from the AI assistant
-   */
-  app.post("/api/ai/chat", aiLimiter, async (req: Request, res: Response) => {
+  const unavailable = async (req: Request, res: Response) => {
     try {
-      // Authenticate user before processing request to prevent unauthorized OpenRouter API usage
       await sdk.authenticateRequest(req);
-
-      const input = parseAiRequest(req.body);
-      if (!input) {
-        res.status(400).json({ error: "Invalid AI assistant request" });
-        return;
-      }
-
-      const assistant = getAIAssistant();
-      const response = await assistant.getResponse(input.messages, input.context);
-
-      res.json({ response });
-    } catch (err) {
-      respondToAiRouteError(err, res, "chat");
+      res.status(410).json({ error: "Configure your own assistant provider in MCP Hub before starting a conversation" });
+    } catch (error) {
+      respondToLegacyAiError(error, res);
     }
-  });
+  };
 
-  /**
-   * POST /api/ai/stream
-   * Stream a response from the AI assistant
-   */
-  app.post("/api/ai/stream", aiLimiter, async (req: Request, res: Response) => {
-    try {
-      // Authenticate user before processing request to prevent unauthorized OpenRouter API usage
-      await sdk.authenticateRequest(req);
-
-      const input = parseAiRequest(req.body);
-      if (!input) {
-        res.status(400).json({ error: "Invalid AI assistant request" });
-        return;
-      }
-
-      const assistant = getAIAssistant();
-      const controller = new AbortController();
-      const abortStream = () => {
-        controller.abort();
-        stream.destroy();
-      };
-      const stream = await assistant.streamChat(input.messages, input.context, controller.signal);
-
-      res.setHeader("Content-Type", "text/event-stream");
-      res.setHeader("Cache-Control", "no-cache");
-      res.setHeader("Connection", "keep-alive");
-
-      stream.pipe(res);
-
-      req.once("aborted", abortStream);
-      res.once("close", abortStream);
-
-      stream.on("error", (err) => {
-        console.error("[ai-routes] Stream error:", err);
-        if (!res.headersSent) {
-          res.status(502).json({ error: "AI assistant stream failed" });
-        } else {
-          res.end();
-        }
-      });
-    } catch (err) {
-      respondToAiRouteError(err, res, "stream");
-    }
-  });
-
-  console.log("[ai-routes] AI Assistant routes configured");
+  app.post("/api/ai/chat", aiLimiter, unavailable);
+  app.post("/api/ai/stream", aiLimiter, unavailable);
 }

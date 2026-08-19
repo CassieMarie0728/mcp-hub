@@ -1,59 +1,62 @@
-import { ScrollView, Text, View } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useState } from "react";
+import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-import { ScreenContainer } from '@/components/screen-container';
-import { useColors } from '@/hooks/use-colors';
-
-const WORKFLOW_REQUIREMENTS = [
-  'Workspace-scoped workflow definitions and ownership checks',
-  'Durable steps, schedules, execution states, and retry semantics',
-  'Tenant-safe tool resolution at execution time',
-  'Audit records that make failed or destructive runs explainable',
-];
+import { ScreenContainer } from "@/components/screen-container";
+import { useColors } from "@/hooks/use-colors";
+import { trpc } from "@/lib/trpc";
+import { cn } from "@/lib/utils";
 
 export default function WorkflowTemplatesScreen() {
   const colors = useColors();
+  const utils = trpc.useUtils();
+  const { data: drafts = [], isLoading } = trpc.workflows.list.useQuery();
+  const create = trpc.workflows.create.useMutation({ onSuccess: () => utils.workflows.list.invalidate() });
+  const save = trpc.workflows.save.useMutation({ onSuccess: () => utils.workflows.list.invalidate() });
+  const remove = trpc.workflows.delete.useMutation({ onSuccess: () => utils.workflows.list.invalidate() });
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const busy = create.isPending || save.isPending || remove.isPending;
+
+  const createDraft = async () => {
+    if (!name.trim()) return;
+    setError(null);
+    try {
+      await create.mutateAsync({ name: name.trim(), description: description.trim() || undefined, definition: { version: 1, steps: [] } });
+      setName("");
+      setDescription("");
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "The workflow draft could not be saved."); }
+  };
+
+  const saveDraft = async (workflowId: string) => {
+    if (!name.trim()) return;
+    setError(null);
+    try {
+      await save.mutateAsync({ workflowId, name: name.trim(), description: description.trim() || undefined });
+      setEditingId(null);
+      setName("");
+      setDescription("");
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "The workflow draft could not be updated."); }
+  };
+
+  const editDraft = (draft: (typeof drafts)[number]) => {
+    setEditingId(draft.id);
+    setName(draft.name);
+    setDescription(draft.description ?? "");
+    setError(null);
+  };
+
+  const cancelEdit = () => { setEditingId(null); setName(""); setDescription(""); };
 
   return (
     <ScreenContainer className="p-0">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="bg-primary px-6 py-8">
-          <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">WORKFLOW GATE</Text>
-          <Text className="text-4xl font-bold text-background mb-2">Templates Are Parked On Purpose</Text>
-          <Text className="text-base text-background/90 leading-relaxed">
-            A workflow template is a promise to run real work. Until that promise has durable tenant boundaries and execution records behind it, this page does not get to cosplay as a marketplace.
-          </Text>
-        </View>
-
-        <View className="flex-1 px-6 py-8 gap-6">
-          <View className="bg-surface rounded-2xl border border-border p-6 items-center">
-            <View className="w-14 h-14 rounded-full bg-warning/15 items-center justify-center mb-4">
-              <MaterialIcons name="playlist-add-check" size={30} color={colors.warning} />
-            </View>
-            <Text className="text-xl font-bold text-foreground text-center mb-2">No fake templates. No pretend clones.</Text>
-            <Text className="text-sm text-muted text-center leading-relaxed">
-              Workflow storage and orchestration are deliberately fail-closed. When this launches, templates will come with their real ownership, execution, and audit behavior—not placeholder ratings and a button that lies for sport.
-            </Text>
-          </View>
-
-          <View className="bg-surface rounded-2xl border border-border p-5">
-            <Text className="text-base font-bold text-foreground mb-4">The foundation still required</Text>
-            <View className="gap-4">
-              {WORKFLOW_REQUIREMENTS.map((requirement) => (
-                <View key={requirement} className="flex-row items-start gap-3">
-                  <MaterialIcons name="check-circle-outline" size={20} color={colors.primary} />
-                  <Text className="flex-1 text-sm text-muted leading-relaxed">{requirement}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          <View className="rounded-xl border border-warning/30 bg-warning/10 p-4">
-            <Text className="text-sm font-semibold text-foreground mb-1">What you can trust right now</Text>
-            <Text className="text-sm text-muted leading-relaxed">
-              You can connect approved MCP servers, test them, inspect their tools, and execute through the tenant-scoped runtime. Workflow automation stays locked until it can meet the same bar.
-            </Text>
-          </View>
+      <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
+        <View className="bg-primary px-6 py-8"><Text className="text-xs text-background/70 font-bold tracking-widest mb-2">WORKFLOW FOUNDATION</Text><Text className="text-4xl font-bold text-background mb-2">Draft the plan. Don’t fake the run.</Text><Text className="text-base text-background/90 leading-relaxed">Your workspace can now retain its workflow ideas and metadata. Execution has no cute little lie button: it stays unavailable until authorized tools, retries, and audit records exist.</Text></View>
+        <View className="px-5 py-6 gap-5">
+          {error ? <View className="bg-error rounded-xl px-4 py-3"><Text className="text-sm text-background">{error}</Text></View> : null}
+          <View className="bg-surface rounded-2xl border border-border p-5 gap-3"><Text className="text-lg font-bold text-foreground">{editingId ? "Edit workflow draft" : "Create workflow draft"}</Text><TextInput value={name} onChangeText={setName} placeholder="Workflow name" placeholderTextColor={colors.muted} editable={!busy} className="bg-background text-foreground rounded-lg border border-border px-3 py-3" /><TextInput value={description} onChangeText={setDescription} placeholder="What should this workflow eventually accomplish?" placeholderTextColor={colors.muted} editable={!busy} multiline className="bg-background text-foreground rounded-lg border border-border px-3 py-3 min-h-20" /><Text className="text-xs text-muted">This creates a durable draft only. It does not schedule, resolve tools, or execute anything.</Text><View className="flex-row gap-3"><TouchableOpacity onPress={editingId ? () => saveDraft(editingId) : createDraft} disabled={!name.trim() || busy} className={cn("flex-1 rounded-lg py-3 items-center", name.trim() && !busy ? "bg-primary" : "bg-muted opacity-50")}><Text className="font-semibold text-background">{editingId ? "Save changes" : "Save draft"}</Text></TouchableOpacity>{editingId ? <TouchableOpacity onPress={cancelEdit} disabled={busy} className="rounded-lg px-4 py-3 border border-border"><Text className="font-semibold text-foreground">Cancel</Text></TouchableOpacity> : null}</View></View>
+          <View className="gap-3"><Text className="text-lg font-bold text-foreground">Workspace drafts</Text>{isLoading ? <ActivityIndicator color={colors.primary} /> : drafts.length === 0 ? <Text className="text-sm text-muted">No workflow drafts yet. Make the plan before somebody duct-tapes it to production.</Text> : drafts.map((draft) => <View key={draft.id} className="bg-surface rounded-xl border border-border p-4 gap-2"><View className="flex-row justify-between"><Text className="font-bold text-foreground flex-1">{draft.name}</Text><Text className="text-xs uppercase text-muted">{draft.status}</Text></View>{draft.description ? <Text className="text-sm text-muted">{draft.description}</Text> : null}<Text className="text-xs text-warning">Execution intentionally unavailable.</Text><View className="flex-row gap-4"><TouchableOpacity onPress={() => editDraft(draft)} disabled={busy}><Text className="text-sm font-semibold text-primary">Edit</Text></TouchableOpacity>{draft.status === "draft" ? <TouchableOpacity onPress={() => save.mutate({ workflowId: draft.id, status: "archived" })} disabled={busy}><Text className="text-sm font-semibold text-muted">Archive</Text></TouchableOpacity> : null}<TouchableOpacity onPress={() => remove.mutate({ workflowId: draft.id })} disabled={busy}><Text className="text-sm font-semibold text-error">Delete</Text></TouchableOpacity></View></View>)}</View>
         </View>
       </ScrollView>
     </ScreenContainer>
