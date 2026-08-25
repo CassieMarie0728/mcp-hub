@@ -86,7 +86,7 @@ _server/mcp/mcp-router.ts_
 
 | Procedure              | Description                                                                |
 | ---------------------- | -------------------------------------------------------------------------- |
-| `registerServer`       | Registers an MCP server configuration and redacts credentials and initializes manager state        |
+| `registerServer`       | Registers an MCP server configuration and initializes manager state        |
 | `discoverTools`        | Discovers tools from a registered server and returns a cached or live list |
 | `executeTool`          | Executes a tool against a registered server                                |
 | `getServerStatus`      | Returns the current status record for a single server                      |
@@ -346,7 +346,7 @@ _server/mcp/mcp-router.ts_
 ```api
 {
     "title": "Register MCP Server",
-    "description": "Registers an MCP server configuration and redacts credentials and initializes runtime manager state",
+    "description": "Registers an MCP server configuration and initializes runtime manager state",
     "method": "POST",
     "baseUrl": "<ApiBaseUrl>",
     "endpoint": "/api/trpc/mcp.registerServer",

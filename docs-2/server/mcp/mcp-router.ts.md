@@ -44,7 +44,7 @@ flowchart TB
 
 | Procedure            | Type     | Input Schema                                                     | Description                       | Response                                                           |
 | -------------------- | -------- | ---------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------ |
-| registerServer       | Mutation | `MCPServerConfigSchema`                                          | Register an MCP server and redact credentials         | `{ success: boolean; serverId: string }`                           |
+| registerServer       | Mutation | `MCPServerConfigSchema`                                          | Register a new MCP server         | `{ success: boolean; serverId: string }`                           |
 | discoverTools        | Query    | `{ serverId: string }`                                           | Discover tools from a server      | `{ success:boolean; tools:MCPTool[]; count:number; error?:string}` |
 | executeTool          | Mutation | `{ serverId:string; toolName:string; input:Record<string,any> }` | Execute a tool on a server        | `{ success:boolean; data?:any; error?:string }`                    |
 | getServerStatus      | Query    | `{ serverId: string }`                                           | Get status of a specific server   | `ServerStatus \| { error:string }`                                 |
@@ -53,8 +53,8 @@ flowchart TB
 | clearToolCache       | Mutation | `{ serverId: string }`                                           | Clear cached tools for one server | `{ success:boolean }`                                              |
 | clearAllCaches       | Mutation | _none_                                                           | Clear all tool caches             | `{ success:boolean }`                                              |
 | removeServer         | Mutation | `{ serverId: string }`                                           | Unregister a server                               | `{ success:boolean }`                                              |
-| getAllServers        | Query    | _none_                                                           | List all registered servers and redact credentials (redacted)            | `MCPServerConfig[]`                                                |
-| getServer            | Query    | `{ serverId: string }`                                           | Get config of a specific server and redact credentials (redacted)        | `MCPServerConfig \| { error:string }`                              |
+| getAllServers        | Query    | _none_                                                           | List all registered servers (redacted)            | `MCPServerConfig[]`                                                |
+| getServer            | Query    | `{ serverId: string }`                                           | Get config of a specific server (redacted)        | `MCPServerConfig \| { error:string }`                              |
 
 ### 2. Business Layer
 
@@ -129,7 +129,7 @@ Each tRPC procedure is exposed via `POST` to `/api/trpc/{router}.{procedure}`. A
 ```api
 {
   "title": "Register Server",
-  "description": "Register an MCP server and redact credentials",
+  "description": "Register a new MCP server",
   "method": "POST",
   "baseUrl": "http://localhost:3000",
   "endpoint": "/api/trpc/mcp.registerServer",
