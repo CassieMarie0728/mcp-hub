@@ -88,7 +88,8 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
    */
   async streamChat(
     messages: AIMessage[],
-    userContext?: AIAssistantOptions["userContext"]
+    userContext?: AIAssistantOptions["userContext"],
+    signal?: AbortSignal,
   ): Promise<Readable> {
     const systemMessage = this.getSystemPrompt(userContext);
 
@@ -100,7 +101,7 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
     });
 
     // Start the request in the background
-    this.makeStreamRequest(messages, systemMessage, readable).catch((err) => {
+    this.makeStreamRequest(messages, systemMessage, readable, signal).catch((err) => {
       readable.destroy(err);
     });
 
@@ -113,7 +114,8 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
   private async makeStreamRequest(
     messages: AIMessage[],
     systemMessage: string,
-    readable: Readable
+    readable: Readable,
+    signal?: AbortSignal,
   ): Promise<void> {
     let lastError: Error | null = null;
 
@@ -140,11 +142,11 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
             temperature: 0.7,
             max_tokens: 2000,
           }),
+          signal,
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`);
+          throw new Error(`OpenRouter API error: ${response.status}`);
         }
 
         if (!response.body) {
@@ -234,8 +236,7 @@ Keep responses focused and avoid unnecessary verbosity. Use code examples when h
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`);
+          throw new Error(`OpenRouter API error: ${response.status}`);
         }
 
         const data = await response.json();

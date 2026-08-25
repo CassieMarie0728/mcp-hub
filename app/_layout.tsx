@@ -23,6 +23,7 @@ import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { AIAssistantProvider } from "@/hooks/use-ai-assistant";
 import { OnboardingProvider } from "@/lib/onboarding-context";
 import { OnboardingModal } from "@/components/onboarding-modal";
+import { AssistantOverlay } from "@/components/assistant-overlay";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -103,6 +104,7 @@ export default function RootLayout() {
                   <Stack.Screen name="template/[id]" />
                 </Stack>
                 <OnboardingModal />
+                <AssistantOverlay />
                 <StatusBar style="auto" />
               </AppProvider>
             </AIAssistantProvider>

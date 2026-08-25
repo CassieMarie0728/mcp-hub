@@ -82,3 +82,18 @@ Observations captured during task-oriented work.
 **Suggested improvement:** Require the final lint-cleanup phase of a security remediation to classify each remaining legacy-route warning by capability and authorization path before deleting it. If a route reaches local execution, unscoped state, or weaker transport validation, retire or redirect it and add a source-contract regression test.
 
 **Principle:** In legacy application surfaces, static-analysis debt can be a map of unreviewed capabilities; remove the unsafe capability before removing the warning.
+
+### Observation 6: Framework security upgrades require black-box-compatible test seams
+
+**Status:** OPEN
+**Date:** 2026-08-17
+**Session context:** Forensic dependency audit and Express security remediation.
+**Skill:** Existing workflow: dependency security remediation
+**Type:** open-source
+**Phase/Area:** Major framework upgrade and regression validation
+
+**Issue:** Upgrading a web framework to resolve a transitive security advisory changed a private router-stack field used only by route-security tests. The application behavior remained compatible, but the test harness falsely failed because it coupled itself to an implementation detail.
+
+**Suggested improvement:** When a dependency security fix requires a framework upgrade, run focused integration and source-contract tests immediately. Refactor tests to use a narrow compatibility helper or public behavior rather than pinning framework-private fields.
+
+**Principle:** Security upgrades should break brittle tests before they break production; tests must assert the protected behavior without depending on unstable framework internals.

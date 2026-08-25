@@ -127,7 +127,9 @@ export class TokenManager {
    */
   static async getToken(tokenId: string): Promise<string | null> {
     const stored = tokenStore.get(tokenId);
-    if (!stored) return null;
+    if (!stored || !stored.metadata.isActive || this.isTokenExpired(stored.metadata)) {
+      return null;
+    }
 
     // Update last used timestamp
     stored.metadata.lastUsedAt = new Date();

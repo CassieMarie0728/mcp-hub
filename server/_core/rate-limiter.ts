@@ -38,6 +38,15 @@ export const apiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// AI requests create upstream model work and need a lower allowance than normal API calls.
+export const aiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 20,
+  message: "Too many AI requests, please try again shortly.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Workflow execution rate limiter - stricter for resource-intensive operations
 export const workflowLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute

@@ -1,4 +1,4 @@
-import { ScrollView, View, RefreshControl , Text } from 'react-native';
+import { ScrollView, View, RefreshControl, Text, Image } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useApp } from '@/lib/app-context';
 import { useRouter } from 'expo-router';
@@ -38,7 +38,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const colors = useColors();
   const [refreshing, setRefreshing] = useState(false);
-  const { isOpen, closeAssistant } = useAIAssistant();
+  const { isOpen, openAssistant, closeAssistant } = useAIAssistant();
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -55,20 +55,28 @@ export default function HomeScreen() {
           contentContainerStyle={{ flexGrow: 1 }}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
-          <View className="bg-primary px-6 pt-8 pb-12 flex-row items-start justify-between">
-            <View className="flex-1 pr-4">
-              <Text className="text-xs text-background/80 font-bold tracking-widest mb-2">
-                CONTROL ROOM, NOT CLOWN CAR
-              </Text>
-              <Text className="text-5xl font-bold text-background mb-2">MCP Hub</Text>
-              <Text className="text-base text-background/95 font-semibold leading-relaxed">
-                One command bunker for your MCP servers, tools, automations, and the weird little gremlins that keep them alive.
-              </Text>
-              <Text className="text-sm text-background/75 mt-3 leading-relaxed">
-                Connect the servers. Run the tools. Watch the fallout. Fix the mess before it grows teeth.
-              </Text>
+          <View className="bg-primary px-6 pt-8 pb-12">
+            <View className="flex-row items-start justify-between">
+              <View className="flex-1 pr-4">
+                <Text className="text-xs text-background/80 font-bold tracking-widest mb-2">
+                  CONTROL ROOM, NOT CLOWN CAR
+                </Text>
+                <Text className="text-5xl font-bold text-background mb-2">MCP Hub</Text>
+                <Text className="text-base text-background/95 font-semibold leading-relaxed">
+                  One command bunker for your MCP servers, tools, automations, and the weird little gremlins that keep them alive.
+                </Text>
+                <Text className="text-sm text-background/75 mt-3 leading-relaxed">
+                  Connect the servers. Run the tools. Watch the fallout. Fix the mess before it grows teeth.
+                </Text>
+              </View>
+              <AIAssistantButton variant="header" />
             </View>
-            <AIAssistantButton variant="header" />
+            <Image
+              source={require('../../assets/images/mcp-hub-command-bunker-banner.jpg')}
+              resizeMode="cover"
+              accessibilityLabel="MCP Hub command bunker"
+              className="w-full h-28 rounded-xl mt-6 border border-background/25"
+            />
           </View>
 
           <View className="px-6 -mt-6 mb-8 gap-3">
@@ -258,7 +266,7 @@ export default function HomeScreen() {
             <Button variant="primary" size="large" onPress={() => router.push('/(tabs)/mcp-servers' as any)}>
               Connect a Server
             </Button>
-            <Button variant="secondary" onPress={() => router.push('/(tabs)/chat' as any)}>
+            <Button variant="secondary" onPress={openAssistant}>
               Ask the AI Co-Pilot
             </Button>
           </View>

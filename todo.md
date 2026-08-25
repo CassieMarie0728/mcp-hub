@@ -102,3 +102,90 @@ Earlier project planning material is retained in `archive/superseded-guides/todo
 - [x] Implement backend-backed analytics from real tenant-scoped execution logs
 - [x] Add history and analytics security, data-shape, and UI regression coverage
 - [x] Validate the complete milestone and preserve it in a checkpoint
+
+## Post-Activity-Reporting Comprehensive Audit
+
+- [x] Regenerate the missing Android native project after the permission contract exposed the absent manifest
+- [x] Establish a fresh full validation baseline and capture service/build health
+- [x] Harden AI request validation, provider error handling, abort behavior, and body-size limits
+- [x] Enforce app-scoped session validation in the server authentication adapter
+- [x] Retire or replace registry-backed provider connections that advertise unsupported MCP endpoints outside the canonical HTTPS registration workflow
+- [x] Retire the registry-backed tool browser that fabricated provider tools and invoked the unsupported extended router
+- [x] Re-audit backend authorization, data integrity, secure runtime, and API contracts
+- [x] Remove settings navigation to retired routes and retire the obsolete local execution-history clear action
+- [x] Retire the secondary device-local Servers list that exposes legacy local edit, delete, and connection behavior
+- [x] Remove OAuth callback diagnostics that expose authorization-code fragments or user records in client logs
+- [x] Wire the home AI call-to-action to the existing assistant modal instead of the retired chat route
+- [x] Re-audit mobile route behavior, navigation, onboarding, and truthful UI states
+- [x] Pin the patched qs parser version required by the Express dependency graph
+- [x] Add static Expo web export validation to CI so deployable client artifacts are checked on every change
+- [x] Repair verified landing-page navigation and content defects
+- [x] Re-audit dependencies, build output, Android readiness, CI, landing site, and operations documentation
+- [x] Remediate every verified in-sandbox finding and add regression coverage
+- [x] Run final full validation and publish an evidence-backed audit status update
+
+## Authorized Assistant and Durable Lifecycle Foundations
+
+- [x] Map the existing assistant, secure runtime, credential vault, OAuth, webhook, and workflow boundaries
+- [x] Reconcile live database schema drift before enabling any new tenant-scoped persistence
+- [x] Introduce an additive namespaced tenant persistence layer that leaves incompatible legacy tables untouched
+- [x] Design workspace-authorized conversational execution with explicit tool approval and encrypted user-supplied provider keys
+- [x] Ensure assistant UX and backend deny unselected-provider fallback and expose clear provider-configuration state
+- [x] Implement encrypted tenant-scoped provider-key lifecycle management for the assistant
+- [x] Implement the authorized conversational MCP assistant backend and mobile interface
+- [x] Design durable tenant-scoped OAuth connection, webhook subscription, and workflow data models
+- [x] Implement protected OAuth, webhook, and workflow lifecycle foundations
+- [x] Build truthful mobile interfaces for durable OAuth records, webhook configuration, and workflow drafts
+- [x] Add security, tenancy, lifecycle, and mobile-flow regression coverage
+- [x] Run complete release validation and save a phone-test-ready checkpoint
+
+## Multi-Provider BYOK Assistant Expansion
+
+- [x] Verify provider-specific free-tier model rules and rate-limit behavior for Gemini, Groq, and Mistral
+- [x] Extend encrypted tenant-scoped provider configuration to OpenRouter, Gemini, Groq, and Mistral
+- [x] Implement fixed-endpoint provider adapters and classified user-safe rate-limit errors
+- [x] Add secure provider API-key management in settings and provider selection in the assistant
+- [x] Add multi-provider, free-tier, rate-limit, and secret-exposure regression coverage
+- [x] Run full validation and save a phone-test-ready checkpoint
+
+## Provider Health, Usage Limits, and Reset Alerts
+
+- [x] Verify official per-provider key-test, quota-header, and reset-time capabilities
+- [x] Add durable tenant-scoped provider health snapshots and opt-in reset-alert preferences
+- [x] Implement protected API-key testing and truthful supported usage-limit refreshes
+- [x] Add settings controls for key testing, health status, remaining-limit indicators, and opt-in alerts
+- [x] Add regression coverage for secret safety, provider limit data, and reset notifications
+- [x] Run full validation and save a phone-test-ready checkpoint
+
+## Opt-In Provider Fallback and Notification Retry
+
+- [x] Define explicit fallback eligibility, ordering, and free/no-surprise safeguards
+- [x] Add tenant-scoped fallback preferences and short-lived retry request persistence
+- [x] Implement rate-limit-only fallback routing and protected retry retrieval
+- [x] Add fallback controls, fallback status, and notification-tap retry routing in the mobile UI
+- [x] Add regression coverage for no-paid-fallback, retry expiry, tenant isolation, and tool-approval preservation
+- [x] Run full validation and save a phone-test-ready checkpoint
+
+## Industrial Red Brand Refresh
+
+- [x] Audit current icon, splash, landing, and marketing asset references
+- [x] Create a native-compatible MCP Hub splash screen from the supplied brand art
+- [x] Replace app icon family and web banner surfaces with the supplied MCP Hub imagery
+- [x] Verify native/web asset references, visual fit, and save a branded checkpoint
+
+## Cohesive MCP Core Visual System
+
+- [x] Audit onboarding illustration, social metadata, and reusable loading surfaces
+- [x] Create MCP-core onboarding and social-share artwork from the approved industrial-red brand language
+- [x] Replace onboarding imagery and add a restrained red-reactor loading state
+- [x] Update social metadata and validate native/web visual integration before checkpointing
+
+## Authorized Assistant and Durable Lifecycle Foundations — Superseded Initial Plan
+
+- [x] Map current conversational assistant, secure runtime, OAuth, webhook, and workflow boundaries
+- [x] Design workspace-authorized conversational execution with explicit user intent and tool approval
+- [x] Implement the authorized conversational MCP assistant backend and mobile interface
+- [x] Design durable tenant-scoped OAuth connection, webhook subscription, and workflow data models
+- [x] Implement protected OAuth, webhook, and workflow lifecycle foundations
+- [x] Add security, tenancy, lifecycle, and mobile-flow regression coverage
+- [x] Run complete release validation and save a phone-test-ready checkpoint

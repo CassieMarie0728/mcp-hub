@@ -20,6 +20,12 @@ describe("landing-page truthfulness", () => {
     expect(landing).not.toContain("app.mcphub.io");
   });
 
+  it("keeps navigation destinations real and avoids duplicated foundation claims", () => {
+    expect(landing).toContain('href="mailto:early-access@mcphub.io">Contact</a>');
+    expect(landing).not.toContain('href="#contact"');
+    expect((landing.match(/<div class="tech-item">tRPC<\/div>/g) ?? []).length).toBe(1);
+  });
+
   it("does not claim unavailable production automation, pricing, reliability, or enterprise operations", () => {
     for (const unsupportedClaim of [
       "production-grade automation platform",

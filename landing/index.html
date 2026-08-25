@@ -11,9 +11,12 @@
     <meta property="og:title" content="MCP Hub — Early Access for Secure MCP Server Management">
     <meta property="og:description" content="A mobile-first workspace for connecting HTTPS MCP servers, discovering tools, and testing secure integrations.">
     <meta property="og:url" content="https://mcphub-cah4bw3p.manus.space/">
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="https://files.manuscdn.com/user_upload_by_module/session_file/310519663485822351/zuCJXXZCeUNzHFOB.png">
+    <meta property="og:image:alt" content="MCP Hub industrial reactor core with red network connections">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MCP Hub — Early Access for Secure MCP Server Management">
     <meta name="twitter:description" content="Join the early-access list for a mobile-first MCP server workspace.">
+    <meta name="twitter:image" content="https://files.manuscdn.com/user_upload_by_module/session_file/310519663485822351/zuCJXXZCeUNzHFOB.png">
     <meta name="theme-color" content="#0b0f0f">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -129,6 +132,21 @@
             max-width: 700px;
             margin: 0 auto 40px;
             line-height: 1.8;
+        }
+
+        .hero-art {
+            max-width: 1120px;
+            margin: 0 auto 34px;
+            border: 1px solid rgba(228, 33, 28, 0.76);
+            background: #050505;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 42px rgba(213, 25, 22, 0.18);
+            overflow: hidden;
+        }
+
+        .hero-art img {
+            display: block;
+            width: 100%;
+            height: auto;
         }
 
         /* CTA Buttons */
@@ -458,6 +476,10 @@
                 font-size: 18px;
             }
 
+            .hero-art {
+                margin-bottom: 26px;
+            }
+
             nav a {
                 margin-left: 20px;
                 font-size: 12px;
@@ -512,7 +534,7 @@
                 <a href="#features">Features</a>
                 <a href="#how">How It Works</a>
                 <a href="#access">Early Access</a>
-                <a href="#contact">Contact</a>
+                <a href="mailto:early-access@mcphub.io">Contact</a>
             </nav>
         </header>
 
@@ -520,6 +542,9 @@
         <section class="hero">
             <h1>One Place to Manage Your MCP Servers</h1>
             <p class="tagline">No fake green lights. No credential circus.</p>
+            <figure class="hero-art">
+                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663485822351/kMqMNeXhDGlgYbnj.png" alt="MCP Hub command bunker with a glowing red MCP core and connected server controls">
+            </figure>
             <p>
                 MCP Hub is an early-access, mobile-first workspace for connecting HTTPS Model Context Protocol servers, inspecting their tools, and testing integrations. We are building the secure plumbing first, because pretending an unfinished automation platform is a product is how trust gets murdered.
             </p>
@@ -641,7 +666,6 @@
                 <div class="tech-item">NativeWind</div>
                 <div class="tech-item">AsyncStorage</div>
                 <div class="tech-item">TypeScript 5.9</div>
-                <div class="tech-item">tRPC</div>
                 <div class="tech-item">tRPC</div>
                 <div class="tech-item">HTTPS outbound policy</div>
                 <div class="tech-item">AES-256-GCM</div>

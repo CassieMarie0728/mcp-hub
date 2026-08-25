@@ -39,3 +39,6 @@ jobs:
 
       - name: Build backend bundle
         run: pnpm build
+
+      - name: Export static web bundle
+        run: npx expo export --platform web

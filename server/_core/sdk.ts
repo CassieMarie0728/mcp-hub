@@ -198,6 +198,11 @@ class SDKServer {
         return null;
       }
 
+      if (appId !== ENV.appId) {
+        console.warn("[Auth] Session payload belongs to a different application");
+        return null;
+      }
+
       return {
         openId,
         appId,

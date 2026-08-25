@@ -1,81 +1,32 @@
 import { Express, Request, Response } from "express";
-import { getAIAssistant } from "./ai-assistant.js";
+
+import { aiLimiter } from "./rate-limiter";
 import { sdk } from "./sdk.js";
 import { HttpError } from "../../shared/_core/errors.js";
 
+function respondToLegacyAiError(error: unknown, res: Response) {
+  if (error instanceof HttpError) {
+    res.status(error.statusCode).json({ error: error.message });
+    return;
+  }
+  res.status(502).json({ error: "AI assistant is temporarily unavailable" });
+}
+
+/**
+ * Legacy direct HTTP AI routes are intentionally unavailable. The active
+ * assistant uses protected tRPC procedures, an encrypted user-selected
+ * provider configuration, and explicit tool approval records.
+ */
 export function setupAIRoutes(app: Express): void {
-  /**
-   * POST /api/ai/chat
-   * Get a non-streaming response from the AI assistant
-   */
-  app.post("/api/ai/chat", async (req: Request, res: Response) => {
+  const unavailable = async (req: Request, res: Response) => {
     try {
-      // Authenticate user before processing request to prevent unauthorized OpenRouter API usage
       await sdk.authenticateRequest(req);
-
-      const { messages, context } = req.body;
-
-      if (!messages || !Array.isArray(messages)) {
-        res.status(400).json({ error: "messages array is required" });
-        return;
-      }
-
-      const assistant = getAIAssistant();
-      const response = await assistant.getResponse(messages, context);
-
-      res.json({ response });
-    } catch (err) {
-      if (err instanceof HttpError) {
-        res.status(err.statusCode).json({ error: err.message });
-        return;
-      }
-      console.error("[ai-routes] Chat error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Failed to get AI response",
-      });
+      res.status(410).json({ error: "Configure your own assistant provider in MCP Hub before starting a conversation" });
+    } catch (error) {
+      respondToLegacyAiError(error, res);
     }
-  });
+  };
 
-  /**
-   * POST /api/ai/stream
-   * Stream a response from the AI assistant
-   */
-  app.post("/api/ai/stream", async (req: Request, res: Response) => {
-    try {
-      // Authenticate user before processing request to prevent unauthorized OpenRouter API usage
-      await sdk.authenticateRequest(req);
-
-      const { messages, context } = req.body;
-
-      if (!messages || !Array.isArray(messages)) {
-        res.status(400).json({ error: "messages array is required" });
-        return;
-      }
-
-      const assistant = getAIAssistant();
-      const stream = await assistant.streamChat(messages, context);
-
-      res.setHeader("Content-Type", "text/event-stream");
-      res.setHeader("Cache-Control", "no-cache");
-      res.setHeader("Connection", "keep-alive");
-
-      stream.pipe(res);
-
-      stream.on("error", (err) => {
-        console.error("[ai-routes] Stream error:", err);
-        res.status(500).json({ error: "Stream failed" });
-      });
-    } catch (err) {
-      if (err instanceof HttpError) {
-        res.status(err.statusCode).json({ error: err.message });
-        return;
-      }
-      console.error("[ai-routes] Stream setup error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Failed to start stream",
-      });
-    }
-  });
-
-  console.log("[ai-routes] AI Assistant routes configured");
+  app.post("/api/ai/chat", aiLimiter, unavailable);
+  app.post("/api/ai/stream", aiLimiter, unavailable);
 }

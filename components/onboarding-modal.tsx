@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Pressable, Modal, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Pressable, Modal, Dimensions, Image } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useOnboarding } from '@/lib/onboarding-context';
 import { useColors } from '@/hooks/use-colors';
@@ -93,17 +93,26 @@ export function OnboardingModal() {
               </View>
             </View>
 
-            {/* Icon */}
+            {/* Intro uses the MCP core; later steps retain their functional icon. */}
             <View className="items-center pt-6 pb-4">
               <View
                 className="w-20 h-20 rounded-full items-center justify-center"
                 style={{ backgroundColor: colors.primary + '20' }}
               >
-                <MaterialIcons
-                  name={ICON_MAP[stepData.icon] as any}
-                  size={40}
-                  color={colors.primary}
-                />
+                {currentStepIndex === 0 ? (
+                  <Image
+                    source={require('../assets/images/icon.png')}
+                    resizeMode="cover"
+                    accessibilityLabel="MCP Hub reactor core"
+                    style={{ width: 72, height: 72, borderRadius: 36 }}
+                  />
+                ) : (
+                  <MaterialIcons
+                    name={ICON_MAP[stepData.icon] as any}
+                    size={40}
+                    color={colors.primary}
+                  />
+                )}
               </View>
             </View>
 
