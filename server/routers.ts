@@ -10,6 +10,7 @@ import { analyticsRouter } from "./analytics/analytics-router";
 import { oauthRouter } from "./auth/oauth-router";
 import { workflowsProcedures } from "./procedures/workflows";
 import { templatesRouter } from "./templates/templates-router";
+import { assistantRouter } from "./assistant/assistant-router";
 
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -32,6 +33,7 @@ export const appRouter = router({
   analytics: analyticsRouter,
   workflows: workflowsProcedures,
   templates: templatesRouter,
+  assistant: assistantRouter,
 
   // TODO: add feature routers here, e.g.
   // todo: router({

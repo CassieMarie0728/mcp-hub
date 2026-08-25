@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Animated } from 'react-native';
 import { useColors } from '@/hooks/use-colors';
-import { cn } from '@/lib/utils';
 
 interface SkeletonProps {
   width?: number | string;
@@ -23,7 +22,7 @@ export function Skeleton({
   animated = true,
 }: SkeletonProps) {
   const colors = useColors();
-  const opacity = new Animated.Value(0.6);
+  const opacity = useRef(new Animated.Value(0.6)).current;
 
   useEffect(() => {
     if (!animated) return;

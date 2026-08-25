@@ -60,9 +60,9 @@ Store the `state` value **server-side** (for example, in the user's session) and
 <Warning>
   **Callback URL requirements.**
 
-  - Register an `https://` redirect URL with the OAuth provider for any non-localhost deployment. `http://` callbacks are only acceptable for `localhost` during local development.
-  - Make sure the registered URL is an **exact match** — including scheme, host, port, and trailing slash.
-  - Avoid open redirects, wildcard redirect URIs, and `http://` callbacks in production. Each one enables authorization-code interception.
+- Register an `https://` redirect URL with the OAuth provider for any non-localhost deployment. `http://` callbacks are only acceptable for `localhost` during local development.
+- Make sure the registered URL is an **exact match** — including scheme, host, port, and trailing slash.
+- Avoid open redirects, wildcard redirect URIs, and `http://` callbacks in production. Each one enables authorization-code interception.
 </Warning>
 
 <Note>
@@ -89,7 +89,7 @@ Returns the current authentication state for the connection, including whether a
 ```
 
 | Field | Description |
-|---|---|
+| --- | --- |
 | `authenticated` | `true` if a valid, non-expired token is present |
 | `userId` | UUID of the authenticated user as provided by the authorization server, or `null` |
 | `expiresAt` | ISO 8601 timestamp when the token expires, or `null` for non-expiring tokens |
@@ -165,12 +165,12 @@ Attaches secret references and plain environment variables to the connection. MC
 <Warning>
   **Handling secret values.**
 
-  - Only call this endpoint over HTTPS — `envVars` values are sent in the request body in plain text.
-  - For production credentials, prefer `secretRefs` (vault lookup) over `envVars`. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs.
-  - Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
-  - Do not log request bodies or include them in error reports.
-  - Use **least-privilege** tokens. Scope `GITHUB_TOKEN` to the specific repos and permissions the MCP server needs, and avoid full `repo` or `admin` scopes. Use scoped or project-restricted API keys for third-party services.
-  - Rotate any secret that may have leaked through shell history, screenshots, or commit history. Provider-side revocation is the only guaranteed remediation.
+- Only call this endpoint over HTTPS — `envVars` values are sent in the request body in plain text.
+- For production credentials, prefer `secretRefs` (vault lookup) over `envVars`. Store the underlying secret in your secrets manager (Vault, AWS Secrets Manager, etc.) and reference it by name, so the raw value never travels through this API or appears in request logs.
+- Grant the resolving identity (such as an IAM role) **read-only access to only the specific secret paths it needs** — avoid wildcard policies like `secretsmanager:GetSecretValue` on `*`.
+- Do not log request bodies or include them in error reports.
+- Use **least-privilege** tokens. Scope `GITHUB_TOKEN` to the specific repos and permissions the MCP server needs, and avoid full `repo` or `admin` scopes. Use scoped or project-restricted API keys for third-party services.
+- Rotate any secret that may have leaked through shell history, screenshots, or commit history. Provider-side revocation is the only guaranteed remediation.
 </Warning>
 
 Returns `200 OK` on success:

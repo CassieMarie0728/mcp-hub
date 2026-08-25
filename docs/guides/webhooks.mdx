@@ -35,7 +35,7 @@ Set up a webhook endpoint in a few steps and hand the URL to whichever external 
 
 Your webhook endpoint follows this pattern:
 
-```
+```text
 https://your-mcp-hub-instance.com/webhooks/{webhookId}
 ```
 
@@ -48,7 +48,7 @@ Configure how fields from the incoming webhook payload map to your workflow's in
 For example, if a GitHub webhook sends a `push` event, you might map:
 
 | Payload field | Workflow input parameter |
-|---|---|
+| --- | --- |
 | `payload.repository.full_name` | `repo` |
 | `payload.ref` | `branch` |
 | `payload.head_commit.id` | `commit_sha` |

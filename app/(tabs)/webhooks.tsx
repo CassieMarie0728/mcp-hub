@@ -1,302 +1,57 @@
-import { ScrollView, Text, View, TouchableOpacity, TextInput, FlatList, Alert } from 'react-native';
-import { useState, useEffect } from 'react';
-import { ScreenContainer } from '@/components/screen-container';
-import { useColors } from '@/hooks/use-colors';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useState } from "react";
+import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-interface Webhook {
-  id: string;
-  name: string;
-  url: string;
-  isActive: boolean;
-  events: string[];
-  rateLimit: number;
-  executionCount: number;
-  failureCount: number;
-  lastTriggeredAt?: Date;
-}
+import { ScreenContainer } from "@/components/screen-container";
+import { useColors } from "@/hooks/use-colors";
+import { trpc } from "@/lib/trpc";
+import { cn } from "@/lib/utils";
 
 export default function WebhooksScreen() {
   const colors = useColors();
-  const [webhooks, setWebhooks] = useState<Webhook[]>([]);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [webhookName, setWebhookName] = useState('');
-  const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const utils = trpc.useUtils();
+  const { data: webhooks = [], isLoading } = trpc.webhooks.listWebhooks.useQuery();
+  const create = trpc.webhooks.createWebhook.useMutation({ onSuccess: () => utils.webhooks.listWebhooks.invalidate() });
+  const remove = trpc.webhooks.deleteWebhook.useMutation({ onSuccess: () => utils.webhooks.listWebhooks.invalidate() });
+  const rotate = trpc.webhooks.rotateSecret.useMutation();
+  const [name, setName] = useState("");
+  const [events, setEvents] = useState("mcp.execution.completed");
+  const [revealedSecret, setRevealedSecret] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const busy = create.isPending || remove.isPending || rotate.isPending;
 
-  const mockWebhooks: Webhook[] = [
-    {
-      id: 'wh_001',
-      name: 'GitHub Push Events',
-      url: 'https://api.mcphub.io/webhooks/wh_001',
-      isActive: true,
-      events: ['push', 'pull_request'],
-      rateLimit: 60,
-      executionCount: 245,
-      failureCount: 3,
-      lastTriggeredAt: new Date(Date.now() - 3600000),
-    },
-    {
-      id: 'wh_002',
-      name: 'Slack Events',
-      url: 'https://api.mcphub.io/webhooks/wh_002',
-      isActive: true,
-      events: ['message', 'reaction'],
-      rateLimit: 120,
-      executionCount: 512,
-      failureCount: 8,
-      lastTriggeredAt: new Date(Date.now() - 600000),
-    },
-  ];
-
-  useEffect(() => {
-    setWebhooks(mockWebhooks);
-  }, []);
-
-  const handleCreateWebhook = () => {
-    if (!webhookName.trim() || selectedEvents.length === 0) {
-      Alert.alert('Error', 'Please enter webhook name and select events');
-      return;
-    }
-
-    setLoading(true);
-    setTimeout(() => {
-      const newWebhook: Webhook = {
-        id: `wh_${Date.now()}`,
-        name: webhookName,
-        url: `https://api.mcphub.io/webhooks/wh_${Date.now()}`,
-        isActive: true,
-        events: selectedEvents,
-        rateLimit: 60,
-        executionCount: 0,
-        failureCount: 0,
-      };
-
-      setWebhooks([...webhooks, newWebhook]);
-      setWebhookName('');
-      setSelectedEvents([]);
-      setShowCreateForm(false);
-      setLoading(false);
-      Alert.alert('Success', 'Webhook created successfully');
-    }, 500);
-  };
-
-  const handleCopyUrl = (url: string) => {
-    Alert.alert('Webhook URL', url, [
-      { text: 'Close', onPress: () => {} },
-    ]);
-  };
-
-  const handleToggleEvent = (event: string) => {
-    if (selectedEvents.includes(event)) {
-      setSelectedEvents(selectedEvents.filter((e) => e !== event));
-    } else {
-      setSelectedEvents([...selectedEvents, event]);
+  const createSubscription = async () => {
+    const eventList = events.split(",").map((event) => event.trim()).filter(Boolean);
+    if (!name.trim() || eventList.length === 0) return;
+    setError(null);
+    setRevealedSecret(null);
+    try {
+      const result = await create.mutateAsync({ name: name.trim(), events: eventList, retryPolicy: { maxRetries: 3, backoffMs: 1_000 } });
+      setRevealedSecret(result.signingSecret);
+      setName("");
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "The webhook subscription could not be saved.");
     }
   };
 
-  const availableEvents = ['push', 'pull_request', 'message', 'reaction', 'update', 'delete'];
-
-  const renderWebhookCard = ({ item }: { item: Webhook }) => {
-    const successRate =
-      item.executionCount > 0
-        ? Math.round(((item.executionCount - item.failureCount) / item.executionCount) * 100)
-        : 0;
-
-    return (
-      <View
-        className="mb-4 rounded-xl p-4 border"
-        style={{
-          backgroundColor: colors.surface,
-          borderColor: colors.border,
-        }}
-      >
-        <View className="flex-row items-start justify-between mb-2">
-          <View className="flex-1">
-            <View className="flex-row items-center gap-2">
-              <Text className="text-lg font-semibold text-foreground">{item.name}</Text>
-              <View
-                className="px-2 py-1 rounded-full"
-                style={{
-                  backgroundColor: item.isActive ? colors.success + '20' : colors.error + '20',
-                }}
-              >
-                <Text
-                  className="text-xs font-semibold"
-                  style={{ color: item.isActive ? colors.success : colors.error }}
-                >
-                  {item.isActive ? 'Active' : 'Inactive'}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        <View className="mb-3 gap-2">
-          <View className="flex-row items-center gap-2">
-            <MaterialIcons name="link" size={14} color={colors.muted} />
-            <Text className="text-xs text-muted flex-1" numberOfLines={1}>
-              {item.url}
-            </Text>
-            <TouchableOpacity onPress={() => handleCopyUrl(item.url)}>
-              <MaterialIcons name="content-copy" size={14} color={colors.primary} />
-            </TouchableOpacity>
-          </View>
-
-          <View className="flex-row items-center gap-2">
-            <MaterialIcons name="event" size={14} color={colors.muted} />
-            <Text className="text-xs text-muted">
-              {item.events.join(', ')}
-            </Text>
-          </View>
-
-          <View className="flex-row items-center justify-between">
-            <View className="flex-row items-center gap-2">
-              <MaterialIcons name="check-circle" size={14} color={colors.success} />
-              <Text className="text-xs text-muted">
-                {successRate}% success rate ({item.executionCount} executions)
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View className="flex-row gap-2">
-          <TouchableOpacity
-            className="flex-1 py-2 px-3 rounded-lg items-center"
-            style={{ backgroundColor: colors.primary + '20' }}
-          >
-            <Text style={{ color: colors.primary }} className="text-sm font-semibold">
-              View Events
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="flex-1 py-2 px-3 rounded-lg items-center"
-            style={{ backgroundColor: colors.error + '20' }}
-          >
-            <Text style={{ color: colors.error }} className="text-sm font-semibold">
-              Delete
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
+  const rotateSecret = async (webhookId: string) => {
+    setError(null);
+    try {
+      const result = await rotate.mutateAsync({ webhookId });
+      setRevealedSecret(result.signingSecret);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "The signing secret could not be rotated.");
+    }
   };
 
   return (
-    <ScreenContainer className="p-4">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-        <View className="gap-4">
-          {/* Header */}
-          <View className="flex-row items-center justify-between">
-            <View className="gap-1">
-              <Text className="text-3xl font-bold text-foreground">Webhooks</Text>
-              <Text className="text-sm text-muted">Trigger workflows from external systems</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => setShowCreateForm(!showCreateForm)}
-              className="p-2 rounded-lg"
-              style={{ backgroundColor: colors.primary }}
-            >
-              <MaterialIcons name="add" size={24} color={colors.background} />
-            </TouchableOpacity>
-          </View>
-
-          {/* Create Form */}
-          {showCreateForm && (
-            <View
-              className="p-4 rounded-xl border gap-3"
-              style={{
-                backgroundColor: colors.surface,
-                borderColor: colors.border,
-              }}
-            >
-              <Text className="text-lg font-semibold text-foreground">Create Webhook</Text>
-
-              <TextInput
-                placeholder="Webhook name"
-                placeholderTextColor={colors.muted}
-                value={webhookName}
-                onChangeText={setWebhookName}
-                className="px-3 py-2 rounded-lg border text-foreground"
-                style={{
-                  borderColor: colors.border,
-                  backgroundColor: colors.background,
-                }}
-              />
-
-              <View className="gap-2">
-                <Text className="text-sm font-semibold text-foreground">Select Events</Text>
-                <View className="flex-row flex-wrap gap-2">
-                  {availableEvents.map((event) => (
-                    <TouchableOpacity
-                      key={event}
-                      onPress={() => handleToggleEvent(event)}
-                      className={`px-3 py-2 rounded-full border ${
-                        selectedEvents.includes(event) ? 'bg-primary' : ''
-                      }`}
-                      style={{
-                        borderColor: selectedEvents.includes(event) ? colors.primary : colors.border,
-                        backgroundColor: selectedEvents.includes(event)
-                          ? colors.primary
-                          : colors.background,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: selectedEvents.includes(event) ? colors.background : colors.foreground,
-                        }}
-                        className="text-xs font-semibold"
-                      >
-                        {event}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-
-              <View className="flex-row gap-2">
-                <TouchableOpacity
-                  onPress={() => setShowCreateForm(false)}
-                  className="flex-1 py-2 px-4 rounded-lg items-center"
-                  style={{ backgroundColor: colors.border }}
-                >
-                  <Text className="font-semibold text-foreground">Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleCreateWebhook}
-                  disabled={loading}
-                  className="flex-1 py-2 px-4 rounded-lg items-center"
-                  style={{ backgroundColor: colors.primary }}
-                >
-                  <Text className="font-semibold text-background">
-                    {loading ? 'Creating...' : 'Create'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-
-          {/* Webhooks List */}
-          {webhooks.length > 0 ? (
-            <FlatList
-              data={webhooks}
-              renderItem={renderWebhookCard}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={false}
-            />
-          ) : (
-            <View className="items-center justify-center py-8">
-              <MaterialIcons name="webhook" size={48} color={colors.muted} />
-              <Text className="text-center text-muted mt-2">No webhooks yet</Text>
-              <TouchableOpacity
-                onPress={() => setShowCreateForm(true)}
-                className="mt-4 px-4 py-2 rounded-lg"
-                style={{ backgroundColor: colors.primary }}
-              >
-                <Text className="text-background font-semibold">Create First Webhook</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+    <ScreenContainer className="p-0">
+      <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
+        <View className="bg-primary px-6 py-8"><Text className="text-xs text-background/70 font-bold tracking-widest mb-2">WEBHOOK FOUNDATION</Text><Text className="text-4xl font-bold text-background mb-2">Store it first. Deliver it later.</Text><Text className="text-base text-background/90 leading-relaxed">Subscriptions and encrypted signing secrets now persist inside your workspace. Inbound delivery, endpoint exposure, retries, and event history remain deliberately unavailable until there is a signed receiver and durable queue.</Text></View>
+        <View className="px-5 py-6 gap-5">
+          {error ? <View className="bg-error rounded-xl px-4 py-3"><Text className="text-sm text-background">{error}</Text></View> : null}
+          {revealedSecret ? <View className="bg-warning/15 border border-warning/40 rounded-xl p-4 gap-2"><Text className="font-bold text-foreground">Save this signing secret now</Text><Text selectable className="text-xs text-foreground">{revealedSecret}</Text><Text className="text-xs text-muted">For security, it is shown only after creating or rotating the subscription.</Text><TouchableOpacity onPress={() => setRevealedSecret(null)}><Text className="text-sm font-semibold text-primary">I saved it</Text></TouchableOpacity></View> : null}
+          <View className="bg-surface rounded-2xl border border-border p-5 gap-3"><Text className="text-lg font-bold text-foreground">Create subscription configuration</Text><TextInput value={name} onChangeText={setName} placeholder="Subscription name" placeholderTextColor={colors.muted} editable={!busy} className="bg-background text-foreground rounded-lg border border-border px-3 py-3" /><TextInput value={events} onChangeText={setEvents} placeholder="Events, comma separated" placeholderTextColor={colors.muted} editable={!busy} className="bg-background text-foreground rounded-lg border border-border px-3 py-3" /><Text className="text-xs text-muted">Default retry policy: 3 retries with 1-second backoff. Delivery is not active yet.</Text><TouchableOpacity onPress={createSubscription} disabled={!name.trim() || !events.trim() || busy} className={cn("rounded-lg py-3 items-center", name.trim() && events.trim() && !busy ? "bg-primary" : "bg-muted opacity-50")}><Text className="font-semibold text-background">Save subscription</Text></TouchableOpacity></View>
+          <View className="gap-3"><Text className="text-lg font-bold text-foreground">Workspace subscriptions</Text>{isLoading ? <ActivityIndicator color={colors.primary} /> : webhooks.length === 0 ? <Text className="text-sm text-muted">No webhook subscriptions configured.</Text> : webhooks.map((webhook) => <View key={webhook.id} className="bg-surface rounded-xl border border-border p-4 gap-2"><View className="flex-row justify-between"><Text className="font-bold text-foreground">{webhook.name}</Text><Text className="text-xs uppercase text-muted">{webhook.status}</Text></View><Text className="text-xs text-muted">Events: {webhook.events.join(", ")}</Text><Text className="text-xs text-warning">Delivery is intentionally unavailable.</Text><View className="flex-row gap-4"><TouchableOpacity onPress={() => rotateSecret(webhook.id)} disabled={busy}><Text className="text-sm font-semibold text-primary">Rotate secret</Text></TouchableOpacity><TouchableOpacity onPress={() => remove.mutate({ webhookId: webhook.id })} disabled={busy}><Text className="text-sm font-semibold text-error">Delete</Text></TouchableOpacity></View></View>)}</View>
         </View>
       </ScrollView>
     </ScreenContainer>

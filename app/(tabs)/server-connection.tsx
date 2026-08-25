@@ -1,314 +1,347 @@
-import { ScrollView, Text, View, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native';
-import { useState, useCallback, useEffect } from 'react';
-import { ScreenContainer } from '@/components/screen-container';
-import { useColors } from '@/hooks/use-colors';
-import { cn } from '@/lib/utils';
+import { useCallback, useMemo, useState } from "react";
 import {
-  useMCPServerConnection,
-  ServerConnectionConfig,
-  TransportType,
-  ConnectionStatus,
-} from '@/lib/hooks/useMCPServerConnection';
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
-/**
- * Server Connection Screen
- * Allows users to connect to MCP servers via HTTP, WebSocket, or Stdio
- */
+import { ScreenContainer } from "@/components/screen-container";
+import { useColors } from "@/hooks/use-colors";
+import { trpc } from "@/lib/trpc";
+
+type AuthMode = "none" | "bearer" | "api-key" | "basic";
+
+type ConnectionForm = {
+  name: string;
+  endpoint: string;
+  authMode: AuthMode;
+  token: string;
+  username: string;
+  password: string;
+};
+
+const initialForm: ConnectionForm = {
+  name: "",
+  endpoint: "",
+  authMode: "none",
+  token: "",
+  username: "",
+  password: "",
+};
+
+const authOptions: { value: AuthMode; label: string }[] = [
+  { value: "none", label: "No auth" },
+  { value: "bearer", label: "Bearer" },
+  { value: "api-key", label: "API key" },
+  { value: "basic", label: "Basic" },
+];
+
+function validateEndpoint(value: string): string | null {
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== "https:") return "Use an HTTPS endpoint. HTTP is not allowed.";
+    if (url.username || url.password) return "Do not include credentials in the endpoint URL.";
+    if (url.port && url.port !== "443") return "Use the standard HTTPS port.";
+    return null;
+  } catch {
+    return "Enter a complete HTTPS URL, such as https://mcp.example.com.";
+  }
+}
+
 export default function ServerConnectionScreen() {
   const colors = useColors();
-  const { connectToServer, connections, isLoading, error } = useMCPServerConnection();
+  const [form, setForm] = useState<ConnectionForm>(initialForm);
+  const [formError, setFormError] = useState<string | null>(null);
+  const serversQuery = trpc.mcp.getAllServers.useQuery();
+  const registerMutation = trpc.mcp.registerServer.useMutation();
+  const testMutation = trpc.mcp.testConnection.useMutation();
+  const removeMutation = trpc.mcp.removeServer.useMutation();
 
-  // Form state
-  const [formData, setFormData] = useState({
-    name: '',
-    host: 'localhost',
-    port: 3000,
-    transport: TransportType.HTTP,
-    isSecure: false,
-    authToken: '',
-    connectionTimeoutMs: 30000,
-  });
+  const isSaving = registerMutation.isPending || testMutation.isPending || removeMutation.isPending;
+  const servers = useMemo(() => serversQuery.data ?? [], [serversQuery.data]);
 
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const updateForm = useCallback(<K extends keyof ConnectionForm>(key: K, value: ConnectionForm[K]) => {
+    setForm((current) => ({ ...current, [key]: value }));
+    setFormError(null);
+  }, []);
 
-  /**
-   * Validate form data
-   */
-  const validateForm = useCallback((): boolean => {
-    const errors: Record<string, string> = {};
-
-    if (!formData.name.trim()) {
-      errors.name = 'Server name is required';
+  const submit = useCallback(async () => {
+    const name = form.name.trim();
+    const endpoint = form.endpoint.trim();
+    const endpointError = validateEndpoint(endpoint);
+    if (!name) {
+      setFormError("Name this connection so it is identifiable later.");
+      return;
     }
-
-    if (!formData.host.trim()) {
-      errors.host = 'Host is required';
-    } else if (!/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$|^localhost$|^127\.0\.0\.1$/.test(formData.host)) {
-      errors.host = 'Invalid host format';
+    if (endpointError) {
+      setFormError(endpointError);
+      return;
     }
-
-    if (formData.port < 1 || formData.port > 65535) {
-      errors.port = 'Port must be between 1 and 65535';
+    if ((form.authMode === "bearer" || form.authMode === "api-key") && !form.token.trim()) {
+      setFormError("Add the credential required by this authentication mode.");
+      return;
     }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  }, [formData]);
-
-  /**
-   * Handle connect button press
-   */
-  const handleConnect = useCallback(async () => {
-    if (!validateForm()) {
+    if (form.authMode === "basic" && (!form.username.trim() || !form.password)) {
+      setFormError("Basic authentication needs both a username and password.");
       return;
     }
 
-    const config: ServerConnectionConfig = {
-      id: `${formData.host}:${formData.port}`,
-      name: formData.name,
-      host: formData.host,
-      port: formData.port,
-      transport: formData.transport,
-      isSecure: formData.isSecure,
-      authToken: formData.authToken || undefined,
-      connectionTimeoutMs: formData.connectionTimeoutMs,
-    };
-
-    const success = await connectToServer(config);
-
-    if (success) {
-      Alert.alert('Success', `Connected to ${formData.name}`);
-      setFormData({
-        name: '',
-        host: 'localhost',
-        port: 3000,
-        transport: TransportType.HTTP,
-        isSecure: false,
-        authToken: '',
-        connectionTimeoutMs: 30000,
+    try {
+      const auth = form.authMode === "none"
+        ? undefined
+        : form.authMode === "basic"
+          ? { type: "basic" as const, username: form.username.trim(), password: form.password }
+          : { type: form.authMode as "bearer" | "api-key", token: form.token.trim() };
+      const registered = await registerMutation.mutateAsync({
+        name,
+        url: endpoint,
+        type: "http",
+        auth,
       });
-    } else {
-      Alert.alert('Connection Failed', error || 'Failed to connect to server');
+      const connection = await testMutation.mutateAsync({ serverId: registered.serverId });
+      await serversQuery.refetch();
+      setForm(initialForm);
+      Alert.alert(
+        connection.connected ? "Server connected" : "Server saved",
+        connection.connected
+          ? `${name} responded to the connection check.`
+          : `${name} was saved, but the connection check did not succeed. Verify the endpoint and credentials.`,
+      );
+    } catch {
+      setFormError("That connection could not be saved. Verify the endpoint, credentials, and your sign-in state.");
     }
-  }, [formData, validateForm, connectToServer, error]);
+  }, [form, registerMutation, serversQuery, testMutation]);
 
-  /**
-   * Render form field
-   */
-  const renderField = (
-    label: string,
-    value: string | number,
-    onChangeText: (text: string) => void,
-    placeholder: string = '',
-    keyboardType: 'default' | 'numeric' | 'email-address' = 'default',
-    error?: string
-  ) => (
-    <View className="mb-4">
-      <Text className="text-sm font-semibold text-foreground mb-2">{label}</Text>
-      <TextInput
-        className={cn(
-          'px-4 py-3 rounded-lg border text-foreground',
-          error ? 'border-error bg-error/10' : 'border-border bg-surface'
-        )}
-        placeholder={placeholder}
-        placeholderTextColor={colors.muted}
-        value={String(value)}
-        onChangeText={onChangeText}
-        keyboardType={keyboardType}
-        editable={!isLoading}
-      />
-      {error && <Text className="text-xs text-error mt-1">{error}</Text>}
-    </View>
-  );
+  const testServer = useCallback(async (serverId: string, name: string) => {
+    try {
+      const result = await testMutation.mutateAsync({ serverId });
+      await serversQuery.refetch();
+      Alert.alert(result.connected ? "Connection healthy" : "Connection failed", result.connected
+        ? `${name} responded to the connection check.`
+        : `${name} did not respond. Check its availability and credentials.`);
+    } catch {
+      Alert.alert("Connection failed", "The check could not be completed. Try again after verifying the endpoint.");
+    }
+  }, [serversQuery, testMutation]);
 
-  /**
-   * Render transport selector
-   */
-  const renderTransportSelector = () => (
-    <View className="mb-4">
-      <Text className="text-sm font-semibold text-foreground mb-2">Transport Type</Text>
-      <View className="flex-row gap-2">
-        {Object.values(TransportType).map((transport) => (
-          <Pressable
-            key={transport}
-            onPress={() => setFormData((prev) => ({ ...prev, transport }))}
-            className={cn(
-              'flex-1 py-3 px-4 rounded-lg border-2',
-              formData.transport === transport
-                ? 'border-primary bg-primary/10'
-                : 'border-border bg-surface'
-            )}
-          >
-            <Text
-              className={cn(
-                'text-center font-semibold text-sm',
-                formData.transport === transport ? 'text-primary' : 'text-foreground'
-              )}
-            >
-              {transport}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
-    </View>
-  );
-
-  /**
-   * Render connection list
-   */
-  const renderConnectionsList = () => (
-    <View className="mt-8 pt-8 border-t border-border">
-      <Text className="text-lg font-bold text-foreground mb-4">Active Connections</Text>
-
-      {connections.length === 0 ? (
-        <Text className="text-muted text-center py-8">No active connections</Text>
-      ) : (
-        <View className="gap-3">
-          {connections.map((conn) => (
-            <View
-              key={conn.id}
-              className={cn(
-                'p-4 rounded-lg border',
-                conn.isConnected ? 'border-success bg-success/5' : 'border-error bg-error/5'
-              )}
-            >
-              <View className="flex-row items-center justify-between mb-2">
-                <Text className="font-semibold text-foreground">{conn.name}</Text>
-                <View
-                  className={cn(
-                    'px-2 py-1 rounded-full',
-                    conn.isConnected ? 'bg-success/20' : 'bg-error/20'
-                  )}
-                >
-                  <Text
-                    className={cn(
-                      'text-xs font-semibold',
-                      conn.isConnected ? 'text-success' : 'text-error'
-                    )}
-                  >
-                    {conn.status}
-                  </Text>
-                </View>
-              </View>
-              <Text className="text-xs text-muted">{conn.id}</Text>
-              {conn.error && <Text className="text-xs text-error mt-2">{conn.error}</Text>}
-            </View>
-          ))}
-        </View>
-      )}
-    </View>
-  );
+  const removeServer = useCallback((serverId: string, name: string) => {
+    Alert.alert("Remove server?", `Remove ${name} and its encrypted credentials from this workspace?`, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Remove",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await removeMutation.mutateAsync({ serverId });
+            await serversQuery.refetch();
+          } catch {
+            Alert.alert("Could not remove server", "Try again in a moment.");
+          }
+        },
+      },
+    ]);
+  }, [removeMutation, serversQuery]);
 
   return (
-    <ScreenContainer className="p-6">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {/* Header */}
-        <View className="mb-8">
-          <Text className="text-3xl font-bold text-foreground mb-2">Connect to Server</Text>
-          <Text className="text-muted">Add a new MCP server connection</Text>
-        </View>
+    <ScreenContainer className="px-5" containerClassName="bg-background">
+      <FlatList
+        data={servers}
+        keyExtractor={(server) => server.id}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        ListHeaderComponent={
+          <View>
+            <View className="mb-6">
+              <Text className="text-3xl font-bold text-foreground">Connect an MCP server</Text>
+              <Text className="mt-2 text-base leading-6 text-muted">
+                Add one HTTPS endpoint at a time. Credentials are encrypted before they are stored and never returned to this screen.
+              </Text>
+            </View>
 
-        {/* Error Alert */}
-        {error && (
-          <View className="mb-4 p-4 bg-error/10 border border-error rounded-lg">
-            <Text className="text-error text-sm">{error}</Text>
+            <View className="mb-7 rounded-2xl border border-border bg-surface p-4">
+              <Text className="mb-4 text-lg font-semibold text-foreground">New connection</Text>
+              <Field
+                label="Connection name"
+                value={form.name}
+                onChangeText={(value) => updateForm("name", value)}
+                placeholder="Production tools"
+                editable={!isSaving}
+              />
+              <Field
+                label="HTTPS endpoint"
+                value={form.endpoint}
+                onChangeText={(value) => updateForm("endpoint", value)}
+                placeholder="https://mcp.example.com"
+                autoCapitalize="none"
+                keyboardType="url"
+                editable={!isSaving}
+              />
+
+              <Text className="mb-2 text-sm font-semibold text-foreground">Authentication</Text>
+              <View style={styles.authOptions}>
+                {authOptions.map((option) => {
+                  const active = form.authMode === option.value;
+                  return (
+                    <Pressable
+                      key={option.value}
+                      accessibilityRole="radio"
+                      accessibilityLabel={`${option.label} authentication`}
+                      accessibilityState={{ selected: active, disabled: isSaving }}
+                      disabled={isSaving}
+                      onPress={() => updateForm("authMode", option.value)}
+                      style={[styles.authOption, { borderColor: active ? colors.primary : colors.border, backgroundColor: active ? `${colors.primary}18` : colors.background }]}
+                    >
+                      <Text style={{ color: active ? colors.primary : colors.foreground, fontWeight: "600" }}>{option.label}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              {(form.authMode === "bearer" || form.authMode === "api-key") && (
+                <Field
+                  label={form.authMode === "bearer" ? "Bearer token" : "API key"}
+                  value={form.token}
+                  onChangeText={(value) => updateForm("token", value)}
+                  placeholder="Paste credential"
+                  secureTextEntry
+                  autoCapitalize="none"
+                  editable={!isSaving}
+                />
+              )}
+              {form.authMode === "basic" && (
+                <>
+                  <Field label="Username" value={form.username} onChangeText={(value) => updateForm("username", value)} placeholder="Username" autoCapitalize="none" editable={!isSaving} />
+                  <Field label="Password" value={form.password} onChangeText={(value) => updateForm("password", value)} placeholder="Password" secureTextEntry editable={!isSaving} />
+                </>
+              )}
+
+              {formError && <Text accessibilityLiveRegion="polite" className="mb-3 text-sm text-error">{formError}</Text>}
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Save and test MCP server connection"
+                accessibilityState={{ disabled: isSaving, busy: isSaving }}
+                disabled={isSaving}
+                onPress={submit}
+                style={[styles.primaryButton, { backgroundColor: isSaving ? `${colors.primary}88` : colors.primary }]}
+              >
+                {isSaving ? <ActivityIndicator color={colors.background} /> : <Text style={{ color: colors.background, fontWeight: "700" }}>Save and test connection</Text>}
+              </Pressable>
+            </View>
+
+            <View className="mb-3 flex-row items-center justify-between">
+              <Text className="text-xl font-bold text-foreground">Your servers</Text>
+              {serversQuery.isFetching && <ActivityIndicator color={colors.primary} size="small" />}
+            </View>
+            {serversQuery.isError && <Text className="mb-3 text-sm text-error">Your server list could not be loaded. Sign in and try again.</Text>}
+          </View>
+        }
+        ListEmptyComponent={serversQuery.isLoading ? <ActivityIndicator color={colors.primary} style={styles.empty} /> : (
+          <View className="rounded-2xl border border-dashed border-border bg-surface p-5">
+            <Text className="font-semibold text-foreground">No server connections yet.</Text>
+            <Text className="mt-1 text-sm leading-5 text-muted">Add an HTTPS endpoint above. No fake green lights, no local-only ghost connections.</Text>
           </View>
         )}
-
-        {/* Form */}
-        <View className="bg-surface rounded-lg p-6 mb-6 border border-border">
-          {renderField('Server Name', formData.name, (text) =>
-            setFormData((prev) => ({ ...prev, name: text }))
-          )}
-
-          {renderTransportSelector()}
-
-          {renderField(
-            'Host',
-            formData.host,
-            (text) => setFormData((prev) => ({ ...prev, host: text })),
-            'localhost or IP address'
-          )}
-
-          {renderField(
-            'Port',
-            formData.port,
-            (text) => setFormData((prev) => ({ ...prev, port: parseInt(text) || 0 })),
-            '3000',
-            'numeric'
-          )}
-
-          {/* Advanced Options */}
-          <Pressable
-            onPress={() => setShowAdvanced(!showAdvanced)}
-            className="py-3 mb-4 flex-row items-center justify-between"
-          >
-            <Text className="font-semibold text-foreground">Advanced Options</Text>
-            <Text className="text-primary">{showAdvanced ? '−' : '+'}</Text>
-          </Pressable>
-
-          {showAdvanced && (
-            <View className="border-t border-border pt-4">
-              {renderField(
-                'Auth Token (Optional)',
-                formData.authToken,
-                (text) => setFormData((prev) => ({ ...prev, authToken: text })),
-                'Bearer token or API key'
-              )}
-
-              {renderField(
-                'Connection Timeout (ms)',
-                formData.connectionTimeoutMs,
-                (text) =>
-                  setFormData((prev) => ({ ...prev, connectionTimeoutMs: parseInt(text) || 30000 })),
-                '30000',
-                'numeric'
-              )}
-
-              <View className="flex-row items-center justify-between py-3">
-                <Text className="font-semibold text-foreground">Use Secure Connection (HTTPS/WSS)</Text>
+        renderItem={({ item }) => {
+          const statusColor = item.status === "connected" ? colors.success : item.status === "error" ? colors.error : colors.muted;
+          return (
+            <View className="mb-3 rounded-2xl border border-border bg-surface p-4">
+              <View className="flex-row items-start justify-between gap-3">
+                <View style={styles.serverTitle}>
+                  <View style={[styles.statusDot, { backgroundColor: statusColor }]} accessibilityLabel={`Status: ${item.status}`} />
+                  <View style={styles.serverCopy}>
+                    <Text className="font-semibold text-foreground">{item.name}</Text>
+                    <Text className="mt-1 text-xs text-muted" numberOfLines={1}>{item.url}</Text>
+                  </View>
+                </View>
+                <Text style={{ color: statusColor, fontSize: 12, fontWeight: "700", textTransform: "capitalize" }}>{item.status}</Text>
+              </View>
+              {item.lastError && <Text className="mt-3 text-sm text-error">{item.lastError}</Text>}
+              <View style={styles.serverActions}>
                 <Pressable
-                  onPress={() => setFormData((prev) => ({ ...prev, isSecure: !prev.isSecure }))}
-                  className={cn(
-                    'w-12 h-7 rounded-full flex items-center justify-start p-1',
-                    formData.isSecure ? 'bg-primary' : 'bg-border'
-                  )}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Test ${item.name} connection`}
+                  accessibilityState={{ disabled: isSaving, busy: testMutation.isPending }}
+                  disabled={isSaving}
+                  onPress={() => testServer(item.id, item.name)}
+                  style={[styles.secondaryButton, { borderColor: colors.border }]}
                 >
-                  <View
-                    className={cn(
-                      'w-5 h-5 rounded-full bg-background transition-all',
-                      formData.isSecure ? 'translate-x-5' : 'translate-x-0'
-                    )}
-                  />
+                  <Text style={{ color: colors.primary, fontWeight: "700" }}>Test</Text>
+                </Pressable>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Remove ${item.name}`}
+                  accessibilityState={{ disabled: isSaving }}
+                  disabled={isSaving}
+                  onPress={() => removeServer(item.id, item.name)}
+                  style={[styles.secondaryButton, { borderColor: colors.error }]}
+                >
+                  <Text style={{ color: colors.error, fontWeight: "700" }}>Remove</Text>
                 </Pressable>
               </View>
             </View>
-          )}
-
-          {/* Connect Button */}
-          <Pressable
-            onPress={handleConnect}
-            disabled={isLoading}
-            className={cn(
-              'py-4 px-6 rounded-lg flex-row items-center justify-center mt-6',
-              isLoading ? 'bg-primary/50' : 'bg-primary'
-            )}
-          >
-            {isLoading ? (
-              <>
-                <ActivityIndicator color={colors.background} size="small" />
-                <Text className="text-background font-semibold ml-2">Connecting...</Text>
-              </>
-            ) : (
-              <Text className="text-background font-semibold">Connect to Server</Text>
-            )}
-          </Pressable>
-        </View>
-
-        {/* Active Connections */}
-        {renderConnectionsList()}
-      </ScrollView>
+          );
+        }}
+      />
     </ScreenContainer>
   );
 }
+
+function Field({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  secureTextEntry,
+  autoCapitalize,
+  keyboardType,
+  editable,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (value: string) => void;
+  placeholder: string;
+  secureTextEntry?: boolean;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  keyboardType?: "default" | "url";
+  editable: boolean;
+}) {
+  const colors = useColors();
+  return (
+    <View className="mb-4">
+      <Text className="mb-2 text-sm font-semibold text-foreground">{label}</Text>
+      <TextInput
+        accessibilityLabel={label}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={colors.muted}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={false}
+        secureTextEntry={secureTextEntry}
+        keyboardType={keyboardType}
+        editable={editable}
+        returnKeyType="done"
+        style={[styles.input, { color: colors.foreground, backgroundColor: colors.background, borderColor: colors.border }]}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  content: { paddingTop: 16, paddingBottom: 112 },
+  input: { borderWidth: 1, borderRadius: 12, minHeight: 48, paddingHorizontal: 14, fontSize: 16 },
+  authOptions: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 16 },
+  authOption: { borderWidth: 1, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 10 },
+  primaryButton: { alignItems: "center", borderRadius: 12, justifyContent: "center", minHeight: 50, paddingHorizontal: 16 },
+  secondaryButton: { alignItems: "center", borderWidth: 1, borderRadius: 10, flex: 1, minHeight: 40, justifyContent: "center", paddingHorizontal: 12 },
+  empty: { marginVertical: 28 },
+  serverTitle: { alignItems: "flex-start", flex: 1, flexDirection: "row", minWidth: 0 },
+  serverCopy: { flex: 1, minWidth: 0 },
+  statusDot: { borderRadius: 5, height: 10, marginRight: 10, marginTop: 5, width: 10 },
+  serverActions: { flexDirection: "row", gap: 10, marginTop: 16 },
+});

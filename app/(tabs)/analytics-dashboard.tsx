@@ -1,400 +1,155 @@
-/**
- * Analytics Dashboard Screen
- * Real-time execution metrics, trends, and performance analysis
- */
-
-import React, { useState, useEffect } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  Dimensions,
-  Alert,
-} from 'react-native';
+import { useState } from 'react';
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
-import { useAnalyticsReport } from '@/hooks/use-api';
+import { trpc } from '@/lib/trpc';
 
-interface ToolStats {
-  toolName: string;
-  totalExecutions: number;
-  successfulExecutions: number;
-  failedExecutions: number;
-  averageExecutionTime: number;
-  successRate: number;
+type Range = '7d' | '30d';
+
+function formatDuration(durationMs: number) {
+  return durationMs < 1_000 ? `${durationMs} ms` : `${(durationMs / 1_000).toFixed(1)} s`;
 }
 
-interface ServerStats {
-  serverId: string;
-  serverType: string;
-  totalExecutions: number;
-  successfulExecutions: number;
-  failedExecutions: number;
-  averageExecutionTime: number;
-  successRate: number;
-}
-
-interface AnalyticsSummary {
-  totalExecutions: number;
-  successfulExecutions: number;
-  failedExecutions: number;
-  averageExecutionTime: number;
-  successRate: number;
-  topTools: ToolStats[];
-  serverStats: ServerStats[];
+function operationLabel(operation: 'discover' | 'execute' | 'test') {
+  return operation === 'discover' ? 'Discovery' : operation === 'execute' ? 'Tool run' : 'Connection test';
 }
 
 export default function AnalyticsDashboardScreen() {
   const colors = useColors();
-  const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('7d');
-  const [activeTab, setActiveTab] = useState<'overview' | 'tools' | 'servers'>('overview');
-
-  useEffect(() => {
-    loadAnalytics();
-  }, [timeRange]);
-
-  const loadAnalytics = async () => {
-    setLoading(true);
-    try {
-      // TODO: Call tRPC generateReport with date range
-      // Mock data for now
-      setAnalytics({
-        totalExecutions: 1247,
-        successfulExecutions: 1189,
-        failedExecutions: 58,
-        averageExecutionTime: 245,
-        successRate: 95.3,
-        topTools: [
-          {
-            toolName: 'create_issue',
-            totalExecutions: 342,
-            successfulExecutions: 328,
-            failedExecutions: 14,
-            averageExecutionTime: 180,
-            successRate: 95.9,
-          },
-          {
-            toolName: 'send_message',
-            totalExecutions: 289,
-            successfulExecutions: 285,
-            failedExecutions: 4,
-            averageExecutionTime: 120,
-            successRate: 98.6,
-          },
-          {
-            toolName: 'create_page',
-            totalExecutions: 156,
-            successfulExecutions: 142,
-            failedExecutions: 14,
-            averageExecutionTime: 350,
-            successRate: 91.0,
-          },
-        ],
-        serverStats: [
-          {
-            serverId: 'github-1',
-            serverType: 'github',
-            totalExecutions: 342,
-            successfulExecutions: 328,
-            failedExecutions: 14,
-            averageExecutionTime: 180,
-            successRate: 95.9,
-          },
-          {
-            serverId: 'slack-1',
-            serverType: 'slack',
-            totalExecutions: 289,
-            successfulExecutions: 285,
-            failedExecutions: 4,
-            averageExecutionTime: 120,
-            successRate: 98.6,
-          },
-          {
-            serverId: 'notion-1',
-            serverType: 'notion',
-            totalExecutions: 156,
-            successfulExecutions: 142,
-            failedExecutions: 14,
-            averageExecutionTime: 350,
-            successRate: 91.0,
-          },
-        ],
-      });
-    } catch (error: any) {
-      Alert.alert('Error', 'Failed to load analytics');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const StatCard = ({
-    label,
-    value,
-    unit,
-    icon,
-    color,
-  }: {
-    label: string;
-    value: number | string;
-    unit?: string;
-    icon: string;
-    color: string;
-  }) => (
-    <View className="bg-surface rounded-lg p-4 border border-border flex-1">
-      <View className="flex-row items-center justify-between mb-2">
-        <Text className="text-muted text-xs font-semibold">{label}</Text>
-        <View
-          className="w-8 h-8 rounded-full items-center justify-center"
-          style={{ backgroundColor: color + '20' }}
-        >
-          <MaterialIcons name={icon as any} size={16} color={color} />
-        </View>
-      </View>
-      <View className="flex-row items-baseline gap-1">
-        <Text className="text-foreground font-bold text-2xl">{value}</Text>
-        {unit && <Text className="text-muted text-sm">{unit}</Text>}
-      </View>
-    </View>
-  );
-
-  const ToolRow = ({ tool }: { tool: ToolStats }) => (
-    <View className="bg-surface rounded-lg p-4 border border-border mb-2">
-      <View className="flex-row items-center justify-between mb-2">
-        <Text className="text-foreground font-semibold flex-1">{tool.toolName}</Text>
-        <View className="bg-success/10 rounded px-2 py-1">
-          <Text className="text-success text-xs font-semibold">{tool.successRate.toFixed(1)}%</Text>
-        </View>
-      </View>
-
-      <View className="gap-1 mb-2">
-        <View className="flex-row justify-between">
-          <Text className="text-muted text-xs">Executions: {tool.totalExecutions}</Text>
-          <Text className="text-muted text-xs">Avg Time: {tool.averageExecutionTime}ms</Text>
-        </View>
-        <View className="flex-row justify-between">
-          <Text className="text-success text-xs">✓ {tool.successfulExecutions}</Text>
-          <Text className="text-error text-xs">✗ {tool.failedExecutions}</Text>
-        </View>
-      </View>
-
-      {/* Progress Bar */}
-      <View className="h-2 bg-background rounded-full overflow-hidden">
-        <View
-          className="h-full bg-success"
-          style={{ width: `${tool.successRate}%` }}
-        />
-      </View>
-    </View>
-  );
-
-  const ServerRow = ({ server }: { server: ServerStats }) => {
-    const serverIcons: Record<string, string> = {
-      github: 'code',
-      slack: 'chat',
-      notion: 'storage',
-    };
-
-    const serverColors: Record<string, string> = {
-      github: '#333333',
-      slack: '#E01E5A',
-      notion: '#000000',
-    };
-
-    return (
-      <View className="bg-surface rounded-lg p-4 border border-border mb-2">
-        <View className="flex-row items-center gap-3 mb-2">
-          <View
-            className="w-8 h-8 rounded-full items-center justify-center"
-            style={{ backgroundColor: serverColors[server.serverType] + '20' }}
-          >
-            <MaterialIcons
-              name={serverIcons[server.serverType] as any}
-              size={16}
-              color={serverColors[server.serverType]}
-            />
-          </View>
-          <View className="flex-1">
-            <Text className="text-foreground font-semibold capitalize">
-              {server.serverType}
-            </Text>
-            <Text className="text-muted text-xs">{server.totalExecutions} executions</Text>
-          </View>
-          <View className="bg-success/10 rounded px-2 py-1">
-            <Text className="text-success text-xs font-semibold">{server.successRate.toFixed(1)}%</Text>
-          </View>
-        </View>
-
-        <View className="gap-1">
-          <View className="flex-row justify-between">
-            <Text className="text-muted text-xs">Avg Time: {server.averageExecutionTime}ms</Text>
-            <Text className="text-success text-xs">✓ {server.successfulExecutions}</Text>
-          </View>
-        </View>
-      </View>
-    );
-  };
+  const [range, setRange] = useState<Range>('7d');
+  const reportQuery = trpc.analytics.getReport.useQuery({ range });
+  const report = reportQuery.data;
 
   return (
-    <ScreenContainer className="bg-background">
-      {/* Time Range Selector */}
-      <View className="flex-row gap-2 mb-4">
-        {(['24h', '7d', '30d'] as const).map((range) => (
-          <TouchableOpacity
-            key={range}
-            onPress={() => setTimeRange(range)}
-            className={cn(
-              'flex-1 py-2 rounded border',
-              timeRange === range
-                ? 'bg-primary border-primary'
-                : 'bg-surface border-border'
-            )}
-          >
-            <Text
-              className={cn(
-                'text-center font-semibold text-sm',
-                timeRange === range ? 'text-background' : 'text-foreground'
-              )}
-            >
-              {range === '24h' ? '24h' : range === '7d' ? '7 days' : '30 days'}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+    <ScreenContainer className="p-0">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View className="bg-primary px-6 py-8">
+          <Text className="text-xs text-background/70 font-bold tracking-widest mb-2">REAL ACTIVITY ONLY</Text>
+          <Text className="text-4xl font-bold text-background mb-2">Workspace Analytics</Text>
+          <Text className="text-base text-background/90 leading-relaxed">
+            These numbers come from authorized MCP operations recorded in your workspace. If there’s no activity, you get the truth—not dashboard cosplay.
+          </Text>
+        </View>
 
-      {/* Tab Navigation */}
-      <View className="flex-row border-b border-border mb-4">
-        {(['overview', 'tools', 'servers'] as const).map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            onPress={() => setActiveTab(tab)}
-            className={cn(
-              'flex-1 py-3 px-4 border-b-2',
-              activeTab === tab ? 'border-primary' : 'border-transparent'
-            )}
-          >
-            <Text
-              className={cn(
-                'text-center font-semibold text-sm',
-                activeTab === tab ? 'text-primary' : 'text-muted'
-              )}
-            >
-              {tab === 'overview' ? 'Overview' : tab === 'tools' ? 'Tools' : 'Servers'}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
-        {loading ? (
-          <View className="flex-1 items-center justify-center">
-            <ActivityIndicator color={colors.primary} size="large" />
+        <View className="flex-1 px-6 py-6 gap-6">
+          <View className="flex-row bg-surface rounded-xl border border-border p-1 gap-1">
+            {(['7d', '30d'] as Range[]).map((value) => (
+              <TouchableOpacity
+                key={value}
+                onPress={() => setRange(value)}
+                className={cn('flex-1 rounded-lg py-3', range === value ? 'bg-primary' : 'bg-transparent')}
+              >
+                <Text className={cn('text-sm font-bold text-center', range === value ? 'text-background' : 'text-foreground')}>
+                  Last {value === '7d' ? '7 days' : '30 days'}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
-        ) : analytics ? (
-          <>
-            {activeTab === 'overview' && (
-              <View className="gap-4">
-                {/* Summary Stats */}
-                <View className="gap-3">
-                  <View className="flex-row gap-2">
-                    <StatCard
-                      label="Total Executions"
-                      value={analytics.totalExecutions}
-                      icon="play-circle"
-                      color={colors.primary}
-                    />
-                    <StatCard
-                      label="Success Rate"
-                      value={analytics.successRate.toFixed(1)}
-                      unit="%"
-                      icon="check-circle"
-                      color="#22C55E"
-                    />
-                  </View>
 
-                  <View className="flex-row gap-2">
-                    <StatCard
-                      label="Successful"
-                      value={analytics.successfulExecutions}
-                      icon="thumb-up"
-                      color="#22C55E"
-                    />
-                    <StatCard
-                      label="Failed"
-                      value={analytics.failedExecutions}
-                      icon="error"
-                      color="#EF4444"
-                    />
-                  </View>
+          {reportQuery.isLoading ? (
+            <View className="items-center justify-center py-12">
+              <ActivityIndicator color={colors.primary} size="large" />
+              <Text className="text-sm text-muted mt-3">Counting real workspace events…</Text>
+            </View>
+          ) : reportQuery.isError ? (
+            <View className="bg-error/10 border border-error/30 rounded-2xl p-6 items-center">
+              <MaterialIcons name="error-outline" size={34} color={colors.error} />
+              <Text className="text-lg font-bold text-foreground text-center mt-3">Analytics couldn’t load</Text>
+              <Text className="text-sm text-muted text-center leading-relaxed mt-2">No stale cache gets dressed up as telemetry. Retry the protected report when the service is available.</Text>
+              <TouchableOpacity onPress={() => reportQuery.refetch()} className="bg-primary rounded-lg px-4 py-3 mt-4">
+                <Text className="text-sm font-bold text-background">Retry protected report</Text>
+              </TouchableOpacity>
+            </View>
+          ) : report ? (
+            <>
+              <View className="flex-row flex-wrap gap-3">
+                <MetricCard label="Operations" value={String(report.totals.totalExecutions)} icon="bolt" color={colors.primary} />
+                <MetricCard label="Success rate" value={`${report.totals.successRate}%`} icon="verified" color={colors.success} />
+                <MetricCard label="Avg. duration" value={formatDuration(report.totals.averageDurationMs)} icon="timer" color={colors.warning} />
+                <MetricCard label="Failures" value={String(report.totals.failedExecutions)} icon="report-problem" color={colors.error} />
+              </View>
 
-                  <StatCard
-                    label="Avg Execution Time"
-                    value={analytics.averageExecutionTime}
-                    unit="ms"
-                    icon="speed"
-                    color="#F59E0B"
-                  />
+              {report.totals.totalExecutions === 0 ? (
+                <View className="bg-surface rounded-2xl border border-border p-8 items-center">
+                  <MaterialIcons name="query-stats" size={42} color={colors.muted} />
+                  <Text className="text-lg font-bold text-foreground text-center mt-3">No verified activity in this window</Text>
+                  <Text className="text-sm text-muted text-center leading-relaxed mt-2">Run an authorized connection test, discovery, or tool action. When the runtime writes a workspace log, the math appears here.</Text>
                 </View>
+              ) : (
+                <>
+                  <AnalyticsSection title="Activity by operation" empty="No operation data yet">
+                    {report.byOperation.map((item) => (
+                      <AnalyticsRow
+                        key={item.operation}
+                        label={operationLabel(item.operation)}
+                        detail={`${item.successfulExecutions}/${item.totalExecutions} successful · ${formatDuration(item.averageDurationMs)} avg.`}
+                        value={`${item.totalExecutions}`}
+                      />
+                    ))}
+                  </AnalyticsSection>
 
-                {/* Top Tools */}
-                <View className="mt-4">
-                  <Text className="text-foreground font-bold text-lg mb-3">Top Tools</Text>
-                  {analytics.topTools.map((tool) => (
-                    <ToolRow key={tool.toolName} tool={tool} />
-                  ))}
-                </View>
+                  <AnalyticsSection title="Top tools" empty="No tool executions in this window">
+                    {report.topTools.map((item) => (
+                      <AnalyticsRow
+                        key={item.toolName}
+                        label={item.toolName}
+                        detail={`${item.successRate}% success`}
+                        value={`${item.totalExecutions}`}
+                      />
+                    ))}
+                  </AnalyticsSection>
 
-                {/* Server Performance */}
-                <View className="mt-4">
-                  <Text className="text-foreground font-bold text-lg mb-3">Server Performance</Text>
-                  {analytics.serverStats.map((server) => (
-                    <ServerRow key={server.serverId} server={server} />
-                  ))}
-                </View>
-              </View>
-            )}
-
-            {activeTab === 'tools' && (
-              <View className="gap-3">
-                <Text className="text-foreground font-semibold text-lg mb-2">Tool Performance</Text>
-                {analytics.topTools.map((tool) => (
-                  <ToolRow key={tool.toolName} tool={tool} />
-                ))}
-              </View>
-            )}
-
-            {activeTab === 'servers' && (
-              <View className="gap-3">
-                <Text className="text-foreground font-semibold text-lg mb-2">Server Statistics</Text>
-                {analytics.serverStats.map((server) => (
-                  <ServerRow key={server.serverId} server={server} />
-                ))}
-              </View>
-            )}
-
-            {/* Export Button */}
-            <TouchableOpacity className="mt-6 bg-primary/10 rounded-lg py-3 items-center border border-primary">
-              <View className="flex-row items-center gap-2">
-                <MaterialIcons name="download" size={20} color={colors.primary} />
-                <Text className="text-primary font-semibold">Export Analytics</Text>
-              </View>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <View className="flex-1 items-center justify-center">
-            <MaterialIcons name="info" size={48} color={colors.muted} />
-            <Text className="text-foreground font-semibold mt-4">No Data Available</Text>
-            <Text className="text-muted text-center mt-2 px-4">
-              Execute some macros to see analytics
-            </Text>
-          </View>
-        )}
+                  <AnalyticsSection title="Active servers" empty="No active servers in this window">
+                    {report.activeServers.map((item) => (
+                      <AnalyticsRow
+                        key={item.serverId}
+                        label={item.serverName}
+                        detail={`${item.successRate}% success · ${formatDuration(item.averageDurationMs)} avg.`}
+                        value={`${item.totalExecutions}`}
+                      />
+                    ))}
+                  </AnalyticsSection>
+                </>
+              )}
+            </>
+          ) : null}
+        </View>
       </ScrollView>
     </ScreenContainer>
+  );
+}
+
+function MetricCard({ label, value, icon, color }: { label: string; value: string; icon: React.ComponentProps<typeof MaterialIcons>['name']; color: string }) {
+  return (
+    <View className="w-[47%] flex-grow bg-surface rounded-2xl border border-border p-4">
+      <MaterialIcons name={icon} size={22} color={color} />
+      <Text className="text-2xl font-bold text-foreground mt-3" numberOfLines={1}>{value}</Text>
+      <Text className="text-xs text-muted mt-1">{label}</Text>
+    </View>
+  );
+}
+
+function AnalyticsSection({ title, empty, children }: { title: string; empty: string; children: React.ReactNode }) {
+  const items = Array.isArray(children) ? children.filter(Boolean) : children ? [children] : [];
+  return (
+    <View className="bg-surface rounded-2xl border border-border p-5">
+      <Text className="text-base font-bold text-foreground mb-3">{title}</Text>
+      {items.length > 0 ? <View className="gap-3">{children}</View> : <Text className="text-sm text-muted">{empty}</Text>}
+    </View>
+  );
+}
+
+function AnalyticsRow({ label, detail, value }: { label: string; detail: string; value: string }) {
+  return (
+    <View className="flex-row justify-between items-center gap-3 border-t border-border pt-3 first:border-t-0 first:pt-0">
+      <View className="flex-1">
+        <Text className="text-sm font-semibold text-foreground" numberOfLines={1}>{label}</Text>
+        <Text className="text-xs text-muted mt-1" numberOfLines={1}>{detail}</Text>
+      </View>
+      <Text className="text-lg font-bold text-primary">{value}</Text>
+    </View>
   );
 }

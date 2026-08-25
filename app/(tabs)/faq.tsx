@@ -1,9 +1,8 @@
-import { ScrollView, View, Pressable } from 'react-native';
+import { ScrollView, View, Pressable , Text } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/use-colors';
-import { Text } from 'react-native';
 import { Card } from '@/components/ui/card';
 
 interface FAQItem {
@@ -95,7 +94,7 @@ export default function FAQScreen() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<FAQItem['category'] | 'all'>('all');
 
-  const categories: Array<{ id: FAQItem['category'] | 'all'; label: string }> = [
+  const categories: { id: FAQItem['category'] | 'all'; label: string }[] = [
     { id: 'all', label: 'All' },
     { id: 'basics', label: 'Basics' },
     { id: 'setup', label: 'Setup' },

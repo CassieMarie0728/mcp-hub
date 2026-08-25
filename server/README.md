@@ -7,7 +7,7 @@ This guide covers server-side features including authentication, database, tRPC 
 ## When Do You Need Backend?
 
 | Scenario | Backend Needed? | User Auth Required? | Solution |
-|----------|-----------------|---------------------|----------|
+| ---------- | ----------------- | --------------------- | ---------- |
 | Data stays on device only | No | No | Use `AsyncStorage` |
 | Data syncs across devices | Yes | Yes | Database + tRPC |
 | User accounts / login | Yes | Yes | Manus OAuth |
@@ -21,7 +21,7 @@ This guide covers server-side features including authentication, database, tRPC 
 
 ## File Structure
 
-```
+```text
 server/
   db.ts              ← Query helpers (add database functions here)
   routers.ts         ← tRPC procedures (add API routes here)
@@ -54,10 +54,10 @@ Only touch the files with "←" markers. Anything under `_core/` directories is 
 
 The template uses **Manus OAuth** for user authentication. It works differently on native and web:
 
-| Platform | Auth Method | Token Storage |
-|----------|-------------|---------------|
-| iOS/Android | Bearer token | expo-secure-store |
-| Web | HTTP-only cookie | Browser cookie |
+| Platform    | Auth Method      | Token Storage     |
+| ----------- | ---------------- | ----------------- |
+| iOS/Android | Bearer token     | expo-secure-store |
+| Web         | HTTP-only cookie | Browser cookie    |
 
 ### Using the Auth Hook
 
@@ -135,8 +135,11 @@ export const appRouter = router({
 });
 
 ```
+
 ### Frontend: Handling Auth Errors
+
 protectedProcedure MUST HANDLE UNAUTHORIZED when user is not logged in. Always handle this in the frontend:
+
 ```tsx
 try {
   await trpc.someProtectedEndpoint.mutate(data);
@@ -405,6 +408,12 @@ const response = await invokeLLM({
 ```
 
 Tips
+
+- Always call llm functions from server-side code (e.g., inside tRPC procedures), to avoid exposing your API key.
+- You don't need to manually set the model; the helper uses a sensible default.
+- LLM responses often contain markdown. Use `<Streamdown>{content}</Streamdown>` (imported from `streamdown`) to render markdown content with proper formatting and streaming support.
+- For image-based gen AI workflows, local `file://` and blob URLs don't work. Upload to S3 first, then pass the public URL to `invokeLLM()`.
+
 - Always call llm functions from server-side code (e.g., inside tRPC procedures), to avoid exposing your API key.
 - You don't need to manually set the model; the helper uses a sensible default.
 - LLM responses often contain markdown. Use `<Streamdown>{content}</Streamdown>` (imported from `streamdown`) to render markdown content with proper formatting and streaming support.
@@ -443,9 +452,37 @@ const structured = await invokeLLM({
 // The model responds with JSON content matching the schema.
 // Access via `structured.choices[0].message.content` and JSON.parse if needed.
 ```
+
 The helpers mirror the Python SDK semantics but produce JavaScript-first code, keeping credentials inside the server and ensuring every environment has access to the same token.
 
 **CRITICAL Note:** `json_schema` works for flat structures. For nested arrays/objects, use `json_object` instead.
+
+```ts
+const response = await invokeLLM({
+  messages: [
+    {
+      role: "system",
+      content: `Analyze the food image. Return JSON:
+{
+  "foods": [{ "name": "string", "calories": number }],
+  "totalCalories": number
+}`
+    },
+    {
+      role: "user",
+      content: [
+        { type: "text", text: "What food is this?" },
+        { type: "image_url", image_url: { url: imageUrl } }
+      ]
+    }
+  ],
+  response_format: { type: "json_object" }
+});
+const data = JSON.parse(response.choices[0].message.content);
+```
+
+**CRITICAL Note:** `json_schema` works for flat structures. For nested arrays/objects, use `json_object` instead.
+
 ```ts
 const response = await invokeLLM({
   messages: [
@@ -477,6 +514,7 @@ const data = JSON.parse(response.choices[0].message.content);
 Use the preconfigured voice transcription helper that converts speech to text using Whisper API, no manual setup required.
 
 Example usage:
+
 ```ts
 import { transcribeAudio } from "./server/_core/voiceTranscription";
 
@@ -493,6 +531,15 @@ const result = await transcribeAudio({
 ```
 
 Tips
+
+- Accepts URL to pre-uploaded audio file
+- 16MB file size limit enforced during transcription, size flag to be set by frontend
+- Supported formats: webm, mp3, wav, ogg, m4a
+- Returns native Whisper API response with rich metadata
+- Frontend should handle audio capture, storage upload, and size validation
+
+Tips
+
 - Accepts URL to pre-uploaded audio file
 - 16MB file size limit enforced during transcription, size flag to be set by frontend
 - Supported formats: webm, mp3, wav, ogg, m4a
@@ -506,6 +553,7 @@ Tips
 Use the preconfigured image generation helper that connects to the internal ImageService, no manual setup required.
 
 Example usage:
+
 ```ts
 import { generateImage } from "./server/_core/imageGeneration.ts";
 
@@ -523,6 +571,13 @@ const { url: imageUrl } = await generateImage({
 ```
 
 Tips
+
+- Always call from server-side code (e.g., inside tRPC procedures) to avoid exposing API keys
+- Image generation can take 5-20 seconds, implement proper loading states
+- Implement proper error handling as image generation can fail
+
+Tips
+
 - Always call from server-side code (e.g., inside tRPC procedures) to avoid exposing API keys
 - Image generation can take 5-20 seconds, implement proper loading states
 - Implement proper error handling as image generation can fail
@@ -548,6 +603,10 @@ const { url } = await storagePut(
 ```
 
 Tips
+
+- Save metadata (path/URL/ACL/owner/mime/size) in your database; use S3 for the actual file bytes. This applies to all files including images, documents, and media.
+- For file uploads, have the client POST to your server, then call `storagePut` from your backend.
+
 - Save metadata (path/URL/ACL/owner/mime/size) in your database; use S3 for the actual file bytes. This applies to all files including images, documents, and media.
 - For file uploads, have the client POST to your server, then call `storagePut` from your backend.
 
@@ -575,7 +634,7 @@ Keep this channel for owner-facing alerts; end-user messaging should flow throug
 Available environment variables:
 
 | Variable | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | `DATABASE_URL` | MySQL/TiDB connection string |
 | `JWT_SECRET` | Session signing secret |
 | `VITE_APP_ID` | Manus OAuth app ID |
@@ -589,7 +648,7 @@ Available environment variables:
 Expo runtime variables (prefixed with `EXPO_PUBLIC_`):
 
 | Variable | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | `EXPO_PUBLIC_APP_ID` | App ID for OAuth |
 | `EXPO_PUBLIC_API_BASE_URL` | API server URL |
 | `EXPO_PUBLIC_OAUTH_PORTAL_URL` | Login portal URL |
@@ -633,6 +692,7 @@ pnpm test
 ## Core File References
 
 `drizzle/schema.ts`
+
 ```ts
 import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
@@ -665,6 +725,7 @@ export type InsertUser = typeof users.$inferInsert;
 ```
 
 `server/db.ts`
+
 ```ts
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
@@ -761,6 +822,7 @@ export async function getUserByOpenId(openId: string) {
 ```
 
 `server/routers.ts`
+
 ```ts
 import { COOKIE_NAME } from "../shared/const.js";
 import { getSessionCookieOptions } from "./_core/cookies";
@@ -793,6 +855,7 @@ export type AppRouter = typeof appRouter;
 ```
 
 `server/storage.ts`
+
 ```ts
 // Preconfigured storage helpers for Manus WebDev templates
 // Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
@@ -892,6 +955,7 @@ export async function storageGet(relKey: string): Promise<{ key: string; url: st
 ```
 
 `lib/trpc.ts`
+
 ```ts
 import { createTRPCReact } from "@trpc/react-query";
 import { httpBatchLink } from "@trpc/client";
@@ -938,6 +1002,7 @@ export function createTRPCClient() {
 ```
 
 `hooks/use-auth.ts`
+
 ```ts
 import * as Api from "@/lib/_core/api";
 import * as Auth from "@/lib/_core/auth";
@@ -1085,6 +1150,368 @@ export function useAuth(options?: UseAuthOptions) {
 ```
 
 `tests/auth.logout.test.ts`
+
+```ts
+import { describe, expect, it } from "vitest";
+import { appRouter } from "../server/routers";
+import { COOKIE_NAME } from "../shared/const";
+import type { TrpcContext } from "../server/_core/context";
+
+type CookieCall = {
+  name: string;
+  options: Record<string, unknown>;
+};
+
+type AuthenticatedUser = NonNullable<TrpcContext["user"]>;
+
+function createAuthContext(): { ctx: TrpcContext; clearedCookies: CookieCall[] } {
+  const clearedCookies: CookieCall[] = [];
+
+  const user: AuthenticatedUser = {
+    id: 1,
+    openId: "sample-user",
+    email: "sample@example.com",
+    name: "Sample User",
+    loginMethod: "manus",
+    role: "user",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    lastSignedIn: new Date(),
+  };
+
+  const ctx: TrpcContext = {
+    user,
+    req: {
+      protocol: "https",
+      headers: {},
+    } as TrpcContext["req"],
+    res: {
+      clearCookie: (name: string, options: Record<string, unknown>) => {
+        clearedCookies.push({ name, options });
+      },
+    } as TrpcContext["res"],
+  };
+
+  return { ctx, clearedCookies };
+}
+
+// TODO: Remove `.skip` below once you implement user authentication
+describe.skip("auth.logout", () => {
+  it("clears the session cookie and reports success", async () => {
+    const { ctx, clearedCookies } = createAuthContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.auth.logout();
+
+    expect(result).toEqual({ success: true });
+    expect(clearedCookies).toHaveLength(1);
+    expect(clearedCookies[0]?.name).toBe(COOKIE_NAME);
+    expect(clearedCookies[0]?.options).toMatchObject({
+      maxAge: -1,
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
+      path: "/",
+    });
+  });
+});
+```
+
+```ts
+// Preconfigured storage helpers for Manus WebDev templates
+// Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
+
+import { ENV } from "./_core/env";
+
+type StorageConfig = { baseUrl: string; apiKey: string };
+
+function getStorageConfig(): StorageConfig {
+  const baseUrl = ENV.forgeApiUrl;
+  const apiKey = ENV.forgeApiKey;
+
+  if (!baseUrl || !apiKey) {
+    throw new Error(
+      "Storage proxy credentials missing: set BUILT_IN_FORGE_API_URL and BUILT_IN_FORGE_API_KEY",
+    );
+  }
+
+  return { baseUrl: baseUrl.replace(/\/+$/, ""), apiKey };
+}
+
+function buildUploadUrl(baseUrl: string, relKey: string): URL {
+  const url = new URL("v1/storage/upload", ensureTrailingSlash(baseUrl));
+  url.searchParams.set("path", normalizeKey(relKey));
+  return url;
+}
+
+async function buildDownloadUrl(baseUrl: string, relKey: string, apiKey: string): Promise<string> {
+  const downloadApiUrl = new URL("v1/storage/downloadUrl", ensureTrailingSlash(baseUrl));
+  downloadApiUrl.searchParams.set("path", normalizeKey(relKey));
+  const response = await fetch(downloadApiUrl, {
+    method: "GET",
+    headers: buildAuthHeaders(apiKey),
+  });
+  return (await response.json()).url;
+}
+
+function ensureTrailingSlash(value: string): string {
+  return value.endsWith("/") ? value : `${value}/`;
+}
+
+function normalizeKey(relKey: string): string {
+  return relKey.replace(/^\/+/, "");
+}
+
+function toFormData(
+  data: Buffer | Uint8Array | string,
+  contentType: string,
+  fileName: string,
+): FormData {
+  const blob =
+    typeof data === "string"
+      ? new Blob([data], { type: contentType })
+      : new Blob([data as any], { type: contentType });
+  const form = new FormData();
+  form.append("file", blob, fileName || "file");
+  return form;
+}
+
+function buildAuthHeaders(apiKey: string): HeadersInit {
+  return { Authorization: `Bearer ${apiKey}` };
+}
+
+export async function storagePut(
+  relKey: string,
+  data: Buffer | Uint8Array | string,
+  contentType = "application/octet-stream",
+): Promise<{ key: string; url: string }> {
+  const { baseUrl, apiKey } = getStorageConfig();
+  const key = normalizeKey(relKey);
+  const uploadUrl = buildUploadUrl(baseUrl, key);
+  const formData = toFormData(data, contentType, key.split("/").pop() ?? key);
+  const response = await fetch(uploadUrl, {
+    method: "POST",
+    headers: buildAuthHeaders(apiKey),
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const message = await response.text().catch(() => response.statusText);
+    throw new Error(
+      `Storage upload failed (${response.status} ${response.statusText}): ${message}`,
+    );
+  }
+  const url = (await response.json()).url;
+  return { key, url };
+}
+
+export async function storageGet(relKey: string): Promise<{ key: string; url: string }> {
+  const { baseUrl, apiKey } = getStorageConfig();
+  const key = normalizeKey(relKey);
+  return {
+    key,
+    url: await buildDownloadUrl(baseUrl, key, apiKey),
+  };
+}
+```
+
+`lib/trpc.ts`
+
+```ts
+import { createTRPCReact } from "@trpc/react-query";
+import { httpBatchLink } from "@trpc/client";
+import superjson from "superjson";
+import type { AppRouter } from "@/server/routers";
+import { getApiBaseUrl } from "@/constants/oauth";
+import * as Auth from "@/lib/_core/auth";
+
+/**
+ * tRPC React client for type-safe API calls.
+ *
+ * IMPORTANT (tRPC v11): The `transformer` must be inside `httpBatchLink`,
+ * NOT at the root createClient level. This ensures client and server
+ * use the same serialization format (superjson).
+ */
+export const trpc = createTRPCReact<AppRouter>();
+
+/**
+ * Creates the tRPC client with proper configuration.
+ * Call this once in your app's root layout.
+ */
+export function createTRPCClient() {
+  return trpc.createClient({
+    links: [
+      httpBatchLink({
+        url: `${getApiBaseUrl()}/api/trpc`,
+        // tRPC v11: transformer MUST be inside httpBatchLink, not at root
+        transformer: superjson,
+        async headers() {
+          const token = await Auth.getSessionToken();
+          return token ? { Authorization: `Bearer ${token}` } : {};
+        },
+        // Custom fetch to include credentials for cookie-based auth
+        fetch(url, options) {
+          return fetch(url, {
+            ...options,
+            credentials: "include",
+          });
+        },
+      }),
+    ],
+  });
+}
+```
+
+`hooks/use-auth.ts`
+
+```ts
+import * as Api from "@/lib/_core/api";
+import * as Auth from "@/lib/_core/auth";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Platform } from "react-native";
+
+type UseAuthOptions = {
+  autoFetch?: boolean;
+};
+
+export function useAuth(options?: UseAuthOptions) {
+  const { autoFetch = true } = options ?? {};
+  const [user, setUser] = useState<Auth.User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchUser = useCallback(async () => {
+    console.log("[useAuth] fetchUser called");
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Web platform: use cookie-based auth, fetch user from API
+      if (Platform.OS === "web") {
+        console.log("[useAuth] Web platform: fetching user from API...");
+        const apiUser = await Api.getMe();
+        console.log("[useAuth] API user response:", apiUser);
+
+        if (apiUser) {
+          const userInfo: Auth.User = {
+            id: apiUser.id,
+            openId: apiUser.openId,
+            name: apiUser.name,
+            email: apiUser.email,
+            loginMethod: apiUser.loginMethod,
+            lastSignedIn: new Date(apiUser.lastSignedIn),
+          };
+          setUser(userInfo);
+          // Cache user info in localStorage for faster subsequent loads
+          await Auth.setUserInfo(userInfo);
+          console.log("[useAuth] Web user set from API:", userInfo);
+        } else {
+          console.log("[useAuth] Web: No authenticated user from API");
+          setUser(null);
+          await Auth.clearUserInfo();
+        }
+        return;
+      }
+
+      // Native platform: use token-based auth
+      console.log("[useAuth] Native platform: checking for session token...");
+      const sessionToken = await Auth.getSessionToken();
+      console.log(
+        "[useAuth] Session token:",
+        sessionToken ? `present (${sessionToken.substring(0, 20)}...)` : "missing",
+      );
+      if (!sessionToken) {
+        console.log("[useAuth] No session token, setting user to null");
+        setUser(null);
+        return;
+      }
+
+      // Use cached user info for native (token validates the session)
+      const cachedUser = await Auth.getUserInfo();
+      console.log("[useAuth] Cached user:", cachedUser);
+      if (cachedUser) {
+        console.log("[useAuth] Using cached user info");
+        setUser(cachedUser);
+      } else {
+        console.log("[useAuth] No cached user, setting user to null");
+        setUser(null);
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error("Failed to fetch user");
+      console.error("[useAuth] fetchUser error:", error);
+      setError(error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+      console.log("[useAuth] fetchUser completed, loading:", false);
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await Api.logout();
+    } catch (err) {
+      console.error("[Auth] Logout API call failed:", err);
+      // Continue with logout even if API call fails
+    } finally {
+      await Auth.removeSessionToken();
+      await Auth.clearUserInfo();
+      setUser(null);
+      setError(null);
+    }
+  }, []);
+
+  const isAuthenticated = useMemo(() => Boolean(user), [user]);
+
+  useEffect(() => {
+    console.log("[useAuth] useEffect triggered, autoFetch:", autoFetch, "platform:", Platform.OS);
+    if (autoFetch) {
+      if (Platform.OS === "web") {
+        // Web: fetch user from API directly (user will login manually if needed)
+        console.log("[useAuth] Web: fetching user from API...");
+        fetchUser();
+      } else {
+        // Native: check for cached user info first for faster initial load
+        Auth.getUserInfo().then((cachedUser) => {
+          console.log("[useAuth] Native cached user check:", cachedUser);
+          if (cachedUser) {
+            console.log("[useAuth] Native: setting cached user immediately");
+            setUser(cachedUser);
+            setLoading(false);
+          } else {
+            // No cached user, check session token
+            fetchUser();
+          }
+        });
+      }
+    } else {
+      console.log("[useAuth] autoFetch disabled, setting loading to false");
+      setLoading(false);
+    }
+  }, [autoFetch, fetchUser]);
+
+  useEffect(() => {
+    console.log("[useAuth] State updated:", {
+      hasUser: !!user,
+      loading,
+      isAuthenticated,
+      error: error?.message,
+    });
+  }, [user, loading, isAuthenticated, error]);
+
+  return {
+    user,
+    loading,
+    error,
+    isAuthenticated,
+    refresh: fetchUser,
+    logout,
+  };
+}
+```
+
+`tests/auth.logout.test.ts`
+
 ```ts
 import { describe, expect, it } from "vitest";
 import { appRouter } from "../server/routers";
@@ -1227,7 +1654,7 @@ const { data, fetchNextPage, hasNextPage } = trpc.items.list.useInfiniteQuery(
 ## Troubleshooting
 
 | Issue | Solution |
-|-------|----------|
+| ------- | ---------- |
 | "Database not available" | Check `DATABASE_URL` is set |
 | Auth not working | Verify OAuth callback URL matches |
 | tRPC type errors | Run `pnpm check` to verify types |

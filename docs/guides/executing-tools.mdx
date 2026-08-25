@@ -86,7 +86,7 @@ Filter the history by status or search by tool name and server name to find spec
 If a tool call fails, MCP Hub displays a structured error message explaining what went wrong. Use the table below to diagnose and fix common errors:
 
 | Error | Cause | Fix |
-|---|---|---|
+| --- | --- | --- |
 | `UNREACHABLE` — Server not reachable | Network connectivity issue or server is down | Check your network connection and verify the server URL or command |
 | `TIMEOUT` — Request timed out | Server is overloaded or the operation takes too long | Retry the request, or increase the timeout in **Settings → Connection Timeout** |
 | `INVALID_PARAMS` — Invalid parameter | Wrong input type or value that fails server-side validation | Correct the highlighted field and resubmit |
@@ -99,7 +99,7 @@ If a tool call fails, MCP Hub displays a structured error message explaining wha
 When a request fails due to a transient error (network hiccup, server busy, etc.), MCP Hub automatically retries it using **exponential backoff**:
 
 | Attempt | Delay before retry |
-|---|---|
+| --- | --- |
 | 1st retry | 500 ms |
 | 2nd retry | 1 s |
 | 3rd retry | 2 s |
@@ -107,5 +107,5 @@ When a request fails due to a transient error (network hiccup, server busy, etc.
 After 3 failed attempts, MCP Hub stops retrying and surfaces the error. You can then trigger a **manual retry** by tapping the **Retry** button on the Results screen — no need to navigate back and re-enter your parameters.
 
 <Tip>
-  Save useful tool call configurations as macros to replay them later without re-entering parameters. Open the Results screen after a successful run and tap **Save as Macro**, or head to the [Macros guide](/guides/macros) to learn how to build, chain, and schedule macros.
+  Save useful tool call configurations as macros to replay them later without re-entering parameters. Open the Results screen after a successful run and tap **Save as Macro**, or head to the [Macros guide](./macros) to learn how to build, chain, and schedule macros.
 </Tip>

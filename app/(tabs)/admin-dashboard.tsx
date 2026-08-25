@@ -1,5 +1,5 @@
 import { ScrollView, View, Text, Pressable, ActivityIndicator } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ScreenContainer } from '@/components/screen-container';
 import { useColors } from '@/hooks/use-colors';
 import { adminMetricsManager, type SystemMetrics } from '@/lib/_core/admin-metrics-client';
@@ -16,14 +16,7 @@ export default function AdminDashboardScreen() {
   const [timeRange, setTimeRange] = useState<'hour' | 'day' | 'week' | 'month'>('day');
   const [activeTab, setActiveTab] = useState<'overview' | 'workflows' | 'errors'>('overview');
 
-  useEffect(() => {
-    loadMetrics();
-    // Refresh metrics every 30 seconds
-    const interval = setInterval(loadMetrics, 30000);
-    return () => clearInterval(interval);
-  }, [timeRange]);
-
-  const loadMetrics = async () => {
+  const loadMetrics = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminMetricsManager.getSystemMetrics(timeRange);
@@ -33,7 +26,14 @@ export default function AdminDashboardScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeRange]);
+
+  useEffect(() => {
+    loadMetrics();
+    // Refresh metrics every 30 seconds
+    const interval = setInterval(loadMetrics, 30000);
+    return () => clearInterval(interval);
+  }, [loadMetrics]);
 
   if (loading && !metrics) {
     return (

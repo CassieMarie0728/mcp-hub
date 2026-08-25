@@ -4,7 +4,7 @@ sidebarTitle: "Create Connection"
 description: "POST /api/connections registers a new MCP server connection. Specify the server UUID, transport config, and authentication mode to get started."
 ---
 
-Register a new MCP server connection in MCP Hub. After creating a connection, use the [connect endpoint](/api/connections/manage) to open the transport and begin the MCP initialization handshake.
+Register a new MCP server connection in MCP Hub. After creating a connection, use the [connect endpoint](../connections/manage) to open the transport and begin the MCP initialization handshake.
 
 ```http
 POST /api/connections
@@ -23,15 +23,12 @@ POST /api/connections
     <ParamField body="type" type="string" required>
       The transport protocol to use. Accepted values: `streamable_http` or `stdio`.
     </ParamField>
-
     <ParamField body="httpEndpoint" type="string (uri)">
       The full URL of the HTTP MCP endpoint. Required when `type` is `streamable_http`.
     </ParamField>
-
     <ParamField body="stdioCommand" type="string">
       The command to run when starting the server process. Required when `type` is `stdio`.
     </ParamField>
-
     <ParamField body="stdioArgs" type="array">
       An optional list of string arguments passed to `stdioCommand` at startup. Only used when `type` is `stdio`.
     </ParamField>
@@ -41,10 +38,10 @@ POST /api/connections
 <ParamField body="authMode" type="string" required>
   The authentication mode for this connection. Accepted values:
 
-  - `none` — no authentication required
-  - `oauth2` — OAuth 2.0 flow managed by MCP Hub
-  - `bearer` — a static bearer token you supply
-  - `secret_env` — secrets injected as environment variables into the stdio process
+- `none` — no authentication required
+- `oauth2` — OAuth 2.0 flow managed by MCP Hub
+- `bearer` — a static bearer token you supply
+- `secret_env` — secrets injected as environment variables into the stdio process
 </ParamField>
 
 <ParamField body="metadata" type="object">
@@ -76,6 +73,7 @@ POST /api/connections
   "authMode": "secret_env"
 }
 ```
+
 </CodeGroup>
 
 ## Response

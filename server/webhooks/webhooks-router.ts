@@ -1,198 +1,32 @@
-/**
- * tRPC Router for Webhook Management
- */
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-import { z } from 'zod';
-import { protectedProcedure, router } from '../_core/trpc';
-import { WebhookManager, type WebhookConfig } from './webhook-manager';
+import { protectedProcedure, router } from "../_core/trpc";
+import { getOrCreatePersonalWorkspaceAccess } from "../security/workspace-access";
+import { requireTenantLifecyclePersistence } from "../security/feature-availability";
+import { createWebhook, deleteWebhook, listWebhooks, rotateWebhookSecret, updateWebhook } from "../lifecycle/lifecycle-repository";
+
+const retryPolicy = z.object({ maxRetries: z.number().int().min(0).max(10), backoffMs: z.number().int().min(100).max(3_600_000) });
+const webhookId = z.string().uuid();
+const unavailable = (feature: string) => requireTenantLifecyclePersistence(feature);
+
+async function workspaceFor(ctx: { user: { id: number } | null }) {
+  if (!ctx.user) throw new TRPCError({ code: "UNAUTHORIZED", message: "Authentication is required" });
+  return getOrCreatePersonalWorkspaceAccess(ctx.user);
+}
 
 export const webhooksRouter = router({
-  /**
-   * Create webhook
-   */
-  createWebhook: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        events: z.array(z.string()),
-        rateLimit: z.number().default(60),
-        ipWhitelist: z.array(z.string()).optional(),
-        ipBlacklist: z.array(z.string()).optional(),
-        retryPolicy: z.object({
-          maxRetries: z.number().default(3),
-          backoffMs: z.number().default(1000),
-        }),
-      })
-    )
-    .mutation(({ input }) => {
-      const secret = WebhookManager.generateSecret();
-      const webhook = WebhookManager.createWebhook({
-        name: input.name,
-        url: WebhookManager.generateWebhookUrl('temp'),
-        secret,
-        events: input.events,
-        isActive: true,
-        rateLimit: input.rateLimit,
-        ipWhitelist: input.ipWhitelist,
-        ipBlacklist: input.ipBlacklist,
-        retryPolicy: input.retryPolicy,
-      });
-
-      // Update URL with actual webhook ID
-      webhook.url = WebhookManager.generateWebhookUrl(webhook.id);
-
-      return webhook;
-    }),
-
-  /**
-   * Get webhook
-   */
-  getWebhook: protectedProcedure
-    .input(z.object({ webhookId: z.string() }))
-    .query(({ input }) => {
-      const webhook = WebhookManager.getWebhook(input.webhookId);
-      if (!webhook) {
-        throw new Error(`Webhook ${input.webhookId} not found`);
-      }
-      return webhook;
-    }),
-
-  /**
-   * List webhooks
-   */
-  listWebhooks: protectedProcedure.query(() => {
-    return WebhookManager.listWebhooks();
+  createWebhook: protectedProcedure.input(z.object({ name: z.string().trim().min(1).max(128), events: z.array(z.string().trim().min(1).max(128)).min(1).max(25), retryPolicy })).mutation(async ({ ctx, input }) => createWebhook(await workspaceFor(ctx), input)),
+  listWebhooks: protectedProcedure.query(async ({ ctx }) => listWebhooks(await workspaceFor(ctx))),
+  updateWebhook: protectedProcedure.input(z.object({ webhookId, name: z.string().trim().min(1).max(128).optional(), events: z.array(z.string().trim().min(1).max(128)).min(1).max(25).optional(), retryPolicy: retryPolicy.optional() })).mutation(async ({ ctx, input }) => updateWebhook(await workspaceFor(ctx), input.webhookId, input)),
+  deleteWebhook: protectedProcedure.input(z.object({ webhookId })).mutation(async ({ ctx, input }) => {
+    await deleteWebhook(await workspaceFor(ctx), input.webhookId);
+    return { success: true };
   }),
-
-  /**
-   * Update webhook
-   */
-  updateWebhook: protectedProcedure
-    .input(
-      z.object({
-        webhookId: z.string(),
-        name: z.string().optional(),
-        events: z.array(z.string()).optional(),
-        isActive: z.boolean().optional(),
-        rateLimit: z.number().optional(),
-        ipWhitelist: z.array(z.string()).optional(),
-        ipBlacklist: z.array(z.string()).optional(),
-      })
-    )
-    .mutation(({ input }) => {
-      const { webhookId, ...updates } = input;
-      return WebhookManager.updateWebhook(webhookId, updates as any);
-    }),
-
-  /**
-   * Delete webhook
-   */
-  deleteWebhook: protectedProcedure
-    .input(z.object({ webhookId: z.string() }))
-    .mutation(({ input }) => {
-      WebhookManager.deleteWebhook(input.webhookId);
-      return { success: true };
-    }),
-
-  /**
-   * Get webhook events
-   */
-  getWebhookEvents: protectedProcedure
-    .input(z.object({ webhookId: z.string(), limit: z.number().default(50) }))
-    .query(({ input }) => {
-      return WebhookManager.getWebhookEvents(input.webhookId, input.limit);
-    }),
-
-  /**
-   * Get webhook statistics
-   */
-  getWebhookStats: protectedProcedure
-    .input(z.object({ webhookId: z.string() }))
-    .query(({ input }) => {
-      return WebhookManager.getWebhookStats(input.webhookId);
-    }),
-
-  /**
-   * Test webhook
-   */
-  testWebhook: protectedProcedure
-    .input(
-      z.object({
-        webhookId: z.string(),
-        event: z.string(),
-        payload: z.record(z.string(), z.any()),
-      })
-    )
-    .mutation(({ input }) => {
-      const webhook = WebhookManager.getWebhook(input.webhookId);
-      if (!webhook) {
-        throw new Error(`Webhook ${input.webhookId} not found`);
-      }
-
-      const event = WebhookManager.recordEvent(
-        input.webhookId,
-        input.event,
-        input.payload,
-        'pending'
-      );
-
-      return {
-        event,
-        webhook,
-        testUrl: webhook.url,
-        signature: WebhookManager.createSignature(
-          JSON.stringify(input.payload),
-          webhook.secret
-        ),
-      };
-    }),
-
-  /**
-   * Rotate webhook secret
-   */
-  rotateSecret: protectedProcedure
-    .input(z.object({ webhookId: z.string() }))
-    .mutation(({ input }) => {
-      const webhook = WebhookManager.getWebhook(input.webhookId);
-      if (!webhook) {
-        throw new Error(`Webhook ${input.webhookId} not found`);
-      }
-
-      const newSecret = WebhookManager.generateSecret();
-      const updated = WebhookManager.updateWebhook(input.webhookId, {
-        secret: newSecret,
-      });
-
-      return {
-        webhookId: updated.id,
-        newSecret,
-        message: 'Secret rotated successfully. Update your webhook consumer with the new secret.',
-      };
-    }),
-
-  /**
-   * Verify webhook signature
-   */
-  verifySignature: protectedProcedure
-    .input(
-      z.object({
-        webhookId: z.string(),
-        payload: z.string(),
-        signature: z.string(),
-      })
-    )
-    .query(({ input }) => {
-      const webhook = WebhookManager.getWebhook(input.webhookId);
-      if (!webhook) {
-        throw new Error(`Webhook ${input.webhookId} not found`);
-      }
-
-      const isValid = WebhookManager.verifySignature(
-        input.payload,
-        input.signature,
-        webhook.secret
-      );
-
-      return { valid: isValid };
-    }),
+  rotateSecret: protectedProcedure.input(z.object({ webhookId })).mutation(async ({ ctx, input }) => ({ signingSecret: await rotateWebhookSecret(await workspaceFor(ctx), input.webhookId) })),
+  getWebhook: protectedProcedure.input(z.object({ webhookId })).query(() => unavailable("Webhook retrieval by ID")),
+  getWebhookEvents: protectedProcedure.input(z.object({ webhookId, limit: z.number().optional() })).query(() => unavailable("Webhook event delivery history")),
+  getWebhookStats: protectedProcedure.input(z.object({ webhookId })).query(() => unavailable("Webhook delivery statistics")),
+  testWebhook: protectedProcedure.input(z.object({ webhookId, event: z.string(), payload: z.record(z.string(), z.unknown()) })).mutation(() => unavailable("Webhook test delivery")),
+  verifySignature: protectedProcedure.input(z.object({ webhookId, payload: z.string(), signature: z.string() })).query(() => unavailable("Webhook signature verification")),
 });

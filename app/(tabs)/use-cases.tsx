@@ -1,9 +1,8 @@
-import { ScrollView, View, Pressable } from 'react-native';
+import { ScrollView, View, Pressable , Text } from 'react-native';
 import { ScreenContainer } from '@/components/screen-container';
 import { useState } from 'react';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/use-colors';
-import { Text } from 'react-native';
 import { Card } from '@/components/ui/card';
 
 interface Mission {
@@ -101,8 +100,6 @@ const MissionCard = ({ mission }: { mission: Mission }) => {
 };
 
 export default function UseCasesScreen() {
-  const colors = useColors();
-
   return (
     <ScreenContainer className="p-0">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>

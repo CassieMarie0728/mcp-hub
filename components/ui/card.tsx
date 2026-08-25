@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable, ViewProps } from 'react-native';
+import { View, Pressable, Text, ViewProps } from 'react-native';
 import { cn } from '@/lib/utils';
 
 export type CardVariant = 'elevated' | 'outlined' | 'filled';
@@ -104,6 +104,3 @@ export function CardFooter({ children, className }: CardFooterProps) {
     </View>
   );
 }
-
-// Import Text for CardHeader
-import { Text } from 'react-native';

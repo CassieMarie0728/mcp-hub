@@ -19,9 +19,10 @@ cp .env.example .env
 <ParamField body="DATABASE_URL" type="string" required>
   The full MySQL connection string for your database. MCP Hub uses Drizzle ORM and passes this value directly to the Drizzle client.
 
-  ```
+  ```text
   DATABASE_URL="mysql://user:password@localhost:3306/mcp_hub"
   ```
+
 </ParamField>
 
 <ParamField body="COOKIE_SECRET" type="string" required>
@@ -43,24 +44,25 @@ cp .env.example .env
 <ParamField body="MCP_SERVER_URL" type="string">
   The default MCP server URL pre-populated when you add a new server in the UI. Set this to your most commonly used server to save time. You can still add servers with different URLs from within the app.
 
-  ```
+  ```text
   MCP_SERVER_URL="http://localhost:3001"
   ```
+
 </ParamField>
 
 <ParamField body="OPENAI_API_KEY" type="string">
   Your OpenAI API key, required only if you use AI features such as natural-language tool search or automated workflow suggestions. Leave blank to disable those features.
 
-  ```
+  ```text
   OPENAI_API_KEY="<your-openai-api-key>"
   ```
 
   <Warning>
-    Treat `OPENAI_API_KEY` like a password:
+Treat `OPENAI_API_KEY` like a password:
 
-    - Store it only in `.env`, never in source.
-    - Rotate it from the OpenAI dashboard if it leaks.
-    - Use a separate key per environment so a leaked development key cannot consume production quota.
+- Store it only in `.env`, never in source.
+- Rotate it from the OpenAI dashboard if it leaks.
+- Use a separate key per environment so a leaked development key cannot consume production quota.
   </Warning>
 </ParamField>
 
@@ -73,10 +75,10 @@ cp .env.example .env
 <Warning>
   When `NODE_ENV=production`, also make sure you:
 
-  - Serve MCP Hub over HTTPS only — cookies are marked `Secure` only on HTTPS origins.
-  - Generate **fresh** `COOKIE_SECRET` and `JWT_SECRET` values for each environment (never reuse development secrets in production).
-  - Use a dedicated database user with the minimum privileges needed (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema). Do not connect with the database root account.
-  - Provision `OPENAI_API_KEY` and any third-party tokens from your deployment platform's secrets manager, not a committed `.env` file.
+- Serve MCP Hub over HTTPS only — cookies are marked `Secure` only on HTTPS origins.
+- Generate **fresh** `COOKIE_SECRET` and `JWT_SECRET` values for each environment (never reuse development secrets in production).
+- Use a dedicated database user with the minimum privileges needed (`SELECT`, `INSERT`, `UPDATE`, `DELETE` on the `mcp_hub` schema). Do not connect with the database root account.
+- Provision `OPENAI_API_KEY` and any third-party tokens from your deployment platform's secrets manager, not a committed `.env` file.
 </Warning>
 
 ## Complete `.env` Example
@@ -125,7 +127,7 @@ The database itself must exist before you run `pnpm db:push`. Create it with:
 CREATE DATABASE mcp_hub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-Or, if you used the Docker command from the [Quick Start](/quickstart), the `MYSQL_DATABASE=mcp_hub` flag already created it for you.
+Or, if you used the Docker command from the [Quick Start](./quickstart), the `MYSQL_DATABASE=mcp_hub` flag already created it for you.
 
 ## Generating Secrets
 

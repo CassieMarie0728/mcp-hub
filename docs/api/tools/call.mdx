@@ -8,7 +8,7 @@ Execute a tool on a connected MCP server. Provide the tool arguments as a JSON o
 
 ## Call a tool
 
-**POST /api/connections/{connectionId}/tools/{toolName}/call**
+**POST /api/connections/\{connectionId\}/tools/\{toolName\}/call**
 
 ### Path parameters
 
@@ -17,7 +17,7 @@ Execute a tool on a connected MCP server. Provide the tool arguments as a JSON o
 </ParamField>
 
 <ParamField path="toolName" type="string" required>
-  Name of the tool to execute. Must match the `name` field returned by [List Tools](/api/tools/list).
+  Name of the tool to execute. Must match the `name` field returned by [List Tools](../tools/list).
 </ParamField>
 
 ### Request body
@@ -47,7 +47,7 @@ Execute a tool on a connected MCP server. Provide the tool arguments as a JSON o
 ### Response
 
 <ResponseField name="requestId" type="string">
-  UUID of the request record created for this tool call. Use [GET /api/requests/{requestId}](/api/requests) to inspect the full record, including status, payloads, and timing.
+  UUID of the request record created for this tool call. Use [GET /api/requests/{requestId}](../requests) to inspect the full record, including status, payloads, and timing.
 </ResponseField>
 
 <ResponseField name="result" type="object">
@@ -74,14 +74,14 @@ Execute a tool on a connected MCP server. Provide the tool arguments as a JSON o
 </Note>
 
 <Warning>
-  Passing arguments that do not satisfy the tool's `schema` (e.g. missing required fields, wrong types) will cause the tool to return an error. Validate arguments against the schema from [Get a single tool](/api/tools/list#get-a-single-tool) before calling.
+  Passing arguments that do not satisfy the tool's `schema` (e.g. missing required fields, wrong types) will cause the tool to return an error. Validate arguments against the schema from [Get a single tool](../tools/list#get-a-single-tool) before calling.
 </Warning>
 
 ---
 
 ## Request completions
 
-**POST /api/connections/{connectionId}/completions**
+**POST /api/connections/\{connectionId\}/completions**
 
 Ask the MCP server to complete a prompt or resource reference given a set of arguments. Completions are used by AI clients to resolve template variables, fill prompt arguments, or generate contextual suggestions from the server.
 

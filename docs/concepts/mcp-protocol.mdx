@@ -31,7 +31,7 @@ MCP Hub supports two transport mechanisms for communicating with MCP servers.
 **Streamable HTTP** connects to a remote endpoint over HTTP. MCP Hub sends requests as HTTP POST messages and optionally receives streaming responses via Server-Sent Events (SSE). Use this transport for hosted or cloud-based MCP servers that expose a public URL.
 
 | Transport | Best For | How It Works |
-|---|---|---|
+| --- | --- | --- |
 | `stdio` | Local tools and scripts | Spawns a child process; reads/writes via stdin/stdout |
 | `streamable_http` | Remote or hosted servers | HTTP POST for requests; SSE for streaming responses |
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, Pressable, Modal, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Pressable, Modal, Dimensions, Image } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useOnboarding } from '@/lib/onboarding-context';
 import { useColors } from '@/hooks/use-colors';
@@ -20,7 +20,6 @@ const ICON_MAP: Record<string, string> = {
 export function OnboardingModal() {
   const {
     isOnboarding,
-    currentStep,
     currentStepIndex,
     stepData,
     nextStep,
@@ -94,17 +93,26 @@ export function OnboardingModal() {
               </View>
             </View>
 
-            {/* Icon */}
+            {/* Intro uses the MCP core; later steps retain their functional icon. */}
             <View className="items-center pt-6 pb-4">
               <View
                 className="w-20 h-20 rounded-full items-center justify-center"
                 style={{ backgroundColor: colors.primary + '20' }}
               >
-                <MaterialIcons
-                  name={ICON_MAP[stepData.icon] as any}
-                  size={40}
-                  color={colors.primary}
-                />
+                {currentStepIndex === 0 ? (
+                  <Image
+                    source={require('../assets/images/icon.png')}
+                    resizeMode="cover"
+                    accessibilityLabel="MCP Hub reactor core"
+                    style={{ width: 72, height: 72, borderRadius: 36 }}
+                  />
+                ) : (
+                  <MaterialIcons
+                    name={ICON_MAP[stepData.icon] as any}
+                    size={40}
+                    color={colors.primary}
+                  />
+                )}
               </View>
             </View>
 
@@ -181,19 +189,8 @@ export function OnboardingModal() {
                 <Pressable
                   key={index}
                   onPress={() => {
-                    // Allow jumping to any step
-                    const steps: any[] = [
-                      'welcome',
-                      'connect-server',
-                      'execute-tool',
-                      'view-history',
-                      'ai-assistant',
-                      'manage-macros',
-                      'explore-marketplace',
-                      'settings',
-                    ];
                     // Commented out for now - can enable if you want users to jump around
-                    // useOnboarding().goToStep(steps[index]);
+                    // useOnboarding().goToStep(index);
                   }}
                   className={cn(
                     'h-2 rounded-full',

@@ -8,7 +8,7 @@ Retrieve all tools discovered from a connected MCP server. Tools are cached afte
 
 ## List all tools
 
-**GET /api/connections/{connectionId}/tools**
+**GET /api/connections/\{connectionId\}/tools**
 
 Returns a paginated list of every tool discovered from the specified connection. Each tool includes its name, description, JSON Schema for its inputs, and the timestamp of its last discovery.
 
@@ -64,7 +64,7 @@ An array of `ToolMetadata` objects.
 
 ## Get a single tool
 
-**GET /api/connections/{connectionId}/tools/{toolName}**
+**GET /api/connections/\{connectionId\}/tools/\{toolName\}**
 
 Retrieve metadata for one specific tool by name. Use this to inspect the tool's input schema before calling it.
 

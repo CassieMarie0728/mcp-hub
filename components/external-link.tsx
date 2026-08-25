@@ -1,7 +1,5 @@
 import { Link } from "expo-router";
 import { Text, type TextProps } from "react-native";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useColors } from "@/hooks/use-colors";
 
 export function ExternalLink(props: TextProps & { href: string }) {
   return (

@@ -1,10 +1,8 @@
 import { View, Text, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { ScreenContainer } from '@/components/screen-container';
-import { useColors } from '@/hooks/use-colors';
 
 export default function TemplateDetailScreen() {
-  const colors = useColors();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   return (

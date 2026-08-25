@@ -1,18 +1,24 @@
 /**
  * MCP Server Manager
- * Handles connections to real MCP servers, tool discovery, and execution
+ * Holds ephemeral MCP runtime state only. Every network request is routed through
+ * the SSRF-safe outbound policy; durable configuration is handled by the tenant
+ * repository and hydrated briefly by the authorized runtime.
  */
 
-import { createHttpClient, type HttpClient } from '../../lib/http-client';
+import {
+  assertSafeMcpHeaders,
+  parseSafeMcpEndpoint,
+  safeMcpRequest,
+} from "../security/mcp-outbound-policy";
 
 export interface MCPServerConfig {
   id: string;
   name: string;
   url: string;
-  type: 'http' | 'websocket' | 'stdio';
+  type: "http" | "websocket" | "stdio";
   headers?: Record<string, string>;
   auth?: {
-    type: 'bearer' | 'api-key' | 'basic';
+    type: "bearer" | "api-key" | "basic";
     token?: string;
     username?: string;
     password?: string;
@@ -21,255 +27,182 @@ export interface MCPServerConfig {
   retryAttempts?: number;
 }
 
-// Type for internal use with unknown values
-type MCPServerConfigWithUnknownHeaders = Omit<MCPServerConfig, 'headers'> & {
-  headers?: Record<string, unknown>;
-}
-
 export interface MCPTool {
   name: string;
   description: string;
   inputSchema: {
     type: string;
-    properties: Record<string, any>;
+    properties: Record<string, unknown>;
     required?: string[];
   };
 }
 
 export interface MCPToolResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
 }
 
 export interface ServerStatus {
   id: string;
   name: string;
-  status: 'connected' | 'disconnected' | 'error';
+  status: "connected" | "disconnected" | "error";
   lastConnected?: Date;
   lastError?: string;
   toolCount?: number;
 }
 
-class MCPServerManager {
-  private servers: Map<string, MCPServerConfigWithUnknownHeaders> = new Map();
-  private clients: Map<string, HttpClient> = new Map();
-  private toolCache: Map<string, MCPTool[]> = new Map();
-  private serverStatus: Map<string, ServerStatus> = new Map();
+export class MCPServerManager {
+  private servers = new Map<string, MCPServerConfig>();
+  private toolCache = new Map<string, MCPTool[]>();
+  private serverStatus = new Map<string, ServerStatus>();
 
-  /**
-   * Register an MCP server
-   */
-  registerServer(config: MCPServerConfigWithUnknownHeaders): void {
+  registerServer(config: MCPServerConfig): void {
+    parseSafeMcpEndpoint(config.url);
+    assertSafeMcpHeaders(config.headers);
     this.servers.set(config.id, config);
-
-    // Create HTTP client with auth
-    const client = createHttpClient({
-      baseURL: config.url,
-      timeout: config.timeout || 30000,
-      headers: this.buildHeaders(config) as Record<string, string>,
-    });
-
-    this.clients.set(config.id, client);
-
-    // Initialize status
     this.serverStatus.set(config.id, {
       id: config.id,
       name: config.name,
-      status: 'disconnected',
+      status: "disconnected",
     });
   }
 
-  /**
-   * Build request headers with authentication
-   */
-  private buildHeaders(config: MCPServerConfigWithUnknownHeaders): Record<string, string> {
-    const headers: Record<string, string> = {};
-    if (config.headers) {
-      Object.entries(config.headers).forEach(([key, value]) => {
-        headers[key] = String(value);
-      });
-    }
+  private buildHeaders(config: MCPServerConfig): Record<string, string> {
+    const headers: Record<string, string> = { ...(config.headers ?? {}) };
+    if (!config.auth) return headers;
 
-    if (config.auth) {
-      switch (config.auth.type) {
-        case 'bearer':
-          headers['Authorization'] = `Bearer ${config.auth.token}`;
-          break;
-        case 'api-key':
-          headers['X-API-Key'] = config.auth.token || '';
-          break;
-        case 'basic':
-          const credentials = btoa(`${config.auth.username}:${config.auth.password}`);
-          headers['Authorization'] = `Basic ${credentials}`;
-          break;
-      }
+    switch (config.auth.type) {
+      case "bearer":
+        if (config.auth.token) headers.Authorization = `Bearer ${config.auth.token}`;
+        break;
+      case "api-key":
+        if (config.auth.token) headers["X-API-Key"] = config.auth.token;
+        break;
+      case "basic":
+        headers.Authorization = `Basic ${Buffer.from(`${config.auth.username ?? ""}:${config.auth.password ?? ""}`).toString("base64")}`;
+        break;
     }
-
+    assertSafeMcpHeaders(headers);
     return headers;
   }
 
-  /**
-   * Discover tools from an MCP server
-   */
   async discoverTools(serverId: string): Promise<MCPTool[]> {
     const config = this.servers.get(serverId);
-    if (!config) {
-      throw new Error(`Server ${serverId} not found`);
-    }
-
-    // Check cache first
-    if (this.toolCache.has(serverId)) {
-      return this.toolCache.get(serverId)!;
-    }
+    if (!config) throw new Error("MCP server not found");
+    const cached = this.toolCache.get(serverId);
+    if (cached) return cached;
 
     try {
-      const client = this.clients.get(serverId);
-      if (!client) {
-        throw new Error(`No client for server ${serverId}`);
+      const response = await safeMcpRequest(config.url, "/mcp/tools/list", {
+        method: "POST",
+        headers: this.buildHeaders(config),
+        body: {},
+        timeoutMs: config.timeout,
+      });
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw new Error("Unsuccessful tool discovery response");
       }
+      const tools = response.body && typeof response.body === "object" && "tools" in response.body
+        ? (response.body as { tools?: MCPTool[] }).tools ?? []
+        : [];
 
-      const response = await client.post<any>('/mcp/tools/list', {});
-
-      const tools = response.data.tools || [];
       this.toolCache.set(serverId, tools);
-
-      // Update status
-      const status = this.serverStatus.get(serverId);
-      if (status) {
-        status.status = 'connected';
-        status.lastConnected = new Date();
-        status.toolCount = tools.length;
-      }
-
+      this.serverStatus.set(serverId, {
+        id: serverId,
+        name: config.name,
+        status: "connected",
+        lastConnected: new Date(),
+        toolCount: tools.length,
+      });
       return tools;
-    } catch (error) {
-      const status = this.serverStatus.get(serverId);
-      if (status) {
-        status.status = 'error';
-        status.lastError = error instanceof Error ? error.message : 'Unknown error';
-      }
-
-      throw error;
+    } catch {
+      this.serverStatus.set(serverId, {
+        id: serverId,
+        name: config.name,
+        status: "error",
+        lastError: "MCP tool discovery failed",
+      });
+      throw new Error("MCP tool discovery failed");
     }
   }
 
-  /**
-   * Execute a tool on an MCP server
-   */
   async executeTool(
     serverId: string,
     toolName: string,
-    input: Record<string, any>
+    input: Record<string, unknown>,
   ): Promise<MCPToolResult> {
     const config = this.servers.get(serverId);
-    if (!config) {
-      throw new Error(`Server ${serverId} not found`);
-    }
+    if (!config) throw new Error("MCP server not found");
 
     try {
-      const client = this.clients.get(serverId);
-      if (!client) {
-        throw new Error(`No client for server ${serverId}`);
-      }
-
-      const response = await client.post<any>('/mcp/tools/call', {
-        name: toolName,
-        arguments: input,
+      const response = await safeMcpRequest(config.url, "/mcp/tools/call", {
+        method: "POST",
+        headers: this.buildHeaders(config),
+        body: { name: toolName, arguments: input },
+        timeoutMs: config.timeout,
       });
-
-      return {
-        success: true,
-        data: response.data.result || response.data,
-      };
-    } catch (error) {
-      const status = this.serverStatus.get(serverId);
-      if (status) {
-        status.status = 'error';
-        status.lastError = error instanceof Error ? error.message : 'Unknown error';
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw new Error("Unsuccessful tool execution response");
       }
-
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      const data = response.body && typeof response.body === "object" && "result" in response.body
+        ? (response.body as { result: unknown }).result
+        : response.body;
+      return { success: true, data };
+    } catch {
+      this.serverStatus.set(serverId, {
+        id: serverId,
+        name: config.name,
+        status: "error",
+        lastError: "MCP tool execution failed",
+      });
+      return { success: false, error: "MCP tool execution failed" };
     }
   }
 
-  /**
-   * Get server status
-   */
   getServerStatus(serverId: string): ServerStatus | null {
-    return this.serverStatus.get(serverId) || null;
+    return this.serverStatus.get(serverId) ?? null;
   }
 
-  /**
-   * Get all server statuses
-   */
   getAllServerStatuses(): ServerStatus[] {
-    return Array.from(this.serverStatus.values());
+    return [...this.serverStatus.values()];
   }
 
-  /**
-   * Test connection to an MCP server
-   */
   async testConnection(serverId: string): Promise<boolean> {
+    const config = this.servers.get(serverId);
+    if (!config) return false;
     try {
-      const config = this.servers.get(serverId);
-      if (!config) {
-        return false;
-      }
-
-      // Create a temporary client with shorter timeout for health check
-      const healthClient = createHttpClient({
-        baseURL: config.url,
-        timeout: 5000,
-        headers: this.buildHeaders(config) as Record<string, string>,
+      const response = await safeMcpRequest(config.url, "/health", {
+        method: "GET",
+        headers: this.buildHeaders(config),
+        timeoutMs: Math.min(config.timeout ?? 5_000, 5_000),
       });
-
-      await healthClient.get('/health');
-      return true;
+      return response.statusCode >= 200 && response.statusCode < 300;
     } catch {
       return false;
     }
   }
 
-  /**
-   * Clear tool cache for a server
-   */
   clearToolCache(serverId: string): void {
     this.toolCache.delete(serverId);
   }
 
-  /**
-   * Clear all tool caches
-   */
   clearAllCaches(): void {
     this.toolCache.clear();
   }
 
-  /**
-   * Remove a server
-   */
   removeServer(serverId: string): void {
     this.servers.delete(serverId);
-    this.clients.delete(serverId);
     this.toolCache.delete(serverId);
     this.serverStatus.delete(serverId);
   }
 
-  /**
-   * Get all registered servers
-   */
-  getAllServers(): MCPServerConfigWithUnknownHeaders[] {
-    return Array.from(this.servers.values());
+  getAllServers(): MCPServerConfig[] {
+    return [...this.servers.values()];
   }
 
-  /**
-   * Get a specific server config
-   */
-  getServer(serverId: string): MCPServerConfigWithUnknownHeaders | null {
-    return this.servers.get(serverId) || null;
+  getServer(serverId: string): MCPServerConfig | null {
+    return this.servers.get(serverId) ?? null;
   }
 }
 

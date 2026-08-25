@@ -2,10 +2,10 @@
 
 This page explains how users, contributors, and evaluators can get help with MCP Hub, whether you are trying to run the project locally, understand the documentation, or report a defect.
 
-## I need help with...
+## I need help with
 
 | Need | Best place to start |
-|---|---|
+| --- | --- |
 | Understanding the project or setup | [`README.md`](README.md) and [`README.mdx`](README.mdx) |
 | Technical documentation | [`docs/`](docs/README.md) |
 | Contributing workflow | [`CONTRIBUTING.md`](CONTRIBUTING.md) |

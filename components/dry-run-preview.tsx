@@ -7,7 +7,6 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/use-colors';
-import { cn } from '@/lib/utils';
 
 export interface DryRunStep {
   id: string;

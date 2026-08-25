@@ -8,7 +8,7 @@ Read the content of a specific resource from a connected MCP server. Provide the
 
 ## Read a resource
 
-**POST /api/connections/{connectionId}/resources/read**
+**POST /api/connections/\{connectionId\}/resources/read**
 
 ### Path parameters
 
@@ -19,7 +19,7 @@ Read the content of a specific resource from a connected MCP server. Provide the
 ### Request body
 
 <ParamField body="resourceUri" type="string" required>
-  URI of the resource to read. Obtain valid URIs from [List Resources](/api/resources/list) or by constructing one from a [resource template](/api/resources/list#list-resource-templates).
+  URI of the resource to read. Obtain valid URIs from [List Resources](../resources/list) or by constructing one from a [resource template](../resources/list#list-resource-templates).
 </ParamField>
 
 ```json Example request
@@ -29,7 +29,7 @@ Read the content of a specific resource from a connected MCP server. Provide the
 ### Response
 
 <ResponseField name="requestId" type="string">
-  UUID of the request record created for this read operation. Use [GET /api/requests/{requestId}](/api/requests) to inspect the full record.
+  UUID of the request record created for this read operation. Use [GET /api/requests/{requestId}](../requests) to inspect the full record.
 </ResponseField>
 
 <ResponseField name="contents" type="array">
@@ -93,7 +93,7 @@ Each content object contains either `text` or `blob`, never both.
 
 ## Get client roots
 
-**GET /api/connections/{connectionId}/roots**
+**GET /api/connections/\{connectionId\}/roots**
 
 Client roots are filesystem or URI boundaries that the MCP client exposes to the server, scoping which locations the server is permitted to access. Use this endpoint to retrieve the list of roots currently configured for a connection.
 
@@ -143,7 +143,7 @@ An array of `Root` objects.
 
 ## Replace client roots
 
-**PUT /api/connections/{connectionId}/roots**
+**PUT /api/connections/\{connectionId\}/roots**
 
 Replace the entire set of client roots for a connection with a new list. This is a full replacement — any roots not included in the request body are removed. The MCP server is notified of the change so it can update its access scope accordingly.
 

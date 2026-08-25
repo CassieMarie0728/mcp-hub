@@ -33,7 +33,7 @@ const env = {
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
   logoUrl:
-    'https://d2xsxph8kpxj0f.cloudfront.net/310519663485822351/Cah4Bw3PZSYyZt68VwVGTb/icon-LERshQQZDFNxmZ3TMZPvFG.webp',
+    'https://files.manuscdn.com/user_upload_by_module/session_file/310519663485822351/DQhogHyuxfOdmSAC.png',
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
   androidPackage: bundleId,
@@ -57,10 +57,8 @@ const config: ExpoConfig = {
   },
   android: {
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
+      backgroundColor: '#070808',
       foregroundImage: './assets/images/android-icon-foreground.png',
-      backgroundImage: './assets/images/android-icon-background.png',
-      monochromeImage: './assets/images/android-icon-monochrome.png',
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
@@ -86,29 +84,31 @@ const config: ExpoConfig = {
     favicon: './assets/images/favicon.png',
   },
   plugins: [
-    'expo-router',
     [
-      'expo-audio',
+      'expo-router',
       {
-        microphonePermission: 'Allow $(PRODUCT_NAME) to access your microphone.',
+        // Route-level splitting reduces the web app's initial JavaScript and
+        // keeps development from eagerly loading every feature screen.
+        // Native production keeps routes synchronous because Expo Router
+        // currently disables Suspense boundaries for that target.
+        asyncRoutes: {
+          default: 'development',
+          web: true,
+        },
       },
     ],
-    [
-      'expo-video',
-      {
-        supportsBackgroundPlayback: true,
-        supportsPictureInPicture: true,
-      },
-    ],
+    'expo-font',
+    'expo-web-browser',
+    'expo-notifications',
     [
       'expo-splash-screen',
       {
-        image: './assets/images/splash-icon.png',
+        image: './assets/images/splash-icon.jpg',
         imageWidth: 200,
         resizeMode: 'contain',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#050505',
         dark: {
-          backgroundColor: '#000000',
+          backgroundColor: '#050505',
         },
       },
     ],
