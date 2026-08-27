@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { appRouter } from "../server/routers";
+import { tokensProcedures } from "../server/procedures/tokens";
 import type { TrpcContext } from "../server/_core/context";
 
 function createPublicContext(): TrpcContext {
@@ -43,6 +44,29 @@ describe("Extended Router Security", () => {
         // @ts-ignore
         const result = await caller.templates.getAllTemplates();
         expect(result).toBeDefined();
+    });
+  });
+
+  describe("Token Procedures Router Security", () => {
+    const tokensCaller = tokensProcedures.createCaller(ctx);
+
+    it("denies list tokens to unauthenticated callers", async () => {
+      await expect(tokensCaller.list()).rejects.toThrow();
+    });
+
+    it("denies getByServer tokens to unauthenticated callers", async () => {
+      await expect(tokensCaller.getByServer("server-1")).rejects.toThrow();
+    });
+
+    it("denies store token to unauthenticated callers", async () => {
+      await expect(
+        tokensCaller.store({
+          serverId: "server-1",
+          serverType: "mcp",
+          name: "test-token",
+          token: "secret",
+        })
+      ).rejects.toThrow();
     });
   });
 });
