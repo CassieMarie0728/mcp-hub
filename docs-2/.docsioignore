@@ -1,0 +1,26 @@
+# Files Docsio explicitly does NOT read from or write to this repo.
+# Editing these files here has no effect on your Docsio site.
+#
+# This list is enforced server-side in lib/github/allowlist.ts — even if
+# you remove entries from this file, the server will continue to ignore them.
+
+# Template / scaffolding
+docusaurus.config.ts
+docusaurus.config.js
+sidebars.ts
+sidebars.js
+src/
+package.json
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+babel.config.js
+tsconfig.json
+
+# Build artifacts
+node_modules/
+.docusaurus/
+build/
+
+# Docsio internals
+versions.json
