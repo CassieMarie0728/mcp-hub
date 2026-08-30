@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cassiemarie0728.github.io/mcp-hub/sitemap.xml

@@ -1,775 +1,209 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP Hub — Early Access for Secure MCP Server Management</title>
-    <meta name="description" content="MCP Hub is in early access: a mobile-first workspace for connecting HTTPS MCP servers, discovering tools, and testing secure integrations.">
-    <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://mcphub-cah4bw3p.manus.space/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="MCP Hub — Early Access for Secure MCP Server Management">
-    <meta property="og:description" content="A mobile-first workspace for connecting HTTPS MCP servers, discovering tools, and testing secure integrations.">
-    <meta property="og:url" content="https://mcphub-cah4bw3p.manus.space/">
-    <meta property="og:image" content="https://files.manuscdn.com/user_upload_by_module/session_file/310519663485822351/zuCJXXZCeUNzHFOB.png">
-    <meta property="og:image:alt" content="MCP Hub industrial reactor core with red network connections">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MCP Hub — Early Access for Secure MCP Server Management">
-    <meta name="twitter:description" content="Join the early-access list for a mobile-first MCP server workspace.">
-    <meta name="twitter:image" content="https://files.manuscdn.com/user_upload_by_module/session_file/310519663485822351/zuCJXXZCeUNzHFOB.png">
-    <meta name="theme-color" content="#0b0f0f">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #0b0f0f;
-            color: #a8a9ad;
-            font-family: 'JetBrains Mono', monospace;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Grungy texture overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                repeating-linear-gradient(
-                    0deg,
-                    rgba(0, 0, 0, 0.15),
-                    rgba(0, 0, 0, 0.15) 1px,
-                    transparent 1px,
-                    transparent 2px
-                );
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Navigation */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 30px 0;
-            border-bottom: 2px solid #981518;
-            margin-bottom: 60px;
-        }
-
-        .logo {
-            font-family: 'Special Elite', serif;
-            font-size: 28px;
-            font-weight: bold;
-            color: #981518;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        nav a {
-            color: #a8a9ad;
-            text-decoration: none;
-            margin-left: 40px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
-            border-bottom: 2px solid transparent;
-            padding-bottom: 5px;
-        }
-
-        nav a:hover {
-            color: #981518;
-            border-bottom-color: #981518;
-        }
-
-        /* Hero Section */
-        .hero {
-            margin-bottom: 100px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-family: 'Special Elite', serif;
-            font-size: 72px;
-            font-weight: bold;
-            color: #981518;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 3px 3px 0px rgba(152, 21, 24, 0.3);
-        }
-
-        .hero .tagline {
-            font-size: 24px;
-            color: #a8a9ad;
-            margin-bottom: 30px;
-            font-style: italic;
-            letter-spacing: 1px;
-        }
-
-        .hero p {
-            font-size: 16px;
-            color: #a8a9ad;
-            max-width: 700px;
-            margin: 0 auto 40px;
-            line-height: 1.8;
-        }
-
-        .hero-art {
-            max-width: 1120px;
-            margin: 0 auto 34px;
-            border: 1px solid rgba(228, 33, 28, 0.76);
-            background: #050505;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 42px rgba(213, 25, 22, 0.18);
-            overflow: hidden;
-        }
-
-        .hero-art img {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
-        /* CTA Buttons */
-        .cta-group {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 80px;
-        }
-
-        .btn {
-            padding: 16px 40px;
-            font-size: 16px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border: 2px solid #981518;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'JetBrains Mono', monospace;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background-color: #981518;
-            color: #0b0f0f;
-        }
-
-        .btn-primary:hover {
-            background-color: transparent;
-            color: #981518;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(152, 21, 24, 0.3);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            color: #981518;
-        }
-
-        .btn-secondary:hover {
-            background-color: #981518;
-            color: #0b0f0f;
-            transform: translateY(-2px);
-        }
-
-        /* Features Section */
-        .features {
-            margin-bottom: 100px;
-        }
-
-        .section-title {
-            font-family: 'Special Elite', serif;
-            font-size: 48px;
-            color: #981518;
-            margin-bottom: 60px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .feature-card {
-            border: 2px solid #981518;
-            padding: 30px;
-            background-color: rgba(152, 21, 24, 0.05);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border: 2px solid #981518;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(152, 21, 24, 0.2);
-        }
-
-        .feature-card h3 {
-            font-family: 'Special Elite', serif;
-            font-size: 24px;
-            color: #981518;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .feature-card p {
-            font-size: 14px;
-            color: #a8a9ad;
-            line-height: 1.8;
-        }
-
-        /* How It Works */
-        .how-it-works {
-            margin-bottom: 100px;
-        }
-
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .step {
-            text-align: center;
-            padding: 30px;
-            border-left: 4px solid #981518;
-            background-color: rgba(152, 21, 24, 0.05);
-        }
-
-        .step-number {
-            font-family: 'Special Elite', serif;
-            font-size: 48px;
-            color: #981518;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .step h4 {
-            font-size: 18px;
-            color: #981518;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .step p {
-            font-size: 14px;
-            color: #a8a9ad;
-        }
-
-        /* Tech Stack */
-        .tech-stack {
-            margin-bottom: 100px;
-        }
-
-        .tech-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            text-align: center;
-        }
-
-        .tech-item {
-            padding: 20px;
-            border: 1px solid #981518;
-            background-color: rgba(152, 21, 24, 0.05);
-            font-size: 14px;
-            color: #a8a9ad;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-
-        .tech-item:hover {
-            background-color: #981518;
-            color: #0b0f0f;
-        }
-
-        /* Testimonial / Use Case */
-        .use-case {
-            margin-bottom: 100px;
-            border: 2px solid #981518;
-            padding: 40px;
-            background-color: rgba(152, 21, 24, 0.08);
-        }
-
-        .use-case h3 {
-            font-family: 'Special Elite', serif;
-            font-size: 32px;
-            color: #981518;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .use-case p {
-            font-size: 16px;
-            color: #a8a9ad;
-            margin-bottom: 15px;
-            line-height: 1.8;
-        }
-
-        .use-case strong {
-            color: #981518;
-        }
-
-        /* Pricing Section */
-        .pricing {
-            margin-bottom: 100px;
-        }
-
-        .pricing-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .pricing-card {
-            border: 2px solid #981518;
-            padding: 40px;
-            text-align: center;
-            background-color: rgba(152, 21, 24, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .pricing-card.featured {
-            border-width: 3px;
-            transform: scale(1.05);
-            background-color: rgba(152, 21, 24, 0.15);
-        }
-
-        .pricing-card h4 {
-            font-family: 'Special Elite', serif;
-            font-size: 24px;
-            color: #981518;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .price {
-            font-size: 48px;
-            color: #981518;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .price-period {
-            font-size: 14px;
-            color: #a8a9ad;
-            margin-bottom: 30px;
-        }
-
-        .pricing-features {
-            text-align: left;
-            margin-bottom: 30px;
-            font-size: 14px;
-            color: #a8a9ad;
-        }
-
-        .pricing-features li {
-            list-style: none;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(152, 21, 24, 0.2);
-        }
-
-        .pricing-features li:before {
-            content: '✓ ';
-            color: #981518;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        /* CTA Section */
-        .final-cta {
-            text-align: center;
-            padding: 60px 40px;
-            border: 3px solid #981518;
-            background-color: rgba(152, 21, 24, 0.1);
-            margin-bottom: 60px;
-        }
-
-        .final-cta h2 {
-            font-family: 'Special Elite', serif;
-            font-size: 48px;
-            color: #981518;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .final-cta p {
-            font-size: 18px;
-            color: #a8a9ad;
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 2px solid #981518;
-            padding: 40px 0;
-            text-align: center;
-            color: #a8a9ad;
-            font-size: 12px;
-        }
-
-        footer a {
-            color: #981518;
-            text-decoration: none;
-            margin: 0 15px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 48px;
-            }
-
-            .hero .tagline {
-                font-size: 18px;
-            }
-
-            .hero-art {
-                margin-bottom: 26px;
-            }
-
-            nav a {
-                margin-left: 20px;
-                font-size: 12px;
-            }
-
-            .section-title {
-                font-size: 36px;
-            }
-
-            .cta-group {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .pricing-card.featured {
-                transform: scale(1);
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .feature-card, .step, .pricing-card {
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .feature-card:nth-child(1) { animation-delay: 0.1s; }
-        .feature-card:nth-child(2) { animation-delay: 0.2s; }
-        .feature-card:nth-child(3) { animation-delay: 0.3s; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP Hub — Wrangle Every MCP Server</title>
+  <meta name="description" content="MCP Hub is an open-source, mobile-first command center for connecting HTTPS MCP servers, discovering tools, testing calls, and building repeatable workflows.">
+  <meta name="theme-color" content="#0b0f0f">
+  <link rel="icon" href="./assets/favicon.png" type="image/png">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://cassiemarie0728.github.io/mcp-hub/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MCP Hub — Wrangle Every MCP Server">
+  <meta property="og:description" content="One honest control room for MCP servers, tools, calls, and workflows.">
+  <meta property="og:url" content="https://cassiemarie0728.github.io/mcp-hub/">
+  <meta property="og:image" content="https://cassiemarie0728.github.io/mcp-hub/assets/mcp-hub-command-bunker.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css">
+  <script src="./assets/site.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <!-- Navigation -->
-        <header>
-            <div class="logo">MCP Hub</div>
-            <nav>
-                <a href="#features">Features</a>
-                <a href="#how">How It Works</a>
-                <a href="#access">Early Access</a>
-                <a href="mailto:early-access@mcphub.io">Contact</a>
-            </nav>
-        </header>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-header>
+    <a class="brand" href="./" aria-label="MCP Hub home"><span class="brand-mark" aria-hidden="true">&gt;_</span><span>MCP HUB</span></a>
+    <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-nav-toggle><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Primary navigation" data-nav>
+      <a href="#product">Product</a>
+      <a href="./demos.html">Demos</a>
+      <a href="./docs.html">Docs</a>
+      <a href="#faq">FAQ</a>
+      <a class="nav-github" href="https://github.com/CassieMarie0728/mcp-hub">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
 
-        <!-- Hero Section -->
-        <section class="hero">
-            <h1>One Place to Manage Your MCP Servers</h1>
-            <p class="tagline">No fake green lights. No credential circus.</p>
-            <figure class="hero-art">
-                <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663485822351/kMqMNeXhDGlgYbnj.png" alt="MCP Hub command bunker with a glowing red MCP core and connected server controls">
-            </figure>
-            <p>
-                MCP Hub is an early-access, mobile-first workspace for connecting HTTPS Model Context Protocol servers, inspecting their tools, and testing integrations. We are building the secure plumbing first, because pretending an unfinished automation platform is a product is how trust gets murdered.
-            </p>
-            <div class="cta-group">
-            <a class="btn btn-primary" href="#access">Request early access</a>
-            <a class="btn btn-secondary" href="./demo-workflow-builder.html">View product preview</a>
+  <main id="main">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <h1>Wrangle every MCP server. Lose none of the <em>signal.</em></h1>
+        <p>Connect servers, inspect tools, test calls, and shape repeatable workflows from one honest control room.</p>
+        <div class="button-row">
+          <a class="button button-primary" href="./demos.html"><span aria-hidden="true">&gt;_</span> Explore the demos</a>
+          <a class="button button-secondary" href="./docs.html">Read the docs <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="status-line"><span>Open source</span><span>Mobile first</span><span>No fake green lights</span></p>
+      </div>
+      <figure class="hero-media">
+        <img src="./assets/mcp-hub-command-bunker.jpg" alt="MCP Hub command bunker interface with a red MCP core and connected server controls" width="1600" height="600">
+      </figure>
+    </section>
+
+    <section class="signal-flow section shell" id="product" aria-labelledby="flow-title">
+      <div class="section-heading compact">
+        <p class="section-index">01 // SIGNAL PATH</p>
+        <h2 id="flow-title">From endpoint to execution.</h2>
+      </div>
+      <ol class="flow-list">
+        <li><span class="flow-number">01</span><h3>Connect</h3><p>Add a workspace-owned HTTPS endpoint, choose its authentication, and test the connection.</p></li>
+        <li><span class="flow-number">02</span><h3>Discover</h3><p>Inspect the tools a server actually exposes, including inputs and schemas.</p></li>
+        <li><span class="flow-number">03</span><h3>Execute</h3><p>Send targeted calls through the authorized runtime and see honest results.</p></li>
+        <li><span class="flow-number">04</span><h3>Repeat</h3><p>Turn successful work into durable drafts while the workflow engine earns its sharp teeth.</p></li>
+      </ol>
+    </section>
+
+    <section class="section command-section" aria-labelledby="command-title">
+      <div class="shell">
+        <div class="section-heading centered">
+          <p class="section-index">02 // CONTROL ROOM</p>
+          <h2 id="command-title">See the whole damn signal path.</h2>
+          <p>Connection state, tool schemas, inputs, and results belong in one view—not scattered across twelve tabs and a prayer.</p>
+        </div>
+        <div class="command-layout">
+          <div class="capability-rail" role="tablist" aria-label="Product capabilities">
+            <button class="capability active" type="button" role="tab" aria-selected="true" data-console-tab="registry"><span>01</span><strong>Server registry</strong><small>Owned endpoints. Honest state.</small></button>
+            <button class="capability" type="button" role="tab" aria-selected="false" data-console-tab="discovery"><span>02</span><strong>Tool discovery</strong><small>Schemas without the scavenger hunt.</small></button>
+            <button class="capability" type="button" role="tab" aria-selected="false" data-console-tab="execution"><span>03</span><strong>Test execution</strong><small>Requests, responses, and errors.</small></button>
+            <button class="capability" type="button" role="tab" aria-selected="false" data-console-tab="workflows"><span>04</span><strong>Workflow drafts</strong><small>Plan now. Automate responsibly.</small></button>
+          </div>
+          <div class="console-frame" aria-live="polite">
+            <div class="console-topbar"><span>MCP HUB // COMMAND CENTER</span><span>ENV: LOCAL&nbsp;&nbsp; MODE: INSPECT</span></div>
+            <div class="console-grid">
+              <section class="console-panel server-panel">
+                <div class="panel-title"><span>Servers</span><button type="button" aria-label="Add server">+</button></div>
+                <div data-console-content="registry">
+                  <div class="server-row selected"><i class="status good"></i><span><strong>filesystem</strong><small>HTTPS · connected</small></span><b>12 tools</b></div>
+                  <div class="server-row"><i class="status good"></i><span><strong>github</strong><small>HTTPS · connected</small></span><b>28 tools</b></div>
+                  <div class="server-row"><i class="status warning"></i><span><strong>notion</strong><small>HTTPS · auth required</small></span><b>—</b></div>
+                  <div class="server-row"><i class="status muted"></i><span><strong>slack</strong><small>HTTPS · untested</small></span><b>—</b></div>
+                </div>
+              </section>
+              <section class="console-panel tool-panel">
+                <div class="panel-title"><span>Tools</span><span class="filter">Filter tools…</span></div>
+                <div class="tool-table" data-console-content="discovery">
+                  <div class="tool-head"><span>Tool</span><span>Description</span></div>
+                  <button type="button" class="tool-row selected"><span>read_file</span><span>Read file contents</span></button>
+                  <button type="button" class="tool-row"><span>write_file</span><span>Write file contents</span></button>
+                  <button type="button" class="tool-row"><span>list_directory</span><span>List directory entries</span></button>
+                  <button type="button" class="tool-row"><span>search_files</span><span>Search by pattern</span></button>
+                  <button type="button" class="tool-row"><span>get_metadata</span><span>Inspect file details</span></button>
+                </div>
+              </section>
+              <section class="console-panel execution-panel">
+                <div class="panel-title"><span>Execution</span><button class="run-button" type="button" data-run-demo>Run</button></div>
+                <div data-console-content="execution">
+                  <label>Tool<input value="filesystem.read_file" readonly></label>
+                  <label>Input (JSON)<textarea readonly>{
+  "path": "README.md"
+}</textarea></label>
+                  <div class="response-head"><span>Response</span><span data-run-status>Ready</span></div>
+                  <pre data-run-output>Select Run to simulate a safe preview.</pre>
+                </div>
+              </section>
             </div>
-        </section>
+          </div>
+        </div>
+        <div class="honesty-strip" data-console-content="workflows">
+          <strong>What works now</strong>
+          <span>Workspace-scoped HTTPS registration</span>
+          <span>Encrypted credentials</span>
+          <span>Connection testing + tool discovery</span>
+          <span>Durable workflow drafts</span>
+          <small>Scheduling and autonomous workflow execution remain deliberately unavailable.</small>
+        </div>
+      </div>
+    </section>
 
-        <!-- Features Section -->
-        <section class="features" id="features">
-            <h2 class="section-title">What You Actually Get</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>Secure connection foundation</h3>
-                    <p>HTTPS-only server registration, outbound request controls, tenant boundaries, and encrypted credential storage are the work in progress—not vaporware bullet points.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Server connection workflow</h3>
-                    <p>Name an HTTPS MCP endpoint, choose a supported authentication method, test the connection, and see its honest status in one place.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Tool discovery and execution</h3>
-                    <p>The app includes the foundation for inspecting server tools and sending tool calls. Broader automation orchestration remains deliberately gated until its durable security model exists.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Clear operational signals</h3>
-                    <p>Connection status, test results, and execution records are designed to answer the useful question: did the server work, or did it fall on its face?</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Mobile-first onboarding</h3>
-                    <p>An eight-step product tour and replayable onboarding guide help new users understand the workspace before we ask them to trust it with anything important.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Early access, honestly labeled</h3>
-                    <p>OAuth callbacks, webhooks, and workflow scheduling are not being marketed as ready. They stay unavailable until tenant-scoped persistence and review land.</p>
-                </div>
-            </div>
-        </section>
+    <section class="section demos-section shell" aria-labelledby="demos-title">
+      <div class="section-heading split-heading">
+        <div><p class="section-index">03 // INTERACTIVE PREVIEWS</p><h2 id="demos-title">Kick the tires without wiring live ammo.</h2></div>
+        <p>These browser demos show the interaction model. They do not pretend to be connected production infrastructure.</p>
+      </div>
+      <div class="demo-grid">
+        <a class="demo-card demo-wide" href="./demo-workflow-builder.html">
+          <div class="demo-window workflow-preview" aria-hidden="true">
+            <div class="mini-toolbar"><i></i><i></i><i></i><span>workflow://incident-response</span></div>
+            <div class="workflow-canvas"><span class="node">Webhook</span><b>→</b><span class="node active">Inspect issue</span><b>→</b><span class="node">Draft response</span></div>
+          </div>
+          <div class="demo-copy"><span>01</span><h3>Workflow Builder</h3><p>Compose a visual workflow, move nodes, and explore the authoring direction.</p><strong>Open demo →</strong></div>
+        </a>
+        <a class="demo-card" href="./demo-execution-simulator.html">
+          <div class="demo-window execution-preview" aria-hidden="true"><div class="log-line ok">✓ connection.ready</div><div class="log-line">→ tools/call</div><div class="log-line result">200 OK · 42ms</div></div>
+          <div class="demo-copy"><span>02</span><h3>Execution Simulator</h3><p>Watch request states, responses, and failure signals change in real time.</p><strong>Run the preview →</strong></div>
+        </a>
+        <a class="demo-card" href="./demo-features.html">
+          <div class="demo-window feature-preview" aria-hidden="true"><div>Server registry</div><div>Tool inspector</div><div>Execution history</div></div>
+          <div class="demo-copy"><span>03</span><h3>Feature Tour</h3><p>Explore the intended product surface and the boundaries around it.</p><strong>Browse features →</strong></div>
+        </a>
+      </div>
+      <div class="section-action"><a class="text-link" href="./demos.html">View every demo and its status <span>→</span></a></div>
+    </section>
 
-        <!-- How It Works -->
-        <section class="how-it-works" id="how">
-            <h2 class="section-title">How It Works</h2>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h4>Add an HTTPS endpoint</h4>
-                    <p>Enter a connection name, a standard-port HTTPS endpoint, and only the authentication method the server actually requires.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h4>Test the connection</h4>
-                    <p>MCP Hub validates the endpoint through its outbound policy, tests the connection, and reports the result instead of manufacturing a success badge.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h4>Discover and call tools</h4>
-                    <p>Explore tools provided by the connected server and run targeted calls through a tenant-scoped runtime.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h4>Grow only when the foundation holds</h4>
-                    <p>Scheduled workflows, webhooks, and OAuth automation come later—after their durable lifecycle models can be built without handing security a loaded gun.</p>
-                </div>
-            </div>
-        </section>
+    <section class="section docs-teaser" aria-labelledby="docs-title">
+      <div class="shell docs-layout">
+        <div class="docs-copy">
+          <p class="section-index">04 // DOCUMENTATION</p>
+          <h2 id="docs-title">Documentation without the scavenger hunt.</h2>
+          <p>Install it, connect a server, and understand what happens next. The docs are organized around jobs, not whatever folder the code happened to land in.</p>
+          <nav class="docs-links" aria-label="Documentation highlights">
+            <a href="./docs.html#quickstart"><span>01</span>Quickstart<b>→</b></a>
+            <a href="./docs.html#connect"><span>02</span>Connect a server<b>→</b></a>
+            <a href="./docs.html#discover"><span>03</span>Discover tools<b>→</b></a>
+            <a href="./docs.html#execute"><span>04</span>Test a tool<b>→</b></a>
+            <a href="./docs.html#configuration"><span>05</span>Configuration<b>→</b></a>
+            <a href="./docs.html#troubleshooting"><span>06</span>Troubleshooting<b>→</b></a>
+          </nav>
+          <a class="button button-primary" href="./docs.html">Open documentation <span aria-hidden="true">&gt;_</span></a>
+        </div>
+        <div class="terminal" aria-label="Quickstart commands">
+          <div class="terminal-bar"><span>TERMINAL // QUICKSTART</span><span>— □ ×</span></div>
+          <ol>
+            <li><span>01</span><code>git clone https://github.com/CassieMarie0728/mcp-hub.git</code><button type="button" data-copy="git clone https://github.com/CassieMarie0728/mcp-hub.git" aria-label="Copy clone command">Copy</button></li>
+            <li><span>02</span><code>cd mcp-hub</code></li>
+            <li><span>03</span><code>pnpm install</code></li>
+            <li><span>04</span><code>pnpm db:push</code></li>
+            <li><span>05</span><code>pnpm dev</code></li>
+          </ol>
+          <div class="terminal-prompt">root@mcp-hub:~# <i></i></div>
+        </div>
+      </div>
+    </section>
 
-        <!-- Demo Links -->
-        <section style="margin-bottom: 100px;">
-            <h2 class="section-title">Product Previews</h2>
-            <p style="max-width: 720px; margin: -35px auto 35px; text-align: center; color: #a8a9ad;">These interactive pages are visual previews of product directions, not live connected-server promises.</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                <a href="./demo-workflow-builder.html" style="text-decoration: none;">
-                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">⚡ Workflow Builder</div>
-                        <p style="font-size: 14px; color: #a8a9ad;">Preview a possible visual workflow-building direction.</p>
-                    </div>
-                </a>
-                <a href="./demo-execution-simulator.html" style="text-decoration: none;">
-                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">⚙️ Live Execution</div>
-                        <p style="font-size: 14px; color: #a8a9ad;">Preview how a future execution view could communicate state.</p>
-                    </div>
-                </a>
-                <a href="./demo-features.html" style="text-decoration: none;">
-                    <div style="border: 2px solid #981518; padding: 30px; background-color: rgba(152, 21, 24, 0.05); border-radius: 4px; text-align: center; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 15px 30px rgba(152, 21, 24, 0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                        <div style="font-family: 'Special Elite', serif; font-size: 24px; color: #981518; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">🎯 Features</div>
-                        <p style="font-size: 14px; color: #a8a9ad;">Preview the product surface without inventing operational guarantees.</p>
-                    </div>
-                </a>
-            </div>
-        </section>
+    <section class="section faq-section shell" id="faq" aria-labelledby="faq-title">
+      <div class="section-heading compact">
+        <p class="section-index">05 // BEFORE YOU WIRE IT IN</p>
+        <h2 id="faq-title">Questions with actual answers.</h2>
+      </div>
+      <div class="faq-list">
+        <details open><summary>Is MCP Hub production-ready?<span></span></summary><p>No. It is an active open-source, early-access project with a hardened connection foundation and unfinished product areas. Use it locally, inspect the code, and test deliberately before trusting it with important work.</p></details>
+        <details><summary>Which transports are supported?<span></span></summary><p>The current managed connection flow accepts standard-port HTTPS endpoints. Legacy local-process, arbitrary WebSocket, and raw SSE configuration surfaces were intentionally retired from that flow.</p></details>
+        <details><summary>Where do credentials live?<span></span></summary><p>Connection credentials are encrypted before database storage, scoped to the owning workspace, and hydrated only into the authorized request runtime. They are not returned to the connection screen.</p></details>
+        <details><summary>Can I run it locally?<span></span></summary><p>Yes. The repository includes the Expo client, Node/Express server, MySQL schema, and local setup instructions. Start with the quickstart and keep development secrets out of source control.</p></details>
+        <details><summary>What is actually live today?<span></span></summary><p>HTTPS server registration, credential protection, connection testing, tool discovery foundations, execution history surfaces, and durable workflow drafts exist. Scheduled workflow execution, webhook delivery, and complete OAuth provider flows remain intentionally gated.</p></details>
+      </div>
+    </section>
 
-        <!-- Product honesty -->
-        <section class="use-case" id="demo">
-            <h3>What We Will Not Fake</h3>
-            <p>
-                <strong>No imaginary uptime:</strong> We will not quote reliability targets without production evidence.
-            </p>
-            <p>
-                <strong>No pretend integrations:</strong> A provider card is not a live integration unless the secure end-to-end flow exists and is testable.
-            </p>
-            <p>
-                <strong>No fake enterprise theater:</strong> We will not promise compliance, team controls, disaster recovery, or on-premise deployment until the product can actually support those claims.
-            </p>
-            <p>
-                If that makes the page less shiny, good. It makes it more useful.
-            </p>
-        </section>
+    <section class="open-source-cta">
+      <div class="shell cta-layout"><h2>Fork it. Test it.<br>Tell us what broke.</h2><div class="button-row"><a class="button button-dark" href="https://github.com/CassieMarie0728/mcp-hub">View on GitHub ↗</a><a class="button button-light" href="./docs.html#quickstart">Read the quickstart <span aria-hidden="true">&gt;_</span></a></div></div>
+    </section>
+  </main>
 
-        <!-- Tech Stack -->
-        <section class="tech-stack">
-            <h2 class="section-title">Current Foundation</h2>
-            <div class="tech-grid">
-                <div class="tech-item">React Native 0.81</div>
-                <div class="tech-item">Node.js + Express</div>
-                <div class="tech-item">MySQL + Drizzle</div>
-                <div class="tech-item">Expo Router</div>
-                <div class="tech-item">NativeWind</div>
-                <div class="tech-item">AsyncStorage</div>
-                <div class="tech-item">TypeScript 5.9</div>
-                <div class="tech-item">tRPC</div>
-                <div class="tech-item">HTTPS outbound policy</div>
-                <div class="tech-item">AES-256-GCM</div>
-                <div class="tech-item">Vitest</div>
-            </div>
-        </section>
-
-        <!-- Early access -->
-        <section class="pricing" id="access">
-            <h2 class="section-title">Early Access</h2>
-            <div class="pricing-cards">
-                <div class="pricing-card">
-                    <h4>Join the list</h4>
-                    <div class="price">Beta</div>
-                    <div class="price-period">availability is limited</div>
-                    <ul class="pricing-features">
-                        <li>Tell us which MCP server you need</li>
-                        <li>Tell us the job it should do</li>
-                        <li>Receive access updates by email</li>
-                    </ul>
-                    <a class="btn btn-secondary" href="mailto:early-access@mcphub.io?subject=MCP%20Hub%20early%20access">Request early access</a>
-                </div>
-                <div class="pricing-card featured">
-                    <h4>Pricing status</h4>
-                    <div class="price">TBD</div>
-                    <div class="price-period">we are not making numbers up</div>
-                    <ul class="pricing-features">
-                        <li>No active paid plan</li>
-                        <li>No fictional feature caps</li>
-                        <li>No trial terms to decipher</li>
-                    </ul>
-                    <a class="btn btn-primary" href="mailto:early-access@mcphub.io?subject=MCP%20Hub%20pricing%20interest">Share pricing interest</a>
-                </div>
-                <div class="pricing-card">
-                    <h4>Feedback channel</h4>
-                    <div class="price">Useful</div>
-                    <div class="price-period">tell us what hurts</div>
-                    <ul class="pricing-features">
-                        <li>Connection flow feedback</li>
-                        <li>Security requirements</li>
-                        <li>Workflow use cases</li>
-                    </ul>
-                    <a class="btn btn-secondary" href="mailto:early-access@mcphub.io?subject=MCP%20Hub%20product%20feedback">Send feedback</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Final CTA -->
-        <section class="final-cta">
-            <h2>Want In Before It Gets Polished to Death?</h2>
-            <p>
-                Request early access, tell us the MCP server you need to manage, and help shape the part that should exist before the marketing department starts hallucinating outcomes.
-            </p>
-            <a class="btn btn-primary" href="mailto:early-access@mcphub.io?subject=MCP%20Hub%20early%20access">Request early access</a>
-        </section>
-
-        <!-- Footer -->
-        <footer>
-            <p>
-                &copy; 2026 MCP Hub. Built by people who hate repetitive work.
-            </p>
-            <p>
-                <a href="https://github.com/manus-ai/mcp-hub">GitHub</a>
-                <a href="mailto:early-access@mcphub.io">Early access</a>
-            </p>
-        </footer>
-    </div>
-
-    <script>
-        // Smooth scroll for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add scroll animation for elements
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.feature-card, .step, .pricing-card').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-            observer.observe(el);
-        });
-    </script>
+  <footer class="site-footer shell">
+    <a class="footer-brand" href="./"><span>{MCP}</span> HUB</a>
+    <nav aria-label="Footer navigation"><a href="./docs.html">Docs</a><a href="./demos.html">Demos</a><a href="https://github.com/CassieMarie0728/mcp-hub">Repository</a><a href="https://github.com/CassieMarie0728/mcp-hub/issues">Issues</a><a href="https://github.com/CassieMarie0728/mcp-hub/blob/main/LICENSE">License</a></nav>
+    <p>Built in public. No fake green lights.<i></i></p>
+  </footer>
 </body>
 </html>

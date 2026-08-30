@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentation — MCP Hub</title>
+  <meta name="description" content="Install MCP Hub, configure the local runtime, connect an HTTPS MCP server, discover tools, and troubleshoot the sharp edges.">
+  <meta name="theme-color" content="#0b0f0f">
+  <link rel="icon" href="./assets/favicon.png" type="image/png">
+  <link rel="canonical" href="https://cassiemarie0728.github.io/mcp-hub/docs.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css">
+  <script src="./assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="MCP Hub home"><span class="brand-mark" aria-hidden="true">&gt;_</span><span>MCP HUB</span></a>
+    <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-nav-toggle><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Primary navigation" data-nav>
+      <a href="./#product">Product</a><a href="./demos.html">Demos</a><a href="./docs.html" aria-current="page">Docs</a><a href="./#faq">FAQ</a><a class="nav-github" href="https://github.com/CassieMarie0728/mcp-hub">GitHub <span>↗</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <header class="interior-hero shell">
+      <p class="page-kicker">Documentation // Start here</p>
+      <h1>No scavenger hunt required.</h1>
+      <p>Get the code running, connect an HTTPS MCP endpoint, inspect its tools, and understand which parts are real today. Revolutionary concept: the instructions match the repository.</p>
+    </header>
+
+    <div class="docs-page shell">
+      <aside class="docs-sidebar" aria-label="Documentation sections">
+        <a class="active" href="#quickstart"><span>01</span>Quickstart</a>
+        <a href="#connect"><span>02</span>Connect a server</a>
+        <a href="#discover"><span>03</span>Discover tools</a>
+        <a href="#execute"><span>04</span>Test a tool</a>
+        <a href="#configuration"><span>05</span>Configuration</a>
+        <a href="#status"><span>06</span>Capability status</a>
+        <a href="#troubleshooting"><span>07</span>Troubleshooting</a>
+      </aside>
+
+      <article class="docs-article">
+        <section class="doc-section" id="quickstart">
+          <p class="section-index">01 // QUICKSTART</p>
+          <h2>Run the beast locally.</h2>
+          <p>You need Node.js 20+, pnpm 9.12+, Git, and MySQL 8 or a compatible hosted database. The client and backend start separately; pretending one command starts both is how documentation becomes fan fiction.</p>
+          <h3>1. Clone and install</h3>
+          <pre class="code-block">git clone https://github.com/CassieMarie0728/mcp-hub.git
+cd mcp-hub
+pnpm install<button class="copy-code" type="button" data-copy="git clone https://github.com/CassieMarie0728/mcp-hub.git&#10;cd mcp-hub&#10;pnpm install">Copy</button></pre>
+          <h3>2. Configure your environment</h3>
+          <pre class="code-block">cp .env.example .env</pre>
+          <p>Edit <code>.env</code> with a reachable MySQL connection and unique secrets. Do not commit it. GitHub already has enough accidental confessionals.</p>
+          <h3>3. Initialize the database</h3>
+          <pre class="code-block">pnpm db:push</pre>
+          <h3>4. Start the backend</h3>
+          <pre class="code-block">pnpm dev:server</pre>
+          <h3>5. Start the Expo client</h3>
+          <pre class="code-block">pnpm dev</pre>
+          <p>The backend defaults to <code>http://localhost:3000</code>. Expo web defaults to <code>http://localhost:8081</code>. For a physical device, use your computer's LAN address instead of <code>localhost</code>.</p>
+          <div class="notice"><strong>Development only:</strong> Keep the service private while testing. Production mode requires real authentication, unique secrets, HTTPS, a least-privilege database account, and considerably less optimism.</div>
+        </section>
+
+        <section class="doc-section" id="connect">
+          <p class="section-index">02 // CONNECTIONS</p>
+          <h2>Connect one server. Know what happened.</h2>
+          <p>The managed connection flow is built around workspace-owned, standard-port HTTPS endpoints. It validates the destination, stores credentials as an encrypted envelope, and runs an explicit connection test.</p>
+          <ol>
+            <li>Open the server connection screen in the app.</li>
+            <li>Give the connection a useful name.</li>
+            <li>Enter an <code>https://</code> MCP endpoint on port 443 or omit the port.</li>
+            <li>Choose no auth, bearer token, API key, or custom headers as required by the server.</li>
+            <li>Save the connection, then run the test.</li>
+          </ol>
+          <div class="notice"><strong>Outbound policy:</strong> Loopback, private-network, link-local, metadata, and non-HTTPS destinations are rejected by the managed remote flow. This is intentional SSRF protection, not the app being moody.</div>
+          <p>Never place credentials in the endpoint URL. Use the authentication fields so secrets can be encrypted and scoped correctly.</p>
+        </section>
+
+        <section class="doc-section" id="discover">
+          <p class="section-index">03 // TOOL DISCOVERY</p>
+          <h2>Find out what the server can actually do.</h2>
+          <p>After a successful connection, open Tool Discovery. The app requests the server's tool list through the authorized backend runtime and presents names, descriptions, and input schemas.</p>
+          <ul>
+            <li>Verify the connection reports a real successful test—not merely a saved record.</li>
+            <li>Inspect required input fields before attempting a call.</li>
+            <li>Treat server-provided descriptions as external content, not trusted instructions.</li>
+            <li>If the tool list is empty, check server logs and confirm the endpoint implements <code>tools/list</code>.</li>
+          </ul>
+        </section>
+
+        <section class="doc-section" id="execute">
+          <p class="section-index">04 // EXECUTION</p>
+          <h2>Test deliberately. Read the result.</h2>
+          <p>Execution surfaces are designed to show the selected server, tool name, JSON input, completion state, and result or error. Use harmless inputs first. A green button is not a permission model.</p>
+          <pre class="code-block">{
+  "path": "README.md",
+  "encoding": "utf-8"
+}</pre>
+          <p>The marketing demos on this site simulate execution state and never contact a live MCP server. The local application uses the authorized backend runtime when the relevant execution flow is available and configured.</p>
+        </section>
+
+        <section class="doc-section" id="configuration">
+          <p class="section-index">05 // CONFIGURATION</p>
+          <h2>The variables that matter.</h2>
+          <table class="status-table">
+            <thead><tr><th>Variable</th><th>Required</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td>DATABASE_URL</td><td>Yes</td><td>MySQL connection string used by Drizzle.</td></tr>
+              <tr><td>COOKIE_SECRET</td><td>Yes</td><td>Signs application session cookies.</td></tr>
+              <tr><td>JWT_SECRET</td><td>Yes</td><td>Signs JWT tokens. Use a different value from the cookie secret.</td></tr>
+              <tr><td>PORT</td><td>No</td><td>Backend port. Defaults to 3000.</td></tr>
+              <tr><td>EXPO_PORT</td><td>No</td><td>Expo web port. Defaults to 8081.</td></tr>
+              <tr><td>MCP_SERVER_URL</td><td>No</td><td>Default development MCP server URL.</td></tr>
+              <tr><td>OPENAI_API_KEY</td><td>No</td><td>Optional AI-provider features only.</td></tr>
+            </tbody>
+          </table>
+          <p>Use long, random, unique values for secrets. The repository's <code>change-me</code> examples are placeholders, not a thrilling security strategy.</p>
+        </section>
+
+        <section class="doc-section" id="status">
+          <p class="section-index">06 // CAPABILITY STATUS</p>
+          <h2>What exists—and what doesn't.</h2>
+          <table class="status-table">
+            <thead><tr><th>Area</th><th>Status</th><th>Reality check</th></tr></thead>
+            <tbody>
+              <tr><td>HTTPS server registration</td><td>Foundation live</td><td>Workspace ownership, endpoint validation, and encrypted credential storage exist.</td></tr>
+              <tr><td>Connection testing</td><td>Foundation live</td><td>Runs through the managed outbound policy and reports failure honestly.</td></tr>
+              <tr><td>Tool discovery</td><td>Foundation live</td><td>Backed by the authorized runtime; requires a working server and database.</td></tr>
+              <tr><td>Workflow drafts</td><td>Live</td><td>Create, edit, archive, and delete durable drafts. Execution is intentionally unavailable.</td></tr>
+              <tr><td>Webhook configuration</td><td>Partial</td><td>Records and encrypted secrets persist; delivery and retries are not active.</td></tr>
+              <tr><td>OAuth providers</td><td>Partial</td><td>Connection intent records exist; browser authorization and token exchange are not complete.</td></tr>
+              <tr><td>Scheduled automation</td><td>Not live</td><td>No production scheduler is promised by this site.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="doc-section" id="troubleshooting">
+          <p class="section-index">07 // TROUBLESHOOTING</p>
+          <h2>When the machine bites back.</h2>
+          <h3>The database will not connect</h3>
+          <p>Confirm MySQL is running, the database exists, and <code>DATABASE_URL</code> uses credentials allowed from the current host. Run <code>pnpm db:push</code> after fixing the connection.</p>
+          <h3>The app cannot reach the backend</h3>
+          <p>Make sure <code>pnpm dev:server</code> is still running. On a phone, replace localhost with the computer's LAN IP and allow the local port through the firewall only on a trusted network.</p>
+          <h3>The MCP endpoint is rejected</h3>
+          <p>The managed flow requires HTTPS on a standard port and rejects local/private destinations. Use a legitimately reachable HTTPS endpoint; do not disable the outbound policy just to make a red light stop hurting your feelings.</p>
+          <h3>The server saves but testing fails</h3>
+          <p>Check endpoint availability, authentication mode, credential value, TLS certificate, and the MCP server's own logs. Saved means the record exists. It does not mean the remote server answered.</p>
+          <h3>Still stuck?</h3>
+          <p>Search or open an issue in the <a href="https://github.com/CassieMarie0728/mcp-hub/issues">GitHub issue tracker</a>. Include the failing command, sanitized logs, operating system, and Node/pnpm versions. Never paste credentials.</p>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer shell">
+    <a class="footer-brand" href="./"><span>{MCP}</span> HUB</a>
+    <nav aria-label="Footer navigation"><a href="./docs.html">Docs</a><a href="./demos.html">Demos</a><a href="https://github.com/CassieMarie0728/mcp-hub">Repository</a><a href="https://github.com/CassieMarie0728/mcp-hub/issues">Issues</a><a href="https://github.com/CassieMarie0728/mcp-hub/blob/main/LICENSE">License</a></nav>
+    <p>Built in public. No fake green lights.<i></i></p>
+  </footer>
+</body>
+</html>
