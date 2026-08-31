@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Execution Simulator – MCP Hub</title>
+    <link rel="icon" href="./assets/favicon.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -304,9 +305,12 @@
                 grid-template-columns: 1fr;
             }
         }
+        .hub-return { position: fixed; top: 14px; left: 14px; z-index: 9999; padding: 10px 14px; color: #f5f5f5; background: rgba(11,15,15,.94); border: 1px solid #981518; font: 700 11px 'JetBrains Mono', monospace; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; box-shadow: 0 10px 25px rgba(0,0,0,.35); }
+        .hub-return:hover, .hub-return:focus { background: #981518; color: #fff; }
     </style>
 </head>
 <body>
+    <a class="hub-return" href="./demos.html">← All demos</a>
     <div class="demo-container">
         <h1>⚙️ Live Execution Simulator</h1>
         <p class="subtitle">Watch your workflow execute in real-time with detailed metrics and logging.</p>

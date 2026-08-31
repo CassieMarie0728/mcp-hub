@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Demos — MCP Hub</title>
+  <meta name="description" content="Explore MCP Hub's workflow builder, execution-state simulator, and interactive feature previews.">
+  <meta name="theme-color" content="#0b0f0f">
+  <link rel="icon" href="./assets/favicon.png" type="image/png">
+  <link rel="canonical" href="https://cassiemarie0728.github.io/mcp-hub/demos.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/site.css">
+  <script src="./assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="MCP Hub home"><span class="brand-mark" aria-hidden="true">&gt;_</span><span>MCP HUB</span></a>
+    <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-nav-toggle><span></span><span></span><span></span></button>
+    <nav class="site-nav" aria-label="Primary navigation" data-nav>
+      <a href="./#product">Product</a><a href="./demos.html" aria-current="page">Demos</a><a href="./docs.html">Docs</a><a href="./#faq">FAQ</a><a class="nav-github" href="https://github.com/CassieMarie0728/mcp-hub">GitHub <span>↗</span></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <header class="interior-hero shell">
+      <p class="page-kicker">Interactive previews // No live ammo</p>
+      <h1>See the machine move.</h1>
+      <p>Click through the product direction, test interface states, and decide whether the whole thing makes sense before you connect a damn thing.</p>
+    </header>
+
+    <section class="demo-directory shell" aria-labelledby="directory-title">
+      <div class="section-heading split-heading">
+        <div><p class="section-index">PREVIEW DIRECTORY</p><h2 id="directory-title">Three ways to kick the tires.</h2></div>
+        <p>Every preview is client-side and self-contained. Nothing here contacts your servers, stores credentials, or cosplays as production.</p>
+      </div>
+      <div class="demo-grid">
+        <a class="demo-card demo-wide" href="./demo-workflow-builder.html">
+          <div class="demo-window workflow-preview" aria-hidden="true">
+            <div class="mini-toolbar"><i></i><i></i><i></i><span>workflow://incident-response</span></div>
+            <div class="workflow-canvas"><span class="node">Webhook</span><b>→</b><span class="node active">Inspect issue</span><b>→</b><span class="node">Draft response</span></div>
+          </div>
+          <div class="demo-copy"><span>01</span><h3>Workflow Builder</h3><p>Add and connect visual steps to explore the planned workflow-authoring model.</p><span class="demo-status">Concept preview</span><strong>Open demo →</strong></div>
+        </a>
+        <a class="demo-card" href="./demo-execution-simulator.html">
+          <div class="demo-window execution-preview" aria-hidden="true"><div class="log-line ok">✓ connection.ready</div><div class="log-line">→ tools/call</div><div class="log-line result">200 OK · 42ms</div></div>
+          <div class="demo-copy"><span>02</span><h3>Execution Simulator</h3><p>Trigger simulated executions and inspect the status, timing, and response treatment.</p><span class="demo-status">Simulated data</span><strong>Run preview →</strong></div>
+        </a>
+        <a class="demo-card" href="./demo-features.html">
+          <div class="demo-window feature-preview" aria-hidden="true"><div>Server registry</div><div>Tool inspector</div><div>Execution history</div></div>
+          <div class="demo-copy"><span>03</span><h3>Feature Tour</h3><p>Walk through security, execution, workflow, and monitoring interface concepts.</p><span class="demo-status">Product direction</span><strong>Browse preview →</strong></div>
+        </a>
+      </div>
+      <div class="demo-notes">
+        <p class="section-index">READ THIS BEFORE THE BUTTONS SEDUCE YOU</p>
+        <h2>Preview is not promise.</h2>
+        <p>The workflow builder demonstrates a possible authoring direction. The execution simulator uses local fake data. The feature tour includes planned surfaces. For the verified current boundary, read the <a href="./docs.html#status">capability status</a> in the documentation or inspect the source.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer shell">
+    <a class="footer-brand" href="./"><span>{MCP}</span> HUB</a>
+    <nav aria-label="Footer navigation"><a href="./docs.html">Docs</a><a href="./demos.html">Demos</a><a href="https://github.com/CassieMarie0728/mcp-hub">Repository</a><a href="https://github.com/CassieMarie0728/mcp-hub/issues">Issues</a><a href="https://github.com/CassieMarie0728/mcp-hub/blob/main/LICENSE">License</a></nav>
+    <p>Built in public. No fake green lights.<i></i></p>
+  </footer>
+</body>
+</html>
