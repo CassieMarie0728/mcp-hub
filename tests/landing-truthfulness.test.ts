@@ -8,22 +8,21 @@ const landing = readFileSync(landingPath, "utf8");
 
 describe("landing-page truthfulness", () => {
   it("provides a clear early-access title, description, canonical URL, and social metadata", () => {
-    expect(landing).toContain("Early Access for Secure MCP Server Management");
-    expect(landing).toContain('rel="canonical" href="https://mcphub-cah4bw3p.manus.space/"');
+    expect(landing).toContain("MCP Hub — Wrangle Every MCP Server");
+    expect(landing).toContain('rel="canonical" href="https://cassiemarie0728.github.io/mcp-hub/"');
     expect(landing).toContain('property="og:title"');
     expect(landing).toContain('name="twitter:card"');
   });
 
   it("keeps primary calls to action on owned access paths rather than an unowned app domain", () => {
-    expect(landing).toContain('href="#access"');
-    expect(landing).toContain('href="mailto:early-access@mcphub.io');
+    expect(landing).toContain('href="./demos.html"');
     expect(landing).not.toContain("app.mcphub.io");
   });
 
   it("keeps navigation destinations real and avoids duplicated foundation claims", () => {
-    expect(landing).toContain('href="mailto:early-access@mcphub.io">Contact</a>');
+    expect(landing).toContain('href="https://github.com/CassieMarie0728/mcp-hub"');
     expect(landing).not.toContain('href="#contact"');
-    expect((landing.match(/<div class="tech-item">tRPC<\/div>/g) ?? []).length).toBe(1);
+    expect((landing.match(/<div class="tech-item">tRPC<\/div>/g) ?? []).length).toBe(0);
   });
 
   it("does not claim unavailable production automation, pricing, reliability, or enterprise operations", () => {

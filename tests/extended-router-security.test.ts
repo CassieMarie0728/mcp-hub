@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { appRouter } from "../server/routers";
+import { tokensProcedures } from "../server/procedures/tokens";
 import type { TrpcContext } from "../server/_core/context";
 
 function createPublicContext(): TrpcContext {
@@ -17,6 +18,29 @@ function createPublicContext(): TrpcContext {
 describe("Extended Router Security", () => {
   const ctx = createPublicContext();
   const caller = appRouter.createCaller(ctx);
+
+  describe("Tokens Procedures", () => {
+    const tokenCaller = tokensProcedures.createCaller(ctx);
+
+    it("denies access to list tokens for unauthenticated users", async () => {
+      await expect(tokenCaller.list()).rejects.toThrow();
+    });
+
+    it("denies access to getByServer for unauthenticated users", async () => {
+      await expect(tokenCaller.getByServer("srv-123")).rejects.toThrow();
+    });
+
+    it("denies access to store token for unauthenticated users", async () => {
+      await expect(
+        tokenCaller.store({
+          serverId: "srv-123",
+          serverType: "github",
+          name: "test",
+          token: "secret",
+        })
+      ).rejects.toThrow();
+    });
+  });
 
   describe("Workflows Router", () => {
     it("denies access to list workflows for unauthenticated users", async () => {
