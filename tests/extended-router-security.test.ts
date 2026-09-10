@@ -34,7 +34,7 @@ describe("Extended Router Security", () => {
     it("denies access to cloneTemplate for unauthenticated users", async () => {
       // @ts-ignore
       await expect(caller.templates.cloneTemplate({
-        templateId: "test",
+        templateId: "github-to-slack-001",
         newName: "cloned",
       })).rejects.toThrow();
     });
@@ -43,6 +43,20 @@ describe("Extended Router Security", () => {
         // @ts-ignore
         const result = await caller.templates.getAllTemplates();
         expect(result).toBeDefined();
+    });
+
+    it("throws NOT_FOUND TRPCError for non-existent template ID in getTemplate", async () => {
+      await expect(caller.templates.getTemplate({ templateId: "non-existent-template-id" })).rejects.toThrow("Template non-existent-template-id not found");
+    });
+
+    it("enforces input validation on searchTemplates category", async () => {
+      // @ts-ignore - invalid category
+      await expect(caller.templates.searchTemplates({ category: "invalid-category" })).rejects.toThrow();
+    });
+
+    it("enforces input validation on getTemplatesByCategory", async () => {
+      // @ts-ignore - invalid category
+      await expect(caller.templates.getTemplatesByCategory({ category: "invalid-category" })).rejects.toThrow();
     });
   });
 });
