@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { describe, expect, it } from "vitest";
 
 import { appRouter } from "../server/routers";
@@ -24,8 +25,16 @@ describe("Router Security", () => {
     await expect(caller.webhooks.listWebhooks()).rejects.toThrow();
   });
 
-  it("denies analytics access to unauthenticated callers", async () => {
-    await expect(caller.analytics.getReport({ range: "7d" })).rejects.toThrow();
+  it("denies analytics access with UNAUTHORIZED code to unauthenticated callers", async () => {
+    const error = await caller.analytics.getReport({ range: "7d" }).catch((e) => e);
+    expect(error).toBeInstanceOf(TRPCError);
+    expect((error as TRPCError).code).toBe("UNAUTHORIZED");
+  });
+
+  it("denies mcp server listing with UNAUTHORIZED code to unauthenticated callers", async () => {
+    const error = await caller.mcp.getAllServers().catch((e) => e);
+    expect(error).toBeInstanceOf(TRPCError);
+    expect((error as TRPCError).code).toBe("UNAUTHORIZED");
   });
 
   it("denies OAuth authorization initiation to unauthenticated callers", async () => {
