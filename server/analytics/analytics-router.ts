@@ -1,5 +1,6 @@
 /** Protected activity-reporting procedures backed by durable authorized MCP logs. */
 
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { protectedProcedure, router } from "../_core/trpc";
@@ -13,7 +14,7 @@ import { getOrCreatePersonalWorkspaceAccess } from "../security/workspace-access
 const executionOperationSchema = z.enum(["discover", "execute", "test"]);
 
 async function workspaceFor(ctx: { user: { id: number } | null }) {
-  if (!ctx.user) throw new Error("Authentication is required");
+  if (!ctx.user) throw new TRPCError({ code: "UNAUTHORIZED", message: "Authentication is required" });
   return getOrCreatePersonalWorkspaceAccess(ctx.user);
 }
 
