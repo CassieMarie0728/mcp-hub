@@ -24,8 +24,16 @@ describe("Router Security", () => {
     await expect(caller.webhooks.listWebhooks()).rejects.toThrow();
   });
 
-  it("denies analytics access to unauthenticated callers", async () => {
-    await expect(caller.analytics.getReport({ range: "7d" })).rejects.toThrow();
+  it("denies analytics access to unauthenticated callers with UNAUTHORIZED code", async () => {
+    await expect(caller.analytics.getReport({ range: "7d" })).rejects.toMatchObject({
+      code: "UNAUTHORIZED",
+    });
+  });
+
+  it("denies MCP server access to unauthenticated callers with UNAUTHORIZED code", async () => {
+    await expect(caller.mcp.getAllServers()).rejects.toMatchObject({
+      code: "UNAUTHORIZED",
+    });
   });
 
   it("denies OAuth authorization initiation to unauthenticated callers", async () => {
