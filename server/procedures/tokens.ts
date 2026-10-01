@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { publicProcedure, router } from '../_core/trpc';
+import { protectedProcedure, router } from '../_core/trpc';
 import { TokenManager } from '../tokens/token-manager';
 
 // TokenManager uses static methods, no instantiation needed
@@ -44,7 +44,7 @@ export const tokensProcedures = router({
    * List all tokens for the current user
    * Returns masked tokens (last 4 chars only)
    */
-  list: publicProcedure.query(async () => {
+  list: protectedProcedure.query(async () => {
     try {
       const tokens: any[] = [];
       // TODO: Fetch from database
@@ -67,7 +67,7 @@ export const tokensProcedures = router({
   /**
    * Get tokens for a specific server
    */
-  getByServer: publicProcedure
+  getByServer: protectedProcedure
     .input(GetServerTokensInput)
     .query(async ({ input: serverId }: { input: string }) => {
       try {
@@ -91,7 +91,7 @@ export const tokensProcedures = router({
   /**
    * Store a new token with encryption
    */
-  store: publicProcedure
+  store: protectedProcedure
     .input(StoreTokenInput)
     .mutation(async ({ input }: { input: z.infer<typeof StoreTokenInput> }) => {
       try {
@@ -119,7 +119,7 @@ export const tokensProcedures = router({
   /**
    * Revoke a token (soft delete)
    */
-  revoke: publicProcedure
+  revoke: protectedProcedure
     .input(RevokeTokenInput)
     .mutation(async ({ input: tokenId }: { input: string }) => {
       try {
@@ -133,7 +133,7 @@ export const tokensProcedures = router({
   /**
    * Rotate a token with new value
    */
-  rotate: publicProcedure
+  rotate: protectedProcedure
     .input(RotateTokenInput)
     .mutation(async ({ input }: { input: z.infer<typeof RotateTokenInput> }) => {
       try {
@@ -163,7 +163,7 @@ export const tokensProcedures = router({
   /**
    * Get token details (for verification)
    */
-  verify: publicProcedure
+  verify: protectedProcedure
     .input(z.string())
     .query(async ({ input: tokenId }: { input: string }) => {
       try {
