@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach } from "vitest";
 
 import TokenManager from "../server/tokens/token-manager";
+import { tokensProcedures } from "../server/procedures/tokens";
 
 describe("TokenManager Security Tests", () => {
   beforeEach(async () => {
@@ -43,5 +44,34 @@ describe("TokenManager Security Tests", () => {
 
     const retrieved = await TokenManager.getToken(created.id);
     expect(retrieved).toBeNull();
+  });
+});
+
+describe("tokensProcedures Security Tests", () => {
+  const unauthenticatedContext = {
+    user: null,
+    req: { protocol: "https", headers: {}, hostname: "localhost" } as any,
+    res: {} as any,
+  };
+
+  const caller = tokensProcedures.createCaller(unauthenticatedContext);
+
+  it("denies unauthenticated access to list tokens", async () => {
+    await expect(caller.list()).rejects.toThrow();
+  });
+
+  it("denies unauthenticated access to store tokens", async () => {
+    await expect(
+      caller.store({
+        serverId: "srv-1",
+        serverType: "github",
+        name: "Test Token",
+        token: "secret-value",
+      }),
+    ).rejects.toThrow();
+  });
+
+  it("denies unauthenticated access to revoke tokens", async () => {
+    await expect(caller.revoke("tok-1")).rejects.toThrow();
   });
 });
