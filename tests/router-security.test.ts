@@ -20,6 +20,17 @@ describe("Router Security", () => {
     await expect(caller.tokens.listServerTokens({ serverId })).rejects.toThrow();
   });
 
+  it("denies tokensProcedures operations to unauthenticated callers", async () => {
+    const { tokensProcedures } = await import("../server/procedures/tokens");
+    const proceduresCaller = tokensProcedures.createCaller(createPublicContext());
+    await expect(proceduresCaller.list()).rejects.toThrow();
+    await expect(proceduresCaller.getByServer(serverId)).rejects.toThrow();
+    await expect(proceduresCaller.store({ serverId, serverType: "github", name: "test", token: "secret" })).rejects.toThrow();
+    await expect(proceduresCaller.revoke("token-1")).rejects.toThrow();
+    await expect(proceduresCaller.rotate({ tokenId: "token-1", newToken: "new-secret" })).rejects.toThrow();
+    await expect(proceduresCaller.verify("token-1")).rejects.toThrow();
+  });
+
   it("denies webhook listing to unauthenticated callers", async () => {
     await expect(caller.webhooks.listWebhooks()).rejects.toThrow();
   });
