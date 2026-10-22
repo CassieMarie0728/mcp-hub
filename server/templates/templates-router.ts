@@ -2,6 +2,7 @@
  * tRPC Router for Workflow Templates
  */
 
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { publicProcedure, protectedProcedure, router } from '../_core/trpc';
 import { WorkflowTemplateManager, type TemplateCloneInput } from './workflow-templates';
@@ -18,11 +19,11 @@ export const templatesRouter = router({
    * Get template by ID
    */
   getTemplate: publicProcedure
-    .input(z.object({ templateId: z.string() }))
+    .input(z.object({ templateId: z.string().trim().min(1).max(128) }))
     .query(({ input }) => {
       const template = WorkflowTemplateManager.getTemplate(input.templateId);
       if (!template) {
-        throw new Error(`Template ${input.templateId} not found`);
+        throw new TRPCError({ code: "NOT_FOUND", message: `Template ${input.templateId} not found` });
       }
       return template;
     }),

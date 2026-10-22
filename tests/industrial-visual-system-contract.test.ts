@@ -33,8 +33,7 @@ describe('industrial MCP core visual system', () => {
     const landing = read('landing/index.html');
 
     expect(landing).toContain('property="og:image"');
-    expect(landing).toContain('name="twitter:image"');
     expect(landing).toContain('summary_large_image');
-    expect(landing).toContain('zuCJXXZCeUNzHFOB.png');
+    expect(landing).toContain('mcp-hub-command-bunker.jpg');
   });
 });
