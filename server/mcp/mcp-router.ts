@@ -1,5 +1,6 @@
 /** Tenant-scoped tRPC procedures for MCP server management and execution. */
 
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { protectedProcedure, router } from "../_core/trpc";
@@ -32,7 +33,7 @@ const serverConfigSchema = z.object({
 });
 
 async function workspaceFor(ctx: { user: { id: number } | null }) {
-  if (!ctx.user) throw new Error("Authentication is required");
+  if (!ctx.user) throw new TRPCError({ code: "UNAUTHORIZED", message: "Authentication is required" });
   return getOrCreatePersonalWorkspaceAccess(ctx.user);
 }
 

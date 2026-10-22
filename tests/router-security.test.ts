@@ -24,8 +24,22 @@ describe("Router Security", () => {
     await expect(caller.webhooks.listWebhooks()).rejects.toThrow();
   });
 
-  it("denies analytics access to unauthenticated callers", async () => {
-    await expect(caller.analytics.getReport({ range: "7d" })).rejects.toThrow();
+  it("denies analytics access to unauthenticated callers with UNAUTHORIZED code", async () => {
+    await expect(caller.analytics.getReport({ range: "7d" })).rejects.toThrowError(
+      expect.objectContaining({ code: "UNAUTHORIZED" }),
+    );
+  });
+
+  it("denies mcp server listing to unauthenticated callers with UNAUTHORIZED code", async () => {
+    await expect(caller.mcp.getAllServers()).rejects.toThrowError(
+      expect.objectContaining({ code: "UNAUTHORIZED" }),
+    );
+  });
+
+  it("returns NOT_FOUND TRPCError when requesting non-existent template", async () => {
+    await expect(caller.templates.getTemplate({ templateId: "non-existent-template" })).rejects.toThrowError(
+      expect.objectContaining({ code: "NOT_FOUND" }),
+    );
   });
 
   it("denies OAuth authorization initiation to unauthenticated callers", async () => {
