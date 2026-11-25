@@ -1,6 +1,53 @@
 import { describe, expect, it, beforeEach } from "vitest";
 
 import TokenManager from "../server/tokens/token-manager";
+import { tokensProcedures } from "../server/procedures/tokens";
+import type { TrpcContext } from "../server/_core/context";
+
+function createUnauthenticatedContext(): TrpcContext {
+  return {
+    user: null,
+    req: { protocol: "https", headers: {}, hostname: "localhost" } as TrpcContext["req"],
+    res: {} as TrpcContext["res"],
+  };
+}
+
+describe("TokenProcedures Auth Protection Tests", () => {
+  const caller = tokensProcedures.createCaller(createUnauthenticatedContext());
+
+  it("denies token listing to unauthenticated callers", async () => {
+    await expect(caller.list()).rejects.toThrow();
+  });
+
+  it("denies getting server tokens to unauthenticated callers", async () => {
+    await expect(caller.getByServer("srv-1")).rejects.toThrow();
+  });
+
+  it("denies storing tokens to unauthenticated callers", async () => {
+    await expect(
+      caller.store({
+        serverId: "srv-1",
+        serverType: "github",
+        name: "test",
+        token: "secret",
+      })
+    ).rejects.toThrow();
+  });
+
+  it("denies revoking tokens to unauthenticated callers", async () => {
+    await expect(caller.revoke("tok-1")).rejects.toThrow();
+  });
+
+  it("denies rotating tokens to unauthenticated callers", async () => {
+    await expect(
+      caller.rotate({ tokenId: "tok-1", newToken: "new-secret" })
+    ).rejects.toThrow();
+  });
+
+  it("denies verifying tokens to unauthenticated callers", async () => {
+    await expect(caller.verify("tok-1")).rejects.toThrow();
+  });
+});
 
 describe("TokenManager Security Tests", () => {
   beforeEach(async () => {
